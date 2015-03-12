@@ -2,13 +2,7 @@ DBMNG2
 ===============
 
 
-Requirements
-------------
-
-- PHP >= 5.3.3
-- [Composer](http://getcomposer.org/).
-
-Installation and first Test
+Installation and Test
 ---------------
 
 First install composer
@@ -38,19 +32,11 @@ Update the configuration file
 
 Running the test
 
-    $ composer install --dev
-
- 
-
-
-
-Contributing
-------------
-
-See CONTRIBUTING.md file.
-
-
     $ phpunit
+
+
+
+
 
 License
 -------
