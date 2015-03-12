@@ -8,7 +8,7 @@ Requirements
 - PHP >= 5.3.3
 - [Composer](http://getcomposer.org/).
 
-Installation
+Installation and first Test
 ---------------
 
 First install composer
@@ -25,11 +25,20 @@ Install the dbmng2 dependencies using composer
 
 	$ composer update
 
-Create a mySQL database and populate it using the file sql/test.sql
+Create a mySQL database and populate it using the file sql/test.sql (change root if you want to install using a different user)
 
-	$ mysql -u insert_your_user_id -p -e "create database dbmng2"
-	$ mysql -u insert_your_user_id -p dbmng2 < sql/test.sql  
+	$ mysql -u root -p -e "create database dbmng2"
+	$ mysql -u root -p dbmng2 < sql/test.sql  
 
+
+Update the configuration file
+
+	$ cp phpunit.xml.dist phpunit.xml
+	$ edit the phpunit.xml entering db_name, user and password
+
+Running the test
+
+    $ composer install --dev
 
  
 
@@ -40,14 +49,6 @@ Contributing
 
 See CONTRIBUTING.md file.
 
-Running Tests
--------------
-
-Install the [Composer](http://getcomposer.org/) `dev` dependencies:
-
-    $ composer install --dev
-
-Then, run the test suite using [PHPUnit](http://phpunit.de/):
 
     $ phpunit
 
