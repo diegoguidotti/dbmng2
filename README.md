@@ -2,6 +2,34 @@ DBMNG2
 ===============
 
 
+Library Usage
+---------------
+
+``` php
+#create a db connection
+$db = DB::createDb($dsn, $user,$password );
+
+#define the form structure
+$aForm=array(  
+	'table_name' => 'test' ,
+		'primary_key'=> array('id'), 
+		'fields'     => array(
+				'id' => array('label'   => 'ID', 'type' => 'int', 'key' => 1 ) ,
+				'name' => array('label'   => 'Name', 'type' => 'varchar')
+		),
+);
+#define a param array
+$aParam=array();
+
+#create a Dbmng object
+$dbmng=new Dbmng($db, $aForm, $aParam);
+
+#return the data
+$ret = $dbmng->select();
+
+```
+
+
 Installation and Test
 ---------------
 
