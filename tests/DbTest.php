@@ -91,15 +91,50 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
 
 		    $this->assertEquals(true,$ret['ok']);
  		    $this->assertEquals(3,$ret['inserted_id']);
-
+				
+				// Get the rowCount
 		    $ret2 = $db->select('select id, name from test', array(), \PDO::FETCH_BOTH);
-		    $this->assertEquals(3,count($ret2['data']));
+		    $this->assertEquals(3,$ret2['rowCount']);
 
+				// Get the colCount
 		    $ret3 = $db->select('select id, name from test', array(), \PDO::FETCH_BOTH);
-		    $this->assertEquals('Susanna',$ret3['data'][2][1]);
+		    $this->assertEquals(2,$ret3['colCount']);
 
-		    fwrite(STDERR, print_r($ret));
-	
+		    $ret4 = $db->select('select id, name from test', array(), \PDO::FETCH_BOTH);
+		    $this->assertEquals('Susanna',$ret4['data'][2][1]);
+
+		    $ret5 = $db->select('select id, name from test', array(), \PDO::FETCH_CLASS);
+		    $nCnt = 0;
+		    foreach( $ret5['data'] as $k => $v )
+					{
+						$nCnt++;
+					}
+				
+				$this->assertEquals(3,$nCnt);
+		    //fwrite(STDERR, print_r($ret5));
 	}
+	
+	public function testUpdate(){
+		    $db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
+		    $ret = $db->insert('insert into test (id, name) values(:id, :name )', array(':id'=>3, ':name'=>'Susanna'));
+				$ret2 = $db->update('update test set name = :name where id = :id', array(':id'=>3, ':name'=>'Cinzia'));
+				
+		    $ret4 = $db->select('select id, name from test', array(), \PDO::FETCH_BOTH);
+		    $this->assertEquals('Cinzia',$ret4['data'][2][1]);
+	}
+	
+	public function testDelete(){
+		    $db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
+				$ret = $db->update('delete from test where id = :id', array(':id'=>2));
+				
+				$this->assertEquals(true,$ret['ok']);
+
+				// Get the rowCount
+		    $ret2 = $db->select('select id, name from test', array(), \PDO::FETCH_BOTH);
+		    $this->assertEquals(1,$ret2['rowCount']);
+		    
+		    //fwrite(STDERR, print_r($ret2));
+	}
+	
 }
 

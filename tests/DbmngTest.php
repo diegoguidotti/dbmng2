@@ -73,6 +73,26 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
 					
 			}
 
+		function testDelete()
+		{
+			$db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD'] );
 
+			$aForm=array(  
+				'table_name' => 'test' ,
+					'primary_key'=> array('id'), 
+					'fields'     => array(
+							'id' => array('label'   => 'ID', 'type' => 'int', 'key' => 1 ) ,
+							'name' => array('label'   => 'Name', 'type' => 'varchar')
+					),
+			);
+
+
+			$aParam=array();
+
+			$dbmng=new Dbmng($db, $aForm, $aParam);
+			
+			$ret = $dbmng->delete(array('id'=>1));
+			$this->assertEquals(true, $ret['ok']);
+		}
 }
 

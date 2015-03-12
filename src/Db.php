@@ -75,6 +75,8 @@ private $pdo;
 					$records=$res0->fetchAll($fetch_style);
 					$ret['ok']=true;
 					$ret['data']=$records;
+					$ret['colCount'] = $res0->columnCount();
+					$ret['rowCount'] = $res0->rowCount();
 				
         } 
 				catch (\PDOException $e)
@@ -116,6 +118,61 @@ private $pdo;
         }
 			return $ret;
 		}
+
+		/////////////////////////////////////////////////////////////////////////////
+		// execute
+		// ======================
+		// Execute an SQL query (update or delete) inside db using a PDO Prepared Statements
+		/**
+		\param $sQuery  the query with parameteres placeholders
+		\param $aVars   associative array with placeholders and parameters. e.g. Array(':id'=>1, ':name'=>'Foo')
+		*/
+		public function execute($sQuery, $aVars){
+			$ret=array();
+			try 
+				{
+					$dbh = $this->pdo;
+					
+					$res0 = $dbh->prepare($sQuery);
+					
+					$dbh->beginTransaction();
+						$res0->execute($aVars);
+					$dbh->commit();
+					
+					$ret['ok']=true;
+        }
+				catch (\PDOException $e)
+        {
+					$ret['ok']=false;
+					$ret['message']=$e->getMessage();
+        }
+			return $ret;
+		}
+		
+		/////////////////////////////////////////////////////////////////////////////
+		// update
+		// ======================
+		// Update an SQL query (update or delete) inside db using a PDO Prepared Statements
+		/**
+		\param $sQuery  the query with parameteres placeholders
+		\param $aVars   associative array with placeholders and parameters. e.g. Array(':id'=>1, ':name'=>'Foo')
+		*/
+		public function update($sQuery, $aVars){
+			return $this->execute($sQuery, $aVars);
+		}
+		
+		/////////////////////////////////////////////////////////////////////////////
+		// delete
+		// ======================
+		// Delete an SQL query (update or delete) inside db using a PDO Prepared Statements
+		/**
+		\param $sQuery  the query with parameteres placeholders
+		\param $aVars   associative array with placeholders and parameters. e.g. Array(':id'=>1, ':name'=>'Foo')
+		*/
+		public function delete($sQuery, $aVars){
+			return $this->execute($sQuery, $aVars);
+		}
+		
 }
 
 ?>
