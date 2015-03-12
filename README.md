@@ -25,6 +25,15 @@ Install the dbmng2 dependencies using composer
 
 	$ composer update
 
+Create a mySQL database and populate it using the file sql/test.sql
+
+	$ mysql -u insert_your_user_id -p -e "create database dbmng2"
+	$ mysql -u insert_your_user_id -p dbmng2 < sql/test.sql  
+
+
+ 
+
+
 
 Contributing
 ------------
