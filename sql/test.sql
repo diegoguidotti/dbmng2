@@ -2,4 +2,5 @@ CREATE TABLE `dbmng2`.`test` (
   `id` INTEGER  NOT NULL,
   `name` VARCHAR(255)  NOT NULL,
   PRIMARY KEY (`id`)
-)
+);
+ALTER TABLE `test` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT;

@@ -80,6 +80,26 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
 		    $ret4 = $db->select('select id, name from test', array(), \PDO::FETCH_BOTH);
 		    $this->assertEquals('Diego',$ret4['data'][0][1]);
 			
-		}
+		    $ret4 = $db->select('select id, name from test', array(), \PDO::FETCH_BOTH);
+		    $this->assertEquals(2,count($ret4['data']));
+			
+	}
+	
+	public function testInsert(){
+		    $db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
+		    $ret = $db->insert('insert into test (id, name) values(:id, :name )', array(':id'=>3, ':name'=>'Susanna'));
+
+		    $this->assertEquals(true,$ret['ok']);
+ 		    $this->assertEquals(3,$ret['inserted_id']);
+
+		    $ret2 = $db->select('select id, name from test', array(), \PDO::FETCH_BOTH);
+		    $this->assertEquals(3,count($ret2['data']));
+
+		    $ret3 = $db->select('select id, name from test', array(), \PDO::FETCH_BOTH);
+		    $this->assertEquals('Susanna',$ret3['data'][2][1]);
+
+		    fwrite(STDERR, print_r($ret));
+	
+	}
 }
 

@@ -64,6 +64,7 @@ private $pdo;
 		/**
 		\param $sQuery  the query with parameteres placeholders
 		\param $aVars   associative array with placeholders and parameters. e.g. Array(':id'=>1, ':name'=>'Foo')
+		\param $fetch_style	style [default FETCH_ASSOC] reference -> http://php.net/manual/en/pdostatement.fetch.php 
 		*/
 		public function select($sQuery, $aVars, $fetch_style = \PDO::FETCH_ASSOC ){
 			$ret=array();
@@ -84,7 +85,37 @@ private $pdo;
 			return $ret;
 		}
 
-	
+		/////////////////////////////////////////////////////////////////////////////
+		// insert
+		// ======================
+		// Insert a record inside db using a PDO Prepared Statements
+		/**
+		\param $sQuery  the query with parameteres placeholders
+		\param $aVars   associative array with placeholders and parameters. e.g. Array(':id'=>1, ':name'=>'Foo')
+		*/
+		public function insert($sQuery, $aVars){
+			$ret=array();
+			try 
+				{
+					$dbh = $this->pdo;
+					
+					$res0 = $dbh->prepare($sQuery);
+					
+					$dbh->beginTransaction();
+						$res0->execute($aVars);
+						$id = $dbh->lastInsertId();
+					$dbh->commit();
+					
+					$ret['ok']=true;
+					$ret['inserted_id'] = $id;
+        }
+				catch (\PDOException $e)
+        {
+					$ret['ok']=false;
+					$ret['message']=$e->getMessage();
+        }
+			return $ret;
+		}
 }
 
 ?>
