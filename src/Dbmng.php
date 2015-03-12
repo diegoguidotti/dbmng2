@@ -1,10 +1,9 @@
 <?php
 
-//https://github.com/wildantea/php-pdo-mysql-helper-class
 /**
  * database helper class
  * 
- * @author Diego Guidotti <diegoo.guidotti@gmail.com>
+ * @author Diego Guidotti <diego.guidotti@gmail.com>
  */
 
 namespace Dbmng;
@@ -32,7 +31,6 @@ private $aParam;
 		$sQuery='SELECT '.$var.' from '.$this->aForm['table_name'];
 
 		
-
 
 		$aVar=array();
 		return $this->db->select($sQuery,$aVar);

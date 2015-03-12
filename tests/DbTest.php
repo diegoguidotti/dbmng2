@@ -16,12 +16,10 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
 
 				if ($this->conn === null) {
             if (self::$pdo == null) {
-                //self::$pdo = new PDO( $GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD'] );
-								self::$pdo = new \PDO("mysql:host=localhost;dbname=dbmng2;charset=utf8", "root", "wwwfito");
+                self::$pdo = new \PDO( $GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD'] );
 								self::$pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
 								self::$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-								self::$pdo->exec("set names utf8");
-								
+								self::$pdo->exec("set names utf8");								
             }
             $this->conn = $this->createDefaultDBConnection(self::$pdo, "dbmng2");
         }
@@ -34,7 +32,29 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
 
 
 		public function testTest() {
-		    $db = new Db();
+
+
+		    $db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
+
+		    $articles = $db->test();
+		    $this->assertEquals(
+		        array(
+		            array("id" => 1, "name" => "Diego"),
+		            array("id" => 2, "name" => "Michele")
+						),
+		        $articles);
+		}
+
+		public function testDrupal() {
+
+				//Simulate a pdo connection in drupal
+				$pdo = new \PDO($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
+				$pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
+				$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+				$pdo->exec("set names utf8");
+
+		    $db = new Db($pdo);
+
 		    $articles = $db->test();
 		    $this->assertEquals(
 		        array(
@@ -47,13 +67,13 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
 
 		public function testSelect() {
 
-		    $db = new Db();
+		    $db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
 		    $ret = $db->select('select id, name from test', array());
 			
 		    $this->assertEquals(
 		        array(
 		            array("id" => 1, "name" => "Diego"),
-		            array("id" => 2, "name" => "Michele")
+		            array("id" => 2, "name" => "Michele")  
 						),
 		        $ret['ret']
 				);

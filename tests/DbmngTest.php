@@ -17,14 +17,14 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
 
 				if ($this->conn === null) {
             if (self::$pdo == null) {
-                //self::$pdo = new PDO( $GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD'] );
-								self::$pdo = new \PDO("mysql:host=localhost;dbname=dbmng2;charset=utf8", "root", "wwwfito");
+                self::$pdo = new \PDO( $GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD'] );
+								//self::$pdo = new \PDO("", "", "");
 								self::$pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
 								self::$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 								self::$pdo->exec("set names utf8");
 								
             }
-            $this->conn = $this->createDefaultDBConnection(self::$pdo, "dbmng2");
+            $this->conn = $this->createDefaultDBConnection(self::$pdo, $GLOBALS['DB_NAME']);
         }
         return $this->conn;
     }
@@ -35,7 +35,7 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
 
 
 		public function testTest() {
-				  $db = new Db();
+				  $db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD'] );
 
 					$aForm=array(  
 						'table_name' => 'test' ,
