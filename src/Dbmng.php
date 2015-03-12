@@ -51,6 +51,8 @@ private $aParam;
 						}					
 				}
 	}
+
+
 	
 	/////////////////////////////////////////////////////////////////////////////
 	// delete
@@ -70,43 +72,49 @@ private $aParam;
 		$var = array();
 		foreach ( $aForm['fields'] as $fld => $fld_value )
 			{
-				if( dbmng_check_is_pk($fld_value) )
+				if( Util::var_equal($fld_value,'key', 1) ||  Util::var_equal($fld_value,'key', 2) )
 					{
 						$where .= "$fld = :$fld and ";
 						$var = array_merge($var, array(":".$fld => $array[$fld] ));
 					}
 			}
 
-			if( isset($aParam['filters']) )
-					{
-						foreach ( $aParam['filters'] as $fld => $fld_value )
-							{
-									//drupal_set_message("Add ".$fld." ".$fld_value);
-									$where .= $fld . " = :$fld and ";
-									$var = array_merge($var, array(":".$fld => $fld_value));
-							}					
-					}
+			if($where == ""){
 
+				$result=Array();
+				$result['ok']=false;
+				$result['message']='You cannot delete record in a table with no primary keys defined';
+			}
+			else{	
 
-		$where = substr($where, 0, strlen($where)-4);
-		//TODO: add also filter fields in delete/update
-		$result = dbmng_query("delete from " . $aForm['table_name'] . " WHERE $where ", $var);
-		
-		if($result['ok']){
-			foreach ( $aForm['fields'] as $fld => $fld_value )
-				{
-					if( isset($fld_value['widget']) )
+				if( isset($aParam['filters']) )
 						{
-							if($fld_value['widget']=='select_nm')
-								{		
-									$table_nm=$fld_value['table_nm'];
-									$field_nm=$fld_value['field_nm'];
-				
-									$sql = "delete from ".$table_nm." where ".$where;
-									$res_nm = dbmng_query( $sql, $var);
-								}
+							foreach ( $aParam['filters'] as $fld => $fld_value )
+								{
+										//drupal_set_message("Add ".$fld." ".$fld_value);
+										$where .= $fld . " = :$fld and ";
+										$var = array_merge($var, array(":".$fld => $fld_value));
+								}					
 						}
-				}
+
+			$where = substr($where, 0, strlen($where)-4);
+
+
+			$result = $this->db->delete("delete from " . $aForm['table_name'] . " WHERE $where ", $var);
+		
+			if($result['ok']){
+				foreach ( $aForm['fields'] as $fld => $fld_value )
+					{
+						if( Util::var_equal($fld_value, 'widget', 'select_nm') )
+							{
+								$table_nm=$fld_value['table_nm'];
+								$field_nm=$fld_value['field_nm'];
+		
+								$sql = "delete from ".$table_nm." where ".$where;
+								$res_nm = $this->db->delete( $sql, $var);
+							}
+					}
+			}
 		}
 
 		return $result;

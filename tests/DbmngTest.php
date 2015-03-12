@@ -81,7 +81,7 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
 				'table_name' => 'test' ,
 					'primary_key'=> array('id'), 
 					'fields'     => array(
-							'id' => array('label'   => 'ID', 'type' => 'int', 'key' => 1 ) ,
+							'id' => array('label'   => 'ID', 'type' => 'int' ) ,
 							'name' => array('label'   => 'Name', 'type' => 'varchar')
 					),
 			);
@@ -92,7 +92,28 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
 			$dbmng=new Dbmng($db, $aForm, $aParam);
 			
 			$ret = $dbmng->delete(array('id'=>1));
-			$this->assertEquals(true, $ret['ok']);
+			$this->assertEquals(false, $ret['ok']);
+			//the delete should fail (no field is a primary key)
+
+
+			//add the key and re-create the dbmng object	
+			$aForm['fields']['id']['key']=1;
+			$dbmng=new Dbmng($db, $aForm, $aParam);
+
+			$ret2 = $dbmng->delete(array('id'=>1));
+			$this->assertEquals(true, $ret2['ok']);
+			//Now the delete should works (a PK has been defined)
+
+			
+			//fwrite(STDERR, print_r($ret2));
+
+
+
+
+
+
+			
+
 		}
 }
 
