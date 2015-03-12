@@ -59,7 +59,7 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
 				          array("id" => 1, "name" => "Diego"),
 				          array("id" => 2, "name" => "Michele")
 							),
-				      $ret['ret']
+				      $ret['data']
 					);
 
 					$sField='';

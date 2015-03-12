@@ -23,7 +23,7 @@ private $aParam;
 		}
 
 
-	public function select(){
+	public function select($fetch_style = \PDO::FETCH_ASSOC){
 
 
 		$var=implode(",", array_keys($this->aForm['fields']));
@@ -33,7 +33,7 @@ private $aParam;
 		
 
 		$aVar=array();
-		return $this->db->select($sQuery,$aVar);
+		return $this->db->select($sQuery,$aVar, $fetch_style);
 	}
 
 

@@ -30,21 +30,6 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
         return $this->createFlatXMLDataSet(dirname(__FILE__).'/seed.xml'); 
     }
 
-
-		public function testTest() {
-
-
-		    $db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
-
-		    $articles = $db->test();
-		    $this->assertEquals(
-		        array(
-		            array("id" => 1, "name" => "Diego"),
-		            array("id" => 2, "name" => "Michele")
-						),
-		        $articles);
-		}
-
 		public function testDrupal() {
 
 				//Simulate a pdo connection in drupal
@@ -54,8 +39,9 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
 				$pdo->exec("set names utf8");
 
 		    $db = new Db($pdo);
-
-		    $articles = $db->test();
+		    
+		    $result = $db->select("SELECT a.id, a.name FROM test a", array());
+		    $articles = $result['data'];
 		    $this->assertEquals(
 		        array(
 		            array("id" => 1, "name" => "Diego"),
@@ -73,9 +59,9 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
 		    $this->assertEquals(
 		        array(
 		            array("id" => 1, "name" => "Diego"),
-		            array("id" => 2, "name" => "Michele")  
+		            array("id" => 2, "name" => "Michele")
 						),
-		        $ret['ret']
+		        $ret['data']
 				);
 
 		    $this->assertEquals(true,$ret['ok']);
@@ -85,13 +71,15 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
 		        array(
 		            array("id" => 1, "name" => "Diego")
 						),
-		        $ret2['ret']
+		        $ret2['data']
 				);
 
 		    $ret3 = $db->select('select id, name from test_no_exist WHERE id=:id', array(':id'=>1));			
 		    $this->assertEquals(false,$ret3['ok']);
 
-				
+		    $ret4 = $db->select('select id, name from test', array(), \PDO::FETCH_BOTH);
+		    $this->assertEquals('Diego',$ret4['data'][0][1]);
+			
 		}
 }
 

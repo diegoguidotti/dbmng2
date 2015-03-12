@@ -65,15 +65,15 @@ private $pdo;
 		\param $sQuery  the query with parameteres placeholders
 		\param $aVars   associative array with placeholders and parameters. e.g. Array(':id'=>1, ':name'=>'Foo')
 		*/
-		public function select($sQuery, $aVars){
+		public function select($sQuery, $aVars, $fetch_style = \PDO::FETCH_ASSOC ){
 			$ret=array();
 			try 
 				{					
 					$res0 = $this->pdo->prepare($sQuery);	
 					$res0->execute($aVars);	
-					$records=$res0->fetchAll(\PDO::FETCH_ASSOC);
+					$records=$res0->fetchAll($fetch_style);
 					$ret['ok']=true;
-					$ret['ret']=$records;
+					$ret['data']=$records;
 				
         } 
 				catch (\PDOException $e)
@@ -84,11 +84,7 @@ private $pdo;
 			return $ret;
 		}
 
-		public function test(){
-			  $result = $this->select("SELECT a.id, a.name FROM test a", array());
-        return $result['ret'];
-		}
-
+	
 }
 
 ?>
