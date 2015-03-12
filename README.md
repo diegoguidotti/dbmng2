@@ -17,10 +17,12 @@ First install composer
 	$ sudo mv composer.phar /usr/local/bin/composer
 
 Clone the repository from github
+
 	$ git clone https://github.com/diegoguidotti/dbmng2.git
 	$ cd dbmng2
 
 Install the dbmng2 dependencies using composer
+
 	$ composer update
 
 
