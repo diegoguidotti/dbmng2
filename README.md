@@ -60,7 +60,7 @@ Update the configuration file
 
 Running the test
 
-    $ phpunit
+    $ bin/phpunit
 
 
 
