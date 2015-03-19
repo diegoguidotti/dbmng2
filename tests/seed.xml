@@ -2,5 +2,7 @@
 <dataset>
 	<test id="1" name="Diego" />
 	<test id="2" name="Michele" />
+	<test_father id_father="1" varchar_field="Diego" />
+	<test_father id_father="2" varchar_field="Michele" />
 </dataset>
 

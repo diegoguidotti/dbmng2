@@ -139,9 +139,12 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
 	public function testGetSQL(){
 		    $db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
 				
-		    $sql = $db->getSQL('select id, name from test', array());
-		    fwrite(STDERR, $sql);
-		    //$this->assertEquals('Cinzia',$ret4['data'][2][1]);
+		    $sql = $db->getSQL('select id, name from test WHERE id=:id AND nome=:nome', array(':id'=>1, ':nome'=>'Diego'));
+		    $this->assertEquals("select id, name from test WHERE id='1' AND nome='Diego'",$sql);
+
+		    $sql = $db->getSQL('select id, name from test WHERE id=:id AND nome=:nome', array(':id'=>1, ':nome'=>"Die'SQLInjection"));
+		    $this->assertEquals("select id, name from test WHERE id='1' AND nome='Die\'SQLInjection'",$sql);
+
 	}
 	
 }

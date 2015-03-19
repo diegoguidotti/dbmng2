@@ -105,31 +105,65 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
 			//fwrite(STDERR, print_r($ret2));
 		}
 
-// 		function testUpdate()
-// 		{
-// 			$db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD'] );
-// 
-// 			$aForm=array(  
-// 				'table_name' => 'test' ,
-// 					'primary_key'=> array('id'), 
-// 					'fields'     => array(
-// 							'id' => array('label'   => 'ID', 'type' => 'int', 'key' => 1 ) ,
-// 							'name' => array('label'   => 'Name', 'type' => 'varchar')
-// 					),
-// 			);
-// 
-// 			$aParam=array();
-// 
-// 			$dbmng=new Dbmng($db, $aForm, $aParam);
-// 			
-// 			$ret = $dbmng->update(array('id'=>1, 'name'=> 'pippo'));
-// 			fwrite(STDERR, print_r($ret));
-// 			$this->assertEquals(false, $ret['ok']);
-// 
-// 			$ret2 = $db->select('select id, name from test where id = 1', array(), \PDO::FETCH_BOTH);
-// 			$this->assertEquals('pippo',$ret2['data'][0][1]);
-// 
-// 		}
+ 		function testUpdate()
+ 		{
+ 			$db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD'] );
+ 
+ 			$aForm=array(  
+ 				'table_name' => 'test' ,
+ 					'primary_key'=> array('id'), 
+ 					'fields'     => array(
+ 							'id' => array('label'   => 'ID', 'type' => 'int', 'key' => 1 ) ,
+ 							'name' => array('label'   => 'Name', 'type' => 'varchar')
+ 					),
+ 			);
+ 
+ 			$aParam=array();
+ 
+ 			$dbmng=new Dbmng($db, $aForm, $aParam);
+ 			
+ 			$ret = $dbmng->update(array('id'=>1, 'name'=> 'pippo'));
+ 			$this->assertEquals(true, $ret['ok']);
+			
+ 
+ 			$ret2 = $db->select('select id, name from test where id = 1', array(), \PDO::FETCH_BOTH);
+ 			$this->assertEquals('pippo',$ret2['data'][0][1]);
+ 
+ 		}
+
+
+ 		function testPrepare()
+ 		{
+ 			$db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD'] );
+ 
+ 			$aForm=array(  
+ 				'table_name' => 'test_father' ,
+ 					'primary_key'=> array('id_father'), 
+ 					'fields'     => array(
+ 							'id_father' => array('label'   => 'ID', 'type' => 'int', 'key' => 1 ) ,
+ 							'varchar_field' => array('label'   => 'Name', 'type' => 'varchar'),
+ 							'check_field' => array('label'   => 'Si/NO', 'type' => 'int', 'widget' => 'checkbox'),
+ 							'date_field' => array('label'   => 'Date', 'type' => 'date', 'widget' => 'date')
+ 					),
+ 			);
+ 
+ 			$aParam=array();
+
+			//We will test the request. usually the checkbox unchecked does not produce a field in the $_REQUEST array. an empty data field should be consdered as a null value 
+ 			$dbmng=new Dbmng($db, $aForm, $aParam);
+			$request=array('id_father'=>1,'date_field'=>'');
+
+			$array= $dbmng->processRequest($request);
+ 			
+ 			$ret = $dbmng->update($array);
+ 			$this->assertEquals(true, $ret['ok']);
+			
+ 
+ 			$ret2 = $db->select('select check_field, date_field from test_father where id_father = 1', array(), \PDO::FETCH_BOTH);
+ 			$this->assertEquals('0',$ret2['data'][0][0]);
+ 			$this->assertEquals(null,$ret2['data'][0][1]);
+ 
+ 		}
 
 }
 

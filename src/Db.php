@@ -145,6 +145,10 @@ private $pdo;
         {
 					$ret['ok']=false;
 					$ret['message']=$e->getMessage();
+					$ret['sql']=$this->getSQL($sQuery, $aVars);
+					//fwrite(STDERR, print_r($e));
+					//$ret['sql']=$e->getMessage();
+
         }
 			return $ret;
 		}
@@ -174,12 +178,12 @@ private $pdo;
 		}
 		
 		public function getSQL($sQuery, $aVars){
-			$sql = "";
+			$sql = $sQuery;
 			if (sizeof($aVars) > 0)
 				{
 					foreach ($aVars as $key => $value) 
 						{
-							$sql = str_replace($key, $value, $sql);
+							$sql = str_replace($key, $this->pdo->quote($value), $sql);
 						}
 				}
 			return $sql;
