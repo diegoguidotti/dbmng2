@@ -136,5 +136,13 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
 		    //fwrite(STDERR, print_r($ret2));
 	}
 	
+	public function testGetSQL(){
+		    $db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
+				
+		    $sql = $db->getSQL('select id, name from test', array());
+		    fwrite(STDERR, $sql);
+		    //$this->assertEquals('Cinzia',$ret4['data'][2][1]);
+	}
+	
 }
 

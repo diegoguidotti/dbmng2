@@ -173,6 +173,17 @@ private $pdo;
 			return $this->execute($sQuery, $aVars);
 		}
 		
+		public function getSQL($sQuery, $aVars){
+			$sql = "";
+			if (sizeof($aVars) > 0)
+				{
+					foreach ($aVars as $key => $value) 
+						{
+							$sql = str_replace($key, $value, $sql);
+						}
+				}
+			return $sql;
+		}
 }
 
 ?>
