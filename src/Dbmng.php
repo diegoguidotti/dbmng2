@@ -22,7 +22,7 @@ private $aParam;
 		$this->aParam=$aParam;
 	}
 
-
+	// TODO: add filter in the where clause
 	public function select($fetch_style = \PDO::FETCH_ASSOC)
 	{
 		$var=implode(",", array_keys($this->aForm['fields']));
@@ -33,7 +33,9 @@ private $aParam;
 		
 		return $this->db->select($sQuery,$aVar, $fetch_style);
 	}
-
+	
+	// TODO: add new method selectDecode
+	// output: the recordset decodec
 
   public function filterInsert(&$sField, &$sVal, &$aVal)
   {
@@ -239,8 +241,8 @@ private $aParam;
 				$result = $this->db->update("update " . $aForm['table_name'] . " set $sSet where $sWhere ", $var);
 				if( $result['ok'] && $bSelectNM)
 					{
-						throw new \Exception('We need to implement the insert_nm function');
-						//$this->insert_nm(null);
+						//throw new \Exception('We need to implement the insert_nm function');
+						$this->insert_nm($aVars, null);
 					}
 		}
 		
@@ -275,7 +277,7 @@ private $aParam;
 				if( ! Util::var_equal($fld_value,'key', 1) && ! Util::var_equal($fld_value,'key', 2) )
 					{
 							if(! Util::var_equal($fld_value, 'widget','select_nm') && !$readonly )
-								{		
+								{
 									$sWhat .= $fld . ", ";
 									$sVal.=":$fld ,";	
 									$var = array_merge($var, array(":".$fld => $aVars[$fld]));
@@ -292,12 +294,12 @@ private $aParam;
 				if( isset($aParam['filters']) )
 					{
 						foreach ( $aParam['filters'] as $fld => $fld_value )
-							{				
+							{
 								$sWhat.=$fld.", ";
 								$sVal.=":$fld, ";
 
 								$var = array_merge($var, array(":".$fld =>  $fld_value ));
-							}					
+							}
 					}
 				
 				if( isset($aParam['auto_field']) )
@@ -331,6 +333,7 @@ private $aParam;
 		$sql    = "insert into " . $aForm['table_name'] . " (" . $sWhat . ") values (" . $sVal . ")";
 
 		//echo debug_sql_statement($sql, $var);
+		//fwrite(STDERR, $this->db->getSQL($sql, $var));
 		$result = $this->db->insert($sql, $var);
 
 
@@ -338,8 +341,8 @@ private $aParam;
 			{
 				if( $bSelectNM )
 					{
-						throw new \Exception('We need to implement the insert into table nm');
-						//$res = dbmng_insert_nm($aForm, $aParam, $result['inserted_id']);
+						//throw new \Exception('We need to implement the insert into table nm');
+						$res = $this->insert_nm($aVars, $result['inserted_id']);
 					}
 			}
 
@@ -348,6 +351,83 @@ private $aParam;
 	}
 
 
+	/////////////////////////////////////////////////////////////////////////////
+	// insert_nm
+	// ======================
+	/// This function insert a new record in one-to-many table
+	/**
+	\param $aVars 		$_REQUEST associative array containing the primary key and the variable to be updated
+	\param $id_key  	primary key of "one" table
+	\result $result	SQL result
+	*/
+	function insert_nm($aVars, $id_key)
+	{
+		$aForm = $this->aForm;
+		$aParam = $this->aParam;
+		
+		$aWhere = array();
+		$whereFields='';
+		$whereFieldsV='';
+		
+		foreach ( $aForm['fields'] as $fld => $fld_value )
+			{									
+				if( Util::var_equal($fld_value,'key', 1) || Util::var_equal($fld_value,'key', 2) )
+					{
+						$whereFields .= "$fld, ";
+						$whereFieldsV  .= ":$fld, ";
+
+						if( isset($id_key) )
+							{
+								$aWhere = array_merge( $aWhere, array(":".$fld => $id_key) );
+							}
+						else
+							{
+								$aWhere = array_merge( $aWhere, array(":".$fld => $aVars[$fld]) );
+							}
+					}
+			}
+
+		foreach ( $aForm['fields'] as $fld => $fld_value )
+			{
+				if( isset($fld_value['widget']) )
+					{
+						if($fld_value['widget']=='select_nm')
+							{		
+								$table_nm=$fld_value['table_nm'];
+								$field_nm=$fld_value['field_nm'];
+								
+								$where_del   = substr($whereFields,0,strlen($whereFields)-2);
+								$where_del_v = substr($whereFieldsV,0,strlen($whereFieldsV)-2);
+								
+								$this->db->delete("delete from ".$table_nm." WHERE ". $where_del ."=".$where_del_v, $aWhere);
+								//echo "<br/>".$this->db->getSQL("delete from ".$table_nm." WHERE ". $where_del ."=".$where_del_v, $aWhere);
+								//print_r ($_POST);
+
+								//echo ("<br/>!|".dbmng_value_prepare($fld_value,$fld,$_POST,$aParam)."|!</br>");
+
+								$vals= explode('|',$aVars[$fld]);
+								//print_r($vals);
+								
+								foreach ( $vals as $k => $v )
+									{	
+										$aVals = array_merge( $aWhere, array(":".$field_nm => intval($v) ) );
+										
+										$sql = "insert into ".$table_nm." (".$whereFields." ".$field_nm.") values (".$whereFieldsV." :".$field_nm.")";
+										//echo "<br/>".$sql." ".$k." ".$v;
+										//fwrite(STDERR, $this->db->getSQL($sql, $aVals));
+										$result = $this->db->insert( $sql, $aVals);
+				
+										// if(isset($result['error'])){
+										// 	print_r ($result);
+										// }
+									}
+
+							}
+					}
+			}
+		return $result;
+	}
+	
 	/////////////////////////////////////////////////////////////////////////////
 	// processRequest
 	// ======================
@@ -544,6 +624,33 @@ private $aParam;
 	static function is_field_type_numeric($sType)
 	{
 		return ($sType=="int" || $sType=="bigint" || $sType=="float"  || $sType=="double");
+	}
+
+	/////////////////////////////////////////////////////////////////////////////
+	// isValid
+	// ======================
+	/// This function return true if the aForm is coherent with aParam
+	/**
+	\return           boolean
+	*/
+	function isValid()
+	{
+		$aForm = $this->aForm;
+		$aParam = $this->aParam;
+		
+		$aCheck = array();
+		$aCheck['ok'] = true;
+		$aMessage = array();
+		foreach ( $aForm['fields'] as $fld => $fld_value )
+			{
+				if( array_key_exists($fld, $aParam['filters']) )
+					{
+						$aCheck['ok'] = false;
+						array_push( $aMessage, 'The field '.$fld.' is a filter and cannot be present in aForm. ');
+					}
+			} 
+		$aCheck['message'] = $aMessage;
+		return $aCheck;
 	}
 
 	

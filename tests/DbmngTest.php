@@ -174,5 +174,108 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
 //  			$this->assertEquals(null,$ret4['data'][0][1]);
  		}
 
+ 		function testNM()
+ 		{
+ 			$db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD'] );
+ 
+ 			$aForm=array(  
+ 				'table_name' => 'test_father' ,
+ 					'primary_key'=> array('id_father'), 
+ 					'fields'     => array(
+ 							'id_father' => array('label'   => 'ID', 'type' => 'int', 'key' => 1 ) ,
+ 							'varchar_field' => array('label'   => 'Name', 'type' => 'varchar'),
+ 							'check_field' => array('label'   => 'Si/NO', 'type' => 'int', 'widget' => 'checkbox'),
+ 							'date_field' => array('label'   => 'Date', 'type' => 'date', 'widget' => 'date'),
+ 							'id_father_child' => array('label' => 'link to child', 'type' => 'int', 'widget' => 'select_nm', 'table_nm' => 'test_father_child', 'field_nm' => 'id_child' )
+ 					),
+ 			);
+ 			$aParam=array();
+ 			$dbmng=new Dbmng($db, $aForm, $aParam);
+ 
+ 			$request = array('check_field' => 1, 'varchar_field' => 'abra', 'id_father_child' => array(1,3,4));
+			$array = $dbmng->processRequest($request);
+			$ret = $dbmng->insert($array);
+ 			$this->assertEquals(true, $ret['ok']);
+ 			
+ 			$sql = "select count(*) from test_father_child where id_father = :id";
+ 			$var = array(":id" => $ret['inserted_id']);
+ 			$ret2 = $db->select($sql, $var, \PDO::FETCH_BOTH );
+ 			$this->assertEquals(3, $ret2['data'][0][0]);
+ 			
+			
+			$request=array('id_father'=>3,'varchar_field'=>'foo', 'id_father_child' => array(9,8));
+			$array= $dbmng->processRequest($request);
+ 			
+ 			$ret3 = $dbmng->update($array);
+ 			$this->assertEquals(true, $ret3['ok']);
+ 		
+ 			$ret4 = $db->select('select varchar_field from test_father where id_father = 3', array(), \PDO::FETCH_BOTH);
+ 			$this->assertEquals('foo',$ret4['data'][0][0]);
+ 			
+ 			$ret5 = $db->select('select * from test_father_child where id_father = :father and id_child = :child', array(':father' => 3, ':child' =>9), \PDO::FETCH_BOTH);
+ 			$this->assertEquals(1,$ret5['rowCount']);
+ 			
+ 			$ret6 = $db->select('select * from test_father_child where id_father = :father and id_child = :child', array(':father' => 4, ':child' =>9), \PDO::FETCH_BOTH);
+ 			$this->assertEquals(0,$ret6['rowCount']);
+ 		}
+
+ 		function testFilters()
+ 		{
+ 			$db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD'] );
+ 
+ 			$aForm = array(  
+ 				'table_name' => 'test_father' ,
+ 					'primary_key'=> array('id_father'), 
+ 					'fields'     => array(
+ 							'id_father' => array('label' => 'ID', 'type' => 'int', 'key' => 1 ) ,
+ 							'varchar_field' => array('label' => 'Name', 'type' => 'varchar'),
+ 							'check_field' => array('label' => 'Si/NO', 'type' => 'int', 'widget' => 'checkbox'),
+ 							'date_field' => array('label' => 'Date', 'type' => 'date', 'widget' => 'date')
+ 					),
+ 			);
+ 
+ 			$aParam=array();
+ 			$aParam['filters']['check_field'] = 1;
+			
+			//We will test the request. usually the checkbox unchecked does not produce a field in the $_REQUEST array. an empty data field should be consdered as a null value 
+ 			$dbmng=new Dbmng($db, $aForm, $aParam);
+ 			
+ 			$aValid = $dbmng->isValid();
+ 			$this->assertEquals(false,$aValid['ok']);
+ 			
+			$request=array('varchar_field'=>'testa aParam');
+
+			$array= $dbmng->processRequest($request);
+ 			
+ 			$ret = $dbmng->insert($array);
+ 			//fwrite(STDERR, print_r($ret));
+ 			$this->assertEquals(false, $ret['ok']);
+ 			
+ 			// we remove the check_field. re-test insert
+ 			unset($aForm['fields']['check_field']);
+			$dbmng=new Dbmng($db, $aForm, $aParam);
+			$ret = $dbmng->insert($array);
+ 			//fwrite(STDERR, print_r($ret));
+ 			$this->assertEquals(true, $ret['ok']);
+ 			
+ 			$ret2 = $db->select('select * from test_father where id_father = :id', array(':id' => $ret['inserted_id']), \PDO::FETCH_ASSOC);
+ 			$this->assertEquals(1,$ret2['data'][0]['check_field']);
+ 			$this->assertEquals('testa aParam',$ret2['data'][0]['varchar_field']);
+ 			//fwrite(STDERR, print_r($ret4));
+			
+			// the system doesn't allow to update the a non filtered record
+			$ret3 = $dbmng->update(array('id_father'=> 1, 'varchar_field' => 'Pippo'));
+ 			$ret4 = $db->select('select * from test_father where id_father = :id', array(':id' => 1), \PDO::FETCH_ASSOC);
+ 			$this->assertEquals('Diego',$ret4['data'][0]['varchar_field']);
+			
+			// the system doesn't allow to delete a non filtered record
+			$ret5 = $dbmng->delete(array('id_father'=> 1));
+ 			$ret6 = $db->select('select * from test_father where id_father = :id', array(':id' => 1), \PDO::FETCH_ASSOC);
+ 			$this->assertEquals('Diego',$ret6['data'][0]['varchar_field']);
+			
+ 		}
+ 		
+ 		
+ 		
 }
 
