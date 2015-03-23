@@ -6,6 +6,7 @@ CREATE TABLE `dbmng2`.`test` (
 ALTER TABLE `test` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT;
 
 
+
 CREATE TABLE `dbmng2`.`test_father` (
   `id_father` INTEGER  NOT NULL AUTO_INCREMENT,
   `check_field` INTEGER   NULL,
