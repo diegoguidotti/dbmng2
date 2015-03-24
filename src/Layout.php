@@ -24,6 +24,9 @@ class Layout
 			if(!isset($aPage['nav'])){
 				$aPage['nav']=Array();
 			}
+			if(!isset($aPage['navRight'])){
+				$aPage['navRight']=Array();
+			}
 
 			if(!isset($aPage['content'])){
 				$aPage['content']="";
@@ -154,30 +157,18 @@ class Layout
 									</div>
 									<div id="navbar" class="collapse navbar-collapse">
 										<ul class="nav navbar-nav">';
-										foreach($aPage['nav'] as $nav){	
-
-												$tit="";
-												$link="";
-												if(isset($nav['title'])){
-													$tit=$nav['title'];
-												}	
-												if(isset($nav['link'])){
-													$link=$nav['link'];
-												}	
-											
-												$cl="";
-												if(isset($nav['active'])){
-													$cl='active';
-												}
-												$html.='<li class="'.$cl.'"><a href="'.$link.'">'.$tit.'</a></li>';
+										foreach($aPage['nav'] as $nav){													
+												$html.=$this->writeNav($nav);
 										}		
 
 					$html.='
 										</ul>
 
-					<ul class="nav navbar-nav navbar-right">
-					<li><a href="?do_login=true">Login</a></li>
-					</ul>
+					<ul class="nav navbar-nav navbar-right">';
+					foreach($aPage['navRight'] as $nav){													
+							$html.=$this->writeNav($nav);
+					}		
+					$html.='</ul>
 									</div><!--/.nav-collapse -->
 								</div>
 							</nav>';
@@ -239,6 +230,24 @@ class Layout
 						</div><!-- /.container -->';
 				}
 
+		return $html;
+	}
+
+	function writeNav($nav){
+		$tit="";
+		$link="";
+		if(isset($nav['title'])){
+			$tit=$nav['title'];
+		}	
+		if(isset($nav['link'])){
+			$link=$nav['link'];
+		}	
+	
+		$cl="";
+		if(isset($nav['active'])){
+			$cl='active';
+		}
+		$html.='<li class="'.$cl.'"><a href="'.$link.'">'.$tit.'</a></li>';
 		return $html;
 	}
 		
