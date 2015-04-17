@@ -247,7 +247,7 @@ class Layout
 		if(isset($nav['active'])){
 			$cl='active';
 		}
-		$html.='<li class="'.$cl.'"><a href="'.$link.'">'.$tit.'</a></li>';
+		$html='<li class="'.$cl.'"><a href="'.$link.'">'.$tit.'</a></li>';
 		return $html;
 	}
 		
