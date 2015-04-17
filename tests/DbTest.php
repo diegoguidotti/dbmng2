@@ -146,6 +146,12 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
 		    $this->assertEquals("select id, name from test WHERE id='1' AND nome='Die\'SQLInjection'",$sql);
 
 	}
+
+	public function testEmoty(){
+	    $db = DB::createDb(null, null, null);
+	    
+	}
+
 	
 }
 

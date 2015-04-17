@@ -49,7 +49,7 @@ private $pdo;
 			    	return $instance;
 
         } 
-				catch (PDOException $e)
+				catch (\PDOException $e)
         {
             echo "error " . $e->getMessage();
 						return null;
