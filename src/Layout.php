@@ -52,7 +52,7 @@ class Layout
 					
 					'.$this->getHeader().'
 
-					<body onLoad="testRow()">
+					<body >
 
 						';
 
