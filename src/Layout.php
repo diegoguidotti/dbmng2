@@ -64,16 +64,6 @@ class Layout
 				$page.='
 
 
-						<!-- Bootstrap core JavaScript
-						================================================== -->
-						<!-- Placed at the end of the document so the pages load faster -->
-						<script src="js/jquery.min.js"></script>
-						<script src="js/bootstrap.min.js"></script>
-						<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-						<script src="js/ie10-viewport-bug-workaround.js"></script>
-
-
-								'.$this->aPage['script'].'
 
 						 <script>
 						$("#menu-toggle").click(function(e) {
@@ -116,6 +106,18 @@ class Layout
 							<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 							<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 						<![endif]-->
+
+
+						<!-- Bootstrap core JavaScript
+						================================================== -->
+						<!-- Placed at the end of the document so the pages load faster -->						
+						<script src="js/jquery.min.js"></script>
+						<script src="js/bootstrap.min.js"></script>
+						<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+						<script src="js/ie10-viewport-bug-workaround.js"></script>
+
+
+								'.$this->aPage['script'].'
 
 
 				
