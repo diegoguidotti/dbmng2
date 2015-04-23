@@ -6,9 +6,12 @@ class Layout
 {
     private $aPage;
 
+		private $online_lib;
+
     public function __construct($aPage)
     {
         $this->aPage = $this->cleanPage($aPage);
+				$this->online_lib=false;
     }
     
     public function cleanPage($aPage){
@@ -23,6 +26,12 @@ class Layout
 
 			if(!isset($aPage['bootstrap_path'])){
 				$aPage['bootstrap_path']="";
+			}
+			else{
+				if($aPage['bootstrap_path']=='online'){
+					$aPage['bootstrap_path']='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/';
+					$online_lib=true;
+				}
 			}
 
 			if(!isset($aPage['nav'])){
@@ -99,7 +108,7 @@ class Layout
 						<!-- Bootstrap core CSS -->
 						<link rel="stylesheet" href="'.$this->aPage['bootstrap_path'].'css/bootstrap.min.css" />
 
-						<link href="'.$this->aPage['bootstrap_path'].'css/simple-sidebar.css" rel="stylesheet" />
+						<link href="css/simple-sidebar.css" rel="stylesheet" />
 						
 						<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 						<!--[if lt IE 9]>
@@ -110,8 +119,19 @@ class Layout
 
 						<!-- Bootstrap core JavaScript
 						================================================== -->
-						<!-- Placed at the end of the document so the pages load faster -->						
-						<script src="'.$this->aPage['bootstrap_path'].'js/jquery.min.js"></script>
+						<!-- Placed at the end of the document so the pages load faster -->	
+
+						
+						';
+					
+						if($online_lib){
+							$html.='<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>';
+						}
+						else{
+							$html.='<script src="'.$this->aPage['bootstrap_path'].'js/jquery.min.js"></script>';
+						}
+
+						$html.='
 						<script src="'.$this->aPage['bootstrap_path'].'js/bootstrap.min.js"></script>
 						<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 						<script src="'.$this->aPage['bootstrap_path'].'js/ie10-viewport-bug-workaround.js"></script>
