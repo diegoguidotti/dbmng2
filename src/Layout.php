@@ -5,13 +5,12 @@ namespace Dbmng;
 class Layout
 {
     private $aPage;
-
 		private $online_lib;
 
     public function __construct($aPage)
     {
-        $this->aPage = $this->cleanPage($aPage);
 				$this->online_lib=false;
+        $this->aPage = $this->cleanPage($aPage);
     }
     
     public function cleanPage($aPage){
@@ -123,7 +122,11 @@ class Layout
 
 						
 						';
-					
+
+			
+
+
+
 						if($this->online_lib){
 							$html.='<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>';
 						}
@@ -132,9 +135,15 @@ class Layout
 						}
 
 						$html.='
-						<script src="'.$this->aPage['bootstrap_path'].'js/bootstrap.min.js"></script>
-						<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-						<script src="'.$this->aPage['bootstrap_path'].'js/ie10-viewport-bug-workaround.js"></script>
+						<script src="'.$this->aPage['bootstrap_path'].'js/bootstrap.min.js"></script>';
+
+						if(!$this->online_lib){
+							$html.='<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+							<script src="'.$this->aPage['bootstrap_path'].'js/ie10-viewport-bug-workaround.js"></script>
+							';
+						}
+
+						$html.='
 
 
 								'.$this->aPage['script'].'
@@ -246,7 +255,7 @@ class Layout
 								if($this->aPage['title']<>'')
 									$html.='<h1>'.$this->aPage['title'].'</h1>';
 
-								$html.=''.$this->aPage['content'].'
+								$html.=$this->aPage['content'].'
 							</div>
 
 						</div><!-- /.container -->';
