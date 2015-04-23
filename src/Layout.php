@@ -30,7 +30,7 @@ class Layout
 			else{
 				if($aPage['bootstrap_path']=='online'){
 					$aPage['bootstrap_path']='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/';
-					$online_lib=true;
+					$this->online_lib=true;
 				}
 			}
 
@@ -124,7 +124,7 @@ class Layout
 						
 						';
 					
-						if($online_lib){
+						if($this->online_lib){
 							$html.='<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>';
 						}
 						else{
