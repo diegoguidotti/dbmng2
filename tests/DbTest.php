@@ -146,7 +146,18 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
 		    $this->assertEquals("select id, name from test WHERE id='1' AND nome='Die\'SQLInjection'",$sql);
 
 	}
-
+	
+	public function test_transactions() {
+				$db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
+				$aQueries[1]['sql'] = 'insert into test (id, name) values(:id, :name )';
+				$aQueries[1]['var'] = array(':id'=>3, ':name'=>'Susanna');
+				$ret = $db->transactions($aQueries);
+				$this->assertEquals(true,$ret['ok']);
+				
+		    $ret2 = $db->select('select id, name from test where id = :id', array(':id'=>3), \PDO::FETCH_BOTH);
+		    $this->assertEquals(1,$ret2['rowCount']);
+	}
+	
 	public function testEmoty(){
 	    $db = DB::createDb(null, null, null);
 	    

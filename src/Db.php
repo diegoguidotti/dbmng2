@@ -156,6 +156,42 @@ private $pdo;
 		}
 		
 		/////////////////////////////////////////////////////////////////////////////
+		// transactions
+		// ======================
+		// Execute different SQL query (insert, update or delete) inside db using a PDO Prepared Statements
+		/**
+		\param $aQuery  associative array with sql statement and associative array with placeholders and parameters. e.g. array('insert into foo (id) values (:id)', array(':id'=>1) )
+		*/
+		public function transactions($aQuery){
+			$ret=array();
+			try 
+				{
+					$dbh = $this->pdo;
+					
+					foreach( $aQuery as $a )
+						{
+							$res0 = $dbh->prepare($a['sql']);
+							
+							$dbh->beginTransaction();
+								$res0->execute($a['var']);
+							$dbh->commit();
+							
+							$ret['ok']=true;
+						}
+        }
+				catch (\PDOException $e)
+        {
+					$ret['ok']=false;
+					$ret['message']=$e->getMessage();
+					$ret['sql']=$this->getSQL($sQuery, $aVars);
+					//fwrite(STDERR, print_r($e));
+					//$ret['sql']=$e->getMessage();
+
+        }
+			return $ret;
+		}
+		
+		/////////////////////////////////////////////////////////////////////////////
 		// update
 		// ======================
 		// Update an SQL query (update or delete) inside db using a PDO Prepared Statements
