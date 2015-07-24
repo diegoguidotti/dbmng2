@@ -43,7 +43,9 @@ private $pdo;
 						$pdo = new \PDO($dsn, $user, $password);
 						$pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
 						$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-						//$pdo->exec("set names utf8");
+						
+						if( strpos($dsn,'mysql') !== false )
+							$pdo->exec("set names utf8");
 
 						$instance = new self($pdo);
 			    	return $instance;
