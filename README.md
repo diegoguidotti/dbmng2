@@ -60,6 +60,11 @@ Update the configuration file
 	$ cp settings.default.php  settings.xml
 	$ edit the settings.xml entering db_name, user and password
 
+To test the api you should link the folder in the apache folder
+
+	$ ln -s ../dbmng2 /var/www/
+
+
 Running the test
 
     $ bin/phpunit

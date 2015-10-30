@@ -67,12 +67,8 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
 		]);
 
 		$response = $client->request('GET', 'dbmng2/api/test/');
-
-
-		$this->assertEquals(200,$response->getStatusCode());
-	
+		$this->assertEquals(200,$response->getStatusCode());	
 		$this->assertEquals('{"test":1}',$response->getBody());
-;	
 		
 	}
 
