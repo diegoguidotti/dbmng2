@@ -643,13 +643,11 @@ private $aParam;
 		$aMessage = array();
 		foreach ( $aForm['fields'] as $fld => $fld_value )
 			{
-				if(isset($aParam['filters'])){
-					if( array_key_exists($fld, $aParam['filters']) )
-						{
-							$aCheck['ok'] = false;
-							array_push( $aMessage, 'The field '.$fld.' is a filter and cannot be present in aForm. ');
-						}
-				}
+				if( array_key_exists($fld, $aParam['filters']) )
+					{
+						$aCheck['ok'] = false;
+						array_push( $aMessage, 'The field '.$fld.' is a filter and cannot be present in aForm. ');
+					}
 			} 
 		$aCheck['message'] = $aMessage;
 		return $aCheck;
