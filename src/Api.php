@@ -25,13 +25,20 @@ class Api {
 			$router = new \Respect\Rest\Router($base_path);
 			$dbmng=$this->dbmng;
 
-			$router->any('/api/test', function() use ($dbmng) {
-				//$body = file_get_contents("php://input");
-				//$input=json_decode($body);
-			
-				//$res = $dbmng->select();
-				//return json_encode($res['data']);
-				return '{"test":1}';
+
+			$router->delete('/api/test', function() use ($dbmng) {
+				return '{"test_delete":1}';
+			});
+			$router->put('/api/test', function() use ($dbmng) {
+				$body = file_get_contents("php://input");
+				//true return an associative array
+				$input=json_decode($body,true);
+				$input['test_put']=1;			
+				return json_encode($input);
+			});
+
+			$router->any('/api/test', function() use ($dbmng) {				
+				return json_encode($dbmng->select()['data']);
 			});
 
 		
