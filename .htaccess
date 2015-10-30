@@ -1,0 +1,4 @@
+RewriteEngine On
+
+RewriteCond %{REQUEST_URI} ^/dbmng2/api/(.*)$
+RewriteRule .* api.php [L]
