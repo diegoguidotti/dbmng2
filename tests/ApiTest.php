@@ -66,17 +66,18 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
 			 'timeout'  => 2.0,
 		]);
 
-		$response = $client->request('GET', 'dbmng2/api/test/');
+		$response = $client->request('GET', 'dbmng2/api/test_base/');
 		$this->assertEquals(200,$response->getStatusCode());	
-		$this->assertEquals('{"test":1}',$response->getBody());
+		// $this->assertEquals('{"test_get":1}',$response->getBody());
 
-		$response2 = $client->request('DELETE', 'dbmng2/api/test/');
+		$response2 = $client->request('DELETE', 'dbmng2/api/test_base/');
 		$this->assertEquals('{"test_delete":1}',$response2->getBody());
 
-
-		$response3 = $client->request('PUT', 'dbmng2/api/test/', ['body' => '{"diego":1}']);
-
+		$response3 = $client->request('PUT', 'dbmng2/api/test_base/', ['body' => '{"diego":1}']);
 		$this->assertEquals('{"diego":1,"test_put":1}',$response3->getBody());
+
+		$response4 = $client->request('POST', 'dbmng2/api/test_base/', ['body' => '{"diego":1}']);
+		$this->assertEquals('{"test_post":1}',$response4->getBody());
 
 		
 	}
