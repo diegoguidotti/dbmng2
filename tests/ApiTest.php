@@ -40,16 +40,16 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
 			'table_name' => 'test' ,
 				'primary_key'=> array('id'), 
 				'fields'     => array(
-						'id' => array('label'   => 'ID', 'type' => 'int', 'key' => 1 ) ,
-						'name' => array('label'   => 'Name', 'type' => 'varchar')
+						'id' => array('label' => 'ID', 'type' => 'int', 'key' => 1 ) ,
+						'name' => array('label' => 'Name', 'type' => 'varchar')
 				),
 		);
 
 		$aParam=array();
 
 
-		$dbmng=new Dbmng($db, $aForm, $aParam);
-		$api=new Api($dbmng);
+		$dbmng = new Dbmng($db, $aForm, $aParam);
+		$api   = new Api($dbmng);
 					
 		
 		$this->assertTrue($api->isValid()['ok']);
@@ -57,7 +57,7 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
 	}
 
 
-	public function testApi() {
+	public function testApiBasic() {
 
 		$client = new \GuzzleHttp\Client([
 			 // Base URI is used with relative requests
@@ -79,8 +79,28 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
 		$response4 = $client->request('POST', 'dbmng2/api/test_base/', ['body' => '{"diego":1}']);
 		$this->assertEquals('{"test_post":1}',$response4->getBody());
 
-		
 	}
 
+	public function testApi() {
+
+		$client = new \GuzzleHttp\Client([
+			 // Base URI is used with relative requests
+			 'base_uri' => 'http://localhost',
+			 // You can set any number of default request options.
+			 'timeout'  => 2.0,
+		]);
+
+		$response = $client->request('GET', 'dbmng2/api/test/');
+		$this->assertEquals(200,$response->getStatusCode());
+		
+		$a = $response->getBody();
+		$o = json_decode($a);
+		$this->assertEquals(true,$o->ok);
+		
+		$response2 = $client->request('GET', 'dbmng2/api/testfake/');
+		$a = $response2->getBody();
+		$o = json_decode($a);
+		$this->assertEquals(false,$o->ok);
+	}
 }
 
