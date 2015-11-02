@@ -21,7 +21,12 @@ private $aParam;
 		$this->aForm=$aForm;
 		$this->aParam=$aParam;
 	}
-
+	
+	public function getaForm()
+	{
+		return $this->aForm;
+	}
+	
 	// TODO: add filter in the where clause
 	public function select($fetch_style = \PDO::FETCH_ASSOC)
 	{
