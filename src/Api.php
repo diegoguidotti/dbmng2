@@ -25,7 +25,6 @@ class Api {
 			$router = new \Respect\Rest\Router($base_path);
 			$dbmng=$this->dbmng;
 
-			
 			// DELETE Method - 200 (OK). 404 (Not Found), if ID not found or invalid.
 			$router->delete('/api/test_base', function() use ($dbmng) {
 				return '{"test_delete":1}';
@@ -47,14 +46,42 @@ class Api {
 			});
 			
 			// READ Method - 200 (OK), single customer. 404 (Not Found), if ID not found or invalid.
-			$router->any('/api/test_base', function() use ($dbmng) {
+			$router->get('/api/test_base', function() use ($dbmng) {
 				$input = $dbmng->select()['data'];
 				$input['test_get'] = 1;
 				return json_encode($input);
 			});
 			
-
-		
+			
+			$router->get('/api/*', function($tablename) use($dbmng){
+				$aForm = $dbmng->getaForm();
+				if( $aForm['table_name'] == $tablename )
+					{
+						$input = $dbmng->select();
+						$input['table_name'] = $aForm['table_name'];
+					}
+				else
+					{
+						$input['ok'] = false;
+						$input['msg'] = "The tablename '$tablename' doesn't exist";
+					}
+				return json_encode($input);
+			} );
+			
+			$router->put('/api/*', function($tablename) use($dbmng){
+				$aForm = $dbmng->getaForm();
+				if( $aForm['table_name'] == $tablename )
+					{
+						$input = $dbmng->select();
+						$input['table_name'] = $aForm['table_name'];
+					}
+				else
+					{
+						$input['ok'] = false;
+						$input['msg'] = "The tablename '$tablename' doesn't exist";
+					}
+				return json_encode($input);
+			} );
 	}
 
 	function isValid(){
