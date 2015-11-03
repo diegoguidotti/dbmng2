@@ -53,12 +53,19 @@ class Api {
 			});
 			
 			
-			$router->get('/api/*', function($tablename) use($dbmng){
+			$router->get('/api/*/*', function($tablename,$id_value=null) use($dbmng){
 				$aForm = $dbmng->getaForm();
 				if( $aForm['table_name'] == $tablename )
 					{
-						$input = $dbmng->select();
+						$key = $aForm['primary_key'][0];
+						
+						$aVar = array();
+						if( !is_null($id_value) )
+							$aVar = array(':'.$key => $id_value);
+							
+						$input = $dbmng->select($fetch_style = \PDO::FETCH_ASSOC, $aVar);
 						$input['table_name'] = $aForm['table_name'];
+						$input['key'] = $key;
 					}
 				else
 					{

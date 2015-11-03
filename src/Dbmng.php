@@ -28,13 +28,19 @@ private $aParam;
 	}
 	
 	// TODO: add filter in the where clause
-	public function select($fetch_style = \PDO::FETCH_ASSOC)
+	public function select($fetch_style = \PDO::FETCH_ASSOC, $aVar = array())
 	{
 		$var=implode(",", array_keys($this->aForm['fields']));
 
 		$sQuery='SELECT '.$var.' from '.$this->aForm['table_name'];
-
-		$aVar=array();
+		
+		$sWhere = " where 1 ";
+		if( count($aVar) > 0 )
+			{
+				$sWhere .= "and id = :id";
+			}
+		$sQuery .= " $sWhere";
+		// $aVar=array();
 		
 		return $this->db->select($sQuery,$aVar, $fetch_style);
 	}
