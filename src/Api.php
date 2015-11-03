@@ -53,7 +53,7 @@ class Api {
 			});
 			
 			
-			$router->get('/api/*/*', function($tablename,$id_value=null) use($dbmng){
+			$router->get('/api/*/*', function( $tablename, $id_value=null ) use($dbmng){
 				$aForm = $dbmng->getaForm();
 				if( $aForm['table_name'] == $tablename )
 					{
@@ -61,11 +61,11 @@ class Api {
 						
 						$aVar = array();
 						if( !is_null($id_value) )
-							$aVar = array(':'.$key => $id_value);
-							
-						$input = $dbmng->select($fetch_style = \PDO::FETCH_ASSOC, $aVar);
-						$input['table_name'] = $aForm['table_name'];
-						$input['key'] = $key;
+							$aVar = array($key => $id_value);
+
+						$input = $dbmng->select($aVar);
+						// $input['table_name'] = $aForm['table_name'];
+						// $input['key'] = $key;
 					}
 				else
 					{
@@ -75,12 +75,42 @@ class Api {
 				return json_encode($input);
 			} );
 			
-			$router->put('/api/*', function($tablename) use($dbmng){
+			$router->put('/api/*/*', function( $tablename, $id_value=null ) use($dbmng){
 				$aForm = $dbmng->getaForm();
 				if( $aForm['table_name'] == $tablename )
 					{
-						$input = $dbmng->select();
-						$input['table_name'] = $aForm['table_name'];
+						if( !is_null($id_value) )
+							{
+								// get the info from aForm array
+								$primary_key = $aForm['primary_key'][0];
+								$aFields = array_keys($aForm['fields']);
+								
+								// get the form_params from the rest call
+								$body = file_get_contents("php://input");
+								
+								// convert the string into an associative array
+								$aFormParams = Util::str2AssocArray($body);
+								
+								$aVar[$primary_key] = $id_value;
+								foreach($aFormParams as $k => $v)
+									{
+										$aVar[$k] = $v;
+									}
+								
+								$input = $dbmng->update($aVar);
+								
+								$input['form_params'] = $aFormParams;
+								$input['fields'] = $aFields;
+								$input['pk'] = $primary_key;
+								
+								// $dbmng->update(array('id'=>1, 'name'=> 'pippo'));
+							}
+						else
+							{
+								$input['ok'] = false;
+								$input['msg'] = "The id value doesn't exist";
+							}
+						// $input['table_name'] = $aForm['table_name'];
 					}
 				else
 					{
