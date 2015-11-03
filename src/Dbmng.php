@@ -28,21 +28,28 @@ private $aParam;
 	}
 	
 	// TODO: add filter in the where clause
-	public function select($fetch_style = \PDO::FETCH_ASSOC, $aVar = array())
+	public function select($aVar = array(), $fetch_style = \PDO::FETCH_ASSOC)
 	{
 		$var=implode(",", array_keys($this->aForm['fields']));
 
-		$sQuery='SELECT '.$var.' from '.$this->aForm['table_name'];
+		$sWhere = "";
+		$aWhere = array();
 		
-		$sWhere = " where 1 ";
 		if( count($aVar) > 0 )
 			{
-				$sWhere .= "and id = :id";
+				$ret=$this->createWhere($aVar, $sWhere, $aWhere);
+				if($ret['ok'] && count($aVar) >0)
+					{
+						$sQuery='SELECT '.$var.' from '.$this->aForm['table_name'] . " WHERE $sWhere ";
+						$ret = $this->db->select($sQuery, $aWhere, $fetch_style);
+					}
 			}
-		$sQuery .= " $sWhere";
-		// $aVar=array();
-		
-		return $this->db->select($sQuery,$aVar, $fetch_style);
+		else
+			{
+				$sQuery='SELECT '.$var.' from '.$this->aForm['table_name'];
+				$ret = $this->db->select($sQuery, $aWhere, $fetch_style);
+			}
+		return $ret;
 	}
 	
 	// TODO: add new method selectDecode
