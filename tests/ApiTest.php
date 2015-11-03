@@ -93,9 +93,7 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
 		$response = $client->request('GET', 'dbmng2/api/test/');
 		$this->assertEquals(200,$response->getStatusCode());
 		$a = $response->getBody();
-		echo $a;
 		$o = json_decode($a);
-		print_r($o);
 		$this->assertEquals(true,$o->ok);
 		
 		$response2 = $client->request('GET', 'dbmng2/api/testfake/');
@@ -103,15 +101,23 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
 		$o = json_decode($a);
 		$this->assertEquals(false,$o->ok);
 		
-		$response3 = $client->request('GET', 'dbmng2/api/test/1', '');
-		$this->assertEquals(200,$response->getStatusCode());
-		$a = $response->getBody();
+		$response3 = $client->request('GET', 'dbmng2/api/test/1');
+		$this->assertEquals(200,$response3->getStatusCode());
+		$a = $response3->getBody();
+		$o = json_decode($a);
+		$this->assertEquals(true,$o->ok);
+		$this->assertEquals(1,$o->rowCount);
+	
+		$response4 = $client->request('PUT', 'dbmng2/api/test/1', ['form_params' => array("name"=>"pluto")]);
+		$a = $response4->getBody();
 		$o = json_decode($a);
 		$this->assertEquals(true,$o->ok);
 		
-// 		$response3 = $client->request('PUT', 'dbmng2/api/test/', ['body' => '{1:"testo"}']);
-// 		$response = $client->request('GET', 'dbmng2/api/test/');
-
+		$response5 = $client->request('GET', 'dbmng2/api/test/1');
+		$a = $response5->getBody();
+		$o = json_decode($a);
+		$this->assertEquals('pluto',$o->data[0]->name);
+		// print_r($o->data[0]->name);
 		
 	}
 }
