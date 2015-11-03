@@ -49,4 +49,24 @@ class Util
 
 	}	
 	
+	/////////////////////////////////////////////////////////////////////////////
+	// str2AssocArray
+	// ======================
+	/// This function return an associative array
+	/**
+	\param $string  		string (i.e. key1=val1&key2=val2&...)
+	\return $newArray		the associative array
+	*/
+	static function str2AssocArray($string)
+	{
+		$aA = explode("&",$string);
+		$newArray = array();
+		foreach ($aA as $lineNum => $line)
+		{
+			list($key, $value) = explode("=", $line);
+			$newArray[$key] = $value;
+		}
+	return $newArray;
+	}
+
 }
