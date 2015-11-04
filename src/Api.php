@@ -91,26 +91,46 @@ class Api {
 								// convert the string into an associative array
 								$aFormParams = Util::str2AssocArray($body);
 								
+								// prepare the array of vars for the update and 
+								// check if the form_params passed are in the table structure
+								$bContinue = true;
 								$aVar[$primary_key] = $id_value;
+								$aFldError = array();
 								foreach($aFormParams as $k => $v)
 									{
-										$aVar[$k] = $v;
+										if( in_array($k, $aFields) )
+											{
+												$aVar[$k] = $v;
+												$bContinue = $bContinue && true;
+											}
+										else
+											{
+												array_push($aFldError,$k); 
+												$bContinue = $bContinue && false;
+											}
 									}
 								
-								$input = $dbmng->update($aVar);
-								
-								$input['form_params'] = $aFormParams;
-								$input['fields'] = $aFields;
-								$input['pk'] = $primary_key;
-								
-								// $dbmng->update(array('id'=>1, 'name'=> 'pippo'));
+								// execute the update only if all the form_params are in the table structure
+								if( $bContinue )
+									{
+										$input = $dbmng->update($aVar);
+										
+										$input['form_params'] = $aFormParams;
+										$input['fields'] = $aFields;
+										$input['pk'] = $primary_key;
+									}
+								else
+									{
+										$input['ok'] = false;
+										$input['msg'] = "Some fields are wrong";
+										$input['wrong_field'] = $aFldError;
+									}
 							}
 						else
 							{
 								$input['ok'] = false;
 								$input['msg'] = "The id value doesn't exist";
 							}
-						// $input['table_name'] = $aForm['table_name'];
 					}
 				else
 					{
