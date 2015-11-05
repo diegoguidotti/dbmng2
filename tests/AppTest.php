@@ -35,7 +35,7 @@ class AppTest extends \PHPUnit_Extensions_Database_TestCase
 		public function testAppSelect() {
 
 		    $db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
-				$app = new App($db, Array());
+			 $app = new App($db, Array());
  
 		    $ret = $app->getDb()->select('select id, name from test', array());
 			
@@ -49,15 +49,10 @@ class AppTest extends \PHPUnit_Extensions_Database_TestCase
 
 		    $this->assertEquals(true,$ret['ok']);
 
-				$ret2 = $app->select('select id, name from test', array());
-			
-		    $this->assertEquals(
-		        array(
-		            array("id" => 1, "name" => "Diego"),
-		            array("id" => 2, "name" => "Michele")
-						),
-		        $ret2['data']
-				);
+			 //test an empty user 
+		    $this->assertEquals(0,$app->getUser()['uid']);
+
+				
 	}	
 
 	

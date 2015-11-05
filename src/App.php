@@ -22,7 +22,7 @@ class App {
 		\param $db  a Db object
 		\param $aParam  an array containing the project parameters
 		*/
-    public function __construct($db, $aParam)
+    public function __construct($db, $aParam=array())
     {
 			$this->db=$db;
 			$this->aParam=$aParam;
@@ -37,8 +37,11 @@ class App {
 			return $this->aParam;
 		}
 
-		public function select($q, $a){
-			return $this->db->select($q, $a);
+		public function getUser(){
+			if(isset($this->aParam['user']))
+				return $this->aParam['user'];
+			else
+				return $emptyUser=array('uid'=>0, 'mail'=>null, 'name'=>null, 'roles'=>array(0=>'anonymous')); ;
 		}
 
 

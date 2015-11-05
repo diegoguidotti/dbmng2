@@ -2,6 +2,7 @@
 
 namespace Dbmng\Tests;
 use Dbmng\Db;
+use Dbmng\App;
 use Dbmng\Dbmng;
 use Dbmng\Api;
 use GuzzleHttp\Client;
@@ -33,9 +34,16 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
     }
 	/* END needed for test class */
 
+	public function getApp(){
+				$db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD'] );
+				$app=new App($db);
+				return $app;
+
+		}
+
 
 	public function testTest() {
-	  $db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD'] );
+		$app=$this->getApp();
 		$aForm=array(  
 			'table_name' => 'test' ,
 				'primary_key'=> array('id'), 
@@ -48,7 +56,7 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
 		$aParam=array();
 
 
-		$dbmng = new Dbmng($db, $aForm, $aParam);
+		$dbmng = new Dbmng($app, $aForm, $aParam);
 		$api   = new Api($dbmng);
 					
 		

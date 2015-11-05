@@ -53,26 +53,36 @@ class Api {
 			});
 			
 			
-			$router->get('/api/*/*', function( $tablename, $id_value=null ) use($dbmng){
-				$aForm = $dbmng->getaForm();
-				if( $aForm['table_name'] == $tablename )
-					{
-						$key = $aForm['primary_key'][0];
-						
-						$aVar = array();
-						if( !is_null($id_value) )
-							$aVar = array($key => $id_value);
 
-						$input = $dbmng->select($aVar);
-						// $input['table_name'] = $aForm['table_name'];
-						// $input['key'] = $key;
-					}
-				else
-					{
-						$input['ok'] = false;
-						$input['msg'] = "The tablename '$tablename' doesn't exist";
-					}
-				return json_encode($input);
+			$router->get('/api/*/*', function( $tablename, $id_value=null ) use($dbmng){
+				$allowed=$dbmng->isAllowed('select');
+				
+				if($allowed['ok']){
+					$aForm = $dbmng->getaForm();
+					if( $aForm['table_name'] == $tablename )
+						{
+							$key = $aForm['primary_key'][0];
+						
+							$aVar = array();
+							if( !is_null($id_value) )
+								$aVar = array($key => $id_value);
+
+							$input = $dbmng->select($aVar);
+							// $input['table_name'] = $aForm['table_name'];
+							// $input['key'] = $key;
+						}
+					else
+						{
+							$input['ok'] = false;
+							$input['msg'] = "The tablename '$tablename' doesn't exist";
+						}
+					return json_encode($input);
+				}
+				else{
+					http_response_code($allowed['code']);
+					return json_encode($allowed);
+					
+				}
 			} );
 			
 			$router->put('/api/*/*', function( $tablename, $id_value=null ) use($dbmng){

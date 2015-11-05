@@ -1,6 +1,7 @@
 <?php
 
 namespace Dbmng\Tests;
+use Dbmng\App;
 use Dbmng\Db;
 use Dbmng\Dbmng;
 
@@ -34,9 +35,16 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
 
-		public function testTest() {
-				  $db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD'] );
+		public function getApp(){
+				$db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD'] );
+					$app=new App($db);
+				return $app;
 
+		}
+
+		public function testTest() {
+				  
+					$app=$this->getApp();
 					$aForm=array(  
 						'table_name' => 'test' ,
 							'primary_key'=> array('id'), 
@@ -51,7 +59,7 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
 					$aParam['filters']['id']=1;
 					$aParam['filters']['name']='Diego';
 
-					$dbmng=new Dbmng($db, $aForm, $aParam);
+					$dbmng=new Dbmng($app, $aForm, $aParam);
 					
 					$ret = $dbmng->select();
 				  $this->assertEquals(
@@ -75,8 +83,7 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
 
 		function testDelete()
 		{
-			$db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD'] );
-
+					$app=$this->getApp();
 			$aForm=array(  
 				'table_name' => 'test' ,
 					'primary_key'=> array('id'), 
@@ -88,7 +95,7 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
 
 			$aParam=array();
 
-			$dbmng=new Dbmng($db, $aForm, $aParam);
+			$dbmng=new Dbmng($app, $aForm, $aParam);
 			
 			$ret = $dbmng->delete(array('id'=>1));
 			$this->assertEquals(false, $ret['ok']);
@@ -96,7 +103,7 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
 
 			//add the key and re-create the dbmng object	
 			$aForm['fields']['id']['key']=1;
-			$dbmng=new Dbmng($db, $aForm, $aParam);
+			$dbmng=new Dbmng($app, $aForm, $aParam);
 
 			$ret2 = $dbmng->delete(array('id'=>1));
 			$this->assertEquals(true, $ret2['ok']);
@@ -107,8 +114,9 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
 
  		function testUpdate()
  		{
- 			$db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD'] );
- 
+ 		
+			$app=$this->getApp();
+
  			$aForm=array(  
  				'table_name' => 'test' ,
  					'primary_key'=> array('id'), 
@@ -120,13 +128,13 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
  
  			$aParam=array();
  
- 			$dbmng=new Dbmng($db, $aForm, $aParam);
+ 			$dbmng=new Dbmng($app, $aForm, $aParam);
  			
  			$ret = $dbmng->update(array('id'=>1, 'name'=> 'pippo'));
  			$this->assertEquals(true, $ret['ok']);
 			
  
- 			$ret2 = $db->select('select id, name from test where id = 1', array(), \PDO::FETCH_BOTH);
+ 			$ret2 = $app->getDb()->select('select id, name from test where id = 1', array(), \PDO::FETCH_BOTH);
  			$this->assertEquals('pippo',$ret2['data'][0][1]);
  
  		}
@@ -134,7 +142,7 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
 
  		function testPrepare()
  		{
- 			$db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD'] );
+ 							$app=$this->getApp();
  
  			$aForm=array(  
  				'table_name' => 'test_father' ,
@@ -150,7 +158,7 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
  			$aParam=array();
 
 			//We will test the request. usually the checkbox unchecked does not produce a field in the $_REQUEST array. an empty data field should be consdered as a null value 
- 			$dbmng=new Dbmng($db, $aForm, $aParam);
+ 			$dbmng=new Dbmng($app, $aForm, $aParam);
 			$request=array('id_father'=>1,'date_field'=>'');
 
 			$array= $dbmng->processRequest($request);
@@ -159,7 +167,7 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
  			$this->assertEquals(true, $ret['ok']);
 			
  
- 			$ret2 = $db->select('select check_field, date_field from test_father where id_father = 1', array(), \PDO::FETCH_BOTH);
+ 			$ret2 = $app->getDb()->select('select check_field, date_field from test_father where id_father = 1', array(), \PDO::FETCH_BOTH);
  			$this->assertEquals('0',$ret2['data'][0][0]);
  			$this->assertEquals(null,$ret2['data'][0][1]);
  			
@@ -168,7 +176,7 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
  			
  			$ret3 = $dbmng->insert($array);
  			$this->assertEquals(true, $ret3['ok']);
- 			$ret4 = $db->select('select varchar_field from test_father where id_father = :id', array(':id' => $ret3['inserted_id']), \PDO::FETCH_ASSOC);
+ 			$ret4 = $app->getDb()->select('select varchar_field from test_father where id_father = :id', array(':id' => $ret3['inserted_id']), \PDO::FETCH_ASSOC);
  			$this->assertEquals('foo',$ret4['data'][0]['varchar_field']);
  			//fwrite(STDERR, print_r($ret4));
 //  			$this->assertEquals(null,$ret4['data'][0][1]);
@@ -176,7 +184,8 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
 
  		function testNM()
  		{
- 			$db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD'] );
+			$app=$this->getApp();
+			$db=$app->getDb();
  
  			$aForm=array(  
  				'table_name' => 'test_father' ,
@@ -190,7 +199,7 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
  					),
  			);
  			$aParam=array();
- 			$dbmng=new Dbmng($db, $aForm, $aParam);
+ 			$dbmng=new Dbmng($app, $aForm, $aParam);
  
  			$request = array('check_field' => 1, 'varchar_field' => 'abra', 'id_father_child' => array(1,3,4));
 			$array = $dbmng->processRequest($request);
@@ -221,7 +230,9 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
 
  		function testFilters()
  		{
- 			$db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD'] );
+
+			$app=$this->getApp();
+			$db=$app->getDb();
  
  			$aForm = array(  
  				'table_name' => 'test_father' ,
@@ -238,7 +249,7 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
  			$aParam['filters']['check_field'] = 1;
 			
 			//We will test the request. usually the checkbox unchecked does not produce a field in the $_REQUEST array. an empty data field should be consdered as a null value 
- 			$dbmng=new Dbmng($db, $aForm, $aParam);
+ 			$dbmng=new Dbmng($app, $aForm, $aParam);
  			
  			$aValid = $dbmng->isValid();
  			$this->assertEquals(false,$aValid['ok']);
@@ -253,7 +264,7 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
  			
  			// we remove the check_field. re-test insert
  			unset($aForm['fields']['check_field']);
-			$dbmng=new Dbmng($db, $aForm, $aParam);
+			$dbmng=new Dbmng($app, $aForm, $aParam);
 			$ret = $dbmng->insert($array);
  			//fwrite(STDERR, print_r($ret));
  			$this->assertEquals(true, $ret['ok']);

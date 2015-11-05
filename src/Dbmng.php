@@ -10,14 +10,16 @@ namespace Dbmng;
  
 class Dbmng {
 
+private $app;
 private $db;
 private $aForm;
 private $aParam;
 
 
-	public function __construct($db, $aForm, $aParam)
+	public function __construct($app, $aForm, $aParam)
 	{
-		$this->db=$db;
+		$this->app=$app;
+		$this->db=$app->getDb();
 		$this->aForm=$aForm;
 		$this->aParam=$aParam;
 	}
@@ -671,6 +673,33 @@ private $aParam;
 			} 
 		$aCheck['message'] = $aMessage;
 		return $aCheck;
+	}
+
+   /////////////////////////////////////////////////////////////////////////////
+	// isAlowed
+	// ======================
+	/// This function return true if the given method is allowerd by user and aParam
+	/**
+	\return           boolean
+	*/
+	function isAllowed($method){
+
+
+		$auth=false;
+		$code=401;
+		$message="";
+
+		$user=$this->app->getUser();
+		if($user['uid']!=0){
+			$code=200;
+			$auth=true;
+		}
+		else{
+			$code=401;
+			$auth=false;
+			$message="Unauthenticated user cannot access the resource";
+		}
+		return array('ok'=>$auth, 'message'=>$message, 'code'=>$code);
 	}
 
 	
