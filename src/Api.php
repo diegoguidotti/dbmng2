@@ -88,8 +88,7 @@ class Api {
 								// get the form_params from the rest call
 								$body = file_get_contents("php://input");
 								
-								// convert the string into an associative array
-								$aFormParams = Util::str2AssocArray($body);
+								$aFormParams = json_decode($body);
 								
 								// prepare the array of vars for the update and 
 								// check if the form_params passed are in the table structure
@@ -137,6 +136,7 @@ class Api {
 						$input['ok'] = false;
 						$input['msg'] = "The tablename '$tablename' doesn't exist";
 					}
+				$input['body'] = $body;
 				return json_encode($input);
 			} );
 	}

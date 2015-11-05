@@ -108,7 +108,7 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
 		$this->assertEquals(true,$o->ok);
 		$this->assertEquals(1,$o->rowCount);
 	
-		$response4 = $client->request('PUT', 'dbmng2/api/test/1', ['form_params' => array("name"=>"pluto")]);
+		$response4 = $client->request('PUT', 'dbmng2/api/test/1', ['body' => '{"name":"pluto"}']);
 		$a = $response4->getBody();
 		$o = json_decode($a);
 		$this->assertEquals(true,$o->ok);
@@ -117,7 +117,16 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
 		$a = $response5->getBody();
 		$o = json_decode($a);
 		$this->assertEquals('pluto',$o->data[0]->name);
-		// print_r($o->data[0]->name);
+		
+		$response6 = $client->request('PUT', 'dbmng2/api/test/1', ['body' => '{"nama":"pluto"}']);
+		$a = $response6->getBody();
+		$o = json_decode($a);
+		$this->assertEquals(false,$o->ok);
+		
+		$response7 = $client->request('PUT', 'dbmng2/api/test/1', ['body' => '{"name":"pluto", "surname":"topolino"}']);
+		$a = $response6->getBody();
+		$o = json_decode($a);
+		$this->assertEquals(false,$o->ok);
 		
 	}
 }
