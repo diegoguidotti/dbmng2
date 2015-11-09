@@ -48,5 +48,17 @@ class Util
 		}
 
 	}	
+
+	/////////////////////////////////////////////////////////////////////////////
+	// print an array (with <pre> html tags)
+	// ======================
+	/**
+	\param $array  		  array to be printed
+	\return $ret			  the html version of the array 
+	*/
+	static function print_r($array){
+		return "<pre class='dbmng_print_r'>".print_r($array,true)."<pre>";
+	}	
+	
 	
 }
