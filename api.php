@@ -14,9 +14,6 @@
 
 	$login=new Login($db, array('auth_type'=>'BASIC'));
 	$l=$login->auth();
-	echo "aaaa";
-	print_r($l);
-echo "ccc";
 	$user=$l['user'];
 	if(!$l['ok']){
 		echo($l['message']);
