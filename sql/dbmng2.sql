@@ -70,7 +70,10 @@ CREATE TABLE IF NOT EXISTS dbmng_users (
   uid int(10) unsigned NOT NULL COMMENT 'Primary Key: Unique user ID.',
   name varchar(60) NOT NULL DEFAULT '' COMMENT 'Unique user name.',
   pass varchar(128) NOT NULL DEFAULT '' COMMENT 'User’s password (hashed).',
-  mail varchar(254) DEFAULT '' COMMENT 'User’s e-mail address.'
+  mail varchar(254) DEFAULT '' COMMENT 'User’s e-mail address.',
+  realname varchar(254) DEFAULT '' COMMENT 'User’s real name.',
+  realsurname varchar(254) DEFAULT '' COMMENT 'User’s real surname.',
+  description varchar(254) DEFAULT '' COMMENT 'User’s description.'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores user data.' AUTO_INCREMENT=1;
 
 -- --------------------------------------------------------
