@@ -51,22 +51,45 @@ class LoginTest extends \PHPUnit_Extensions_Database_TestCase
     
     $this->assertEquals(0,$l1['ok']);
     $this->assertEquals(0,$l1['user']['uid']);
-    print_r($l1);
+    //print_r($l1);
     
     $l2 = $login->check_authentication('test','test');
     $this->assertEquals(1,$l2['ok']);
     $this->assertEquals(1,$l2['user']['uid']);
-    print_r($l2);
+    // print_r($l2);
     
     $l3 = $login->check_authentication('testwrong','test');
     $this->assertEquals(0,$l3['ok']);
     $this->assertEquals(2,$l3['error_code']);
-//     print_r($l3);
+    // print_r($l3);
     
     $l4 = $login->check_authentication('test','testwrong');
     $this->assertEquals(0,$l4['ok']);
     $this->assertEquals(3,$l4['error_code']);
-//     print_r($l4);
+    // print_r($l4);
+    
+    $l5 = $login->check_authentication('admin','admin');
+    $this->assertEquals(0,$l5['ok']);
+    $this->assertEquals(2,$l5['error_code']);
+    
+    $sql = "insert into dbmng_users (name, pass) values (:name, :pass);";
+    $var = array(':name' => 'admin', ':pass' => md5('admin'));
+    $ret = $db->insert($sql, $var);
+    if( $ret['ok'] )
+      {
+        $inserted_id = $ret['inserted_id'];
+        
+        $sql = "insert into dbmng_users_roles (uid,rid) values(:uid, :rid)";
+        $var = array(':uid' => $inserted_id, ':rid' => 3);
+        $retUR = $db->insert($sql, $var);
+        $l6 = $login->check_authentication('admin','admin');
+
+        $this->assertEquals(1,$l6['ok']);
+        $this->assertEquals('administrator', $l6['user']['roles'][3]);
+      }
+    
+    
+    //print_r($l6);
   }
   
   public function testLoginRequest() 
