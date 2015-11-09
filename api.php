@@ -12,9 +12,17 @@
 	
 	$db = DB::createDb($aSetting['DB']['DB_DSN'], $aSetting['DB']['DB_USER'], $aSetting['DB']['DB_PASSWD'] );
 
-	$login=new Login($db);
-	$user=$login->auth();
+	$login=new Login($db, array('auth_type'=>'BASIC'));
+	$l=$login->auth();
+	echo "aaaa";
+	print_r($l);
+echo "ccc";
+	$user=$l['user'];
+	if(!$l['ok']){
+		echo($l['message']);
+	}
 
+	
 	$app=new App($db, array('user'=>$user));
 
 	$aForm=array(  

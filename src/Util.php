@@ -39,7 +39,7 @@ class Util
 	\param $defVal  		default value if value doess not exists
 	\return $ret				the requested value
 	*/
-	static function get_val($array, $type_var, $defVal){
+	static function get_val($array, $type_var, $defVal=null){
 		if(isset($array[$type_var])){
 			return $array[$type_var];
 		}

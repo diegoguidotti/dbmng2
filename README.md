@@ -47,10 +47,11 @@ Install the dbmng2 dependencies using composer
 
 	$ composer update
 
-Create a mySQL database and populate it using the file sql/test.sql (change root if you want to install using a different user)
+Create a mySQL database and populate it using the file sql/dbmng2.sql and sql/test.sql (change root if you want to install using a different user) You can skip test.sql if you wan't run test unit
 
 	$ mysql -u root -p -e "create database dbmng2"
-	$ mysql -u root -p dbmng2 < sql/test.sql  
+	$ mysql -u root -p dbmng2 < sql/dbmng2.sql
+	$ mysql -u root -p dbmng2 < sql/test.sql
 
 
 Update the configuration file
