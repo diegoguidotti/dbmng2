@@ -139,3 +139,9 @@ MODIFY rid int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Primary Key: Unique
 --
 ALTER TABLE dbmng_users
 MODIFY uid int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Primary Key: Unique user ID.',AUTO_INCREMENT=1;
+
+
+INSERT INTO `dbmng_role` (`rid`, `name`) VALUES
+(1, 'anonymous user'),
+(2, 'authenticated user'),
+(3, 'administrator');
