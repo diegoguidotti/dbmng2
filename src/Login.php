@@ -100,7 +100,7 @@ class Login {
               {
                 $ret['user']=$l['data'][0];
                 $ret['ok']=true;
-                $_SESSION['DBMNG_USER'] = json_encode($ret);
+                
                 
                 // get the roles associated to the user
                 $uid = $l['data'][0]['uid'];
@@ -121,7 +121,8 @@ class Login {
                   {
                     $ret['user']['roles'] = array(1=>'anonymous user');
                   }
-              } 
+                  $_SESSION['DBMNG_USER'] = json_encode($ret);
+               } 
             else 
               {
                 $ret=$this->returnEmptyUser(3,"The password provided is not correct.");
