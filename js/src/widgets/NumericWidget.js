@@ -1,0 +1,16 @@
+/////////////////////////////////////////////////////////////////////
+// NumericWidget
+// 12 November 2015
+// 
+//
+// Developed by :
+// Diego Guidotti
+// Michele Mammini
+/////////////////////////////////////////////////////////////////////
+
+Dbmng.NumericWidget = Dbmng.AbstractWidget.extend({  
+  getDefaultValue: function(options){
+    return 0;        
+  }  
+});
+
