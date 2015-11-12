@@ -4,7 +4,7 @@ function add(a, b){
 }
 
 
-function getVal(sel){
+function getVal(sel, a){
   console.log(jQuery('#'+sel));
   console.log(jQuery('#'+sel).html());
   return (jQuery('#'+sel).html());
@@ -43,7 +43,7 @@ function Dbmng( aObject ) {
     var aForm = obj.getForm();
     var aParam = obj.getParam();
     
-    html = "";
+    var html = "";
     jQuery.each(aForm.fields, function(field_name, aField){
       if( typeof aField.field_widget != 'undefined' ) {
         console.log("create widget...");
@@ -54,7 +54,7 @@ function Dbmng( aObject ) {
     });
     
     return jQuery('#'+div_element).html(html);
-  }
+  };
 
 
   /** 
@@ -84,7 +84,7 @@ function Dbmng( aObject ) {
     html += "</div>\n";
     
     return html;
-  }
+  };
 
 
   /** 
@@ -101,12 +101,12 @@ function Dbmng( aObject ) {
     if( typeof aField.label_long != 'undefined' )
       label = aField.label_long;
     
-    sRequired = "";
-    if(typeof aField.nullable != 'undefined' && aField.nullable == 0 )
+    var sRequired = "";
+    if(typeof aField.nullable != 'undefined' && aField.nullable === 0 )
       sRequired = "<span class='dbmng_required'>*</span>";
     
     return "<label for='dbmng_"+table_name+"_"+field_name+"'>" + (label) + sRequired + "</label>\n";
-  }
+  };
 
 
   /** 
@@ -116,12 +116,12 @@ function Dbmng( aObject ) {
    \return the html attribute to identify the field required
    */
   this.layoutGetNullable = function(aField) {
-    ht = "";
-    if( typeof aField.nullable != 'undefined' && aField.nullable == 0 )
+    var ht = "";
+    if( typeof aField.nullable != 'undefined' && aField.nullable === 0 )
       ht += "required ='required' ";
       
     return ht;
-  }
+  };
 
 
   /** 
@@ -131,7 +131,7 @@ function Dbmng( aObject ) {
    */
   this.getParam = function() {
     return this.aParam;
-  }
+  };
 
 
   /** 
@@ -141,8 +141,7 @@ function Dbmng( aObject ) {
    */
   this.getForm = function() {
     return this.aForm;
-  }
-
+  };
 
   /** 
    * method: getTableName
@@ -151,6 +150,6 @@ function Dbmng( aObject ) {
    */
   this.getTableName = function() {
     return this.aForm.table_name;
-  }
+  };
 
 }

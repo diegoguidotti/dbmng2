@@ -18,7 +18,7 @@ Dbmng.AbstractTheme = Class.extend({
   getLabel: function(options) {
     var el=document.createElement('div');
     el.classname='dbnmg_label';
-    var txt=document.createTextNode(options.label)
+    var txt=document.createTextNode(options.label);
     el.appendChild(txt);
     return el;
   },
