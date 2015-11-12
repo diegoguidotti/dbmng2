@@ -1,16 +1,4 @@
 
-function add(a, b){
-  return a+b;
-}
-
-
-function getVal(sel, a){
-  console.log(jQuery('#'+sel));
-  console.log(jQuery('#'+sel).html());
-  return (jQuery('#'+sel).html());
-}
-
-
 /////////////////////////////////////////////////////////////////////////////
 // Dbmng
 // ====================

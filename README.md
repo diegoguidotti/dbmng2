@@ -63,10 +63,13 @@ Update the configuration file
 
 
 For the JS library you need to install grunt (nodejs required) and then with npm install load the nodel packages
+  $ apt-get install libfontconfig1 fontconfig libfontconfig1-dev libfreetype6-dev #dipendenze per phantomJS per il test
 	$ sudo npm install -g grunt-cli 
 	$ cd dbmng2/js/
 	$ npm install
 	$ grunt #run the grunt manager on the project
+
+ 
 
 
 

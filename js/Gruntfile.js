@@ -50,6 +50,15 @@ module.exports = function(grunt) {
         tasks: ["concat_sourcemap"]
       }
     },
+    qunit: {
+        all: {
+          options: {
+            urls: [
+              'http://localhost/dbmng2/js/tests/index.html',
+            ]
+          }
+        }
+    },
     jshint: {
       options: {
         browser: true,
@@ -94,11 +103,14 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-concat-sourcemap');
   grunt.loadNpmTasks("grunt-remove-logging");
+  grunt.loadNpmTasks('grunt-contrib-qunit');
+ 
 
 
 
   // Default task.
   //grunt.registerTask('default', ['jshint:beforeconcat','concat_sourcemap','removelogging','uglify']);
   grunt.registerTask('default', ['jshint:beforeconcat','concat_sourcemap','removelogging','jshint:afterconcat','uglify']);
+  grunt.registerTask('test', ['jshint:beforeconcat','concat_sourcemap','removelogging','jshint:afterconcat','uglify','qunit']);
 
 };

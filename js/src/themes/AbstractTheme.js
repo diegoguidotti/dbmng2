@@ -8,11 +8,14 @@
 // Michele Mammini
 /////////////////////////////////////////////////////////////////////
 
-Dbmng.AbstractTheme = Class.extend({      
+Dbmng.AbstractTheme = Class.extend({    
+  test: function(input){
+    return input+2;
+  },  
   getInput: function(options) {
     var el=document.createElement('input');
-
-    el.value=options.value;
+    if(options.value)
+      el.value=options.value;
     return el;
   },
   getLabel: function(options) {
