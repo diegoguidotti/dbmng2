@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DBMNG Test Suite</title>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+<!--  <link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen">
+  <script type="text/javascript" src="qunit/qunit.js"></script>
+  <script type="text/javascript" src="dbmng_test.js"></script>-->
+  <script type="text/javascript" src="../dbmng.js"></script>
+</head>
+<body>
+  <div id="test_dbmng"></div>
+  <div id="test_dbmng1"></div>
+  <script>
+    var aForm = { table_name: 'test', 
+                  primary_key: Array('id'), 
+                  fields: {id: {label: 'ID', type: 'int', key: 0}, name: {label: 'Name', type: 'varchar'} }
+                };
+    var aParam = {};
+    var aObject = { aForm: aForm, aParam: aParam, div_element: 'test_dbmng' };
+    
+    var dbmng = new Dbmng( aObject );
+    dbmng.createForm();
+  
+    var aForm1 = { table_name: 'test1', 
+                  primary_key: Array('id'), 
+                  fields: {id: {label: 'ID1', type: 'int', key: 0}, name: {label: 'Name1', type: 'varchar'} }
+                };
+    var aParam1 = {};
+    var aObject1 = { aForm: aForm1, aParam: aParam1, div_element: 'test_dbmng1' };
+    
+    var dbmng1 = new Dbmng( aObject1 );
+    dbmng1.createForm();
+  </script>
+</body>
