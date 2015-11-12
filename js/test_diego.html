@@ -59,11 +59,14 @@
     });
 
 
+    Dbmng.PippoTheme = Dbmng.AbstractTheme.extend({      
+    });
+
     //Test per i temi puri
     var theme=new Dbmng.AbstractTheme();
     jQuery('#test_base').html(theme.getFormInput(options));
 
-    var theme_boot=new Dbmng.BootstrapTheme();
+    var theme_boot=new Dbmng.PippoTheme();
     jQuery('#test_bootstrap').html(theme_boot.getFormInput(options));
 
 

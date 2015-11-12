@@ -5,3 +5,4 @@ phpunit.xml
 updateDBMNG2.sh
 bin/
 vendor/
+js/node_modules/

@@ -61,6 +61,17 @@ Update the configuration file
 	$ cp settings.default.php  settings.xml
 	$ edit the settings.xml entering db_name, user and password
 
+
+For the JS library you need to install grunt (nodejs required) and then with npm install load the nodel packages
+	$ sudo npm install -g grunt-cli 
+	$ cd dbmng2/js/
+	$ npm install
+	$ grunt #run the grunt manager on the project
+
+
+
+
+
 To test the api you should link the folder in the apache folder
 
 	$ ln -s ../dbmng2 /var/www/
