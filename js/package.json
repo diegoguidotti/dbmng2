@@ -1,0 +1,47 @@
+{
+  "name": "dbmng",
+  "title": "DBMNG",
+  "description": "A framework to create forms",
+  "version": "0.0.1",
+  "main": "dist/dbmng.js",
+  "contributurs": [
+    {
+      "name": "Diego Guidotti",
+      "email": "diego.guidotti@gmail.com",
+      "url": "http://www.aedit.it"
+    },
+    {
+      "name": "Michele Mammini",
+      "email": "mamminimn@gmail.com",
+      "url": "http://www.aedit.it"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/diegoguidotti/dbmng2/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/diegoguidotti/dbmng2.git"
+  },
+  "keywords": [
+    "crud",
+    "form"    
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-concat-sourcemap": "^0.4.3",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-uglify": "~0.2.0",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-remove-logging": "~0.2.0"
+  },
+  "scripts": {
+    "build": "npm install && grunt",
+    "start": "grunt watch",
+    "test":  "grunt"
+  }
+}
