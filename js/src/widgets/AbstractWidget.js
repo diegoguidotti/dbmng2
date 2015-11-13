@@ -9,29 +9,31 @@
 /////////////////////////////////////////////////////////////////////
 
 Dbmng.AbstractWidget = Class.extend({
+  //class constructor
+  init:function(options){
+    if(!options){
+      options={};
+    }
+    if( options.theme ) {
+      this.theme = options.theme;
+    }
+    else {
+      this.theme = new Dbmng.AbstractTheme();      
+    }
+  },
   createWidget: function( options ) {
-    // var aField = options.aField;
-    var theme  = options.theme;
-    
-    options.aField.value = this.getFieldValue(options);
-    
-    return theme.getInput(options.aField);
+    // var aField = options.aField;        
+    options.aField.value = this.getFieldValue(options);    
+    return this.theme.getInput(options.aField);
   },
   
   createField: function( options ) {
-    var theme;
-    if( options.theme ) {
-      theme = options.theme;
-    }
-    else {
-      theme = new Dbmng.AbstractTheme();
-      options.theme  = theme;
-    }
+    
     
     options.aField.field = options.field;
     
-    var el = theme.getFieldContainer(options.aField);
-    el.appendChild(theme.getLabel(options.aField));
+    var el = this.theme.getFieldContainer(options.aField);
+    el.appendChild(this.theme.getLabel(options.aField));
     el.appendChild(this.createWidget(options));
     return el;
   },

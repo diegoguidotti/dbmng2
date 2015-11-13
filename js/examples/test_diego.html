@@ -48,25 +48,23 @@
     
 var obj={id:1, name:'Diego', month:2};
 
-    var w1=new Dbmng.AbstractWidget();
-    jQuery('#test_widget_select').append(w1.createField({
-      theme:theme_boot,
+    var w1=new Dbmng.AbstractWidget({theme:theme_boot});
+
+    jQuery('#test_widget_select').append(w1.createField({      
       field:'id',
       aField:aForm.fields.id,
       value:obj.id
     }));
     
-    var w2=new Dbmng.SelectWidget();
-    jQuery('#test_widget_select').append(w2.createField({
-      theme:theme_boot,
+    var w2=new Dbmng.SelectWidget({theme:theme_boot});
+    jQuery('#test_widget_select').append(w2.createField({      
       field:'month',
       aField:aForm.fields.month,
       value:obj.month
     }));
     
-    var w3=new Dbmng.AbstractWidget();
-    jQuery('#test_widget_select').append(w3.createField({
-      theme:theme_boot,
+    var w3=new Dbmng.AbstractWidget({theme:theme_boot});
+    jQuery('#test_widget_select').append(w3.createField({      
       field:'name',
       aField:aForm.fields.name,
       value:obj.name

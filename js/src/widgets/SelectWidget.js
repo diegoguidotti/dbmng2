@@ -11,11 +11,9 @@
 Dbmng.SelectWidget = Dbmng.AbstractWidget.extend({
   createWidget: function(options){
     var aField=options.aField;
-    var theme =options.theme;
-    
     aField.value = this.getFieldValue(options);
     aField.field = options.field;
     
-    return theme.getSelect(aField);
+    return this.theme.getSelect(aField);
   }
 });
