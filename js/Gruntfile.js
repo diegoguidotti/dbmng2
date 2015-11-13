@@ -20,6 +20,7 @@ module.exports = function(grunt) {
             // Utils like extend, each, and trigger
             'src/Utilities.js',
             'src/Dbmng.js',
+            'src/Form.js',
             'src/themes/*.js',
             'src/widgets/*.js',
             
@@ -79,7 +80,7 @@ module.exports = function(grunt) {
             // Utils like extend, each, and trigger
             'src/Utilities.js',
             'src/Dbmng.js.js',
-
+            'src/Form.js',
             'src/themes/*.js',
             'src/widgets/*.js',        
       ],

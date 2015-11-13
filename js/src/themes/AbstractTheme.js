@@ -87,5 +87,11 @@ Dbmng.AbstractTheme = Class.extend({
     if( aField.nullable === false ) {
       el.required = true;
     }
-  }
+  },
+
+  getForm: function(opt) {    
+    var el = document.createElement('form');
+    return el;
+  },
+
 });

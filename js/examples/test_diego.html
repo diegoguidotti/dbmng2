@@ -3,8 +3,9 @@
 <head>
   <title>DBMNG Test Suite</title>
   <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
-  <script type="text/javascript" src="../src/Dbmng.js"></script> 
   <script type="text/javascript" src="../src/Class.js"></script>
+  <script type="text/javascript" src="../src/Dbmng.js"></script> 
+  <script type="text/javascript" src="../src/Form.js"></script> 
   <script type="text/javascript" src="../src/Ie9.js"></script> 
   <script type="text/javascript" src="../src/Utilities.js"></script>
   <script type="text/javascript" src="../src/themes/AbstractTheme.js"></script>
@@ -23,6 +24,9 @@
   <h1>test widgets</h1>
     <div id="test_widget"></div>
     <form><div id="test_widget_select"></div></form>
+
+  <h1>DBMNG</h1>
+    <div id="test_dbmng"></div>
 
   <script>
 
@@ -69,6 +73,10 @@ var obj={id:1, name:'Diego', month:2};
       aField:aForm.fields.name,
       value:obj.name
     }));
+
+
+  var form=new Dbmng.Form({aForm:aForm, theme:theme_boot});
+  jQuery('#test_dbmng').append(form.createForm());
     
 /*
    var theme_boot=new Dbmng.BootstrapTheme(); 
