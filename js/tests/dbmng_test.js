@@ -69,13 +69,15 @@ jQuery(function(){
     /* ---------- test #04 ---------- */
     var theme_boot = new Dbmng.BootstrapTheme();
     option = { 
-      theme:theme_boot,
       field:'id',
       aField: {label: 'Mounth', widget:'select', voc_val: {1:'January', 2:'February'}},
       value: 2
     };
+
+
+    var selectb = new Dbmng.SelectWidget({theme:theme_boot});
     select.createField(option);
-    jQuery('#test_div').html(select.createField(option));
+    jQuery('#test_div').html(selectb.createField(option));
     equal(jQuery('#test_div select').hasClass('form-control'),true, "BootstrapTheme check form-control class");
     equal(jQuery('#test_div select').val(),2, "SelectWidget get value (update)");
     equal(jQuery('#test_div select').attr('id'),'dbmng_id', "SelectWidget get element id");
