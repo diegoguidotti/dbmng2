@@ -8,27 +8,84 @@
 // Michele Mammini
 /////////////////////////////////////////////////////////////////////
 
-Dbmng.AbstractTheme = Class.extend({    
+Dbmng.AbstractTheme = Class.extend({
   test: function(input){
     return input+2;
-  },  
-  getInput: function(options) {
+  },
+  
+  getFieldContainer: function(aField) {
+    console.log(aField);
+    var el = document.createElement('div');
+    el.className = 'dbmng_form_row';
+    el.className = el.className + ' dbmng_form_field_' + aField.field;
+    return el;
+  },
+  
+  getInput: function(aField) {
+    //console.log(aField);
     var el=document.createElement('input');
-    if(options.value)
-      el.value=options.value;
+    this.assignAttributes(el, aField);
+    
+    if(aField.value) {
+      el.value=aField.value;
+    }
+    
     return el;
   },
-  getLabel: function(options) {
+  
+  getLabel: function(aField) {
     var el=document.createElement('div');
-    el.classname='dbnmg_label';
-    var txt=document.createTextNode(options.label);
-    el.appendChild(txt);
+    el.className='dbmng_form_label';
+    
+    var lb = document.createElement('label');
+    lb.setAttribute('for', 'dbmng_' + aField.field);
+    
+    var txt=document.createTextNode(aField.label);
+    lb.appendChild(txt);
+    
+    if( aField.nullable == false ) {
+      var sp = document.createElement('span');
+      sp.className='dbmng_required';
+      
+      var star=document.createTextNode('*');
+      sp.appendChild(star);
+      lb.appendChild(sp);
+    }
+    
+    el.appendChild(lb);
     return el;
   },
-  getFormInput: function(options){
-    var el=document.createElement('div');
-    el.appendChild(this.getLabel(options));
-    el.appendChild(this.getInput(options));
+  
+  getSelect: function(aField) {
+    //console.log(aField);
+    var el=document.createElement('select');
+    
+    this.assignAttributes(el, aField);
+    if(aField.voc_val) {
+      var o=document.createElement('option');
+      el.options.add(o);
+      for (var opt in aField.voc_val) {
+        o=document.createElement('option');
+        o.value = opt;
+        o.text=aField.voc_val[opt];
+        if( aField.value ) {
+          if( aField.value == opt ) {
+            o.selected = true;
+          }
+        }
+        el.options.add(o);
+      }
+    }
     return el;
+  },
+  
+  assignAttributes: function(el, aField) {
+    el.setAttribute('id', 'dbmng_' + aField.field);
+    if( aField.field ) {
+      el.name = aField.field;
+    }
+    if( aField.nullable == false ) {
+      el.required = true;
+    }
   }
 });

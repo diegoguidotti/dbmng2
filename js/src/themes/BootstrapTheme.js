@@ -9,14 +9,21 @@
 /////////////////////////////////////////////////////////////////////
 
 Dbmng.BootstrapTheme = Dbmng.AbstractTheme.extend({
-  getInput: function(options) {
-    var el = this._super(options);
+  getLabel: function(aField) {
+    var el = this._super(aField);
+    jQuery(el).css('font-weight','bold');
+    return el;
+  },
+  
+  getInput: function(aField) {
+    var el = this._super(aField);
     el.className='form-control';
     return el;
   },
-  getLabel: function(options) {
-    var el = this._super(options);
-    jQuery(el).css('font-weight','bold');
+  
+  getSelect: function(aField) {
+    var el = this._super(aField);
+    el.className='form-control';
     return el;
   }
 });
