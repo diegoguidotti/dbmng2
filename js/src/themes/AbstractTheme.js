@@ -43,7 +43,7 @@ Dbmng.AbstractTheme = Class.extend({
     var txt=document.createTextNode(aField.label);
     lb.appendChild(txt);
     
-    if( aField.nullable == false ) {
+    if( aField.nullable === false ) {
       var sp = document.createElement('span');
       sp.className='dbmng_required';
       
@@ -84,7 +84,7 @@ Dbmng.AbstractTheme = Class.extend({
     if( aField.field ) {
       el.name = aField.field;
     }
-    if( aField.nullable == false ) {
+    if( aField.nullable === false ) {
       el.required = true;
     }
   }
