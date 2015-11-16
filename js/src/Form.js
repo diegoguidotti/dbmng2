@@ -1,38 +1,40 @@
 
 Dbmng.Form = Class.extend({
   //class constructor
-  init:function(options){
-    this.aForm=options.aForm;
-
+  init: function( options ) {
+    this.aForm  = options.aForm;
+    this.aParam = options.aParam;
+    
     if( options.theme ) {
       this.theme = options.theme;
     }
     else {
-      this.theme = new Dbmng.AbstractTheme();      
+      this.theme = new Dbmng.AbstractTheme();
     }
   },
-  createForm: function(){
+  
+  createForm: function() {
     var form = this.theme.getForm();
 
     for(var key in this.aForm.fields){
-
       var aField=this.aForm.fields[key];
 
-      var wt='';
+      var wt = '';
       if(aField.widget){
         wt=aField.widget;
       }
-      console.log("Type "+wt);      
-      var widget_opt={theme:this.theme};
+      // console.log("Type "+wt);
+      
+      var widget_opt={theme:this.theme, aParam:this.aParam};
       var w;
-      if(wt=='select'){
-        w=new Dbmng.SelectWidget(widget_opt);
+      if( wt == 'select' ) {
+        w = new Dbmng.SelectWidget(widget_opt);
       }
       else{
-        w=new Dbmng.AbstractWidget(widget_opt);
+        w = new Dbmng.AbstractWidget(widget_opt);
       }
+      
       var field=w.createField({aField:aField});
-
       form.appendChild(field);
     }
       
