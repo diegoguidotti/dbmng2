@@ -21,18 +21,6 @@ Dbmng.AbstractTheme = Class.extend({
     return el;
   },
   
-  getInput: function(aField) {
-    //console.log(aField);
-    var el=document.createElement('input');
-    this.assignAttributes(el, aField);
-    
-    if(aField.value) {
-      el.value=aField.value;
-    }
-    
-    return el;
-  },
-  
   getLabel: function(aField) {
     var el=document.createElement('div');
     el.className='dbmng_form_label';
@@ -56,6 +44,21 @@ Dbmng.AbstractTheme = Class.extend({
     return el;
   },
   
+  getInput: function(aField) {
+    var el=document.createElement('input');
+    this.assignAttributes(el, aField);
+    
+    if(aField.value) {
+      el.value=aField.value;
+    }
+    
+    if( aField.placeholder ) {
+      el.placeholder = aField.label;
+    }
+
+    return el;
+  },
+  
   getSelect: function(aField) {
     //console.log(aField);
     var el=document.createElement('select');
@@ -63,6 +66,12 @@ Dbmng.AbstractTheme = Class.extend({
     this.assignAttributes(el, aField);
     if(aField.voc_val) {
       var o=document.createElement('option');
+      
+      if( aField.placeholder ) {
+        o.text=aField.label;
+        o.disabled = 'disabled';
+      }
+      
       el.options.add(o);
       for (var opt in aField.voc_val) {
         o=document.createElement('option');
@@ -86,6 +95,9 @@ Dbmng.AbstractTheme = Class.extend({
     }
     if( aField.nullable === false ) {
       el.required = true;
+    }
+    if( aField.readonly == 1 ) {
+      el.disabled = 'disabled';
     }
   },
 
