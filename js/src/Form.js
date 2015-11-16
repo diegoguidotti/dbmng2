@@ -37,7 +37,7 @@ Dbmng.Form = Class.extend({
         w = new Dbmng.AbstractWidget(widget_opt);
       }
       
-      var field=w.createField({aField:aField});
+      var field=w.createField({field: key, aField:aField});
       form.appendChild(field);
     }
       
