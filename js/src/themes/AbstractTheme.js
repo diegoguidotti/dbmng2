@@ -66,7 +66,7 @@ Dbmng.AbstractTheme = Class.extend({
           theEvent.returnValue = false;
           if(theEvent.preventDefault) theEvent.preventDefault();
         }
-      }
+      };
     }
     return el;
   },
