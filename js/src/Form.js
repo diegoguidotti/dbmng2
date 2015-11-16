@@ -30,6 +30,9 @@ Dbmng.Form = Class.extend({
       if( wt == 'select' ) {
         w = new Dbmng.SelectWidget(widget_opt);
       }
+      else if( wt == 'password' ) {
+        w = new Dbmng.PasswordWidget(widget_opt);
+      }
       else{
         w = new Dbmng.AbstractWidget(widget_opt);
       }
