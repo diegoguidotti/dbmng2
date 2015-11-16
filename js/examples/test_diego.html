@@ -49,6 +49,7 @@
       }
     };
     
+    var aParam = { hide_label: true };
     
 var obj={id:1, name:'Diego', month:2};
 
@@ -75,7 +76,7 @@ var obj={id:1, name:'Diego', month:2};
     }));
 
 
-  var form=new Dbmng.Form({aForm:aForm, theme:theme_boot});
+  var form=new Dbmng.Form({aForm:aForm, aParam:aParam, theme:theme_boot});
   jQuery('#test_dbmng').append(form.createForm());
     
 /*
