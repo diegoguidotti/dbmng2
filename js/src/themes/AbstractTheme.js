@@ -57,6 +57,7 @@ Dbmng.AbstractTheme = Class.extend({
     }
     
     if( aField.type == 'int' || aField.type == 'bigint' || aField.type == 'float' || aField.type == 'double' ) {
+      el.type = "number";
       el.onkeypress = function( evt ) {
         var theEvent = evt || window.event;
         var key = theEvent.keyCode || theEvent.which;
@@ -68,13 +69,16 @@ Dbmng.AbstractTheme = Class.extend({
         }
       };
     }
+    else {
+      el.type = "text";
+    }
     return el;
   },
   
   getPassword: function(aField) {
     var el=document.createElement('input');
     this.assignAttributes(el, aField);
-    console.log(aField);
+    // console.log(aField);
     el.type = "password";
     if(aField.value) {
       el.value=aField.value;
@@ -117,6 +121,7 @@ Dbmng.AbstractTheme = Class.extend({
   },
   
   assignAttributes: function(el, aField) {
+    //console.log(aField);
     el.setAttribute('id', 'dbmng_' + aField.field);
     if( aField.field ) {
       el.name = aField.field;
