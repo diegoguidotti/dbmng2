@@ -10,30 +10,45 @@
 
 Dbmng.AbstractWidget = Class.extend({
   //class constructor
-  init:function(options){
-    if(!options){
+  init: function( options ){
+    if( !options ) {
       options={};
     }
     if( options.theme ) {
       this.theme = options.theme;
     }
     else {
-      this.theme = new Dbmng.AbstractTheme();      
+      this.theme = new Dbmng.AbstractTheme();
+    }
+    if( options.aParam ) {
+      this.aParam = options.aParam;
+    }
+    else {
+      this.aParam = {};
     }
   },
+  
   createWidget: function( options ) {
-    // var aField = options.aField;        
-    options.aField.value = this.getFieldValue(options);    
+    // var aField = options.aField;
+    options.aField.value = this.getFieldValue(options);
     return this.theme.getInput(options.aField);
   },
   
   createField: function( options ) {
-    
-    
     options.aField.field = options.field;
-    
     var el = this.theme.getFieldContainer(options.aField);
-    el.appendChild(this.theme.getLabel(options.aField));
+    
+    var bHideLabel = false;
+    if( this.aParam.hide_label ) {
+      if( this.aParam.hide_label === true ) {
+        bHideLabel = true;
+        options.aField.placeholder = true;
+      }
+    }
+    
+    if( !bHideLabel ) {
+      el.appendChild(this.theme.getLabel(options.aField));
+    }
     el.appendChild(this.createWidget(options));
     return el;
   },
