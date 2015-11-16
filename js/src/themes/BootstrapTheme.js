@@ -25,5 +25,12 @@ Dbmng.BootstrapTheme = Dbmng.AbstractTheme.extend({
     var el = this._super(aField);
     el.className='form-control';
     return el;
-  }
+  },
+  
+  getPassword: function(aField) {
+    var el = this._super(aField);
+    el.className='form-control';
+    return el;
+  },
+  
 });
