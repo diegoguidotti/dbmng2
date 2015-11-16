@@ -14,7 +14,7 @@ Dbmng.AbstractTheme = Class.extend({
   },
   
   getFieldContainer: function(aField) {
-    console.log(aField);
+    // console.log(aField);
     var el = document.createElement('div');
     el.className = 'dbmng_form_row';
     el.className = el.className + ' dbmng_form_field_' + aField.field;
@@ -55,7 +55,35 @@ Dbmng.AbstractTheme = Class.extend({
     if( aField.placeholder ) {
       el.placeholder = aField.label;
     }
-
+    
+    if( aField.type == 'int' || aField.type == 'bigint' || aField.type == 'float' || aField.type == 'double' ) {
+      el.onkeypress = function( evt ) {
+        var theEvent = evt || window.event;
+        var key = theEvent.keyCode || theEvent.which;
+        key = String.fromCharCode( key );
+        var regex = /[0-9]|\./;
+        if( !regex.test(key) ) {
+          theEvent.returnValue = false;
+          if(theEvent.preventDefault) theEvent.preventDefault();
+        }
+      }
+    }
+    return el;
+  },
+  
+  getPassword: function(aField) {
+    var el=document.createElement('input');
+    this.assignAttributes(el, aField);
+    console.log(aField);
+    el.type = "password";
+    if(aField.value) {
+      el.value=aField.value;
+    }
+    
+    if( aField.placeholder ) {
+      el.placeholder = aField.label;
+    }
+    
     return el;
   },
   
@@ -101,7 +129,7 @@ Dbmng.AbstractTheme = Class.extend({
     }
   },
 
-  getForm: function(opt) {    
+  getForm: function(opt) {
     var el = document.createElement('form');
     return el;
   },
