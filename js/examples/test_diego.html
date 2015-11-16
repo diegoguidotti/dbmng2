@@ -13,6 +13,7 @@
   <script type="text/javascript" src="../src/widgets/AbstractWidget.js"></script>
   <script type="text/javascript" src="../src/widgets/SelectWidget.js"></script>
   <script type="text/javascript" src="../src/widgets/NumericWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/PasswordWidget.js"></script>
 </head>
 <body>
   <h1>Base</h1>
@@ -45,34 +46,42 @@
       fields: {
         id: {label: 'ID', type: 'int', key: 0, nullable: false}, 
         name: {label: 'Name', type: 'varchar', 'default': 'Paperino', nullable: false},
-        month: {label: 'Mounth', widget:'select', voc_val: {1:'January', 2:'February'}, 'default':1}
+        month: {label: 'Mounth', widget:'select', voc_val: {1:'January', 2:'February'}, 'default':1},
+        passwd: {label: 'Password', type: 'varchar', widget:'password'}
       }
     };
     
-    var aParam = { hide_label: true };
+    // parameters in aParam array act globally and not punctual.
+    var aParam = { hide_label: false, html5_input: true };
     
-var obj={id:1, name:'Diego', month:2};
+    var obj = {id:1, name:'Diego', month:2};
 
     var w1=new Dbmng.AbstractWidget({theme:theme_boot});
 
-    jQuery('#test_widget_select').append(w1.createField({      
+    jQuery('#test_widget_select').append(w1.createField({
       field:'id',
       aField:aForm.fields.id,
       value:obj.id
     }));
     
     var w2=new Dbmng.SelectWidget({theme:theme_boot});
-    jQuery('#test_widget_select').append(w2.createField({      
+    jQuery('#test_widget_select').append(w2.createField({
       field:'month',
       aField:aForm.fields.month,
       value:obj.month
     }));
     
     var w3=new Dbmng.AbstractWidget({theme:theme_boot});
-    jQuery('#test_widget_select').append(w3.createField({      
+    jQuery('#test_widget_select').append(w3.createField({
       field:'name',
       aField:aForm.fields.name,
       value:obj.name
+    }));
+
+    var w4=new Dbmng.PasswordWidget({theme:theme_boot});
+    jQuery('#test_widget_select').append(w4.createField({
+      field:'passwd',
+      aField:aForm.fields.passwd
     }));
 
 
