@@ -9,14 +9,22 @@
 /////////////////////////////////////////////////////////////////////
 
 Dbmng.SelectWidget = Dbmng.AbstractWidget.extend({
-  createWidget: function(options){
-    var aField=options.aField;
-    aField.value = this.getFieldValue(options);
-    aField.field = options.field;
+  createWidget: function(){
+    //var aField=this.aField;
+    this.aField.value = this.getFieldValue();
+    this.aField.field = this.field;
     
-    return this.theme.getSelect(aField);
+    return this.theme.getSelect(this.aField);
   },
+  
   getValue: function(){
-    return jQuery(this.widget).val();
+    var val;
+    if( this.aField.type == 'int' ) {
+      val = parseInt(jQuery(this.widget).val());
+    }
+    else {
+      val = jQuery(this.widget).val();
+    }
+    return val;
   }
 });

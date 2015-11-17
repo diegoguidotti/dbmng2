@@ -141,6 +141,40 @@ Dbmng.AbstractTheme = Class.extend({
     return el;
   },
   
+  getSelectNM: function(aField) {
+    //console.log(aField);
+    var el=document.createElement('select');
+    el.multiple = true;
+    
+    this.assignAttributes(el, aField);
+    
+    if(aField.voc_val) {
+      var o=document.createElement('option');
+      
+      if( aField.placeholder ) {
+        o.text=aField.label;
+        o.disabled = 'disabled';
+      }
+      
+      el.options.add(o);
+      for (var opt in aField.voc_val) {
+        o=document.createElement('option');
+        o.value = opt;
+        o.text=aField.voc_val[opt];
+        if( aField.value ) {
+          if( typeof aField.value[0] == 'number') {
+            opt = parseInt(opt);
+          }
+          if( aField.value.indexOf(opt) > -1 ) {
+            o.selected = true;
+          }
+        }
+        el.options.add(o);
+      }
+    }
+    return el;
+  },
+  
   assignAttributes: function(el, aField) {
     //console.log(aField);
     el.setAttribute('id', 'dbmng_' + aField.field);
@@ -153,6 +187,10 @@ Dbmng.AbstractTheme = Class.extend({
     if( aField.readonly == 1 ) {
       el.disabled = 'disabled';
     }
+    if( aField.classes ) {
+      el.className = el.className + ' ' + aField.classes;
+    }
+    
   },
 
   getForm: function(opt) {

@@ -8,9 +8,9 @@
 // Michele Mammini
 /////////////////////////////////////////////////////////////////////
 
-Dbmng.NumericWidget = Dbmng.AbstractWidget.extend({  
-  getDefaultValue: function(options){
-    return 0;        
-  }  
+Dbmng.NumericWidget = Dbmng.AbstractWidget.extend({
+  getValue: function() {
+    return this.value*1;
+  }
 });
 

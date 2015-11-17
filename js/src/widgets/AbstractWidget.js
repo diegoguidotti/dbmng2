@@ -14,6 +14,14 @@ Dbmng.AbstractWidget = Class.extend({
     if( !options ) {
       options={};
     }
+    
+    if( options.field ) {
+      this.field = options.field;
+    }
+    if( options.aField ) {
+      this.aField = options.aField;
+    }
+    
     if( options.theme ) {
       this.theme = options.theme;
     }
@@ -27,33 +35,36 @@ Dbmng.AbstractWidget = Class.extend({
       this.aParam = {};
     }
     this.widget=null;
+    
   },
   
-  createWidget: function( options ) {
-    // var aField = options.aField;
-    options.aField.value = this.getFieldValue(options);
-    var el=this.theme.getInput(options.aField);
+  createWidget: function() {
+    this.aField.value = this.getFieldValue();
+    var el=this.theme.getInput(this.aField);
     return el;
   },
   
-  createField: function( options ) {
+  createField: function(data_val) {
     var self=this;
 
-    options.aField.field = options.field;
-    var el = this.theme.getFieldContainer(options.aField);
+    this.aField.field = this.field;
+    var el = this.theme.getFieldContainer(this.aField);
     
     var bHideLabel = false;
     if( this.aParam.hide_label ) {
       if( this.aParam.hide_label === true ) {
         bHideLabel = true;
-        options.aField.placeholder = options.aField.label;
+        this.aField.placeholder = this.aField.label;
       }
     }
     
     if( !bHideLabel ) {
-      el.appendChild(this.theme.getLabel(options.aField));
+      el.appendChild(this.theme.getLabel(this.aField));
     }
-    var widget=this.createWidget(options);
+    if( typeof data_val != 'undefined' ) {
+      this.value = data_val;
+    }
+    var widget=this.createWidget();
     this.widget=widget;
 
     widget.onchange=function( evt ) {
@@ -76,13 +87,13 @@ Dbmng.AbstractWidget = Class.extend({
     return '';
   },
   
-  getFieldValue: function( options ) {
+  getFieldValue: function() {
     var v;
-    if(options.value){
-      v = options.value;
+    if(this.value){
+      v = this.value;
     }
-    else if( options.aField.default ) {
-      v = options.aField.default;
+    else if( this.aField.default ) {
+      v = this.aField.default;
     }
     else{
       v = this.getDefaultValue();

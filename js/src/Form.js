@@ -11,7 +11,7 @@ Dbmng.Form = Class.extend({
     else {
       this.theme = new Dbmng.AbstractTheme();
     }
-
+// var w1=new Dbmng.AbstractWidget({field:'id', aField:aForm.fields.id, value:obj.id, theme:theme_boot});
     this.widgets={};
     for(var key in this.aForm.fields){
       var aField=this.aForm.fields[key];
@@ -21,10 +21,13 @@ Dbmng.Form = Class.extend({
         wt=aField.widget;
       }
 
-      var widget_opt={theme:this.theme, aParam:this.aParam};
+      var widget_opt={field:key, aField:aField, theme:this.theme, aParam:this.aParam};
       var w;
       if( wt == 'select' ) {
         w = new Dbmng.SelectWidget(widget_opt);
+      }
+      else if( wt == 'select_nm' ) {
+        w = new Dbmng.SelectNMWidget(widget_opt);
       }
       else if( wt == 'password' ) {
         w = new Dbmng.PasswordWidget(widget_opt);
@@ -33,12 +36,19 @@ Dbmng.Form = Class.extend({
         w = new Dbmng.CheckboxWidget(widget_opt);
       }
       else{
-        w = new Dbmng.AbstractWidget(widget_opt);
-      }     
+        if( aField.type == 'int' ) {
+          w = new Dbmng.NumericWidget(widget_opt);
+        }
+        else {
+          w = new Dbmng.AbstractWidget(widget_opt);
+        }
+      }
+      
       this.widgets[key]=w;
     }
 
   },
+  
   getValue: function() {
     var ret={};
     for(var key in this.aForm.fields){
@@ -46,15 +56,16 @@ Dbmng.Form = Class.extend({
     }
     return ret;
   },
-  createForm: function() {
+  
+  createForm: function(aData) {
     var form = this.theme.getForm();
 
     for(var key in this.aForm.fields){
       var aField=this.aForm.fields[key];
-      var field = this.widgets[key].createField({field: key, aField:aField});
+      var field = this.widgets[key].createField(aData[key]);
       form.appendChild(field);
     }
-      
+
     return form;
   }
 });

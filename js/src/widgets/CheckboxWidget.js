@@ -9,9 +9,9 @@
 /////////////////////////////////////////////////////////////////////
 
 Dbmng.CheckboxWidget = Dbmng.AbstractWidget.extend({
-  createWidget: function(options){
-    options.aField.value = this.getFieldValue(options);
-    return this.theme.getCheckbox(options.aField);
+  createWidget: function(){
+    this.aField.value = this.getFieldValue();
+    return this.theme.getCheckbox(this.aField);
   },
   getValue: function(){
     return this.widget.checked;

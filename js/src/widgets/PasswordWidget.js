@@ -9,8 +9,8 @@
 /////////////////////////////////////////////////////////////////////
 
 Dbmng.PasswordWidget = Dbmng.AbstractWidget.extend({
-  createWidget: function(options){
-    options.aField.value = this.getFieldValue(options);
-    return this.theme.getInput(options.aField);
+  createWidget: function(){
+    this.aField.value = this.getFieldValue();
+    return this.theme.getInput(this.aField);
   }
 });
