@@ -15,6 +15,7 @@
   <script type="text/javascript" src="../src/widgets/NumericWidget.js"></script>
   <script type="text/javascript" src="../src/widgets/PasswordWidget.js"></script>
   <script type="text/javascript" src="../src/widgets/CheckboxWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/SelectNMWidget.js"></script>
 </head>
 <body>
   <h1>Base</h1>
@@ -47,48 +48,37 @@
       fields: {
         id: {label: 'ID', type: 'int', key: 0, nullable: false}, 
         name: {label: 'Name', type: 'varchar', 'default': 'Paperino', nullable: false},
-        month: {label: 'Mounth', widget:'select', voc_val: {1:'January', 2:'February'}, 'default':1},
-        passwd: {label: 'Password', type: 'varchar', widget:'password'},
-        check: {label: 'Check', type: 'int', widget:'checkbox'}
+        month: {label: 'Mounth', widget:'select', type: 'int', voc_val: {1:'January', 2:'February'}},
+        passwd: {label: 'Password', type: 'varchar', widget:'password', classes: 'aaa bbb ccc'},
+        check: {label: 'Check', type: 'int', widget:'checkbox'},
+        multiple: {label: 'Multiple', type: 'int', widget:'select_nm', voc_val: {1:'January', 2:'February', 3:'March', 4:'April'}}
       }
     };
     
     // parameters in aParam array act globally and not punctual.
-    var aParam = { hide_label: true, html5_input: true };
+    var aParam = { hide_label: false, html5_input: true };
     
-    var obj = {id:1, name:'Diego', month:2};
+    var obj = {id:2, name:'Diego', multiple: ['1','2'], month:'1'};
 
-    var w1=new Dbmng.AbstractWidget({theme:theme_boot});
+    var w1=new Dbmng.AbstractWidget({field:'id', aField:aForm.fields.id, theme:theme_boot});
 
-    jQuery('#test_widget_select').append(w1.createField({
-      field:'id',
-      aField:aForm.fields.id,
-      value:obj.id
-    }));
+    jQuery('#test_widget_select').append(w1.createField(obj.id));
     
-    var w2=new Dbmng.SelectWidget({theme:theme_boot});
-    jQuery('#test_widget_select').append(w2.createField({
-      field:'month',
-      aField:aForm.fields.month,
-      value:obj.month
-    }));
+    var w2=new Dbmng.SelectWidget({field:'month', aField:aForm.fields.month, theme:theme_boot});
+    jQuery('#test_widget_select').append(w2.createField(obj.month));
     
-    var w3=new Dbmng.AbstractWidget({theme:theme_boot});
-    jQuery('#test_widget_select').append(w3.createField({
-      field:'name',
-      aField:aForm.fields.name,
-      value:obj.name
-    }));
+    var w3=new Dbmng.AbstractWidget({field:'name', aField:aForm.fields.name, theme:theme_boot});
+    jQuery('#test_widget_select').append(w3.createField(obj.name));
 
-    var w4=new Dbmng.PasswordWidget({theme:theme_boot});
-    jQuery('#test_widget_select').append(w4.createField({
-      field:'passwd',
-      aField:aForm.fields.passwd
-    }));
+    var w4=new Dbmng.PasswordWidget({field:'passwd', aField:aForm.fields.passwd, theme:theme_boot});
+    jQuery('#test_widget_select').append(w4.createField());
+
+    var w5=new Dbmng.SelectNMWidget({field:'nultiple', aField:aForm.fields.multiple, theme:theme_boot});
+    jQuery('#test_widget_select').append(w5.createField());
 
 
-  var form=new Dbmng.Form({aForm:aForm, aParam:aParam, theme:theme_boot});
-  jQuery('#test_dbmng').append(form.createForm());
+    var form=new Dbmng.Form({aForm:aForm, aParam:aParam, theme:theme_boot});
+    jQuery('#test_dbmng').append(form.createForm(obj));
 
 
     
