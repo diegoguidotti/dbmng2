@@ -26,8 +26,7 @@ Dbmng.AbstractWidget = Class.extend({
     else {
       this.aParam = {};
     }
-
-    this.value='';
+    this.widget=null;
   },
   
   createWidget: function( options ) {
@@ -55,7 +54,7 @@ Dbmng.AbstractWidget = Class.extend({
       el.appendChild(this.theme.getLabel(options.aField));
     }
     var widget=this.createWidget(options);
-    
+    this.widget=widget;
 
     widget.onchange=function( evt ) {
       self.onChange(evt);
@@ -66,12 +65,11 @@ Dbmng.AbstractWidget = Class.extend({
   },
 
   onChange: function(event){    
-    console.log(event);
-    this.value=event.srcElement.value;
+    console.log(event);    
   } , 
 
   getValue: function(){
-    return this.value;
+    return this.widget.value;
   },
 
   getDefaultValue: function( options ) {
@@ -88,8 +86,7 @@ Dbmng.AbstractWidget = Class.extend({
     }
     else{
       v = this.getDefaultValue();
-    }
-    this.value=v;
+    }    
     return v;
   }
 });

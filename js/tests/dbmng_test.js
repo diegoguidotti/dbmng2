@@ -34,6 +34,19 @@ jQuery(function(){
     
   });
 
+  test('AbstractWidget',2, function(){
+     var widget = new Dbmng.AbstractWidget();
+      option = { 
+        field:'month',
+        aField: {label: 'AAA', 'default':1},
+      };
+     jQuery('#test_div').html(widget.createField(option));
+     equal(jQuery('#test_div input').val(),1, "SelectWidget get default value");
+
+    jQuery('#test_div input').val(33);
+     equal(jQuery('#test_div input').val(),33, "Select Widget get jquery assigned value");
+      
+  });
   
   test('SelectWidget',9, function(){
     /* ---------- test #01 ---------- */
@@ -59,7 +72,7 @@ jQuery(function(){
     /* ---------- test #03 ---------- */
     option = { 
       field:'id',
-      aField: {label: 'Mounth', widget:'select', voc_val: {1:'January', 2:'February'}},
+      aField: {label: 'Mounth', widget:'select', voc_val: {1:'January', 2:'February',33:'Utbuarry'}},
       value: 2
     };
     select.createField(option);

@@ -15,5 +15,8 @@ Dbmng.SelectWidget = Dbmng.AbstractWidget.extend({
     aField.field = options.field;
     
     return this.theme.getSelect(aField);
+  },
+  getValue: function(){
+    return jQuery(this.widget).val();
   }
 });

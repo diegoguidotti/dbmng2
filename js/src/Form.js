@@ -11,11 +11,8 @@ Dbmng.Form = Class.extend({
     else {
       this.theme = new Dbmng.AbstractTheme();
     }
-  },
-  
-  createForm: function() {
-    var form = this.theme.getForm();
 
+    this.widgets={};
     for(var key in this.aForm.fields){
       var aField=this.aForm.fields[key];
 
@@ -23,8 +20,7 @@ Dbmng.Form = Class.extend({
       if(aField.widget){
         wt=aField.widget;
       }
-      // console.log("Type "+wt);
-      
+
       var widget_opt={theme:this.theme, aParam:this.aParam};
       var w;
       if( wt == 'select' ) {
@@ -38,9 +34,24 @@ Dbmng.Form = Class.extend({
       }
       else{
         w = new Dbmng.AbstractWidget(widget_opt);
-      }
-      
-      var field=w.createField({field: key, aField:aField});
+      }     
+      this.widgets[key]=w;
+    }
+
+  },
+  getValue: function() {
+    var ret={};
+    for(var key in this.aForm.fields){
+      ret[key]=this.widgets[key].getValue();
+    }
+    return ret;
+  },
+  createForm: function() {
+    var form = this.theme.getForm();
+
+    for(var key in this.aForm.fields){
+      var aField=this.aForm.fields[key];
+      var field = this.widgets[key].createField({field: key, aField:aField});
       form.appendChild(field);
     }
       
