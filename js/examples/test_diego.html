@@ -14,6 +14,7 @@
   <script type="text/javascript" src="../src/widgets/SelectWidget.js"></script>
   <script type="text/javascript" src="../src/widgets/NumericWidget.js"></script>
   <script type="text/javascript" src="../src/widgets/PasswordWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/CheckboxWidget.js"></script>
 </head>
 <body>
   <h1>Base</h1>
@@ -47,7 +48,8 @@
         id: {label: 'ID', type: 'int', key: 0, nullable: false}, 
         name: {label: 'Name', type: 'varchar', 'default': 'Paperino', nullable: false},
         month: {label: 'Mounth', widget:'select', voc_val: {1:'January', 2:'February'}, 'default':1},
-        passwd: {label: 'Password', type: 'varchar', widget:'password'}
+        passwd: {label: 'Password', type: 'varchar', widget:'password'},
+        check: {label: 'Check', type: 'int', widget:'checkbox'}
       }
     };
     

@@ -33,6 +33,9 @@ Dbmng.Form = Class.extend({
       else if( wt == 'password' ) {
         w = new Dbmng.PasswordWidget(widget_opt);
       }
+      else if( wt == 'checkbox' ) {
+        w = new Dbmng.CheckboxWidget(widget_opt);
+      }
       else{
         w = new Dbmng.AbstractWidget(widget_opt);
       }

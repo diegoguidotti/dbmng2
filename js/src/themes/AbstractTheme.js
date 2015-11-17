@@ -91,6 +91,22 @@ Dbmng.AbstractTheme = Class.extend({
     return el;
   },
   
+  getCheckbox: function(aField) {
+    var el=document.createElement('input');
+    this.assignAttributes(el, aField);
+    // console.log(aField);
+    el.type = "checkbox";
+    if(aField.value) {
+      el.value=aField.value;
+    }
+    
+    if( aField.placeholder ) {
+      el.placeholder = aField.label;
+    }
+    
+    return el;
+  },
+  
   getSelect: function(aField) {
     //console.log(aField);
     var el=document.createElement('select');

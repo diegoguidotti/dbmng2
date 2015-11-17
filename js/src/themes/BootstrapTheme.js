@@ -33,4 +33,9 @@ Dbmng.BootstrapTheme = Dbmng.AbstractTheme.extend({
     return el;
   },
   
+  getCheckbox: function(aField) {
+    var el = this._super(aField);
+    el.className='form-control';
+    return el;
+  },
 });
