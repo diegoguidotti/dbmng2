@@ -14,28 +14,9 @@ Dbmng.BootstrapTheme = Dbmng.AbstractTheme.extend({
     jQuery(el).css('font-weight','bold');
     return el;
   },
-  
-  getInput: function(aField) {
-    var el = this._super(aField);
-    el.className='form-control';
-    return el;
-  },
-  
-  getSelect: function(aField) {
-    var el = this._super(aField);
-    el.className='form-control';
-    return el;
-  },
-  
-  getPassword: function(aField) {
-    var el = this._super(aField);
-    el.className='form-control';
-    return el;
-  },
-  
-  getCheckbox: function(aField) {
-    var el = this._super(aField);
-    el.className='form-control';
-    return el;
-  },
+  assignAttributes: function(el, aField) {
+    this._super(el, aField);
+    el.className=el.className+' form-control';
+  }
+
 });

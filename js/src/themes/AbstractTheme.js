@@ -53,7 +53,7 @@ Dbmng.AbstractTheme = Class.extend({
     }
     
     if( aField.placeholder ) {
-      el.placeholder = aField.label;
+      el.placeholder = aField.placeholder;
     }
     
     if( aField.type == 'int' || aField.type == 'bigint' || aField.type == 'float' || aField.type == 'double' ) {
@@ -70,11 +70,16 @@ Dbmng.AbstractTheme = Class.extend({
       };
     }
     else {
-      el.type = "text";
+      if(aField.widget=='password'){
+        el.type = "password";        
+      }
+      else{
+        el.type = "text";
+      }
     }
     return el;
   },
-  
+/*  
   getPassword: function(aField) {
     var el=document.createElement('input');
     this.assignAttributes(el, aField);
@@ -90,7 +95,7 @@ Dbmng.AbstractTheme = Class.extend({
     
     return el;
   },
-  
+  */
   getCheckbox: function(aField) {
     var el=document.createElement('input');
     this.assignAttributes(el, aField);

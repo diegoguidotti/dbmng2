@@ -54,7 +54,7 @@
     };
     
     // parameters in aParam array act globally and not punctual.
-    var aParam = { hide_label: false, html5_input: true };
+    var aParam = { hide_label: true, html5_input: true };
     
     var obj = {id:1, name:'Diego', month:2};
 
@@ -89,6 +89,8 @@
 
   var form=new Dbmng.Form({aForm:aForm, aParam:aParam, theme:theme_boot});
   jQuery('#test_dbmng').append(form.createForm());
+
+
     
 /*
    var theme_boot=new Dbmng.BootstrapTheme(); 

@@ -35,7 +35,7 @@ jQuery(function(){
   });
 
   
-  test('SelectWidget',7, function(){
+  test('SelectWidget',9, function(){
     /* ---------- test #01 ---------- */
     var select = new Dbmng.SelectWidget();
     option = { 
@@ -65,6 +65,13 @@ jQuery(function(){
     select.createField(option);
     jQuery('#test_div').html(select.createField(option));
     equal(jQuery('#test_div select').val(),2, "SelectWidget get value (update)");
+
+
+    equal(select.getValue() ,2, "test widget.getValue() using default ");
+    jQuery('#test_div select').val(33);
+    equal(select.getValue() ,33, "test widget.getValue() using assigned value ");
+    
+    
     
     /* ---------- test #04 ---------- */
     var theme_boot = new Dbmng.BootstrapTheme();

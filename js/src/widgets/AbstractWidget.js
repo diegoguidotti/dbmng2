@@ -26,15 +26,20 @@ Dbmng.AbstractWidget = Class.extend({
     else {
       this.aParam = {};
     }
+
+    this.value='';
   },
   
   createWidget: function( options ) {
     // var aField = options.aField;
     options.aField.value = this.getFieldValue(options);
-    return this.theme.getInput(options.aField);
+    var el=this.theme.getInput(options.aField);
+    return el;
   },
   
   createField: function( options ) {
+    var self=this;
+
     options.aField.field = options.field;
     var el = this.theme.getFieldContainer(options.aField);
     
@@ -42,17 +47,33 @@ Dbmng.AbstractWidget = Class.extend({
     if( this.aParam.hide_label ) {
       if( this.aParam.hide_label === true ) {
         bHideLabel = true;
-        options.aField.placeholder = true;
+        options.aField.placeholder = options.aField.label;
       }
     }
     
     if( !bHideLabel ) {
       el.appendChild(this.theme.getLabel(options.aField));
     }
-    el.appendChild(this.createWidget(options));
+    var widget=this.createWidget(options);
+    
+
+    widget.onchange=function( evt ) {
+      self.onChange(evt);
+    };
+
+    el.appendChild(widget);
     return el;
   },
-  
+
+  onChange: function(event){    
+    console.log(event);
+    this.value=event.srcElement.value;
+  } , 
+
+  getValue: function(){
+    return this.value;
+  },
+
   getDefaultValue: function( options ) {
     return '';
   },
@@ -68,6 +89,7 @@ Dbmng.AbstractWidget = Class.extend({
     else{
       v = this.getDefaultValue();
     }
+    this.value=v;
     return v;
   }
 });
