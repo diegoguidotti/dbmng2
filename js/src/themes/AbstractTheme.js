@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////
 // AbstractTheme
-// 12 November 2015
+// 18 November 2015
 // 
 //
 // Developed by :
@@ -71,7 +71,7 @@ Dbmng.AbstractTheme = Class.extend({
     }
     else {
       if(aField.widget=='password'){
-        el.type = "password";        
+        el.type = "password";
       }
       else{
         el.type = "text";
@@ -143,33 +143,61 @@ Dbmng.AbstractTheme = Class.extend({
   
   getSelectNM: function(aField) {
     //console.log(aField);
-    var el=document.createElement('select');
-    el.multiple = true;
+    var out_type = "select";
+    var el, o, opt;
+    if( aField.out_type == 'checkbox' ) {
+      out_type = "checkbox";
+    }
     
-    this.assignAttributes(el, aField);
-    
-    if(aField.voc_val) {
-      var o=document.createElement('option');
+    if( out_type == 'select' ) {
+      el = document.createElement('select');
+      el.multiple = true;
       
-      if( aField.placeholder ) {
-        o.text=aField.label;
-        o.disabled = 'disabled';
-      }
+      this.assignAttributes(el, aField);
       
-      el.options.add(o);
-      for (var opt in aField.voc_val) {
-        o=document.createElement('option');
-        o.value = opt;
-        o.text=aField.voc_val[opt];
-        if( aField.value ) {
-          if( typeof aField.value[0] == 'number') {
-            opt = parseInt(opt);
-          }
-          if( aField.value.indexOf(opt) > -1 ) {
-            o.selected = true;
-          }
+      if(aField.voc_val) {
+        o = document.createElement('option');
+        
+        if( aField.placeholder ) {
+          o.text = aField.label;
+          o.disabled = 'disabled';
         }
+        
         el.options.add(o);
+        for (opt in aField.voc_val) {
+          o = document.createElement('option');
+          o.value = opt;
+          o.text = aField.voc_val[opt];
+          if( aField.value ) {
+            if( typeof aField.value[0] == 'number') {
+              opt = parseInt(opt);
+            }
+            if( aField.value.indexOf(opt) > -1 ) {
+              o.selected = true;
+            }
+          }
+          el.options.add(o);
+        }
+      }
+    }
+    else if( out_type == 'checkbox' ) {
+      console.log(options);
+      el = document.createElement('ul');
+
+      this.assignAttributes(el, aField);
+
+      for (opt in aField.voc_val) {
+        var li = document.createElement('li');
+
+        var aCB = {type: 'int', widget:'checkbox', theme:this}; // , theme:theme_boot ??
+        o = new Dbmng.CheckboxWidget({field:aField.field, aField:aCB});
+        o.createField(opt);
+
+        li.appendChild(o.widget);
+
+        var txt = document.createTextNode(aField.voc_val[opt]);
+        li.appendChild(txt);
+        el.appendChild(li);
       }
     }
     return el;
@@ -188,7 +216,11 @@ Dbmng.AbstractTheme = Class.extend({
       el.disabled = 'disabled';
     }
     if( aField.classes ) {
-      el.className = el.className + ' ' + aField.classes;
+      var space = "";
+      if( el.className.lenght > 0 ) {
+        space = " ";
+      }
+      el.className = el.className + space + aField.classes;
     }
     
   },
