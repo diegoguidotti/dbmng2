@@ -181,15 +181,32 @@ jQuery(function(){
     equal(jQuery('#test_div select').attr('id'),'dbmng_id', "SelectWidget get element id");
   });
 
-  test('SelectNMWidget', 2, function() {
+  test('SelectNMWidget', 4, function() {
     var option = { 
-      field:'month',
+      field:'monthnm',
       aField: {label: 'Months', widget:'select_nm', voc_val: {1:'January', 2:'February', 3: 'March'}},
     };
     var select = new Dbmng.SelectNMWidget(option);
     jQuery('#test_div').html(select.createField());
-    equal(jQuery('#test_div select').val(),null, "SelectWidget get default value");
-    equal(jQuery('#test_div select').attr('id'),'dbmng_month', "SelectWidget get id attribute");
+    equal(jQuery('#test_div select').val(),null, "SelectNMWidget get default value");
+    equal(jQuery('#test_div select').attr('id'),'dbmng_monthnm', "SelectNMWidget get id attribute");
+  
+    var option = { 
+      field:'monthnm',
+      aField: {label: 'Months', widget:'select_nm', voc_val: {1:'January', 2:'February', 3: 'March'}},
+    };
+    var select = new Dbmng.SelectNMWidget(option);
+    jQuery('#test_div').html(select.createField([1,3]));
+    equal(select.getValue(),["1","3"], "SelectNMWidget get default value");
+  
+    var option = { 
+      field:'monthnm',
+      aField: {label: 'Months', type: 'int', widget:'select_nm', voc_val: {1:'January', 2:'February', 3: 'March'}},
+    };
+    var select = new Dbmng.SelectNMWidget(option);
+    jQuery('#test_div').html(select.createField([1,3]));
+    equal(select.getValue(),[1, 3], "SelectWidget get default value");
+    
   });
   
   test('CheckWidget',9, function(){

@@ -51,7 +51,8 @@
         month: {label: 'Mounth', widget:'select', type: 'int', voc_val: {1:'January', 2:'February'}},
         passwd: {label: 'Password', type: 'varchar', widget:'password', classes: 'aaa bbb ccc'},
         check: {label: 'Check', type: 'int', widget:'checkbox'},
-        multiple: {label: 'Multiple', type: 'int', widget:'select_nm', voc_val: {1:'January', 2:'February', 3:'March', 4:'April'}}
+        multiple: {label: 'Multiple', type: 'int', widget:'select_nm', voc_val: {1:'January', 2:'February', 3:'March', 4:'April'}},
+        multiplec: {label: 'Multiple checkbox', type: 'int', widget:'select_nm', voc_val: {1:'January', 2:'February', 3:'March', 4:'April'}, out_type:'checkbox'}
       }
     };
     
@@ -75,6 +76,9 @@
 
     var w5=new Dbmng.SelectNMWidget({field:'multiple', aField:aForm.fields.multiple, theme:theme_boot});
     jQuery('#test_widget_select').append(w5.createField());
+
+    var w6=new Dbmng.SelectNMWidget({field:'multiplec', aField:aForm.fields.multiplec, theme:theme_boot});
+    jQuery('#test_widget_select').append(w6.createField());
 
 
     var form=new Dbmng.Form({aForm:aForm, aParam:aParam, theme:theme_boot});
