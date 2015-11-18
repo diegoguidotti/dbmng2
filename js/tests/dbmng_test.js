@@ -180,5 +180,57 @@ jQuery(function(){
     equal(jQuery('#test_div select').val(),2, "SelectWidget get value (update)");
     equal(jQuery('#test_div select').attr('id'),'dbmng_id', "SelectWidget get element id");
   });
+
+  test('SelectNMWidget', 2, function() {
+    var option = { 
+      field:'month',
+      aField: {label: 'Months', widget:'select_nm', voc_val: {1:'January', 2:'February', 3: 'March'}},
+    };
+    var select = new Dbmng.SelectNMWidget(option);
+    jQuery('#test_div').html(select.createField());
+    equal(jQuery('#test_div select').val(),null, "SelectWidget get default value");
+    equal(jQuery('#test_div select').attr('id'),'dbmng_month', "SelectWidget get id attribute");
+  });
+  
+  test('CheckWidget',9, function(){
+    var option = { 
+      field:'check',
+      aField: {label: 'Check', default:true},
+      widget: 'checkbox'
+    };
+    var widget = new Dbmng.CheckboxWidget(option);
+    jQuery('#test_div').html(widget.createField());
+    equal(jQuery('#test_div input').val(),'true', "CheckboxWidget get default value");
+    equal(jQuery('#test_div input').attr('id'),'dbmng_check', "CheckboxWidget get id attribute");
+
+    jQuery('#test_div input').val(false);
+    equal(jQuery('#test_div input').val(),'false', "(jQuery) get jquery assigned value");
+    equal(widget.getValue(),false, "(getValue) get assigned value");
+    
+    var option = { 
+      field:'check',
+      aField: {label: 'Check'},
+      widget: 'checkbox'
+    };
+    var widget2 = new Dbmng.CheckboxWidget(option);
+    jQuery('#test_div').html(widget2.createField(true));
+    equal(jQuery('#test_div .dbmng_form_row #dbmng_check').val(),'true', "CheckboxWidget createField(true)");
+    equal(widget2.getValue(),true, "(getValue) get assigned value");
+    equal(jQuery('#test_div input').hasClass('form-control'),false, "No class");
+    
+    var theme_boot = new Dbmng.BootstrapTheme();
+    var option = { 
+      field:'check',
+      aField: {label: 'Check'},
+      widget: 'checkbox',
+      theme: theme_boot
+    };
+    var widget3 = new Dbmng.CheckboxWidget(option);
+    jQuery('#test_div').html(widget3.createField(false));
+    equal(jQuery('#test_div input').hasClass('form-control'),true, "BootstrapTheme check form-control class");
+    equal(widget3.aField,option.aField, "Check aField array");
+  });
+  
+  
 });
 

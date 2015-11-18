@@ -75,9 +75,9 @@ Dbmng.AbstractWidget = Class.extend({
     return el;
   },
 
-  onChange: function(event){    
-    console.log(event);    
-  } , 
+  onChange: function(event){
+    console.log(event);
+  } ,
 
   getValue: function(){
     return this.widget.value;
