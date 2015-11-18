@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////
 // BootstrapTheme
-// 12 November 2015
+// 18 November 2015
 // 
 //
 // Developed by :
@@ -14,9 +14,14 @@ Dbmng.BootstrapTheme = Dbmng.AbstractTheme.extend({
     jQuery(el).css('font-weight','bold');
     return el;
   },
+  
   assignAttributes: function(el, aField) {
     this._super(el, aField);
-    el.className=el.className+' form-control';
+    var space = "";
+    if( el.className.lenght > 0 ) {
+      space = " ";
+    }
+    el.className = el.className + space + "form-control";
   }
 
 });
