@@ -6,6 +6,7 @@
   <script type="text/javascript" src="../src/Class.js"></script>
   <script type="text/javascript" src="../src/Dbmng.js"></script> 
   <script type="text/javascript" src="../src/Form.js"></script> 
+  <script type="text/javascript" src="../src/Api.js"></script> 
   <script type="text/javascript" src="../src/Ie9.js"></script> 
   <script type="text/javascript" src="../src/Utilities.js"></script>
   <script type="text/javascript" src="../src/themes/AbstractTheme.js"></script>
@@ -85,7 +86,21 @@
     jQuery('#test_dbmng').append(form.createForm(obj));
 
 
-    
+		var api=new  Dbmng.Api({aForm:aForm, url:'/dbmng2/api/test', user:'test', password:'test'});
+    api.select(function(data){
+				console.log("Select");
+				console.log(data);				
+				api.update(1,{'id':1,'name':'Nuovo Nome'},function(data){
+					console.log("Updates");				
+					console.log(data);				
+			    api.select(function(data){
+						console.log("Select post");				
+						console.log(data);				
+
+					});
+					
+				});
+		});
 /*
    var theme_boot=new Dbmng.BootstrapTheme(); 
    var w1=new Dbmng.AbstractWidget(); 

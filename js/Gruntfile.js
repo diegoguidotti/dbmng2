@@ -21,6 +21,7 @@ module.exports = function(grunt) {
             'src/Utilities.js',
             'src/Dbmng.js',
             'src/Form.js',
+            'src/Api.js',
             'src/themes/*.js',
             'src/widgets/*.js',
             
@@ -81,6 +82,7 @@ module.exports = function(grunt) {
             'src/Utilities.js',
             'src/Dbmng.js.js',
             'src/Form.js',
+            'src/Api.js',
             'src/themes/*.js',
             'src/widgets/*.js',        
       ],
