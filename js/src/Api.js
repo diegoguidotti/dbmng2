@@ -21,22 +21,22 @@ Dbmng.Api = Class.extend({
 				"Authorization": "Basic " + btoa(this.user + ":" + this.password)
 			}
 	},
-  select: function(onSuccess, onFail) {		
+  select: function(options) {		
 		jQuery.ajax({
 			url: this.url,
 			dataType:'json',
 			headers: this.getHeaders(),
 			success: function(data){
-				if(typeof onSuccess=='function'){
-					onSuccess(data);
+				if(typeof options.success=='function'){
+					options.success(data);
 				}
 				else{
 					console.log(data);
 				}
 			},
 			error: function(exc){
-				if(typeof onFail=='function'){
-					onFail(data);
+				if(typeof options.error=='function'){
+					options.error(data);
 				}
 				console.log(exc);
 			}
@@ -47,24 +47,24 @@ Dbmng.Api = Class.extend({
   insert: function() {
 		throw "Function to be completed"; 
   },
-  update: function(key, payload, onSuccess) {
+  update: function(options) {
 		jQuery.ajax({
-			url: this.url+'/'+key,
+			url: this.url+'/'+options.key,
 			dataType:'json',
 			method:'PUT',
-			data: JSON.stringify(payload),
+			data: JSON.stringify(options.data),
 			headers: this.getHeaders(),
 			success: function(data){
-				if(typeof onSuccess=='function'){
-					onSuccess(data);
+				if(typeof options.success=='function'){
+					options.success(data);
 				}
 				else{
 					console.log(data);
 				}
 			},
 			error: function(exc){
-				if(typeof onFail=='function'){
-					onFail(data);
+				if(typeof options.error=='function'){
+					options.error(data);
 				}
 				console.log(exc);
 			}

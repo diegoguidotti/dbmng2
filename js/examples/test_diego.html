@@ -32,6 +32,8 @@
   <h1>DBMNG</h1>
     <div id="test_dbmng"></div>
 
+  <h1>DBMNG2</h1>
+    <div id="test_dbmng2"></div>
   <script>
 
     var options={'value':'Ciao', 'label':'saluto'}; 
@@ -49,11 +51,13 @@
       fields: {
         id: {label: 'ID', type: 'int', key: 0, nullable: false}, 
         name: {label: 'Name', type: 'varchar', 'default': 'Paperino', nullable: false},
+
         month: {label: 'Mounth', widget:'select', type: 'int', voc_val: {1:'January', 2:'February'}},
         passwd: {label: 'Password', type: 'varchar', widget:'password', classes: 'aaa bbb ccc'},
         check: {label: 'Check', type: 'int', widget:'checkbox'},
         multiple: {label: 'Multiple', type: 'int', widget:'select_nm', voc_val: {1:'January', 2:'February', 3:'March', 4:'April'}},
         multiplec: {label: 'Multiple checkbox', type: 'int', widget:'select_nm', voc_val: {1:'January', 2:'February', 3:'March', 4:'April'}, out_type:'checkbox'}
+
       }
     };
     
@@ -86,21 +90,62 @@
     jQuery('#test_dbmng').append(form.createForm(obj));
 
 
-		var api=new  Dbmng.Api({aForm:aForm, url:'/dbmng2/api/test', user:'test', password:'test'});
-    api.select(function(data){
-				console.log("Select");
-				console.log(data);				
-				api.update(1,{'id':1,'name':'Nuovo Nome'},function(data){
+
+		var aForm2 = { table_name: 'test', 
+      primary_key: Array('id'), 
+      fields: {
+        id: {label: 'ID', type: 'int', key: 0, nullable: false}, 
+        name: {label: 'Name', type: 'varchar', 'default': 'Paperino', nullable: false}      
+			}
+    };
+		var form2=new Dbmng.Form({aForm:aForm2, aParam:aParam, theme:theme_boot});
+    jQuery('#test_dbmng2').append(form2.createForm(obj));
+
+		var api=new  Dbmng.Api({aForm:aForm2, url:'/dbmng2/api/test', user:'test', password:'test'});
+
+		
+
+		function updateRecord(){
+			value=form2.getValue();
+			alert(value.id);
+			api.update({
+				key:value.id,
+				data:value,
+				success:function(data){
+					console.log(data);
+					showRecord();
+				}
+			});
+		}
+
+
+		function showRecord(){
+
+			api.select({
+				success:function(data){
+					alert(JSON.stringify(data));
+				}
+			});
+
+		}
+
+/*
+    api.select({success: function(data){
+				console.log("Select Before");
+				console.log(data.data[0]);				
+				api.update({key:1,data:{'id':1,'name':'Test name:'+new Date()},success:function(data){
 					console.log("Updates");				
 					console.log(data);				
-			    api.select(function(data){
-						console.log("Select post");				
-						console.log(data);				
+			    api.select({success: function(data){
+						console.log("Select After");				
+						console.log(data.data[0]);				
 
-					});
+					}});
 					
-				});
-		});
+				}});
+		}});
+*/
+
 /*
    var theme_boot=new Dbmng.BootstrapTheme(); 
    var w1=new Dbmng.AbstractWidget(); 
