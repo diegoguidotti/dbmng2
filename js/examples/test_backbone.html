@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DBMNG Test Suite</title>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+	<script type="text/javascript" src="http://ajax.cdnjs.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+	<script type="text/javascript" src="http://ajax.cdnjs.com/ajax/libs/backbone.js/1.2.3/backbone-min.js"></script>
+  <script type="text/javascript" src="backbone.basicauth.js"></script>
+
+  <script type="text/javascript" src="../src/Class.js"></script>
+  <script type="text/javascript" src="../src/Dbmng.js"></script> 
+  <script type="text/javascript" src="../src/Form.js"></script> 
+  <script type="text/javascript" src="../src/Ie9.js"></script> 
+  <script type="text/javascript" src="../src/Utilities.js"></script>
+  <script type="text/javascript" src="../src/themes/AbstractTheme.js"></script>
+  <script type="text/javascript" src="../src/themes/BootstrapTheme.js"></script>
+  <script type="text/javascript" src="../src/widgets/AbstractWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/SelectWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/NumericWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/PasswordWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/CheckboxWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/SelectNMWidget.js"></script>
+</head>
+<body>
+  <h1>Base</h1>
+    
+
+
+		<div id="test_base">
+			<ul class="muppets-list"></ul>
+
+			<div class="muppet-create">
+				<b>Add a Muppet</b>
+				<label>Name: <input id="muppet-name" type="text"></label>
+				
+				<button class="create">Create Muppet!</button>
+			</div>
+		</div>
+
+		<script type="text/template" id="muppet-item-tmpl">
+			<p><a href="/muppets/<%= id %>"><%= name %></a></p>
+			
+			<button class="remove">x</button>
+		</script>
+  
+  <script>
+
+    // Test for Bootstrap theme
+    var theme_boot=new Dbmng.BootstrapTheme();
+    var aForm = { table_name: 'test', 
+      primary_key: Array('id'), 
+      fields: {
+        id: {label: 'ID', type: 'int', key: 0, nullable: false}, 
+        name: {label: 'Name', type: 'varchar', 'default': 'Paperino', nullable: false},
+        month: {label: 'Mounth', widget:'select', type: 'int', voc_val: {1:'January', 2:'February'}},
+        passwd: {label: 'Password', type: 'varchar', widget:'password', classes: 'aaa bbb ccc'},
+        check: {label: 'Check', type: 'int', widget:'checkbox'},
+        multiple: {label: 'Multiple', type: 'int', widget:'select_nm', voc_val: {1:'January', 2:'February', 3:'March', 4:'April'}}
+      }
+    };
+
+
+
+		
+
+
+		/* crea il modello (tipo aForm) */
+		var TestModel = Backbone.Model.extend({
+			defaults: {
+				id: null,
+				name: null
+			}
+		});
+
+		/* crea una collection (tipo crud) con l'url */
+		var TestCollection = Backbone.Collection.extend({
+			url: '/dbmng2/api/test/',
+			model: TestModel,
+			parse: function(data) {
+				console.log(data)
+				return data.data;
+			}
+		});
+
+		var server_credential={
+				username: 'test',
+				password: 'test'
+		};
+		
+		/* istanzia l'oggetto e passa le credenziali*/		
+		var test = new TestCollection();
+		test.credentials = server_credential;
+
+		/* fa il fecth e poi in maniera sincrona (then) prende i valori */		
+		test.fetch().then(function() {
+				console.log(test); // >> length: 1
+				console.log(test.get(1).get('name'))
+				console.log(test.get(2).get('name'))
+
+				/* prende il secondo record e lo salva poi, asincrono, vede se l'ha salvato */	
+				last_record=test.get(2);
+				last_record.credentials = server_credential;
+				last_record.save({'name':'Pluto'}).then(function() {
+					test.fetch().then(function() {
+						console.log(test.get(2).get('name'))
+					});
+				});
+		});
+
+			// View class for displaying each muppet list item
+			var testListItemView = Backbone.View.extend({
+				tagName: 'li',
+				className: 'test',
+				template: _.template($('#muppet-item-tmpl').html()),
+
+				initialize: function() {
+					this.listenTo(this.model, 'destroy', this.remove)
+				},
+
+				render: function() {
+					var html = this.template(this.model.toJSON());
+					this.$el.html(html);
+					return this;
+				},
+
+				events: {
+					'click .remove': 'onRemove'
+				},
+
+				onRemove: function() {
+					this.model.destroy();
+				}
+			});
+
+
+		// View class for rendering the list of all muppets
+var testListView = Backbone.View.extend({
+  el: '#test_base',
+
+  initialize: function() {
+    this.listenTo(this.collection, 'sync', this.render);
+  },
+
+  render: function() {
+    var $list = this.$('ul.muppets-list').empty();
+
+    this.collection.each(function(model) {
+      var item = new testListItemView({model: model});
+      $list.append(item.render().$el);
+    }, this);
+
+    return this;
+  },
+
+  events: {
+    'click .create': 'onCreate'
+  },
+
+  onCreate: function() {
+    var $name = this.$('#muppet-name');
+    var $job = this.$('#muppet-job');
+
+    if ($name.val()) {
+      this.collection.create({
+        name: $name.val()
+      });
+
+      $name.val('');
+      //$job.val('');
+    }
+  }
+});
+
+var muppetsView = new testListView({collection: test});
+test.fetch();
+
+    
+
+  </script>
+</body>
