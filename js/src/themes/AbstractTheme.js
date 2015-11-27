@@ -216,18 +216,75 @@ Dbmng.AbstractTheme = Class.extend({
       el.disabled = 'disabled';
     }
     if( aField.classes ) {
+			this.addClass(el, aField.classes);
+			/*
       var space = "";
       if( el.className.lenght > 0 ) {
         space = " ";
       }
-      el.className = el.className + space + aField.classes;
+      el.className = el.className + space + ;
+			*/
     }
     
   },
-
+	addClass: function(el, className){
+      var space = "";
+      if( el.className.lenght > 0 ) {
+        space = " ";
+      }
+      el.className = el.className + space + className;
+	},
   getForm: function(opt) {
     var el = document.createElement('form');
     return el;
   },
-
+  getTable: function(opt) {
+    var el = document.createElement('table');
+		if(opt.data){
+			for(var i=0; i<opt.data.length; i++){				
+				var row=this.getTableRow({data: opt.data[i], options:opt.options });
+				if(opt.options){					
+					if(opt.options.assignClass){
+						this.addClass(row, "dbmng_row dbmng_row_"+i);
+					}
+					if(typeof opt.options.addColumn=='function'){
+						console.log('a');
+						row.appendChild(opt.options.addColumn({data: opt.data[i], options:opt.options }));
+					}
+				}
+				el.appendChild(row);
+			}			
+		}
+    return el;
+  },
+  getTableRow: function(opt) {
+		var el = document.createElement('tr');
+		if(opt.data){
+			for (var key in opt.data) {
+				var cell=this.getTableCell({content: opt.data[key], options:opt.options});
+				if(opt.options){					
+					if(opt.options.assignClass){
+						this.addClass(cell, "dbmng_cell dbmng_col_"+key);
+					}
+				}				
+				el.appendChild(cell);
+			}			
+		}
+		return el;
+	},
+  getTableCell: function(opt) {
+		if(!opt){
+			opt={};
+		}
+		var el = document.createElement('td');
+		if(opt.content){
+				el.appendChild(document.createTextNode(opt.content));
+		}
+		return el;
+	},
+	getButton: function(text) {
+		var el = document.createElement('button');
+		el.appendChild(document.createTextNode(text));
+		return el;
+	}
 });

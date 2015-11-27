@@ -16,10 +16,10 @@ Dbmng.Api = Class.extend({
 		this.user=options.user;
 		this.password=options.password;
   },
-	getHeaders(){
+	getHeaders: function(){
 		return {
 				"Authorization": "Basic " + btoa(this.user + ":" + this.password)
-			}
+			};
 	},
   select: function(options) {		
 		jQuery.ajax({
@@ -36,7 +36,7 @@ Dbmng.Api = Class.extend({
 			},
 			error: function(exc){
 				if(typeof options.error=='function'){
-					options.error(data);
+					options.error(exc);
 				}
 				console.log(exc);
 			}
@@ -44,8 +44,28 @@ Dbmng.Api = Class.extend({
     //var ret={};
     //return ret;
   },
-  insert: function() {
-		throw "Function to be completed"; 
+  insert: function(options) {
+		jQuery.ajax({
+			url: this.url,
+			dataType:'json',
+			method:'POST',
+			data: JSON.stringify(options.data),
+			headers: this.getHeaders(),
+			success: function(data){
+				if(typeof options.success=='function'){
+					options.success(data);
+				}
+				else{
+					console.log(data);
+				}
+			},
+			error: function(exc){
+				if(typeof options.error=='function'){
+					options.error(exc);
+				}
+				console.log(exc);
+			}
+		});
   },
   update: function(options) {
 		jQuery.ajax({
@@ -64,15 +84,34 @@ Dbmng.Api = Class.extend({
 			},
 			error: function(exc){
 				if(typeof options.error=='function'){
-					options.error(data);
+					options.error(exc);
 				}
 				console.log(exc);
 			}
 		});
 				
   },
-  delete: function() {
-		throw "Function to be completed"; 
-  },
+  delete: function(options) {
+		jQuery.ajax({
+			url: this.url+'/'+options.key,
+			dataType:'json',
+			method:'DELETE',
+			headers: this.getHeaders(),
+			success: function(data){
+				if(typeof options.success=='function'){
+					options.success(data);
+				}
+				else{
+					console.log(data);
+				}
+			},
+			error: function(exc){
+				if(typeof options.error=='function'){
+					options.error(exc);
+				}
+				console.log(exc);
+			}
+		});
+  }
   
 });

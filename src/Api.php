@@ -151,7 +151,7 @@ class Api {
                 $input['ok'] = false;
                 $input['msg'] = "The tablename '$tablename' doesn't exist";
               }
-            $input['body'] = $body;
+            //$input['body'] = $body;
             return json_encode($input);
           }
         else
@@ -162,7 +162,7 @@ class Api {
 			} );
 			
       $router->delete('/api/*/*', function( $tablename, $id_value=null ) use($dbmng){
-        $allowed=$dbmng->isAllowed('update');
+        $allowed=$dbmng->isAllowed('delete');
         
         if($allowed['ok'])
           {
@@ -206,7 +206,7 @@ class Api {
       } );
 
       $router->post('/api/*', function( $tablename ) use($dbmng){
-        $allowed=$dbmng->isAllowed('update');
+        $allowed=$dbmng->isAllowed('insert');
         
         if($allowed['ok'])
           {

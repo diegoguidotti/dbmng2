@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DBMNG Test Api</title>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+  <script type="text/javascript" src="../src/Class.js"></script>
+  <script type="text/javascript" src="../src/Dbmng.js"></script> 
+  <script type="text/javascript" src="../src/Api.js"></script>
+  <script type="text/javascript" src="../src/Form.js"></script> 
+  <script type="text/javascript" src="../src/Ie9.js"></script> 
+  <script type="text/javascript" src="../src/Utilities.js"></script>
+  <script type="text/javascript" src="../src/themes/AbstractTheme.js"></script>
+  <script type="text/javascript" src="../src/themes/BootstrapTheme.js"></script>
+  <script type="text/javascript" src="../src/widgets/AbstractWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/SelectWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/NumericWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/PasswordWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/CheckboxWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/SelectNMWidget.js"></script>
+</head>
+<body>
+  <h1>tabella</h1>
+	<div id="test_table"></div>
+  <h1>form</h1>
+	<div id="test_form"></div>
+
+	<script>
+
+    // Test for Bootstrap theme
+    var theme_boot=new Dbmng.BootstrapTheme();
+    var aForm = { table_name: 'test', 
+      primary_key: Array('id'), 
+      fields: {
+        id: {label: 'ID', type: 'int', key: 0, nullable: false}, 
+        name: {label: 'Name', type: 'varchar', 'default': 'Paperino', nullable: false}
+      }
+    };
+
+		var form=new Dbmng.Form({aForm:aForm, aParam:{}, theme:theme_boot});
+    //jQuery('#test_base').append(form2.createForm(obj));
+
+		
+
+		var api=new  Dbmng.Api({aForm:aForm, url:'/dbmng2/api/test', user:'test', password:'test'});
+		creaTabella();
+		
+  
+
+function creaTabella(){
+	api.select({
+		success:function(data){
+			var aData=data.data;
+
+			var html=theme_boot.getTable({data:aData, options:{
+				assignClass:true,
+				addColumn:function(opt){
+					var cell=theme_boot.getTableCell();
+
+						
+					var button_edit=jQuery(theme_boot.getButton('Edita'));
+					button_edit.click(function(){						
+						creaForm(opt.data.id, opt.data);
+					});		
+					jQuery(cell).append(button_edit);
+					
+					var button_delete=jQuery(theme_boot.getButton('Delete'));
+					button_delete.click(function(){						
+						deleteRecord(opt.data.id);
+					});		
+					jQuery(cell).append(button_delete);
+
+					return cell;
+				}
+			}});
+			jQuery('#test_table').html(html);
+
+
+			var button_insert=jQuery(theme_boot.getButton('Inserisci'));
+			button_insert.click(function(){						
+				creaInsertForm();
+			});		
+			jQuery('#test_table').append(button_insert);
+		}
+	});
+}
+
+function deleteRecord(key){
+	api.delete({key:key, success:function(data){
+		creaTabella();
+	}});
+
+}
+
+function creaInsertForm(key, aData){
+	
+	jQuery('#test_form').html(form.createForm());
+	var button=theme_boot.getButton('Salva');
+	jQuery(button).click(function(){
+		api.insert({key:key,data:form.getValue(),success:function(data){
+			jQuery('#test_form').html('');
+			creaTabella();					
+		}});
+	});
+	jQuery('#test_form').append(button);
+}
+
+function creaForm(key, aData){
+	
+	jQuery('#test_form').html(form.createForm(aData));
+	var button=theme_boot.getButton('Salva');
+	jQuery(button).click(function(){
+		api.update({key:key,data:form.getValue(),success:function(data){
+			jQuery('#test_form').html('');
+			creaTabella();					
+		}});
+	});
+	jQuery('#test_form').append(button);
+}
+
+  </script>
+</body>

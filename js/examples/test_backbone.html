@@ -161,6 +161,7 @@ var testListView = Backbone.View.extend({
     var $job = this.$('#muppet-job');
 
     if ($name.val()) {
+		 this.collection.credentials = server_credential;
       this.collection.create({
         name: $name.val()
       });
