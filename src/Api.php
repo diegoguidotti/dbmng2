@@ -53,7 +53,7 @@ class Api {
 			});
 			
 			
-
+      // select
 			$router->get('/api/*/*', function( $tablename, $id_value=null ) use($dbmng){
 				$allowed=$dbmng->isAllowed('select');
 				
@@ -149,6 +149,98 @@ class Api {
 				$input['body'] = $body;
 				return json_encode($input);
 			} );
+			
+      $router->delete('/api/*/*', function( $tablename, $id_value=null ) use($dbmng){
+        $aForm = $dbmng->getaForm();
+        if( $aForm['table_name'] == $tablename )
+          {
+            if( !is_null($id_value) )
+              {
+                // get the info from aForm array
+                $primary_key = $aForm['primary_key'][0];
+                $aFields = array_keys($aForm['fields']);
+                
+                
+                // prepare the array of vars for the update and 
+                // check if the form_params passed are in the table structure
+                $aVar[$primary_key] = $id_value;
+                
+                $input = $dbmng->delete($aVar);
+                
+                $input['fields'] = $aFields;
+                $input['pk'] = $primary_key;
+              }
+            else
+              {
+                $input['ok'] = false;
+                $input['msg'] = "The id value doesn't exist";
+              }
+          }
+        else
+          {
+            $input['ok'] = false;
+            $input['msg'] = "The tablename '$tablename' doesn't exist";
+          }
+        return json_encode($input);
+      } );
+
+      $router->post('/api/*', function( $tablename ) use($dbmng){
+        $aForm = $dbmng->getaForm();
+        if( $aForm['table_name'] == $tablename )
+          {
+            // get the info from aForm array
+            $primary_key = $aForm['primary_key'][0];
+            $aFields = array_keys($aForm['fields']);
+            
+            // get the form_params from the rest call
+            $body = file_get_contents("php://input");
+            
+            $aFormParams = json_decode($body);
+            print_r($aFormParams,true);
+            // prepare the array of vars for the update and 
+            // check if the form_params passed are in the table structure
+            $bContinue = true;
+            $aVar = array();
+            $aFldError = array();
+            foreach($aFormParams as $k => $v)
+              {
+                if( in_array($k, $aFields) )
+                  {
+                    $aVar[$k] = $v;
+                    $bContinue = $bContinue && true;
+                  }
+                else
+                  {
+                    array_push($aFldError,$k); 
+                    $bContinue = $bContinue && false;
+                  }
+              }
+            
+            // execute the update only if all the form_params are in the table structure
+            if( $bContinue )
+              {
+                $input = $dbmng->insert($aVar);
+                
+                $input['form_params'] = $aFormParams;
+                $input['fields'] = $aFields;
+                $input['pk'] = $primary_key;
+              }
+            else
+              {
+                $input['ok'] = false;
+                $input['msg'] = "Some fields are wrong";
+                $input['wrong_field'] = $aFldError;
+              }
+          }
+        else
+          {
+            $input['ok'] = false;
+            $input['msg'] = "The tablename '$tablename' doesn't exist";
+          }
+        $input['body'] = $body;
+        return json_encode($input);
+      } );
+
 	}
 
 	function isValid(){
