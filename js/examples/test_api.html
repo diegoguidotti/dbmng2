@@ -24,6 +24,12 @@
   <h1>form</h1>
 	<div id="test_form"></div>
 
+
+	<style>
+		#test_table td{
+			border:1px solid #CCC;
+		}
+	</style>
 	<script>
 
     // Test for Bootstrap theme
@@ -53,6 +59,9 @@ function creaTabella(){
 
 			var html=theme_boot.getTable({data:aData, options:{
 				assignClass:true,
+				setIDRow:function(aData){
+					return "dbmng_row_id_"+aData.id;
+				},
 				addColumn:function(opt){
 					var cell=theme_boot.getTableCell();
 
@@ -63,6 +72,12 @@ function creaTabella(){
 					});		
 					jQuery(cell).append(button_edit);
 					
+					var button_edit=jQuery(theme_boot.getButton('Edita Inline'));
+					button_edit.click(function(){						
+						creaFormInline(opt.data.id, opt.data, true);
+					});		
+					jQuery(cell).append(button_edit);
+
 					var button_delete=jQuery(theme_boot.getButton('Delete'));
 					button_delete.click(function(){						
 						deleteRecord(opt.data.id);
@@ -115,6 +130,41 @@ function creaForm(key, aData){
 		}});
 	});
 	jQuery('#test_form').append(button);
+}
+
+function creaFormInline(key, aData){
+	var html=form.createForm(aData);	
+	var row_id='#test_table table #dbmng_row_id_'+key;
+
+	var listWidth = [];
+	jQuery(row_id+" td").each(function() {
+		  listWidth.push($(this).width());
+	});
+
+
+
+
+	jQuery(row_id).html(html);
+	jQuery(row_id).find('label').hide();
+	jQuery(row_id).find('.dbmng_form_row').wrap( "<td class='dbmng_cell_inline'></td>");
+
+	jQuery(row_id+" td.dbmng_cell_inline").each(function(k,v){
+		jQuery(v).width(listWidth[k]);
+		jQuery(v).find('input').width(listWidth[k]);
+		jQuery(v).find('select').width(listWidth[k]);
+	});
+
+	
+	var button=theme_boot.getButton('Salva');
+	jQuery(button).click(function(){
+		api.update({key:key,data:form.getValue(),success:function(data){
+			jQuery('#test_form').html('');
+			creaTabella();					
+		}});
+	});
+	jQuery(row_id).append("<td></td>").append(button);
+
+
 }
 
   </script>

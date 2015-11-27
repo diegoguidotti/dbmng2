@@ -266,6 +266,9 @@ Dbmng.AbstractTheme = Class.extend({
 					if(opt.options.assignClass){
 						this.addClass(cell, "dbmng_cell dbmng_col_"+key);
 					}
+					if(typeof opt.options.setIDRow=='function'){
+						el.id=opt.options.setIDRow(opt.data);
+					}
 				}				
 				el.appendChild(cell);
 			}			
