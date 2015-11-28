@@ -19,6 +19,9 @@
   <script type="text/javascript" src="../src/widgets/SelectNMWidget.js"></script>
 </head>
 <body>
+
+
+
   <h1>tabella</h1>
 	<div id="test_table"></div>
   <h1>form</h1>
@@ -29,6 +32,22 @@
 		#test_table td{
 			border:1px solid #CCC;
 		}
+#test_table form{
+	display:block !important;
+}
+		#test_table input{
+			border: 0px;
+			background-color:#FCC;
+		}
+
+		.dbmng_col_id {
+			width:6em;
+		}
+
+		#test_table form{
+			display:inline!important;
+		}
+
 	</style>
 	<script>
 
@@ -107,11 +126,14 @@ function deleteRecord(key){
 }
 
 function creaInsertForm(key, aData){
+
 	
+
 	jQuery('#test_form').html(form.createForm());
 	var button=theme_boot.getButton('Salva');
 	jQuery(button).click(function(){
 		api.insert({key:key,data:form.getValue(),success:function(data){
+			
 			jQuery('#test_form').html('');
 			creaTabella();					
 		}});
@@ -132,22 +154,46 @@ function creaForm(key, aData){
 	jQuery('#test_form').append(button);
 }
 
+//the function insert the form widgets inline in the table
 function creaFormInline(key, aData){
+	jQuery('button').attr('disabled','true');
+
+	//get the form
 	var html=form.createForm(aData);	
+
+	//define the row_id
 	var row_id='#test_table table #dbmng_row_id_'+key;
 
+	//get the original dimension of the table
 	var listWidth = [];
 	jQuery(row_id+" td").each(function() {
 		  listWidth.push($(this).width());
 	});
 
 
+/*
+	//Complicato metodo per eliminare il form senza eliminare i value degli input
+	var fields=html.childNodes;
+	var row=document.getElementById('dbmng_row_id_'+key);
+	//delete all cells
+	while (row.firstChild) {
+		  row.removeChild(row.firstChild);
+	}
+	for(var x=0; x<fields.length; x++){
+		//you need to clone the node
+		var cln = fields[x].cloneNode(true);
+		row.appendChild(cln);
+	}
+*/
+	
+	//html=jQuery(html).html();
 
 
 	jQuery(row_id).html(html);
 	jQuery(row_id).find('label').hide();
 	jQuery(row_id).find('.dbmng_form_row').wrap( "<td class='dbmng_cell_inline'></td>");
 
+	//change the field dimension using the td width
 	jQuery(row_id+" td.dbmng_cell_inline").each(function(k,v){
 		jQuery(v).width(listWidth[k]);
 		jQuery(v).find('input').width(listWidth[k]);
@@ -158,11 +204,13 @@ function creaFormInline(key, aData){
 	var button=theme_boot.getButton('Salva');
 	jQuery(button).click(function(){
 		api.update({key:key,data:form.getValue(),success:function(data){
+			jQuery('button').removeAttr('disabled');
 			jQuery('#test_form').html('');
 			creaTabella();					
 		}});
 	});
-	jQuery(row_id).append("<td></td>").append(button);
+	jQuery(row_id).append("<td class='dbmng_buttons'></td>");
+	jQuery(row_id+' td.dbmng_buttons').html(button);
 
 
 }

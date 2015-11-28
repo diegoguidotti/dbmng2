@@ -51,7 +51,6 @@ Dbmng.AbstractTheme = Class.extend({
     if(aField.value) {
       el.value=aField.value;
     }
-    
     if( aField.placeholder ) {
       el.placeholder = aField.placeholder;
     }

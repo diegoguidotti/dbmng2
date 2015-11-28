@@ -68,7 +68,6 @@ Dbmng.Form = Class.extend({
   
   createForm: function(aData) {
     var form = this.theme.getForm();
-
     for(var key in this.aForm.fields){
       var aField=this.aForm.fields[key];
 			
