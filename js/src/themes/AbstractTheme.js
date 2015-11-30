@@ -240,22 +240,42 @@ Dbmng.AbstractTheme = Class.extend({
   getTable: function(opt) {
     var el = document.createElement('table');
 		if(opt.data){
+			el.appendChild(this.getTableHeader(opt));	
+			var tbody=document.createElement('tbody');
 			for(var i=0; i<opt.data.length; i++){				
 				var row=this.getTableRow({data: opt.data[i], options:opt.options });
 				if(opt.options){					
 					if(opt.options.assignClass){
 						this.addClass(row, "dbmng_row dbmng_row_"+i);
 					}
-					if(typeof opt.options.addColumn=='function'){
-						console.log('a');
+					if(typeof opt.options.addColumn=='function'){						
 						row.appendChild(opt.options.addColumn({data: opt.data[i], options:opt.options }));
 					}
 				}
-				el.appendChild(row);
-			}			
+				tbody.appendChild(row);
+			}		
+			el.appendChild(tbody);	
 		}
     return el;
   },
+	getTableHeader: function(opt) {
+		var el = document.createElement('thead');
+		var tr = document.createElement('tr');
+		if(opt.header){
+				for(var i=0; i<opt.header.length; i++){
+					tr.appendChild(this.getTableHCell({content: opt.header[i], options:opt.options}));
+				}
+		}
+		else if(opt.data){
+			if(opt.data.length>0){
+				for(var key in opt.data[0]){
+					tr.appendChild(this.getTableHCell({content: key, options:opt.options}));
+				}
+			}
+		}
+		el.appendChild(tr);
+		return el;		
+	},
   getTableRow: function(opt) {
 		var el = document.createElement('tr');
 		if(opt.data){
@@ -271,6 +291,16 @@ Dbmng.AbstractTheme = Class.extend({
 				}				
 				el.appendChild(cell);
 			}			
+		}
+		return el;
+	},
+  getTableHCell: function(opt) {
+		if(!opt){
+			opt={};
+		}
+		var el = document.createElement('th');
+		if(opt.content){
+				el.appendChild(document.createTextNode(opt.content));
 		}
 		return el;
 	},

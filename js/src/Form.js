@@ -21,6 +21,10 @@ Dbmng.Form = Class.extend({
       this.theme = new Dbmng.AbstractTheme();
     }
 // var w1=new Dbmng.AbstractWidget({field:'id', aField:aForm.fields.id, value:obj.id, theme:theme_boot});
+		this.createWidgets();
+
+  },
+  createWidgets: function(){
     this.widgets={};
     for(var key in this.aForm.fields){
       var aField=this.aForm.fields[key];
@@ -55,9 +59,7 @@ Dbmng.Form = Class.extend({
       
       this.widgets[key]=w;
     }
-
-  },
-  
+	},
   getValue: function() {
     var ret={};
     for(var key in this.aForm.fields){
@@ -67,6 +69,11 @@ Dbmng.Form = Class.extend({
   },
   
   createForm: function(aData) {
+
+		if(!aData){
+			this.createWidgets();
+		}
+
     var form = this.theme.getForm();
     for(var key in this.aForm.fields){
       var aField=this.aForm.fields[key];

@@ -27,6 +27,10 @@
   <h1>form</h1>
 	<div id="test_form"></div>
 
+	<div id="test_2"></div>
+
+
+
 
 	<style>
 		#test_table td{
@@ -53,11 +57,15 @@
 
     // Test for Bootstrap theme
     var theme_boot=new Dbmng.BootstrapTheme();
+
+
+		jQuery('#test_2').html(theme_boot.getTable({data:[{nm:'Diego',sr:'Guid'}]}));
+
     var aForm = { table_name: 'test', 
       primary_key: Array('id'), 
       fields: {
         id: {label: 'ID', type: 'int', key: 0, nullable: false}, 
-        name: {label: 'Name', type: 'varchar', 'default': 'Paperino', nullable: false}
+        name: {label: 'Name', type: 'varchar',  nullable: false}
       }
     };
 
@@ -75,8 +83,17 @@ function creaTabella(){
 	api.select({
 		success:function(data){
 			var aData=data.data;
+			var header=[];
+			for(var key in aForm.fields){
+				if(aForm.fields[key].label)
+					header.push(aForm.fields[key].label);	
+				else{
+					header.push(key);	
+				}
+			}
 
-			var html=theme_boot.getTable({data:aData, options:{
+
+			var html=theme_boot.getTable({data:aData, header: header, options:{
 				assignClass:true,
 				setIDRow:function(aData){
 					return "dbmng_row_id_"+aData.id;
@@ -171,7 +188,7 @@ function creaFormInline(key, aData){
 	});
 
 
-/*
+
 	//Complicato metodo per eliminare il form senza eliminare i value degli input
 	var fields=html.childNodes;
 	var row=document.getElementById('dbmng_row_id_'+key);
@@ -179,19 +196,16 @@ function creaFormInline(key, aData){
 	while (row.firstChild) {
 		  row.removeChild(row.firstChild);
 	}
-	for(var x=0; x<fields.length; x++){
-		//you need to clone the node
-		var cln = fields[x].cloneNode(true);
-		row.appendChild(cln);
+	while (fields.length > 0) {
+			var td=document.createElement('td');
+			td.className='dbmng_cell_inline';			
+			td.appendChild(fields[0]);
+			row.appendChild(td);
 	}
-*/
-	
-	//html=jQuery(html).html();
 
-
-	jQuery(row_id).html(html);
+   //jQuery(row_id).html(html);
 	jQuery(row_id).find('label').hide();
-	jQuery(row_id).find('.dbmng_form_row').wrap( "<td class='dbmng_cell_inline'></td>");
+	
 
 	//change the field dimension using the td width
 	jQuery(row_id+" td.dbmng_cell_inline").each(function(k,v){
