@@ -112,7 +112,7 @@ Dbmng.AbstractTheme = Class.extend({
   },
   
   getSelect: function(aField) {
-    //console.log(aField);
+    
     var el=document.createElement('select');
     
     this.assignAttributes(el, aField);
@@ -130,6 +130,7 @@ Dbmng.AbstractTheme = Class.extend({
         o.value = opt;
         o.text=aField.voc_val[opt];
         if( aField.value ) {
+					console.log(aField.value+" "+ opt);
           if( aField.value == opt ) {
             o.selected = true;
           }

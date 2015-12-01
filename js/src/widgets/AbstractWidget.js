@@ -44,7 +44,7 @@ Dbmng.AbstractWidget = Class.extend({
     return el;
   },
   
-  createField: function(data_val) {
+  createField: function(data_val) {		
     var self=this;
 
     this.aField.field = this.field;

@@ -32,4 +32,5 @@ ALTER TABLE `dbmng2`.`test_father` MODIFY COLUMN `date_field` DATE  DEFAULT NULL
 
 --  added to test select widget.
 ALTER TABLE `test` ADD `sex` VARCHAR(20) NOT NULL AFTER `name`;
-
+--  added to test select widget.
+ALTER TABLE `test` ADD `true_false` INTEGER NOT NULL AFTER `sex`;

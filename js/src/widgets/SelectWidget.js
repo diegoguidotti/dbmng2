@@ -25,6 +25,7 @@ Dbmng.SelectWidget = Dbmng.AbstractWidget.extend({
     else {
       val = jQuery(this.widget).val();
     }
+		console.log('getValue '+val);
     return val;
   },
   convert2html: function(val) {

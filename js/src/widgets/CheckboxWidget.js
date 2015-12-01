@@ -23,5 +23,15 @@ Dbmng.CheckboxWidget = Dbmng.AbstractWidget.extend({
       ret = this.widget.checked;
     }
     return ret;
+  },
+	convert2html: function(val) {
+		console.log(val);
+		console.log(this.aField.voc_val);
+		if(this.aField.voc_val){
+	    return this.aField.voc_val[val];
+		}
+		else{
+			return val;
+		}
   }
 });
