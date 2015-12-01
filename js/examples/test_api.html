@@ -58,8 +58,7 @@
     // Test for Bootstrap theme
     var theme_boot=new Dbmng.BootstrapTheme();
 
-
-		jQuery('#test_2').html(theme_boot.getTable({data:[{nm:'Diego',sr:'Guid'}]}));
+    jQuery('#test_2').html(theme_boot.getTable({data:[{nm:'Diego',sr:'Guid'}]}));
 
     var aForm = { table_name: 'test', 
       primary_key: Array('id'), 
@@ -69,164 +68,157 @@
       }
     };
 
-		var form=new Dbmng.Form({aForm:aForm, aParam:{}, theme:theme_boot});
+    var form=new Dbmng.Form({aForm:aForm, aParam:{}, theme:theme_boot});
     //jQuery('#test_base').append(form2.createForm(obj));
 
-		
+    var api=new  Dbmng.Api({aForm:aForm, url:'/dbmng2/api/test', user:'test', password:'test'});
+    creaTabella('test_table');
+    
 
-		var api=new  Dbmng.Api({aForm:aForm, url:'/dbmng2/api/test', user:'test', password:'test'});
-		creaTabella();
-		
-  
 
-function creaTabella(){
+function creaTabella(div_id){
+  if( div_id.substring(0, 1) != '#') {
+    div_id = '#' + div_id;
+  }
+	
 	api.select({
-		success:function(data){
-			var aData=data.data;
-			var header=[];
-			for(var key in aForm.fields){
-				if(aForm.fields[key].label)
-					header.push(aForm.fields[key].label);	
-				else{
-					header.push(key);	
-				}
-			}
+    success:function(data){
+      var aData=data.data;
+      var header=[];
+      for(var key in aForm.fields){
+        if(aForm.fields[key].label)
+          header.push(aForm.fields[key].label);	
+        else{
+          header.push(key);	
+        }
+      }
+      header.push("Func.");
+
+      var html=theme_boot.getTable({data:aData, header:header, options:{
+        assignClass:true,
+        setIDRow:function(aData){
+          return "dbmng_row_id_"+aData.id;
+        },
+        addColumn:function(opt){
+          console.log(header);
+          var cell=theme_boot.getTableCell();
+
+          var button_edit=jQuery(theme_boot.getButton('Edita'));
+          button_edit.click(function(){
+            creaForm(div_id, opt.data.id, opt.data);
+          });
+          jQuery(cell).append(button_edit);
+
+          var button_edit=jQuery(theme_boot.getButton('Edita Inline'));
+          button_edit.click(function(){
+            creaFormInline(div_id, opt.data.id, opt.data, true);
+          });		
+          jQuery(cell).append(button_edit);
+
+          var button_delete=jQuery(theme_boot.getButton('Delete'));
+          button_delete.click(function(){
+            deleteRecord(div_id, opt.data.id);
+          });		
+          jQuery(cell).append(button_delete);
+
+          return cell;
+        }
+      }});
+      jQuery(div_id).html(html);
 
 
-			var html=theme_boot.getTable({data:aData, header: header, options:{
-				assignClass:true,
-				setIDRow:function(aData){
-					return "dbmng_row_id_"+aData.id;
-				},
-				addColumn:function(opt){
-					var cell=theme_boot.getTableCell();
-
-						
-					var button_edit=jQuery(theme_boot.getButton('Edita'));
-					button_edit.click(function(){						
-						creaForm(opt.data.id, opt.data);
-					});		
-					jQuery(cell).append(button_edit);
-					
-					var button_edit=jQuery(theme_boot.getButton('Edita Inline'));
-					button_edit.click(function(){						
-						creaFormInline(opt.data.id, opt.data, true);
-					});		
-					jQuery(cell).append(button_edit);
-
-					var button_delete=jQuery(theme_boot.getButton('Delete'));
-					button_delete.click(function(){						
-						deleteRecord(opt.data.id);
-					});		
-					jQuery(cell).append(button_delete);
-
-					return cell;
-				}
-			}});
-			jQuery('#test_table').html(html);
-
-
-			var button_insert=jQuery(theme_boot.getButton('Inserisci'));
-			button_insert.click(function(){						
-				creaInsertForm();
-			});		
-			jQuery('#test_table').append(button_insert);
-		}
+      var button_insert=jQuery(theme_boot.getButton('Inserisci'));
+      button_insert.click(function(){						
+        creaInsertForm(div_id);
+      });		
+      jQuery(div_id).append(button_insert);
+    }
 	});
 }
 
-function deleteRecord(key){
-	api.delete({key:key, success:function(data){
-		creaTabella();
-	}});
-
+function deleteRecord(div_id, key){
+  api.delete({key:key, success:function(data){
+    creaTabella(div_id);
+  }});
 }
 
-function creaInsertForm(key, aData){
-
-	
-
-	jQuery('#test_form').html(form.createForm());
-	var button=theme_boot.getButton('Salva');
-	jQuery(button).click(function(){
-		api.insert({key:key,data:form.getValue(),success:function(data){
-			
-			jQuery('#test_form').html('');
-			creaTabella();					
-		}});
-	});
-	jQuery('#test_form').append(button);
+function creaInsertForm(div_id, key, aData){
+  jQuery(div_id).html(form.createForm());
+  var button=theme_boot.getButton('Salva');
+  jQuery(button).click(function(){
+    api.insert({key:key,data:form.getValue(),success:function(data){
+      jQuery(div_id).html('');
+      creaTabella(div_id);
+    }});
+  });
+  jQuery(div_id).append(button);
 }
 
-function creaForm(key, aData){
-	
-	jQuery('#test_form').html(form.createForm(aData));
-	var button=theme_boot.getButton('Salva');
-	jQuery(button).click(function(){
-		api.update({key:key,data:form.getValue(),success:function(data){
-			jQuery('#test_form').html('');
-			creaTabella();					
-		}});
-	});
-	jQuery('#test_form').append(button);
+function creaForm(div_id, key, aData){
+  jQuery(div_id).html(form.createForm(aData));
+  var button=theme_boot.getButton('Salva');
+  jQuery(button).click(function(){
+    api.update({key:key,data:form.getValue(),success:function(data){
+      jQuery(div_id).html('');
+      creaTabella(div_id);
+    }});
+  });
+  jQuery(div_id).append(button);
 }
 
 //the function insert the form widgets inline in the table
-function creaFormInline(key, aData){
-	jQuery('button').attr('disabled','true');
+function creaFormInline(div_id, key, aData){
+  jQuery('button').attr('disabled','true');
 
-	//get the form
-	var html=form.createForm(aData);	
+  //get the form
+  var html=form.createForm(aData);
 
-	//define the row_id
-	var row_id='#test_table table #dbmng_row_id_'+key;
+  //define the row_id
+  var row_id= div_id + ' table #dbmng_row_id_'+key;
+  console.log("creaFormInline:" + row_id);
 
-	//get the original dimension of the table
-	var listWidth = [];
-	jQuery(row_id+" td").each(function() {
-		  listWidth.push($(this).width());
-	});
+  //get the original dimension of the table
+  var listWidth = [];
+  jQuery(row_id+" td").each(function() {
+      listWidth.push($(this).width());
+  });
 
+  //Complicato metodo per eliminare il form senza eliminare i value degli input
+  var fields=html.childNodes;
+  var row=document.getElementById('dbmng_row_id_'+key);
+  //delete all cells
+  while (row.firstChild) {
+      row.removeChild(row.firstChild);
+  }
+  while (fields.length > 0) {
+      var td=document.createElement('td');
+      td.className='dbmng_cell_inline';			
+      td.appendChild(fields[0]);
+      row.appendChild(td);
+  }
 
-
-	//Complicato metodo per eliminare il form senza eliminare i value degli input
-	var fields=html.childNodes;
-	var row=document.getElementById('dbmng_row_id_'+key);
-	//delete all cells
-	while (row.firstChild) {
-		  row.removeChild(row.firstChild);
-	}
-	while (fields.length > 0) {
-			var td=document.createElement('td');
-			td.className='dbmng_cell_inline';			
-			td.appendChild(fields[0]);
-			row.appendChild(td);
-	}
-
-   //jQuery(row_id).html(html);
-	jQuery(row_id).find('label').hide();
-	
-
-	//change the field dimension using the td width
-	jQuery(row_id+" td.dbmng_cell_inline").each(function(k,v){
-		jQuery(v).width(listWidth[k]);
-		jQuery(v).find('input').width(listWidth[k]);
-		jQuery(v).find('select').width(listWidth[k]);
-	});
-
-	
-	var button=theme_boot.getButton('Salva');
-	jQuery(button).click(function(){
-		api.update({key:key,data:form.getValue(),success:function(data){
-			jQuery('button').removeAttr('disabled');
-			jQuery('#test_form').html('');
-			creaTabella();					
-		}});
-	});
-	jQuery(row_id).append("<td class='dbmng_buttons'></td>");
-	jQuery(row_id+' td.dbmng_buttons').html(button);
+    //jQuery(row_id).html(html);
+  jQuery(row_id).find('label').hide();
 
 
+  //change the field dimension using the td width
+  jQuery(row_id+" td.dbmng_cell_inline").each(function(k,v){
+    jQuery(v).width(listWidth[k]);
+    jQuery(v).find('input').width(listWidth[k]);
+    jQuery(v).find('select').width(listWidth[k]);
+  });
+
+
+  var button=theme_boot.getButton('Salva');
+  jQuery(button).click(function(){
+    api.update({key:key,data:form.getValue(),success:function(data){
+      jQuery('button').removeAttr('disabled');
+      jQuery(div_id).html('');
+      creaTabella(div_id);					
+    }});
+  });
+  jQuery(row_id).append("<td class='dbmng_buttons'></td>");
+  jQuery(row_id+' td.dbmng_buttons').html(button);
 }
 
   </script>
