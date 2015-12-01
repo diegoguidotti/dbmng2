@@ -26,5 +26,8 @@ Dbmng.SelectWidget = Dbmng.AbstractWidget.extend({
       val = jQuery(this.widget).val();
     }
     return val;
+  },
+  convert2html: function(val) {
+    return this.aField.voc_val[val];
   }
 });

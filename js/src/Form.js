@@ -67,7 +67,17 @@ Dbmng.Form = Class.extend({
     }
     return ret;
   },
-  
+  convert2html: function(aData) {
+    var cData = [];
+    for( var i= 0; i < aData.length; i++ ){
+      var ret = {};
+      for(var key in this.aForm.fields){
+        ret[key]=this.widgets[key].convert2html(aData[i][key]);
+      }
+      cData.push(ret);
+    }
+    return cData;
+  },
   createForm: function(aData) {
 
 		if(!aData){

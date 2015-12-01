@@ -23,7 +23,8 @@
 			'primary_key'=> array('id'), 
 			'fields'     => array(
 					'id' => array('label'   => 'ID', 'type' => 'int', 'key' => 1 ) ,
-					'name' => array('label'   => 'Name', 'type' => 'varchar')
+					'name' => array('label'   => 'Name', 'type' => 'varchar'),
+					'sex' => array( 'label' => 'Sex', 'type' => 'varchar',  'widget' => 'select', 'voc_val' => array('M' =>'Male', 'F' => 'Female'))
 			),
 	);
 

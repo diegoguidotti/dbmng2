@@ -63,20 +63,20 @@
     var aForm = { table_name: 'test', 
       primary_key: Array('id'), 
       fields: {
-        id: {label: 'ID', type: 'int', key: 0, nullable: false}, 
-        name: {label: 'Name', type: 'varchar',  nullable: false}
+        id: {label: 'ID1', type: 'int', key: 0, nullable: false}, 
+        name: {label: 'Name1', type: 'varchar',  nullable: false},
+        sex: {label: 'Sex', type: 'varchar',  widget: 'select', voc_val: {'M':'Male', 'F':'Female'}}
       }
     };
 
     var form=new Dbmng.Form({aForm:aForm, aParam:{}, theme:theme_boot});
     //jQuery('#test_base').append(form2.createForm(obj));
 
-    var api=new  Dbmng.Api({aForm:aForm, url:'/dbmng2/api/test', user:'test', password:'test'});
-    creaTabella('test_table');
-    
+    var api1=new  Dbmng.Api({aForm:aForm, url:'/dbmng2/api/test', user:'test', password:'test'});
+    creaTabella(api1, '#test_table');
 
 
-function creaTabella(div_id){
+function creaTabella(api, div_id){
   if( div_id.substring(0, 1) != '#') {
     div_id = '#' + div_id;
   }
@@ -93,31 +93,33 @@ function creaTabella(div_id){
         }
       }
       header.push("Func.");
-
-      var html=theme_boot.getTable({data:aData, header:header, options:{
+      
+      //console.log(aData);
+      var cData = form.convert2html(aData);
+      var html=theme_boot.getTable({data:cData, header:header, options:{
         assignClass:true,
         setIDRow:function(aData){
           return "dbmng_row_id_"+aData.id;
         },
         addColumn:function(opt){
-          console.log(header);
+          //console.log(header);
           var cell=theme_boot.getTableCell();
 
           var button_edit=jQuery(theme_boot.getButton('Edita'));
           button_edit.click(function(){
-            creaForm(div_id, opt.data.id, opt.data);
+            creaForm(api, div_id, opt.data.id, opt.data);
           });
           jQuery(cell).append(button_edit);
 
           var button_edit=jQuery(theme_boot.getButton('Edita Inline'));
           button_edit.click(function(){
-            creaFormInline(div_id, opt.data.id, opt.data, true);
+            creaFormInline(api, div_id, opt.data.id, opt.data, true);
           });		
           jQuery(cell).append(button_edit);
 
           var button_delete=jQuery(theme_boot.getButton('Delete'));
           button_delete.click(function(){
-            deleteRecord(div_id, opt.data.id);
+            deleteRecord(api, div_id, opt.data.id);
           });		
           jQuery(cell).append(button_delete);
 
@@ -129,45 +131,45 @@ function creaTabella(div_id){
 
       var button_insert=jQuery(theme_boot.getButton('Inserisci'));
       button_insert.click(function(){						
-        creaInsertForm(div_id);
+        creaInsertForm(api, div_id);
       });		
       jQuery(div_id).append(button_insert);
     }
 	});
 }
 
-function deleteRecord(div_id, key){
+function deleteRecord(api, div_id, key){
   api.delete({key:key, success:function(data){
-    creaTabella(div_id);
+    creaTabella(api, div_id);
   }});
 }
 
-function creaInsertForm(div_id, key, aData){
+function creaInsertForm(api, div_id, key, aData){
   jQuery(div_id).html(form.createForm());
   var button=theme_boot.getButton('Salva');
   jQuery(button).click(function(){
     api.insert({key:key,data:form.getValue(),success:function(data){
       jQuery(div_id).html('');
-      creaTabella(div_id);
+      creaTabella(api, div_id);
     }});
   });
   jQuery(div_id).append(button);
 }
 
-function creaForm(div_id, key, aData){
+function creaForm(api, div_id, key, aData){
   jQuery(div_id).html(form.createForm(aData));
   var button=theme_boot.getButton('Salva');
   jQuery(button).click(function(){
     api.update({key:key,data:form.getValue(),success:function(data){
       jQuery(div_id).html('');
-      creaTabella(div_id);
+      creaTabella(api, div_id);
     }});
   });
   jQuery(div_id).append(button);
 }
 
 //the function insert the form widgets inline in the table
-function creaFormInline(div_id, key, aData){
+function creaFormInline(api, div_id, key, aData){
   jQuery('button').attr('disabled','true');
 
   //get the form
@@ -175,7 +177,6 @@ function creaFormInline(div_id, key, aData){
 
   //define the row_id
   var row_id= div_id + ' table #dbmng_row_id_'+key;
-  console.log("creaFormInline:" + row_id);
 
   //get the original dimension of the table
   var listWidth = [];
@@ -214,7 +215,7 @@ function creaFormInline(div_id, key, aData){
     api.update({key:key,data:form.getValue(),success:function(data){
       jQuery('button').removeAttr('disabled');
       jQuery(div_id).html('');
-      creaTabella(div_id);					
+      creaTabella(api, div_id);
     }});
   });
   jQuery(row_id).append("<td class='dbmng_buttons'></td>");

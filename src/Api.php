@@ -135,6 +135,10 @@ class Api {
                       }
                     else
                       {
+                        // $input['form_params'] = $aFormParams;
+                        // $input['fields'] = $aFields;
+                        // $input['aForm'] = $aForm;
+                        
                         $input['ok'] = false;
                         $input['msg'] = "Some fields are wrong";
                         $input['wrong_field'] = $aFldError;

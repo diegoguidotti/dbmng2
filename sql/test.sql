@@ -30,3 +30,6 @@ CREATE TABLE `dbmng2`.`test_father_child` (
 ALTER TABLE `dbmng2`.`test_father` ADD COLUMN `date_field` DATE   NULL AFTER `select_field`;
 ALTER TABLE `dbmng2`.`test_father` MODIFY COLUMN `date_field` DATE  DEFAULT NULL;
 
+--  added to test select widget.
+ALTER TABLE `test` ADD `sex` VARCHAR(20) NOT NULL AFTER `name`;
+

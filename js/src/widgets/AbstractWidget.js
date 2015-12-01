@@ -99,5 +99,9 @@ Dbmng.AbstractWidget = Class.extend({
       v = this.getDefaultValue();
     }    
     return v;
+  },
+  
+  convert2html: function(val) {
+    return val;
   }
 });

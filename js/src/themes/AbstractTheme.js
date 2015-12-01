@@ -242,7 +242,7 @@ Dbmng.AbstractTheme = Class.extend({
 		if(opt.data){
 			el.appendChild(this.getTableHeader(opt));	
 			var tbody=document.createElement('tbody');
-			for(var i=0; i<opt.data.length; i++){				
+			for(var i=0; i<opt.data.length; i++){
 				var row=this.getTableRow({data: opt.data[i], options:opt.options });
 				if(opt.options){					
 					if(opt.options.assignClass){
@@ -281,7 +281,7 @@ Dbmng.AbstractTheme = Class.extend({
 		if(opt.data){
 			for (var key in opt.data) {
 				var cell=this.getTableCell({content: opt.data[key], options:opt.options});
-				if(opt.options){					
+				if(opt.options){
 					if(opt.options.assignClass){
 						this.addClass(cell, "dbmng_cell dbmng_col_"+key);
 					}
