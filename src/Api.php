@@ -56,15 +56,13 @@ class Api {
       $aForm = $dbmng->getaForm();
 			$tablename = $aForm['table_name'];
 
-
-      // select
+			// select
 			$router->get('/api/'.$tablename.'/*', function( $id_value=null ) use($dbmng){
 
 				$allowed=$dbmng->isAllowed('select');
 				
 				if($allowed['ok'])
           {
-						echo "INSIDEAL";
             $aForm = $dbmng->getaForm();
             $key = $aForm['primary_key'][0];
           
