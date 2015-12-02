@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>DBMNG Test Api</title>
   <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
   <script type="text/javascript" src="../src/Class.js"></script>
@@ -22,10 +23,10 @@
 
 
 
-  <h1>tabella</h1>
+  <h1>tabella: test</h1>
 	<div id="test_table"></div>
-  <h1>form</h1>
-  <div id="test_form"></div>
+  <h1>tabella: test_child</h1>
+  <div id="test_child"></div>
 
 	<div id="test_2"></div>
 
@@ -63,14 +64,17 @@
     var theme_boot=new Dbmng.BootstrapTheme();
 
     jQuery('#test_2').html(theme_boot.getTable({data:[{nm:'Diego',sr:'Guid'}]}));
-
+    
+    /* ------------
+       TABLE: test
+    ---------------*/
     var aForm = { table_name: 'test', 
       primary_key: Array('id'), 
       fields: {
         id: {label: 'ID1', type: 'int', key: 0, nullable: false}, 
         name: {label: 'Name1', type: 'varchar',  nullable: false},
         sex: {label: 'Sex', type: 'varchar',  widget: 'select', voc_val: {'M':'Male', 'F':'Female'}},
-        true_false: {label: 'E vero o è falso', type: 'integer',  widget: 'checkbox',voc_val: {'1':'Vero!', '0':'Falso',null:'Boh'}}
+        true_false: {label: 'E vero o è falso', type: 'integer',  widget: 'checkbox',voc_val: {'1':'è Vero!', '0':'Falso',null:'Boh'}}
       }
     };
 
@@ -79,6 +83,22 @@
 
     var api1=new  Dbmng.Api({aForm:aForm, url:'/dbmng2/api/test', user:'test', password:'test'});
     creaTabella(api1, '#test_table');
+
+//     /* ------------
+//        TABLE: test_child
+//     ---------------*/
+//     var aCForm = { table_name: 'test_child', 
+//       primary_key: Array('id_child'), 
+//       fields: {
+//         id_child: {label: 'ID', type: 'int', key: 0, nullable: false}, 
+//         child_name: {label: 'Child Name', type: 'varchar',  nullable: false}
+//       }
+//     };
+// 
+//     var childform = new Dbmng.Form({aForm:aCForm, aParam:{}, theme:theme_boot});
+// 
+//     var childapi  = new  Dbmng.Api({aForm:aCForm, url:'/dbmng2/api/test_child', user:'test', password:'test'});
+//     creaTabella(childapi, '#test_child');
 
 
 function creaTabella(api, div_id){
@@ -91,9 +111,9 @@ function creaTabella(api, div_id){
 			console.log(data);
       var aData=data.data;
       var header=[];
-      for(var key in aForm.fields){
-        if(aForm.fields[key].label)
-          header.push(aForm.fields[key].label);	
+      for(var key in api.aForm.fields){
+        if(api.aForm.fields[key].label)
+          header.push(api.aForm.fields[key].label);	
         else{
           header.push(key);	
         }
@@ -113,7 +133,7 @@ function creaTabella(api, div_id){
           //console.log(header);
           var cell=theme_boot.getTableCell();
 
-          var button_edit=jQuery(theme_boot.getButton('Edita'));
+          var button_edit=jQuery(theme_boot.getButton('Edita مرحبا'));
           button_edit.click(function(){
             creaForm(api, div_id, opt.data.id, aData);
           });
@@ -139,7 +159,7 @@ function creaTabella(api, div_id){
 			
 
       var button_insert=jQuery(theme_boot.getButton('Inserisci'));
-      button_insert.click(function(){						
+      button_insert.click(function(){
         creaInsertForm(api, div_id);
       });		
       jQuery(div_id).append(button_insert);
