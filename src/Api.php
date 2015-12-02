@@ -17,41 +17,42 @@ class Api {
 		$this->dbmng=$dbmng;
 	}
 
+	public function exeRestTest($router){
 
-	public function exeRest(){
-
-			$base_path="/dbmng2";
-
-			$router = new \Respect\Rest\Router($base_path);
 			$dbmng=$this->dbmng;
 
-			// DELETE Method - 200 (OK). 404 (Not Found), if ID not found or invalid.
-			$router->delete('/api/test_base', function() use ($dbmng) {
-				return '{"test_delete":1}';
-			});
+				// DELETE Method - 200 (OK). 404 (Not Found), if ID not found or invalid.
+				$router->delete('/api/test_base', function() use ($dbmng) {
+					return '{"test_delete":1}';
+				});
 			
-			// UPDATE Method - 200 (OK) or 204 (No Content). 404 (Not Found), if ID not found or invalid.
-			$router->put('/api/test_base', function() use ($dbmng) {
-				$body = file_get_contents("php://input");
-				//true return an associative array
-				$input=json_decode($body,true);
-				$input['test_put']=1;			
-				return json_encode($input);
-			});
+				// UPDATE Method - 200 (OK) or 204 (No Content). 404 (Not Found), if ID not found or invalid.
+				$router->put('/api/test_base', function() use ($dbmng) {
+					$body = file_get_contents("php://input");
+					//true return an associative array
+					$input=json_decode($body,true);
+					$input['test_put']=1;			
+					return json_encode($input);
+				});
 
-			// POST Method - 201 (Created), 404 (Not Found), 409 (Conflict) if resource already exists.
-			$router->post('/api/test_base', function() use ($dbmng) {
-				$input['test_post'] = 1;
-				return json_encode($input);
-			});
+				// POST Method - 201 (Created), 404 (Not Found), 409 (Conflict) if resource already exists.
+				$router->post('/api/test_base', function() use ($dbmng) {
+					$input['test_post'] = 1;
+					return json_encode($input);
+				});
 			
-			// READ Method - 200 (OK), single customer. 404 (Not Found), if ID not found or invalid.
-			$router->get('/api/test_base', function() use ($dbmng) {
-				$input = $dbmng->select()['data'];
-				$input['test_get'] = 1;
-				return json_encode($input);
-			});
-			
+				// READ Method - 200 (OK), single customer. 404 (Not Found), if ID not found or invalid.
+				$router->get('/api/test_base', function() use ($dbmng) {
+					$input = $dbmng->select()['data'];
+					$input['test_get'] = 1;
+					return json_encode($input);
+				});
+	}
+
+	public function exeRest($router){
+
+			$dbmng=$this->dbmng;
+
 				
       $aForm = $dbmng->getaForm();
 			$tablename = $aForm['table_name'];

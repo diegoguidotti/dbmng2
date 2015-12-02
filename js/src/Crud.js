@@ -21,6 +21,8 @@ Dbmng.Crud = Class.extend({
               user_function: {inline:0, upd:1, del:1, ins:1}};
     
     this.aParam = jQuery.extend(true, aParamD,options.aParam);
+
+	console.log(this.aParam);
     
     if( options.theme ) {
       this.theme = options.theme;
@@ -114,7 +116,7 @@ Dbmng.Crud = Class.extend({
           }});
           jQuery(div_id).html(html);
           
-          if( self.aParam.user_function.inline ) {
+          if( self.aParam.user_function.ins ) {
             var label_insert=self.aParam.ui.btn_insert.label; 
             var opt_insert=self.aParam.ui.btn_insert;
             
@@ -130,8 +132,18 @@ Dbmng.Crud = Class.extend({
         }
       },
       error: function(error) {
-        var objError = JSON.parse(error.responseText);
-        jQuery(div_id).html(self.theme.alertMessage(objError.message));
+				try{
+		      var objError = JSON.parse(error.responseText);
+		      jQuery(div_id).html(self.theme.alertMessage(objError.message));
+				}
+				catch(e){
+					if(error.statusText){
+						jQuery(div_id).html(self.theme.alertMessage(error.statusText));
+					}
+					else{
+			      jQuery(div_id).html(self.theme.alertMessage(e+" "+error.responseText));
+					}
+				}
       }
     });
   },

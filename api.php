@@ -29,11 +29,14 @@
 			),
 	);
 	$aParam=array();
+
+	$base_path="/dbmng2";
+	$router = new \Respect\Rest\Router($base_path);
 	
 	$dbmng=new Dbmng($app, $aForm, $aParam);
 	$api=new Api($dbmng);
-	$api->exeRest();
-
+	$api->exeRestTest($router);
+	$api->exeRest($router);
 
 
 	$aForm2=array(  
@@ -48,6 +51,8 @@
 	
 	$dbmng2=new Dbmng($app, $aForm2, $aParam2);
 	$api2=new Api($dbmng2);
-	$api2->exeRest();
+	$api2->exeRest($router);
+
+
 
 ?>
