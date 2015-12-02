@@ -17,11 +17,23 @@ Dbmng.BootstrapTheme = Dbmng.AbstractTheme.extend({
   
   assignAttributes: function(el, aField) {
     this._super(el, aField);
-    var space = "";
-    if( el.className.lenght > 0 ) {
-      space = " ";
-    }
-    el.className = el.className + space + "form-control";
+    this.addClass(el, 'form-control');
+  },
+  alertMessage: function(text) {
+    var el = this._super(text);
+    this.addClass(el, 'alert alert-block alert-danger');
+    return el;
+  },
+  getTable: function(opt) {
+    var div = this._super(opt);
+    this.addClass(div, 'table-responsive registro_table_padding');
+    this.addClass(div.firstChild, 'table');
+    return div;
+  },
+  getButton: function(text, opt) {
+    var el = this._super(text, opt);
+    this.addClass(el, 'btn btn-default');
+    return el;
   }
 
 });

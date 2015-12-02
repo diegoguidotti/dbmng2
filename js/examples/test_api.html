@@ -4,6 +4,10 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>DBMNG Test Api</title>
   <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">  
+  
   <script type="text/javascript" src="../src/Class.js"></script>
   <script type="text/javascript" src="../src/Dbmng.js"></script> 
   <script type="text/javascript" src="../src/Api.js"></script>
@@ -35,12 +39,12 @@
 
 
 	<style>
-		#test_table td{
+/*		#test_table td{
 			border:1px solid #CCC;
-		}
-#test_table form{
-	display:block !important;
-}
+		}*/
+    #test_table form{
+      display:block !important;
+    }
 		#test_table input{
 			border: 0px;
 			background-color:#FCC;
@@ -79,10 +83,12 @@
       }
     };
 
-
-		var crud=new Dbmng.Crud({aForm:aForm, aParam:{}, theme:theme_boot,url:'/dbmng2/api/test', user:'test', password:'test'});
-		
-
+    var aParam = {ui:{btn_edit: {label:'Modifica', icon: 'fa fa-pencil'},
+                      btn_delete:{icon: 'fa fa-trash'}},
+                  user_function: {inline:1}
+                  }; // upd:, del:, 
+    
+		var crud=new Dbmng.Crud({aForm:aForm, aParam:aParam, theme:theme_boot,url:'/dbmng2/api/test', user:'test', password:'test'});
 		crud.createTable({div_id:'#test_table'});
 
 
@@ -94,7 +100,6 @@
 //     /* ------------
 //        TABLE: test_child
 //     ---------------*/
-/*
     var aCForm = { table_name: 'test_child', 
       primary_key: Array('id_child'), 
       fields: {
@@ -103,181 +108,9 @@
       }
     };
 
-    var childform = new Dbmng.Form({aForm:aCForm, aParam:{}, theme:theme_boot});
+    var crudchild = new Dbmng.Crud({aForm:aCForm, aParam:{}, theme:theme_boot, url:'/dbmng2/api/test_child', user:'test', password:'test'});
+    crudchild.createTable({div_id:'test_child'});
 
-    var childapi  = new  Dbmng.Api({aForm:aCForm, url:'/dbmng2/api/test_child', user:'test', password:'test'});
-    creaTabella(childapi, '#test_child');
-
-*/
-/*
-function creaTabella(api, div_id){
-  if( div_id.substring(0, 1) != '#') {
-    div_id = '#' + div_id;
-  }
-	
-	api.select({
-    success:function(data){
-			console.log(data);
-      var aData=data.data;
-      var header=[];
-      for(var key in api.aForm.fields){
-        if(api.aForm.fields[key].label)
-          header.push(api.aForm.fields[key].label);	
-        else{
-          header.push(key);	
-        }
-      }
-      header.push("Func.");
-      
-      
-      var cData = form.convert2html(aData);
-
-			console.log(aData);
-      var html=theme_boot.getTable({data:cData, header:header, options:{
-        assignClass:true,
-        setIDRow:function(aData){
-          return "dbmng_row_id_"+aData.id;
-        },
-        addColumn:function(opt){
-          //console.log(header);
-          var cell=theme_boot.getTableCell();
-
-          var button_edit=jQuery(theme_boot.getButton('Edita مرحبا'));
-          button_edit.click(function(){
-            creaForm(api, div_id, opt.data.id, aData);
-          });
-          jQuery(cell).append(button_edit);
-
-          var button_edit=jQuery(theme_boot.getButton('Edita Inline'));
-          button_edit.click(function(){
-            creaFormInline(api, div_id, opt.data.id, aData, true);
-          });		
-          jQuery(cell).append(button_edit);
-
-          var button_delete=jQuery(theme_boot.getButton('Delete'));
-          button_delete.click(function(){
-            deleteRecord(api, div_id, aData);
-          });		
-          jQuery(cell).append(button_delete);
-
-          return cell;
-        }
-      }});
-      jQuery(div_id).html(html);
-
-			
-
-      var button_insert=jQuery(theme_boot.getButton('Inserisci'));
-      button_insert.click(function(){
-        creaInsertForm(api, div_id);
-      });		
-      jQuery(div_id).append(button_insert);
-    }
-	});
-}
-*/
-/*
-function deleteRecord(api, div_id, key){
-  api.delete({key:key, success:function(data){
-    creaTabella(api, div_id);
-  }});
-}
-*/
-
-function creaInsertForm(api, div_id, key){
-  jQuery(div_id).html(form.createForm());
-  var button=theme_boot.getButton('Salva');
-  jQuery(button).click(function(){
-    api.insert({key:key,data:form.getValue(),success:function(data){
-      jQuery(div_id).html('');
-      creaTabella(api, div_id);
-    }});
-  });
-  jQuery(div_id).append(button);
-}
-
-function creaForm(api, div_id, key, aData){
-
-	var aRecord = getARecord(key,aData);
-
-  jQuery(div_id).html(form.createForm(aRecord));
-  var button=theme_boot.getButton('Salva');
-  jQuery(button).click(function(){
-    api.update({key:key,data:form.getValue(),success:function(data){
-      jQuery(div_id).html('');
-      creaTabella(api, div_id);
-    }});
-  });
-  jQuery(div_id).append(button);
-}
-
-//the function insert the form widgets inline in the table
-function creaFormInline(api, div_id, key, aData){
-
-	var aRecord=getARecord(key,aData);
-  jQuery('button').attr('disabled','true');
-
-  //get the form
-  var html=form.createForm(aRecord);
-
-  //define the row_id
-  var row_id= div_id + ' table #dbmng_row_id_'+key;
-
-  //get the original dimension of the table
-  var listWidth = [];
-  jQuery(row_id+" td").each(function() {
-      listWidth.push($(this).width());
-  });
-
-  //Complicato metodo per eliminare il form senza eliminare i value degli input
-  var fields=html.childNodes;
-  var row=document.getElementById('dbmng_row_id_'+key);
-  //delete all cells
-  while (row.firstChild) {
-      row.removeChild(row.firstChild);
-  }
-  while (fields.length > 0) {
-      var td=document.createElement('td');
-      td.className='dbmng_cell_inline';			
-      td.appendChild(fields[0]);
-      row.appendChild(td);
-  }
-
-    //jQuery(row_id).html(html);
-  jQuery(row_id).find('label').hide();
-
-
-  //change the field dimension using the td width
-  jQuery(row_id+" td.dbmng_cell_inline").each(function(k,v){
-    jQuery(v).width(listWidth[k]);
-    jQuery(v).find('input').width(listWidth[k]);
-    jQuery(v).find('select').width(listWidth[k]);
-  });
-
-
-  var button=theme_boot.getButton('Salva');
-  jQuery(button).click(function(){
-    api.update({key:key,data:form.getValue(),success:function(data){
-      jQuery('button').removeAttr('disabled');
-      jQuery(div_id).html('');
-      creaTabella(api, div_id);
-    }});
-  });
-  jQuery(row_id).append("<td class='dbmng_buttons'></td>");
-  jQuery(row_id+' td.dbmng_buttons').html(button);
-}
-
-
-function getARecord(key,aData){
-	var aRecord=null;
-	for(var i=0; i<aData.length; i++){
-		if(aData[i]['id']==key){
-			aRecord=aData[i];
-			break;
-		}
-	}
-	return aRecord;
-}
 
   </script>
 </body>

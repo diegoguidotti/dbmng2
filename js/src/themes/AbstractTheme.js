@@ -100,10 +100,11 @@ Dbmng.AbstractTheme = Class.extend({
     this.assignAttributes(el, aField);
     // console.log(aField);
     el.type = "checkbox";
-    if(aField.value) {
-      el.value=aField.value;
+    if(aField.value == 1 ) {
+      el.checked = true;
     }
     
+    console.log(aField);
     if( aField.placeholder ) {
       el.placeholder = aField.label;
     }
@@ -112,7 +113,6 @@ Dbmng.AbstractTheme = Class.extend({
   },
   
   getSelect: function(aField) {
-    
     var el=document.createElement('select');
     
     this.assignAttributes(el, aField);
@@ -192,7 +192,7 @@ Dbmng.AbstractTheme = Class.extend({
         var aCB = {type: 'int', widget:'checkbox', theme:this}; // , theme:theme_boot ??
         o = new Dbmng.CheckboxWidget({field:aField.field, aField:aCB});
         o.createField(opt);
-
+        
         li.appendChild(o.widget);
 
         var txt = document.createTextNode(aField.voc_val[opt]);
@@ -229,7 +229,7 @@ Dbmng.AbstractTheme = Class.extend({
   },
 	addClass: function(el, className){
       var space = "";
-      if( el.className.lenght > 0 ) {
+      if( el.className.length > 0 ) {
         space = " ";
       }
       el.className = el.className + space + className;
@@ -239,9 +239,10 @@ Dbmng.AbstractTheme = Class.extend({
     return el;
   },
   getTable: function(opt) {
+    var div = document.createElement('div');
     var el = document.createElement('table');
 		if(opt.data){
-			el.appendChild(this.getTableHeader(opt));	
+			el.appendChild(this.getTableHeader(opt));
 			var tbody=document.createElement('tbody');
 			for(var i=0; i<opt.data.length; i++){
 				var row=this.getTableRow({data: opt.data[i], options:opt.options });
@@ -249,7 +250,7 @@ Dbmng.AbstractTheme = Class.extend({
 					if(opt.options.assignClass){
 						this.addClass(row, "dbmng_row dbmng_row_"+i);
 					}
-					if(typeof opt.options.addColumn=='function'){						
+					if(typeof opt.options.addColumn=='function'){
 						row.appendChild(opt.options.addColumn({data: opt.data[i], options:opt.options }));
 					}
 				}
@@ -257,7 +258,8 @@ Dbmng.AbstractTheme = Class.extend({
 			}		
 			el.appendChild(tbody);	
 		}
-    return el;
+		div.appendChild(el)
+    return div;
   },
 	getTableHeader: function(opt) {
 		var el = document.createElement('thead');
@@ -315,9 +317,30 @@ Dbmng.AbstractTheme = Class.extend({
 		}
 		return el;
 	},
-	getButton: function(text) {
+	getButton: function(text, opt) {
+    if( !opt ) {
+      opt = {};
+    }
+      
 		var el = document.createElement('button');
-		el.appendChild(document.createTextNode(text));
+    if(opt.class){
+      this.addClass(el, opt.class);
+    }
+    
+    if(opt.icon){
+      var icn = document.createElement('i');
+      this.addClass(icn,opt.icon);
+      el.appendChild(icn);
+    }
+    else{
+      el.appendChild(document.createTextNode(text));
+    }
 		return el;
-	}
+	},
+  alertMessage: function(text) {
+    var el = document.createElement('div');
+    this.addClass(el, 'dbmng_alert');
+    el.appendChild(document.createTextNode(text));
+    return el;
+  }
 });
