@@ -60,6 +60,17 @@ Dbmng.Form = Class.extend({
       this.widgets[key]=w;
     }
 	},
+	getPkField: function(){
+		if(this.aForm.primary_key){
+			if(this.aForm.primary_key.length>1)
+					throw "There are more primary keys field";
+			else
+				return this.aForm.primary_key[0];
+		}
+		else{
+			throw "Missing primary key in aForm";
+		}
+	},
   getValue: function() {
     var ret={};
     for(var key in this.aForm.fields){

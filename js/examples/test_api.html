@@ -8,6 +8,7 @@
   <script type="text/javascript" src="../src/Dbmng.js"></script> 
   <script type="text/javascript" src="../src/Api.js"></script>
   <script type="text/javascript" src="../src/Form.js"></script> 
+  <script type="text/javascript" src="../src/Crud.js"></script> 
   <script type="text/javascript" src="../src/Ie9.js"></script> 
   <script type="text/javascript" src="../src/Utilities.js"></script>
   <script type="text/javascript" src="../src/themes/AbstractTheme.js"></script>
@@ -78,15 +79,22 @@
       }
     };
 
-    var form=new Dbmng.Form({aForm:aForm, aParam:{}, theme:theme_boot});
-    //jQuery('#test_base').append(form2.createForm(obj));
 
-    var api1=new  Dbmng.Api({aForm:aForm, url:'/dbmng2/api/test', user:'test', password:'test'});
-    creaTabella(api1, '#test_table');
+		var crud=new Dbmng.Crud({aForm:aForm, aParam:{}, theme:theme_boot,url:'/dbmng2/api/test', user:'test', password:'test'});
+		
+
+		crud.createTable({div_id:'#test_table'});
+
+
+    //var form=new Dbmng.Form({aForm:aForm, aParam:{}, theme:theme_boot});
+
+    //var api1=new  Dbmng.Api({aForm:aForm, url:'/dbmng2/api/test', user:'test', password:'test'});
+    //creaTabella(api1, '#test_table');
 
 //     /* ------------
 //        TABLE: test_child
 //     ---------------*/
+/*
     var aCForm = { table_name: 'test_child', 
       primary_key: Array('id_child'), 
       fields: {
@@ -100,7 +108,8 @@
     var childapi  = new  Dbmng.Api({aForm:aCForm, url:'/dbmng2/api/test_child', user:'test', password:'test'});
     creaTabella(childapi, '#test_child');
 
-
+*/
+/*
 function creaTabella(api, div_id){
   if( div_id.substring(0, 1) != '#') {
     div_id = '#' + div_id;
@@ -166,12 +175,14 @@ function creaTabella(api, div_id){
     }
 	});
 }
-
+*/
+/*
 function deleteRecord(api, div_id, key){
   api.delete({key:key, success:function(data){
     creaTabella(api, div_id);
   }});
 }
+*/
 
 function creaInsertForm(api, div_id, key){
   jQuery(div_id).html(form.createForm());
