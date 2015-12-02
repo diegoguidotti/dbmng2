@@ -57,6 +57,10 @@ class Api {
       $aForm = $dbmng->getaForm();
 			$tablename = $aForm['table_name'];
 
+			$router->get('/api/'.$tablename.'/schema', function( $id_value=null ) use($dbmng){
+				return json_encode($dbmng->getaForm());
+			});
+
 			// select
 			$router->get('/api/'.$tablename.'/*', function( $id_value=null ) use($dbmng){
 

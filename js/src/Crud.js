@@ -11,8 +11,10 @@
 Dbmng.Crud = Class.extend({
   //class constructor	
   init: function( options ) {
-    this.aForm  = options.aForm;
-    
+
+		//the ready variable can be used to check if it is ready the Crud to create the table)   
+    this.ready=true;
+
     aParamD = {ui: {btn_edit: {label:'Edit', class: 'btn-success'},
                     btn_edit_inline: {label:'Edit inline', class: 'btn-success'},
                     btn_delete: {label:'Delete', class: 'btn-danger'}, //<i class="fa fa-camera-retro fa-2x"></i>
@@ -22,7 +24,7 @@ Dbmng.Crud = Class.extend({
     
     this.aParam = jQuery.extend(true, aParamD,options.aParam);
 
-	console.log(this.aParam);
+
     
     if( options.theme ) {
       this.theme = options.theme;
@@ -36,116 +38,165 @@ Dbmng.Crud = Class.extend({
     }
     else {
       this.url='?';
-    }		
+    }	
 
-    this.form=new Dbmng.Form({aForm:this.aForm, aParam:this.aParam, theme:this.theme});
-    this.api=new  Dbmng.Api({aForm:this.aForm, url:this.url, user:options.user, password:options.password});
+		if(options.aForm){	
+			this.aForm  = options.aForm;
 
-    this.pk=this.form.getPkField();
+		  this.form=new Dbmng.Form({aForm:this.aForm, aParam:this.aParam, theme:this.theme});
+		  this.api=new  Dbmng.Api({aForm:this.aForm, url:this.url, user:options.user, password:options.password});
+
+		  this.pk=this.form.getPkField();
+		}
+		else{
+			//there are o aForm; call the api to get the aForm
+			this.ready=false;
+			var self=this;
+
+			jQuery.ajax({
+				url: this.url+"/schema",
+				dataType:'json',
+				headers: {
+					"Authorization": "Basic " + btoa(this.user + ":" + this.password)
+				},
+				success: function(data){
+
+					self.aForm  = data;
+					self.ready=true;
+					console.log("aForm loaded");
+					console.log(this.aForm);
+
+					self.form=new Dbmng.Form({aForm:self.aForm, aParam:self.aParam, theme:self.theme});
+					self.api=new  Dbmng.Api({aForm:self.aForm, url:self.url, user:options.user, password:options.password});
+
+					self.pk=self.form.getPkField();
+
+					if(typeof options.success=='function'){
+						console.log("call success");
+						options.success(self);							
+					}
+					else{
+						console.log(this.aForm);
+					}
+				},
+				error: function(exc){
+					if(typeof options.error=='function'){
+						options.error(exc);
+					}
+					console.log(exc);
+				}
+			});
+			
+		}
   },
   createTable: function( opt ){
+		
     var div_id=opt.div_id;
     if( div_id.substring(0, 1) != '#') {
       div_id = '#' + div_id;
     }
+			if(this.ready){
+		  var self=this;
 
-    var self=this;
+		  this.api.select({
+		    success:function(data){
+		      console.log(data);
+		      if( data.ok ) {
+		        var aData=data.data;
+		        var header=[];
+		        for(var key in self.aForm.fields){
+		          if(self.aForm.fields[key].label)
+		            header.push(self.aForm.fields[key].label);	
+		          else{
+		            header.push(key);	
+		          }
+		        }
+		        header.push("Func.");
+		        
+		        var cData = self.form.convert2html(aData);
+		      
+		        var html=self.theme.getTable({data:cData, header:header, options:{
+		          assignClass:true,
+		          setIDRow:function(aData){
+		            return "dbmng_row_id_"+aData[self.pk];
+		          },
+		          addColumn:function(opt){
+		            console.log(self.aParam);
+		            var cell=self.theme.getTableCell();
+		            
+		            if( self.aParam.user_function.upd == 1 ) {
+		              var label_edit=self.aParam.ui.btn_edit.label; 
+		              var opt_edit=self.aParam.ui.btn_edit;
+		              
+		              var button_edit=jQuery(self.theme.getButton(label_edit,opt_edit));
+		              button_edit.click(function(){
+		                self.createForm(div_id, opt.data[self.pk], aData);
+		              });
+		              jQuery(cell).append(button_edit);
+		            }
+		            
+		            if( self.aParam.user_function.inline ) {
+		              var label_editi=self.aParam.ui.btn_edit_inline.label; 
+		              var opt_editi=self.aParam.ui.btn_edit_inline;
+		              
+		              var button_edit=jQuery(self.theme.getButton(label_editi,opt_editi));
+		              button_edit.click(function(){
+		                self.createFormInline(div_id, opt.data[self.pk], aData, true);
+		              });		
+		              jQuery(cell).append(button_edit);
+		            }
 
-    this.api.select({
-      success:function(data){
-        console.log(data);
-        if( data.ok ) {
-          var aData=data.data;
-          var header=[];
-          for(var key in self.aForm.fields){
-            if(self.aForm.fields[key].label)
-              header.push(self.aForm.fields[key].label);	
-            else{
-              header.push(key);	
-            }
-          }
-          header.push("Func.");
-          
-          var cData = self.form.convert2html(aData);
-        
-          var html=self.theme.getTable({data:cData, header:header, options:{
-            assignClass:true,
-            setIDRow:function(aData){
-              return "dbmng_row_id_"+aData[self.pk];
-            },
-            addColumn:function(opt){
-              console.log(self.aParam);
-              var cell=self.theme.getTableCell();
-              
-              if( self.aParam.user_function.upd == 1 ) {
-                var label_edit=self.aParam.ui.btn_edit.label; 
-                var opt_edit=self.aParam.ui.btn_edit;
-                
-                var button_edit=jQuery(self.theme.getButton(label_edit,opt_edit));
-                button_edit.click(function(){
-                  self.createForm(div_id, opt.data[self.pk], aData);
-                });
-                jQuery(cell).append(button_edit);
-              }
-              
-              if( self.aParam.user_function.inline ) {
-                var label_editi=self.aParam.ui.btn_edit_inline.label; 
-                var opt_editi=self.aParam.ui.btn_edit_inline;
-                
-                var button_edit=jQuery(self.theme.getButton(label_editi,opt_editi));
-                button_edit.click(function(){
-                  self.createFormInline(div_id, opt.data[self.pk], aData, true);
-                });		
-                jQuery(cell).append(button_edit);
-              }
-
-              if( self.aParam.user_function.upd ) {
-                var label_delete=self.aParam.ui.btn_delete.label; 
-                var opt_delete=self.aParam.ui.btn_delete;
-                
-                var button_delete=jQuery(self.theme.getButton(label_delete,opt_delete));
-                button_delete.click(function(){
-                    
-                  self.deleteRecord(div_id, opt.data[self.pk]);
-                });		
-                jQuery(cell).append(button_delete);
-              }
-              
-              return cell;
-            }
-          }});
-          jQuery(div_id).html(html);
-          
-          if( self.aParam.user_function.ins ) {
-            var label_insert=self.aParam.ui.btn_insert.label; 
-            var opt_insert=self.aParam.ui.btn_insert;
-            
-            var button_insert=jQuery(self.theme.getButton(label_insert,opt_insert));
-            button_insert.click(function(){
-              self.createInsertForm(div_id);
-            });		
-            jQuery(div_id).append(button_insert);
-          }
-        }
-        else {
-          jQuery(div_id).html(self.theme.alertMessage(data.msg));
-        }
-      },
-      error: function(error) {
-				try{
-		      var objError = JSON.parse(error.responseText);
-		      jQuery(div_id).html(self.theme.alertMessage(objError.message));
-				}
-				catch(e){
-					if(error.statusText){
-						jQuery(div_id).html(self.theme.alertMessage(error.statusText));
+		            if( self.aParam.user_function.upd ) {
+		              var label_delete=self.aParam.ui.btn_delete.label; 
+		              var opt_delete=self.aParam.ui.btn_delete;
+		              
+		              var button_delete=jQuery(self.theme.getButton(label_delete,opt_delete));
+		              button_delete.click(function(){
+		                  
+		                self.deleteRecord(div_id, opt.data[self.pk]);
+		              });		
+		              jQuery(cell).append(button_delete);
+		            }
+		            
+		            return cell;
+		          }
+		        }});
+		        jQuery(div_id).html(html);
+		        
+		        if( self.aParam.user_function.ins ) {
+		          var label_insert=self.aParam.ui.btn_insert.label; 
+		          var opt_insert=self.aParam.ui.btn_insert;
+		          
+		          var button_insert=jQuery(self.theme.getButton(label_insert,opt_insert));
+		          button_insert.click(function(){
+		            self.createInsertForm(div_id);
+		          });		
+		          jQuery(div_id).append(button_insert);
+		        }
+		      }
+		      else {
+		        jQuery(div_id).html(self.theme.alertMessage(data.msg));
+		      }
+		    },
+		    error: function(error) {
+					try{
+				    var objError = JSON.parse(error.responseText);
+				    jQuery(div_id).html(self.theme.alertMessage(objError.message));
 					}
-					else{
-			      jQuery(div_id).html(self.theme.alertMessage(e+" "+error.responseText));
+					catch(e){
+						if(error.statusText){
+							jQuery(div_id).html(self.theme.alertMessage(error.statusText));
+						}
+						else{
+					    jQuery(div_id).html(self.theme.alertMessage(e+" "+error.responseText));
+						}
 					}
-				}
-      }
-    });
+		    }
+		  });
+		}
+		else{
+			console.log('Table not ready (need to load the a Form)');
+		}
   },
   deleteRecord: function (div_id, key){
     var self=this;

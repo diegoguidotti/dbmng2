@@ -73,6 +73,15 @@
     /* ------------
        TABLE: test
     ---------------*/
+
+
+    var aParam = {ui:{btn_edit: {label:'Modifica', icon: 'fa fa-pencil'},
+                      btn_delete:{icon: 'fa fa-trash'}},
+                  user_function: {inline:1}
+                  }; // upd:, del:, 
+
+		//vecchia versione con aForm 
+		/*   
     var aForm = { table_name: 'test', 
       primary_key: Array('id'), 
       fields: {
@@ -82,14 +91,25 @@
         true_false: {label: 'E vero o è falso', type: 'integer',  widget: 'checkbox',voc_val: {'1':'è Vero!', '0':'Falso',null:'Boh'}}
       }
     };
-
-    var aParam = {ui:{btn_edit: {label:'Modifica', icon: 'fa fa-pencil'},
-                      btn_delete:{icon: 'fa fa-trash'}},
-                  user_function: {inline:1}
-                  }; // upd:, del:, 
-    
+	
 		var crud=new Dbmng.Crud({aForm:aForm, aParam:aParam, theme:theme_boot,url:'/dbmng2/api/test', user:'test', password:'test'});
 		crud.createTable({div_id:'#test_table'});
+		*/
+
+		//nuova versione senza aForm (lo prende online)
+		var crud=new Dbmng.Crud(
+			{
+				aParam:aParam, theme:theme_boot,url:'/dbmng2/api/test', user:'test', password:'test',
+				success:function(self){
+					self.createTable({div_id:'#test_table'});
+				}
+			}
+		);
+
+		
+
+
+		
 
 
     //var form=new Dbmng.Form({aForm:aForm, aParam:{}, theme:theme_boot});
