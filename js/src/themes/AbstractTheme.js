@@ -327,7 +327,9 @@ Dbmng.AbstractTheme = Class.extend({
       this.addClass(el, opt.class);
     }
     
+    
     if(opt.icon){
+      // if( jQuery('i.fa').css('font').indexOf('Awesome')>-1 ) { ... }
       var icn = document.createElement('i');
       this.addClass(icn,opt.icon);
       el.appendChild(icn);
