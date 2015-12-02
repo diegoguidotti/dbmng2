@@ -28,14 +28,26 @@
 					'true_false' => array( 'vero/Falso' => 'Sex', 'type' => 'integer',  'widget' => 'checkbox')
 			),
 	);
-
 	$aParam=array();
 	
-
-
-
 	$dbmng=new Dbmng($app, $aForm, $aParam);
 	$api=new Api($dbmng);
 	$api->exeRest();
+
+
+
+	$aForm2=array(  
+		'table_name' => 'test_child' ,
+			'primary_key'=> array('id_child'), 
+			'fields'     => array(
+					'id_child' => array('label'   => 'ID', 'type' => 'int', 'key' => 1 ) ,
+					'child_name' => array('label'   => 'Name', 'type' => 'varchar')
+			),
+	);
+	$aParam2=array();
+	
+	$dbmng2=new Dbmng($app, $aForm2, $aParam2);
+	$api2=new Api($dbmng2);
+	$api2->exeRest();
 
 ?>

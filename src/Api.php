@@ -52,31 +52,27 @@ class Api {
 				return json_encode($input);
 			});
 			
-			
+				
+      $aForm = $dbmng->getaForm();
+			$tablename = $aForm['table_name'];
+
+
       // select
-			$router->get('/api/*/*', function( $tablename, $id_value=null ) use($dbmng){
+			$router->get('/api/'.$tablename.'/*', function( $id_value=null ) use($dbmng){
+
 				$allowed=$dbmng->isAllowed('select');
 				
 				if($allowed['ok'])
           {
+						echo "INSIDEAL";
             $aForm = $dbmng->getaForm();
-            if( $aForm['table_name'] == $tablename )
-              {
-                $key = $aForm['primary_key'][0];
-              
-                $aVar = array();
-                if( !is_null($id_value) )
-                  $aVar = array($key => $id_value);
+            $key = $aForm['primary_key'][0];
+          
+            $aVar = array();
+            if( !is_null($id_value) )
+              $aVar = array($key => $id_value);
 
-                $input = $dbmng->select($aVar);
-                // $input['table_name'] = $aForm['table_name'];
-                // $input['key'] = $key;
-              }
-            else
-              {
-                $input['ok'] = false;
-                $input['msg'] = "The tablename '$tablename' doesn't exist";
-              }
+            $input = $dbmng->select($aVar);
             return json_encode($input);
           }
 				else
@@ -86,14 +82,13 @@ class Api {
           }
 			} );
 			
-			$router->put('/api/*/*', function( $tablename, $id_value=null ) use($dbmng){
+			$router->put('/api/'.$tablename.'/*', function( $id_value=null ) use($dbmng){
         $allowed=$dbmng->isAllowed('update');
         
         if($allowed['ok'])
           {
             $aForm = $dbmng->getaForm();
-            if( $aForm['table_name'] == $tablename )
-              {
+            
                 if( !is_null($id_value) )
                   {
                     // get the info from aForm array
@@ -149,12 +144,7 @@ class Api {
                     $input['ok'] = false;
                     $input['msg'] = "The id value doesn't exist";
                   }
-              }
-            else
-              {
-                $input['ok'] = false;
-                $input['msg'] = "The tablename '$tablename' doesn't exist";
-              }
+            
             //$input['body'] = $body;
             return json_encode($input);
           }
@@ -165,14 +155,13 @@ class Api {
           }
 			} );
 			
-      $router->delete('/api/*/*', function( $tablename, $id_value=null ) use($dbmng){
+      $router->delete('/api/'.$tablename.'/*', function(  $id_value=null ) use($dbmng){
         $allowed=$dbmng->isAllowed('delete');
         
         if($allowed['ok'])
           {
             $aForm = $dbmng->getaForm();
-            if( $aForm['table_name'] == $tablename )
-              {
+            
                 if( !is_null($id_value) )
                   {
                     // get the info from aForm array
@@ -194,12 +183,7 @@ class Api {
                     $input['ok'] = false;
                     $input['msg'] = "The id value doesn't exist";
                   }
-              }
-            else
-              {
-                $input['ok'] = false;
-                $input['msg'] = "The tablename '$tablename' doesn't exist";
-              }
+           
             return json_encode($input);
           }
         else
@@ -209,14 +193,13 @@ class Api {
           }
       } );
 
-      $router->post('/api/*', function( $tablename ) use($dbmng){
+      $router->post('/api/'.$tablename, function( ) use($dbmng){
         $allowed=$dbmng->isAllowed('insert');
         
         if($allowed['ok'])
           {
             $aForm = $dbmng->getaForm();
-            if( $aForm['table_name'] == $tablename )
-              {
+            
                 // get the info from aForm array
                 $primary_key = $aForm['primary_key'][0];
                 $aFields = array_keys($aForm['fields']);
@@ -260,12 +243,7 @@ class Api {
                     $input['msg'] = "Some fields are wrong";
                     $input['wrong_field'] = $aFldError;
                   }
-              }
-            else
-              {
-                $input['ok'] = false;
-                $input['msg'] = "The tablename '$tablename' doesn't exist";
-              }
+            
             $input['body'] = $body;
             return json_encode($input);
           }
