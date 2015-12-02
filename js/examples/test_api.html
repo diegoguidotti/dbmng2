@@ -87,18 +87,18 @@
 //     /* ------------
 //        TABLE: test_child
 //     ---------------*/
-//     var aCForm = { table_name: 'test_child', 
-//       primary_key: Array('id_child'), 
-//       fields: {
-//         id_child: {label: 'ID', type: 'int', key: 0, nullable: false}, 
-//         child_name: {label: 'Child Name', type: 'varchar',  nullable: false}
-//       }
-//     };
-// 
-//     var childform = new Dbmng.Form({aForm:aCForm, aParam:{}, theme:theme_boot});
-// 
-//     var childapi  = new  Dbmng.Api({aForm:aCForm, url:'/dbmng2/api/test_child', user:'test', password:'test'});
-//     creaTabella(childapi, '#test_child');
+    var aCForm = { table_name: 'test_child', 
+      primary_key: Array('id_child'), 
+      fields: {
+        id_child: {label: 'ID', type: 'int', key: 0, nullable: false}, 
+        child_name: {label: 'Child Name', type: 'varchar',  nullable: false}
+      }
+    };
+
+    var childform = new Dbmng.Form({aForm:aCForm, aParam:{}, theme:theme_boot});
+
+    var childapi  = new  Dbmng.Api({aForm:aCForm, url:'/dbmng2/api/test_child', user:'test', password:'test'});
+    creaTabella(childapi, '#test_child');
 
 
 function creaTabella(api, div_id){
