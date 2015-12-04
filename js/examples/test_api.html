@@ -68,17 +68,20 @@
     // Test for Bootstrap theme
     var theme_boot=new Dbmng.BootstrapTheme();
 
-    jQuery('#test_2').html(theme_boot.getTable({data:[{nm:'Diego',sr:'Guid'}]}));
+//    jQuery('#test_2').html(theme_boot.getTable({data:[{nm:'Diego',sr:'Guid'}]}));
     
     /* ------------
        TABLE: test
     ---------------*/
 
 
-    var aParam = {ui:{btn_edit: {label:'Modifica', icon: 'fa fa-pencil'},
-                      btn_delete:{icon: 'fa fa-trash'}},
-                  user_function: {inline:1}
-                  }; // upd:, del:, 
+    var aParam = {ui: {btn_edit: {label:'Modifica', class: 'btn-success', icon: 'fa fa-pencil'},
+                    btn_edit_inline: {label:'Modifica inline', class: 'btn-success', icon: 'fa fa-pencil-square-o'},
+                    btn_delete: {label:'Elimina', class: 'btn-danger', icon: 'fa fa-trash'},
+                    btn_insert: {label:'Inserisci', class: 'btn-success btn-block'},
+                    btn_save: {label:'Salva', class: 'btn-success btn-block'},
+                    table_class: 'table-hover'},
+              user_function: {inline:1, upd:1, del:1, ins:1}};
 
 		//vecchia versione con aForm 
 		/*   
