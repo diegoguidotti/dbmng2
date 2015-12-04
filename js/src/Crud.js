@@ -15,15 +15,14 @@ Dbmng.Crud = Class.extend({
 		//the ready variable can be used to check if it is ready the Crud to create the table)   
     this.ready=true;
 
-    aParamD = {ui: {btn_edit: {label:'Edit', class: 'btn-success'},
-                    btn_edit_inline: {label:'Edit inline', class: 'btn-success'},
-                    btn_delete: {label:'Delete', class: 'btn-danger'}, //<i class="fa fa-camera-retro fa-2x"></i>
-                    btn_insert: {label:'Insert', class: 'btn-default btn-block'},
-                    btn_save: {label:'Save', class: 'aaa btn-default btn-block'}},
+    aParamD = {ui: {btn_edit: {label:'Edit'},
+                    btn_edit_inline: {label:'Edit inline'},
+                    btn_delete: {label:'Delete'},
+                    btn_insert: {label:'Insert'},
+                    btn_save: {label:'Save'}},
               user_function: {inline:0, upd:1, del:1, ins:1}};
     
     this.aParam = jQuery.extend(true, aParamD,options.aParam);
-
 
     
     if( options.theme ) {
@@ -95,7 +94,8 @@ Dbmng.Crud = Class.extend({
     if( div_id.substring(0, 1) != '#') {
       div_id = '#' + div_id;
     }
-			if(this.ready){
+		
+		if(this.ready){
 		  var self=this;
 
 		  this.api.select({
@@ -115,13 +115,12 @@ Dbmng.Crud = Class.extend({
 		        
 		        var cData = self.form.convert2html(aData);
 		      
-		        var html=self.theme.getTable({data:cData, header:header, options:{
+		        var html=self.theme.getTable({data:cData, header:header, aParam:self.aParam, options:{
 		          assignClass:true,
 		          setIDRow:function(aData){
 		            return "dbmng_row_id_"+aData[self.pk];
 		          },
 		          addColumn:function(opt){
-		            console.log(self.aParam);
 		            var cell=self.theme.getTableCell();
 		            
 		            if( self.aParam.user_function.upd == 1 ) {
@@ -226,13 +225,16 @@ Dbmng.Crud = Class.extend({
 
     jQuery(div_id).html(this.form.createForm(aRecord));
     
-    var label_save='Salva'; var opt_save={};
-      if(self.aParam.btn_save) {
-        if(self.aParam.btn_save.label){
-          label_save=self.aParam.btn_save.label;
-      }
-      opt_save=self.aParam.btn_save;
-    }
+    var label_save=self.aParam.ui.btn_save.label; 
+    var opt_save=self.aParam.ui.btn_save;
+    
+//     var label_save='Salva'; var opt_save={};
+//       if(self.aParam.btn_save) {
+//         if(self.aParam.btn_save.label){
+//           label_save=self.aParam.btn_save.label;
+//       }
+//       opt_save=self.aParam.btn_save;
+//     }
     
     var button = self.theme.getButton(label_save, opt_save);
     jQuery(button).click(function(){
