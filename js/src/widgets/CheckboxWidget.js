@@ -25,8 +25,6 @@ Dbmng.CheckboxWidget = Dbmng.AbstractWidget.extend({
     return ret;
   },
 	convert2html: function(val) {
-		console.log(val);
-		console.log(this.aField.voc_val);
 		if(this.aField.voc_val){
 	    return this.aField.voc_val[val];
 		}
