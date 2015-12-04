@@ -234,6 +234,9 @@ Dbmng.AbstractTheme = Class.extend({
       }
       el.className = el.className + space + className;
 	},
+  addTitle: function(el, title){
+      el.title = title;
+  },
   getForm: function(opt) {
     var el = document.createElement('form');
     return el;
@@ -241,7 +244,12 @@ Dbmng.AbstractTheme = Class.extend({
   getTable: function(opt) {
     var div = document.createElement('div');
     var el = document.createElement('table');
-		if(opt.data){
+		if( opt.aParam ) {
+      if( opt.aParam.ui.table_class ) {
+        this.addClass(el, opt.aParam.ui.table_class);
+      } 
+    }
+    if(opt.data){
 			el.appendChild(this.getTableHeader(opt));
 			var tbody=document.createElement('tbody');
 			for(var i=0; i<opt.data.length; i++){
@@ -332,6 +340,7 @@ Dbmng.AbstractTheme = Class.extend({
       // if( jQuery('i.fa').css('font').indexOf('Awesome')>-1 ) { ... }
       var icn = document.createElement('i');
       this.addClass(icn,opt.icon);
+      this.addTitle(icn, text);
       el.appendChild(icn);
     }
     else{
