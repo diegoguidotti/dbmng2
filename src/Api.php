@@ -83,19 +83,30 @@ class Api {
 						$pqueries[]=$ret;
 					}
 				}
-				//print_r($pqueries);
+				print_r($pqueries);
 				$queries=array();
+				$all_ok=true;	
+				$mesages;
 				foreach( $pqueries as $k=>$q1){
 					foreach( $q1 as $k2=>$q){
 						if(isset($q->sql)){
-							$queries[]=(array)$q;					
+							$queries[]=(array)$q;
+							$messages[]=array("ok"=>true, "message"=>"");					
+						}
+						else if(isset($q->ok)){
+							$all_ok=false;
+							$messages[]=array("ok"=>$q->ok, "message"=>$q->message);					
 						}
 					}					
 				}
 				
 				//print_r($queries);
-			
-			 	$ret=$dbmng->transactions($queries);
+				if($all_ok){
+				 	$ret=$dbmng->transactions($queries);
+				}
+				else{
+					$ret=$messages;
+				}
 				return json_encode(	$ret);
 
 			});
