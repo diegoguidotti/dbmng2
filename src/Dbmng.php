@@ -44,19 +44,18 @@ private $prepare;
 
 		$sWhere = "";
 		$aWhere = array();
+		$ret=$this->createWhere($aVar, $sWhere, $aWhere);
+		//TODO the function createWhere works only for delete for insert does not work
+		//print_r($ret);
 		
-		if( count($aVar) > 0 )
+		if($ret['ok'] && count($aVar) >0)
 			{
-				$ret=$this->createWhere($aVar, $sWhere, $aWhere);
-				if($ret['ok'] && count($aVar) >0)
-					{
-						$sQuery='SELECT '.$var.' from '.$this->aForm['table_name'] . " WHERE $sWhere ";
-						$ret = $this->db->select($sQuery, $aWhere, $fetch_style);
-					}
+				$sQuery='SELECT '.$var.' from '.$this->aForm['table_name'] . " WHERE $sWhere ";
+				$ret = $this->db->select($sQuery, $aWhere, $fetch_style);
 			}
 		else
 			{
-				$sQuery='SELECT '.$var.' from '.$this->aForm['table_name'];
+				$sQuery='SELECT '.$var.' from '.$this->aForm['table_name'];		
 				$ret = $this->db->select($sQuery, $aWhere, $fetch_style);
 			}
 		return $ret;
@@ -88,9 +87,11 @@ private $prepare;
 			{
 				if( Util::var_equal($fld_value,'key', 1) ||  Util::var_equal($fld_value,'key', 2) )
 					{
-						$hasPk = true;
-						$sWhere .= "$fld = :$fld and ";
-						$aWhere = array_merge($aWhere, array(":".$fld => $aVars[$fld] ));
+						if(isset($aVars[$fld])){
+							$hasPk = true;
+							$sWhere .= "$fld = :$fld and ";
+							$aWhere = array_merge($aWhere, array(":".$fld => $aVars[$fld] ));
+						}
 					}
 			}
 		
