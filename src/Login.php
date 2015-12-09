@@ -42,6 +42,10 @@ class Login {
     {
       $ret=json_decode($_SESSION['DBMNG_USER'], true); ;
     }
+		else if($this->aut_type=='Drupal'){
+			global $user;
+			$ret = $user;			
+		}
     else{
       $provided_user=null;
       $provided_password=null;	

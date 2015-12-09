@@ -44,7 +44,29 @@ Dbmng.Api = Class.extend({
     //var ret={};
     //return ret;
   },
-  insert: function(options) {
+  transaction: function(options) {
+		jQuery.ajax({
+			url: this.url+"/transaction",
+			dataType:'json',
+			method:'POST',
+			data: JSON.stringify(options.data),
+			headers: this.getHeaders(),
+			success: function(data){
+				if(typeof options.success=='function'){
+					options.success(data);
+				}
+				else{
+					console.log(data);
+				}
+			},
+			error: function(exc){
+				if(typeof options.error=='function'){
+					options.error(exc);
+				}
+				console.log(exc);
+			}
+		});
+  },insert: function(options) {
 		jQuery.ajax({
 			url: this.url,
 			dataType:'json',

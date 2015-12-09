@@ -98,40 +98,45 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
 			 'timeout'  => 2.0,
 		]);
 
-		$response = $client->request('GET', 'dbmng2/api/test/');
+		$auth=[        'test', 'test'    ];
+		$auths=[    'auth' => $auth];
+
+		$response = $client->request('GET', 'dbmng2/api/test/',$auths);
 		$this->assertEquals(200,$response->getStatusCode());
 		$a = $response->getBody();
 		$o = json_decode($a);
 		$this->assertEquals(true,$o->ok);
 		
-		$response2 = $client->request('GET', 'dbmng2/api/testfake/');
+/*
+		$response2 = $client->request('GET', 'dbmng2/api/testfake/',$auths);
 		$a = $response2->getBody();
 		$o = json_decode($a);
 		$this->assertEquals(false,$o->ok);
+*/
 		
-		$response3 = $client->request('GET', 'dbmng2/api/test/1');
+		$response3 = $client->request('GET', 'dbmng2/api/test/1',$auths);
 		$this->assertEquals(200,$response3->getStatusCode());
 		$a = $response3->getBody();
 		$o = json_decode($a);
 		$this->assertEquals(true,$o->ok);
 		$this->assertEquals(1,$o->rowCount);
 	
-		$response4 = $client->request('PUT', 'dbmng2/api/test/1', ['body' => '{"name":"pluto"}']);
+		$response4 = $client->request('PUT', 'dbmng2/api/test/1', ['body' => '{"name":"pluto"}','auth'=>$auth]);
 		$a = $response4->getBody();
 		$o = json_decode($a);
 		$this->assertEquals(true,$o->ok);
 		
-		$response5 = $client->request('GET', 'dbmng2/api/test/1');
+		$response5 = $client->request('GET', 'dbmng2/api/test/1',$auths);
 		$a = $response5->getBody();
 		$o = json_decode($a);
 		$this->assertEquals('pluto',$o->data[0]->name);
 		
-		$response6 = $client->request('PUT', 'dbmng2/api/test/1', ['body' => '{"nama":"pluto"}']);
+		$response6 = $client->request('PUT', 'dbmng2/api/test/1', ['body' => '{"nama":"pluto"}','auth'=>$auth]);
 		$a = $response6->getBody();
 		$o = json_decode($a);
 		$this->assertEquals(false,$o->ok);
 		
-		$response7 = $client->request('PUT', 'dbmng2/api/test/1', ['body' => '{"name":"pluto", "surname":"topolino"}']);
+		$response7 = $client->request('PUT', 'dbmng2/api/test/1', ['body' => '{"name":"pluto", "surname":"topolino"}','auth'=>$auth]);
 		$a = $response6->getBody();
 		$o = json_decode($a);
 		$this->assertEquals(false,$o->ok);

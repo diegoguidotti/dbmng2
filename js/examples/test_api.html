@@ -34,14 +34,15 @@
   <div id="test_child"></div>
 
 	<div id="test_2"></div>
+  <h1>tabella: test Diego</h1>
+	<div id="test_diego"></div>
 
 
 
 
 	<style>
-/*		#test_table td{
-			border:1px solid #CCC;
-		}*/
+
+/*
     #test_table form{
       display:block !important;
     }
@@ -61,10 +62,37 @@
 		#test_table form{
 			display:inline!important;
 		}
+*/
+
+
+/*  TEST DIEGO */
+
+	#test_diego{
+		display:table;
+	}
+
+	#test_diego form{
+		display:table-row;
+	}
+	#test_diego .dbmng_form_row{
+			display:table-cell;
+	}
+	#test_diego label{
+		display:none;
+	}
+	#test_diego .dbmng_form_field_id{
+		display:none;
+	}
 
 	</style>
 	<script>
 
+
+	test_base();
+	test_bis();
+
+
+function test_base(){
     // Test for Bootstrap theme
     var theme_boot=new Dbmng.BootstrapTheme();
 
@@ -73,8 +101,6 @@
     /* ------------
        TABLE: test
     ---------------*/
-
-
     var aParam = {ui: {btn_edit: {label:'Modifica', class: 'btn-success', icon: 'fa fa-pencil'},
                     btn_edit_inline: {label:'Modifica inline', class: 'btn-success', icon: 'fa fa-pencil-square-o'},
                     btn_delete: {label:'Elimina', class: 'btn-danger', icon: 'fa fa-trash'},
@@ -133,6 +159,62 @@
 
     var crudchild = new Dbmng.Crud({aForm:aCForm, aParam:{}, theme:theme_boot, url:'/dbmng2/api/test_child', user:'test', password:'test'});
     crudchild.createTable({div_id:'test_child'});
+}
+
+
+
+function test_bis(){
+
+    // Test for Bootstrap theme
+    var theme_boot=new Dbmng.BootstrapTheme();
+
+    var aParam = {ui: {btn_edit: {label:'Modifica', class: 'btn-success', icon: 'fa fa-pencil'},
+                    btn_edit_inline: {label:'Modifica inline', class: 'btn-success', icon: 'fa fa-pencil-square-o'},
+                    btn_delete: {label:'Elimina', class: 'btn-danger', icon: 'fa fa-trash'},
+                    btn_insert: {label:'Inserisci', class: 'btn-success btn-block'},
+                    btn_save: {label:'Salva', class: 'btn-success btn-block'},
+                    table_class: 'table-hover'},
+              user_function: {inline:1, upd:1, del:1, ins:1}};
+
+    var aForm = { table_name: 'test', 
+      primary_key: Array('id'), 
+      fields: {
+        id: {label: 'ID1', type: 'int', key: 0, nullable: false}, 
+        name: {label: 'Name1', type: 'varchar',  nullable: false},
+        sex: {label: 'Sex', type: 'varchar',  widget: 'select', voc_val: {'M':'Male', 'F':'Female'}},
+        true_false: {label: 'E vero o è falso', type: 'integer',  widget: 'checkbox',voc_val: {'1':'è Vero!', '0':'Falso',null:'Boh'}}
+      }
+    };
+
+
+		var aDati=[{"name":"Diego"},{"name":"Diego2"},{"name":"Dieg32"},{"name":"Diego42"}];
+		var forms=[];		
+
+		for(var i=0; i<aDati.length; i++){
+			var form=new Dbmng.Form({aForm:aForm, aParam:{}, theme:theme_boot});
+			jQuery('#test_diego').append(form.createForm(aDati[i]));
+			forms.push(form);
+		}
+
+		var button=theme_boot.getButton("Salva")
+		jQuery('#test_diego').append(button);
+		jQuery(button).click(function(){
+
+			var aSavedData=[];
+			for(var i=0; i<forms.length; i++){
+				t={"mode":"insert", "body":forms[i].getValue()};
+				aSavedData.push(t);
+			}
+			console.log(aSavedData);
+			var api1=new  Dbmng.Api({aForm:aForm, url:'/dbmng2/api/test', user:'test', password:'test'});
+			api1.transaction({data:aSavedData});
+		})
+
+		
+		//
+		
+	
+}
 
 
   </script>

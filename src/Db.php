@@ -169,17 +169,41 @@ private $pdo;
 			try 
 				{
 					$dbh = $this->pdo;
+					$ret=array();
+					$dbh->beginTransaction();
+					$all_ok=true;
 					
 					foreach( $aQuery as $a )
 						{
-							$res0 = $dbh->prepare($a['sql']);
+							$prep0 = $dbh->prepare($a['sql']);							
+							$ok= $prep0->execute($a['var']);
+
+							$id = $dbh->lastInsertId();
+							if(!$ok){
+								$all_ok=false;
+							}
 							
-							$dbh->beginTransaction();
-								$res0->execute($a['var']);
-							$dbh->commit();
+							$ret0=array();
+							$ret0['ok']=$ok;
+							$ret0['sql']=$a['sql'];
+
+							if($id>0){
+								$ret0['inserted_id']=$id;
+							}
+/*
+							if(strpos($a['sql'],"insert")===false){
+								;
+							}
+							else{
+									$ret0['inserted_id']=$id;
+							}
+*/
+							$ret[]=$ret0;
 							
-							$ret['ok']=true;
 						}
+						$dbh->commit();
+						
+						$ret['ok']=$all_ok;
         }
 				catch (\PDOException $e)
         {

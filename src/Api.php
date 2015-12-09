@@ -61,6 +61,45 @@ class Api {
 				return json_encode($dbmng->getaForm());
 			});
 
+			$router->post('/api/'.$tablename.'/transaction', function( $id_value=null ) use($dbmng){
+
+				$dbmng->setPrepare(true);
+				// get the form_params from the rest call
+        $body = file_get_contents("php://input");
+                
+        $transactions = json_decode($body);
+				$pqueries=array();
+				foreach( $transactions as $k=>$transaction){
+					if($transaction->mode == 'delete'){
+						$ret=$this->doDelete($dbmng, $transaction->key);
+						$pqueries[]=$ret;
+					}
+					else if($transaction->mode == 'insert'){
+						$ret=$this->doInsert($dbmng, $transaction->body);
+						$pqueries[]=$ret;
+					}
+					else if($transaction->mode == 'update'){
+						$ret=$this->doUpdate($dbmng, $transaction->key, $transaction->body);						
+						$pqueries[]=$ret;
+					}
+				}
+				//print_r($pqueries);
+				$queries=array();
+				foreach( $pqueries as $k=>$q1){
+					foreach( $q1 as $k2=>$q){
+						if(isset($q->sql)){
+							$queries[]=(array)$q;					
+						}
+					}					
+				}
+				
+				//print_r($queries);
+			
+			 	$ret=$dbmng->transactions($queries);
+				return json_encode(	$ret);
+
+			});
+
 			// select
 			$router->get('/api/'.$tablename.'/*', function( $id_value=null ) use($dbmng){
 
@@ -86,6 +125,132 @@ class Api {
 			} );
 			
 			$router->put('/api/'.$tablename.'/*', function( $id_value=null ) use($dbmng){
+				$body = file_get_contents("php://input");
+				return json_encode($this->doUpdate($dbmng,$id_value,json_decode($body)));
+
+			} );
+			
+      $router->delete('/api/'.$tablename.'/*', function(  $id_value=null ) use($dbmng){
+				return json_encode($this->doDelete($dbmng, $id_value));
+
+      } );
+
+      $router->post('/api/'.$tablename, function( ) use($dbmng){
+        $body = file_get_contents("php://input");
+				return json_encode($this->doInsert($dbmng,json_decode($body)));
+        
+      } );
+
+	}
+
+
+	function doDelete($dbmng, $id_value){
+		    $allowed=$dbmng->isAllowed('delete');
+        
+        if($allowed['ok'])
+          {
+            $aForm = $dbmng->getaForm();
+            
+                if( !is_null($id_value) )
+                  {
+                    // get the info from aForm array
+                    $primary_key = $aForm['primary_key'][0];
+                    $aFields = array_keys($aForm['fields']);
+                    
+                    
+                    // prepare the array of vars for the update and 
+                    // check if the form_params passed are in the table structure
+                    $aVar[$primary_key] = $id_value;
+                    
+                    $input = $dbmng->delete($aVar);
+                    
+                    $input['fields'] = $aFields;
+                    $input['pk'] = $primary_key;
+                  }
+                else
+                  {
+                    $input['ok'] = false;
+                    $input['msg'] = "The id value doesn't exist";
+                  }
+           
+            return ($input);
+          }
+        else
+          {
+            http_response_code($allowed['code']);
+            return ($allowed);
+          }
+	}
+
+	function doInsert($dbmng, $body){
+    	$allowed=$dbmng->isAllowed('insert');
+        
+        if($allowed['ok'])
+          {
+                
+              // get the form_params from the rest call
+              
+              $aFormParams = ($body);
+							$ret=array();
+									
+		          $aForm = $dbmng->getaForm();
+				
+							// get the info from aForm array
+							$primary_key = $aForm['primary_key'][0];
+							$aFields = array_keys($aForm['fields']);
+
+								//echo "AAAA";
+								// prepare the array of vars for the update and 
+								// check if the form_params passed are in the table structure
+							$bContinue = true;
+							$aVar = array();
+							$aFldError = array();
+							foreach($aFormParams as $k => $v)
+								{
+									if( in_array($k, $aFields) )
+										{
+											$aVar[$k] = $v;
+											$bContinue = $bContinue && true;
+										}
+									else
+										{
+											array_push($aFldError,$k); 
+											$bContinue = $bContinue && false;
+										}
+								}
+
+							// execute the update only if all the form_params are in the table structure
+							if( $bContinue )
+								{
+									$input = $dbmng->insert($aVar);
+				
+									$input['form_params'] = $aFormParams;
+									$input['fields'] = $aFields;
+									$input['pk'] = $primary_key;
+								}
+							else
+								{
+									$input['ok'] = false;
+									$input['msg'] = "Some fields are wrong";
+									$input['wrong_field'] = $aFldError;
+								}
+		
+
+							
+		          $input['body'] = $body;
+		          return ($input);
+						
+          }
+        else
+          {
+            http_response_code($allowed['code']);
+            return ($allowed);
+          }
+	}
+
+	function doUpdate($dbmng, $id_value, $body){
+		
+				$aFormParams=$body;
         $allowed=$dbmng->isAllowed('update');
         
         if($allowed['ok'])
@@ -99,9 +264,7 @@ class Api {
                     $aFields = array_keys($aForm['fields']);
                     
                     // get the form_params from the rest call
-                    $body = file_get_contents("php://input");
                     
-                    $aFormParams = json_decode($body);
                     
                     // prepare the array of vars for the update and 
                     // check if the form_params passed are in the table structure
@@ -149,115 +312,15 @@ class Api {
                   }
             
             //$input['body'] = $body;
-            return json_encode($input);
+            return ($input);
           }
         else
           {
             http_response_code($allowed['code']);
-            return json_encode($allowed);
+            return ($allowed);
           }
-			} );
-			
-      $router->delete('/api/'.$tablename.'/*', function(  $id_value=null ) use($dbmng){
-        $allowed=$dbmng->isAllowed('delete');
-        
-        if($allowed['ok'])
-          {
-            $aForm = $dbmng->getaForm();
-            
-                if( !is_null($id_value) )
-                  {
-                    // get the info from aForm array
-                    $primary_key = $aForm['primary_key'][0];
-                    $aFields = array_keys($aForm['fields']);
-                    
-                    
-                    // prepare the array of vars for the update and 
-                    // check if the form_params passed are in the table structure
-                    $aVar[$primary_key] = $id_value;
-                    
-                    $input = $dbmng->delete($aVar);
-                    
-                    $input['fields'] = $aFields;
-                    $input['pk'] = $primary_key;
-                  }
-                else
-                  {
-                    $input['ok'] = false;
-                    $input['msg'] = "The id value doesn't exist";
-                  }
-           
-            return json_encode($input);
-          }
-        else
-          {
-            http_response_code($allowed['code']);
-            return json_encode($allowed);
-          }
-      } );
-
-      $router->post('/api/'.$tablename, function( ) use($dbmng){
-        $allowed=$dbmng->isAllowed('insert');
-        
-        if($allowed['ok'])
-          {
-            $aForm = $dbmng->getaForm();
-            
-                // get the info from aForm array
-                $primary_key = $aForm['primary_key'][0];
-                $aFields = array_keys($aForm['fields']);
-                
-                // get the form_params from the rest call
-                $body = file_get_contents("php://input");
-                
-                $aFormParams = json_decode($body);
-                print_r($aFormParams,true);
-                // prepare the array of vars for the update and 
-                // check if the form_params passed are in the table structure
-                $bContinue = true;
-                $aVar = array();
-                $aFldError = array();
-                foreach($aFormParams as $k => $v)
-                  {
-                    if( in_array($k, $aFields) )
-                      {
-                        $aVar[$k] = $v;
-                        $bContinue = $bContinue && true;
-                      }
-                    else
-                      {
-                        array_push($aFldError,$k); 
-                        $bContinue = $bContinue && false;
-                      }
-                  }
-                
-                // execute the update only if all the form_params are in the table structure
-                if( $bContinue )
-                  {
-                    $input = $dbmng->insert($aVar);
-                    
-                    $input['form_params'] = $aFormParams;
-                    $input['fields'] = $aFields;
-                    $input['pk'] = $primary_key;
-                  }
-                else
-                  {
-                    $input['ok'] = false;
-                    $input['msg'] = "Some fields are wrong";
-                    $input['wrong_field'] = $aFldError;
-                  }
-            
-            $input['body'] = $body;
-            return json_encode($input);
-          }
-        else
-          {
-            http_response_code($allowed['code']);
-            return json_encode($allowed);
-          }
-      } );
-
 	}
+
 
 	function isValid(){
 		return $this->dbmng->isValid();

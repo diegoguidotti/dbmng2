@@ -14,6 +14,7 @@ private $app;
 private $db;
 private $aForm;
 private $aParam;
+private $prepare;
 
 
 	public function __construct($app, $aForm, $aParam)
@@ -22,7 +23,14 @@ private $aParam;
 		$this->db=$app->getDb();
 		$this->aForm=$aForm;
 		$this->aParam=$aParam;
+		$this->prepare=false;
 	}
+
+	public function setPrepare($p)
+	{
+		$this->prepare=$p;
+	}
+	
 	
 	public function getaForm()
 	{
@@ -118,6 +126,7 @@ private $aParam;
 	/// This method delete the selected record
 	/**
 	\param $aVars  		$_REQUEST associative array
+	\param $prepare  	if true prepare the query without executing it
 	\return $result	SQL result
 	*/
 	function delete($aVars) 
@@ -135,9 +144,18 @@ private $aParam;
 			}
 		else
 			{
-				$result = $this->db->delete("delete from " . $aForm['table_name'] . " WHERE $sWhere ", $aWhere);
+				$sql="delete from " . $aForm['table_name'] . " WHERE $sWhere ";
+				$var=$aWhere;
+
+
+				if($this->prepare){					
+					$result[]=(object)array('sql'=>$sql, 'var'=>$var);						
+				}
+				else{		
+					$result = $this->db->delete($sql, $var);
+				}
 			
-				if($result['ok'])
+				if($this->prepare || $result['ok'])
 					{
 						foreach ( $aForm['fields'] as $fld => $fld_value )
 							{
@@ -152,7 +170,12 @@ private $aParam;
 										$ret=$this->createWhere($aVars, $sWhere2, $aWhere2, false);
 				
 										$sql = "delete from ".$table_nm." where ".$sWhere2;
-										$res_nm = $this->db->delete( $sql, $aWhere2);
+										if($this->prepare){
+											$result[]=array('sql'=>$sql, 'var'=>$aWhere2);
+										}
+										else{
+											$res_nm = $this->db->delete( $sql, $aWhere2);
+										}
 									}
 							}
 					}
@@ -257,12 +280,24 @@ private $aParam;
 		else
 			{
 				$var   = array_merge($var, $aWhere);
+
+				$sql="update " . $aForm['table_name'] . " set $sSet where $sWhere ";
 			
-				$result = $this->db->update("update " . $aForm['table_name'] . " set $sSet where $sWhere ", $var);
-				if( $result['ok'] && $bSelectNM)
+					if($this->prepare){					
+						$result[]=(object)array('sql'=>$sql, 'var'=>$var);						
+					}
+					else{		
+						$result = $this->db->update($sql, $var);
+					}
+
+				if(  ( ($this->prepare  || $result['ok']) && $bSelectNM))
 					{
-						//throw new \Exception('We need to implement the insert_nm function');
-						$this->insert_nm($aVars, null);
+						if($this->prepare){
+							throw new \Exception('We need to implement the insert_nm prepared function');
+						}
+						else{
+							$this->insert_nm($aVars, null);
+						}
 					}
 		}
 		
@@ -298,9 +333,11 @@ private $aParam;
 					{
 							if(! Util::var_equal($fld_value, 'widget','select_nm') && !$readonly )
 								{
-									$sWhat .= $fld . ", ";
-									$sVal.=":$fld ,";	
-									$var = array_merge($var, array(":".$fld => $aVars[$fld]));
+									if(isset($aVars[$fld])){	
+										$sWhat .= $fld . ", ";
+										$sVal.=":$fld ,";	
+										$var = array_merge($var, array(":".$fld => $aVars[$fld]));
+									}
 								}
 							else
 								{
@@ -350,19 +387,33 @@ private $aParam;
 		$sWhat = substr($sWhat, 0, strlen($sWhat)-2);
 		$sVal  = substr($sVal, 0, strlen($sVal)-2);
 
+
 		$sql    = "insert into " . $aForm['table_name'] . " (" . $sWhat . ") values (" . $sVal . ")";
+		if($this->prepare){					
+			$result[]=(object)array('sql'=>$sql, 'var'=>$var);						
+		}
+		else{		
+			//echo debug_sql_statement($sql, $var);
+			//fwrite(STDERR, $this->db->getSQL($sql, $var));
+			$result = $this->db->insert($sql, $var);
+		}
+		
 
-		//echo debug_sql_statement($sql, $var);
-		//fwrite(STDERR, $this->db->getSQL($sql, $var));
-		$result = $this->db->insert($sql, $var);
 
 
-		if($result['ok'])
+		if($this->prepare || $result['ok'])
 			{
 				if( $bSelectNM )
 					{
+						
 						//throw new \Exception('We need to implement the insert into table nm');
-						$res = $this->insert_nm($aVars, $result['inserted_id']);
+						if($this->prepare){
+								//TODO!!!!!!!!!!!!!!!!!!!!!!	if 
+								throw new \Exception('We need to implement the insertnm prepared statement (for transaction api)');
+						}
+						else{		
+							$res = $this->insert_nm($aVars, $result['inserted_id']);
+						}
 					}
 			}
 
@@ -673,6 +724,12 @@ private $aParam;
 			} 
 		$aCheck['message'] = $aMessage;
 		return $aCheck;
+	}
+
+
+
+	public function transactions($aQuery){
+		return $this->db->transactions($aQuery);
 	}
 
    /////////////////////////////////////////////////////////////////////////////
