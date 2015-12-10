@@ -64,47 +64,6 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
 					
 	}
 
-	public function testGuzzleHttp() {
-
-		$client = new \GuzzleHttp\Client([
-			 // Base URI is used with relative requests
-			 'base_uri' => 'http://localhost',
-			 // You can set any number of default request options.
-			 'timeout'  => 2.0,
-		]);
-
-		$response = $client->request('GET', '');
-		$this->assertEquals(200,$response->getStatusCode());	
-
-	}
-
-	public function testGuzzleHttp2() {
-
-		$client = new \GuzzleHttp\Client([
-			 // Base URI is used with relative requests
-			 'base_uri' => 'http://localhost',
-			 // You can set any number of default request options.
-			 'timeout'  => 2.0,
-		]);
-
-		$response = $client->request('GET', '.travis.yml');
-		$this->assertEquals(200,$response->getStatusCode());	
-
-	}
-
-	public function testGuzzleHttp3() {
-
-		$client = new \GuzzleHttp\Client([
-			 // Base URI is used with relative requests
-			 'base_uri' => 'http://localhost',
-			 // You can set any number of default request options.
-			 'timeout'  => 2.0,
-		]);
-
-		$response = $client->request('GET', 'dbmng2/.travis.yml');
-		$this->assertEquals(200,$response->getStatusCode());	
-
-	}
 
 
 	public function testApiBasic() {
@@ -116,17 +75,17 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
 			 'timeout'  => 2.0,
 		]);
 
-		$response = $client->request('GET', 'dbmng2/api/test_base/');
+		$response = $client->request('GET', $GLOBALS['SITE_FOLDER'].'/api/test_base/');
 		$this->assertEquals(200,$response->getStatusCode());	
 		// $this->assertEquals('{"test_get":1}',$response->getBody());
 
-		$response2 = $client->request('DELETE', 'dbmng2/api/test_base/');
+		$response2 = $client->request('DELETE', $GLOBALS['SITE_FOLDER'].'/api/test_base/');
 		$this->assertEquals('{"test_delete":1}',$response2->getBody());
 
-		$response3 = $client->request('PUT', 'dbmng2/api/test_base/', ['body' => '{"diego":1}']);
+		$response3 = $client->request('PUT', $GLOBALS['SITE_FOLDER'].'/api/test_base/', ['body' => '{"diego":1}']);
 		$this->assertEquals('{"diego":1,"test_put":1}',$response3->getBody());
 
-		$response4 = $client->request('POST', 'dbmng2/api/test_base/', ['body' => '{"diego":1}']);
+		$response4 = $client->request('POST', $GLOBALS['SITE_FOLDER'].'/api/test_base/', ['body' => '{"diego":1}']);
 		$this->assertEquals('{"test_post":1}',$response4->getBody());
 
 	}
@@ -143,42 +102,42 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
 		$auth=[        'test', 'test'    ];
 		$auths=[    'auth' => $auth];
 
-		$response = $client->request('GET', 'dbmng2/api/test/',$auths);
+		$response = $client->request('GET', $GLOBALS['SITE_FOLDER'].'/api/test/',$auths);
 		$this->assertEquals(200,$response->getStatusCode());
 		$a = $response->getBody();
 		$o = json_decode($a);
 		$this->assertEquals(true,$o->ok);
 		
 /*
-		$response2 = $client->request('GET', 'dbmng2/api/testfake/',$auths);
+		$response2 = $client->request('GET', $GLOBALS['SITE_FOLDER'].'/api/testfake/',$auths);
 		$a = $response2->getBody();
 		$o = json_decode($a);
 		$this->assertEquals(false,$o->ok);
 */
 		
-		$response3 = $client->request('GET', 'dbmng2/api/test/1',$auths);
+		$response3 = $client->request('GET', $GLOBALS['SITE_FOLDER'].'/api/test/1',$auths);
 		$this->assertEquals(200,$response3->getStatusCode());
 		$a = $response3->getBody();
 		$o = json_decode($a);
 		$this->assertEquals(true,$o->ok);
 		$this->assertEquals(1,$o->rowCount);
 	
-		$response4 = $client->request('PUT', 'dbmng2/api/test/1', ['body' => '{"name":"pluto"}','auth'=>$auth]);
+		$response4 = $client->request('PUT', $GLOBALS['SITE_FOLDER'].'/api/test/1', ['body' => '{"name":"pluto"}','auth'=>$auth]);
 		$a = $response4->getBody();
 		$o = json_decode($a);
 		$this->assertEquals(true,$o->ok);
 		
-		$response5 = $client->request('GET', 'dbmng2/api/test/1',$auths);
+		$response5 = $client->request('GET', $GLOBALS['SITE_FOLDER'].'/api/test/1',$auths);
 		$a = $response5->getBody();
 		$o = json_decode($a);
 		$this->assertEquals('pluto',$o->data[0]->name);
 		
-		$response6 = $client->request('PUT', 'dbmng2/api/test/1', ['body' => '{"nama":"pluto"}','auth'=>$auth]);
+		$response6 = $client->request('PUT', $GLOBALS['SITE_FOLDER'].'/api/test/1', ['body' => '{"nama":"pluto"}','auth'=>$auth]);
 		$a = $response6->getBody();
 		$o = json_decode($a);
 		$this->assertEquals(false,$o->ok);
 		
-		$response7 = $client->request('PUT', 'dbmng2/api/test/1', ['body' => '{"name":"pluto", "surname":"topolino"}','auth'=>$auth]);
+		$response7 = $client->request('PUT', $GLOBALS['SITE_FOLDER'].'/api/test/1', ['body' => '{"name":"pluto", "surname":"topolino"}','auth'=>$auth]);
 		$a = $response6->getBody();
 		$o = json_decode($a);
 		$this->assertEquals(false,$o->ok);
