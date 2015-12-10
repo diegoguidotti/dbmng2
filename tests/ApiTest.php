@@ -73,6 +73,34 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
 			 'timeout'  => 2.0,
 		]);
 
+		$response = $client->request('GET', '');
+		$this->assertEquals(200,$response->getStatusCode());	
+
+	}
+
+	public function testGuzzleHttp2() {
+
+		$client = new \GuzzleHttp\Client([
+			 // Base URI is used with relative requests
+			 'base_uri' => 'http://localhost',
+			 // You can set any number of default request options.
+			 'timeout'  => 2.0,
+		]);
+
+		$response = $client->request('GET', '.travis.yml');
+		$this->assertEquals(200,$response->getStatusCode());	
+
+	}
+
+	public function testGuzzleHttp3() {
+
+		$client = new \GuzzleHttp\Client([
+			 // Base URI is used with relative requests
+			 'base_uri' => 'http://localhost',
+			 // You can set any number of default request options.
+			 'timeout'  => 2.0,
+		]);
+
 		$response = $client->request('GET', 'dbmng2/.travis.yml');
 		$this->assertEquals(200,$response->getStatusCode());	
 
