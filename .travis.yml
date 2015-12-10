@@ -13,6 +13,7 @@ matrix:
     - php: hhvm-nightly
 
 before_script:
+  - sudo apt-get update
   - sudo apt-get install apache2
   - sudo a2enmod rewrite
   - sudo service apache2 restart
