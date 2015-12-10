@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 # Install everything
-#sudo apt-get install -qq apache2
+sudo apt-get install -qq apache2
 
 # Configure Apache
-WEBROOT="$(pwd)/htdocs"
+WEBROOT="$(pwd)"
 CGIROOT=`dirname "$(which php-cgi)"`
 echo "WEBROOT: $WEBROOT"
 echo "CGIROOT: $CGIROOT"
