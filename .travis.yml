@@ -22,8 +22,6 @@ before_script:
   - echo "$(curl -fsSL https://gist.github.com/roderik/16d751c979fdeb5a14e3/raw/gistfile1.txt)" | sudo tee /etc/apache2/conf.d/phpconfig > /dev/null
   - echo "$(curl -fsSL https://gist.github.com/roderik/2eb301570ed4a1f4c33d/raw/gistfile1.txt)" | sed -e "s,PATH,`pwd`/web,g" | sudo tee /etc/apache2/sites-available/default > /dev/null
   - sudo service apache2 restart
-  - sudo ln -s ../dbmng2 /var/www/
-  - sudo ls /var/www/dbmng2/
   - wget http://localhost/dbmng2/LICENSE
   - composer --prefer-source --dev install
   - cp phpunit.xml.dist phpunit.xml
