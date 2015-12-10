@@ -138,11 +138,11 @@ Dbmng.Crud = Class.extend({
 		              var label_editi=self.aParam.ui.btn_edit_inline.label; 
 		              var opt_editi=self.aParam.ui.btn_edit_inline;
 		              
-		              var button_edit=jQuery(self.theme.getButton(label_editi,opt_editi));
-		              button_edit.click(function(){
+		              var button_editi=jQuery(self.theme.getButton(label_editi,opt_editi));
+		              button_editi.click(function(){
 		                self.createFormInline(div_id, opt.data[self.pk], aData, true);
 		              });		
-		              jQuery(cell).append(button_edit);
+		              jQuery(cell).append(button_editi);
 		            }
 
 		            if( self.aParam.user_function.upd ) {

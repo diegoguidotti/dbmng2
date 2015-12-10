@@ -5,7 +5,7 @@
 	use Dbmng\Api;
 	use Dbmng\App;
 	use Dbmng\Login;
-
+  use Respect\Rest\Router;
 	require_once 'vendor/autoload.php';	
 	require_once 'settings.php';	
 

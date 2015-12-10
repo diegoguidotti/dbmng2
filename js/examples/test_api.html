@@ -206,7 +206,8 @@ function test_bis(){
 				aSavedData.push(t);
 			}
 			console.log(aSavedData);
-			var api1=new  Dbmng.Api({aForm:aForm, url:'/dbmng2/api/test', user:'test', password:'test'});
+      // var api1=new  Dbmng.Api({aForm:aForm, url:'/dbmng2/api/test', user:'test', password:'test'});
+      var api1=new  Dbmng.Api({url:'/dbmng2/api/test', user:'test', password:'test'});
 			api1.transaction({data:aSavedData});
 		})
 

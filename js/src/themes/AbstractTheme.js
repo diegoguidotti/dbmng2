@@ -266,7 +266,7 @@ Dbmng.AbstractTheme = Class.extend({
 			}		
 			el.appendChild(tbody);	
 		}
-		div.appendChild(el)
+		div.appendChild(el);
     return div;
   },
 	getTableHeader: function(opt) {

@@ -5,7 +5,6 @@
  * 
  * @author Diego Guidotti <diego.guidotti@gmail.com>
  */
-use Respect\Rest\Router;
 namespace Dbmng;
  
 class Api {

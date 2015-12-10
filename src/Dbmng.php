@@ -215,32 +215,33 @@ private $prepare;
 
 				if(isset($aVars[$fld])) //test if the field exist in array
 					{
-					if( ! Util::var_equal($fld_value,'key', 1) ) 
-						{
-							if( !$readonly ) //$fld_value['readonly'] != 1 )
-								{
-									if( isset($fld_value['widget']) )
-										{
-											if($fld_value['widget']!='select_nm')
-												{		
-													$sSet .= $fld . " = :$fld, ";
-					
-													$var = array_merge($var, array(":".$fld => $aVars[$fld]));
-												}
-											else
-												{
-													$bSelectNM = true;
-												}
-										}
-									else
-										{
-											$sSet .= $fld . " = :$fld, ";
-
-											$var = array_merge($var, array(":".$fld => $aVars[$fld]));
-										}
-								}
-						}
-				}
+            if( $this::checkFieldValue($fld_value, $aVars[$fld]) )
+              {
+                if( ! Util::var_equal($fld_value,'key', 1) ) 
+                  {
+                    if( !$readonly ) //$fld_value['readonly'] != 1 )
+                      {
+                        if( isset($fld_value['widget']) )
+                          {
+                            if($fld_value['widget']!='select_nm')
+                              {		
+                                $sSet .= $fld . " = :$fld, ";
+                                $var = array_merge($var, array(":".$fld => $aVars[$fld]));
+                              }
+                            else
+                              {
+                                $bSelectNM = true;
+                              }
+                          }
+                        else
+                          {
+                            $sSet .= $fld . " = :$fld, ";
+                            $var = array_merge($var, array(":".$fld => $aVars[$fld]));
+                          }
+                      }
+                  }
+              }
+          }
 			}
 		
 		if( isset($aParam) )
@@ -742,25 +743,80 @@ private $prepare;
 	*/
 	function isAllowed($method){
 
-
 		$auth=false;
 		$code=401;
 		$message="";
 
 		$user=$this->app->getUser();
 		if($user['uid']!=0){
-			$code=200;
-			$auth=true;
+      if(isset($this->aParam['access']))
+        {
+          if( isset($this->aParam['access'][$method]) )
+            {
+//               print_r($this->aParam['access'][$method]);
+//               print_r($user,true);
+              $interset = array_intersect($this->aParam['access'][$method], $user['roles']);
+              if( count($interset) > 0 )
+                {
+                  $code=200;
+                  $auth=true;
+                }
+              else
+                {
+                  $code=401;
+                  $auth=false;
+                  $message="Unauthenticated user cannot access the resource";
+                }
+            }
+          else
+            {
+              $code=200;
+              $auth=true;
+            }
+        }
+      else
+        {
+          $code=200;
+          $auth=true;
+        }
 		}
-		else{
-			$code=401;
-			$auth=false;
-			$message="Unauthenticated user cannot access the resource";
-		}
+		else
+      {
+        $code=401;
+        $auth=false;
+        $message="Unauthenticated user cannot access the resource";
+      }
 		return array('ok'=>$auth, 'message'=>$message, 'code'=>$code);
 	}
 
-	
+   /////////////////////////////////////////////////////////////////////////////
+  // checkFieldValue
+  // ======================
+  /// This function return true if the given method is allowerd by user and aParam
+  /**
+  \return           boolean
+  */
+  function checkFieldValue($aField, $val)
+  {
+    // int, double, varchar, text, date
+    $sType = $aField['type'];
+    if( $sType == 'int' )
+      {
+        $nVal = (int)($val);
+        $ret = ($val == strval($nVal) ? true : false);
+      }
+    elseif( $sType == 'double' )
+      {
+        $nVal = (float)($val);
+        $ret = ($val == strval($nVal) ? true : false);
+      }
+    else
+      {
+        $ret = true;
+      }
+    
+    return $ret;
+	}
 	
 
 
