@@ -13,6 +13,10 @@ matrix:
     - php: hhvm-nightly
 
 before_script:
+  - sudo apt-get install apache2
+  - sudo a2enmod rewrite
+  - sudo service apache2 restart
+  - ln -s ../dbmng2 /var/www/
   - composer --prefer-source --dev install
   - cp phpunit.xml.dist phpunit.xml
   - cp settings.default.php settings.php
