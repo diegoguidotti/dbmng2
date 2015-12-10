@@ -13,7 +13,8 @@ matrix:
     - php: hhvm-nightly
 
 before_script:
-  - ./install_travis.sh
+  - sudo chmod +x install_travis.sh
+  - sudo ./install_travis.sh
   - composer --prefer-source --dev install
   - cp phpunit.xml.dist phpunit.xml
   - cp settings.default.php settings.php
