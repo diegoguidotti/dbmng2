@@ -197,7 +197,7 @@ jQuery(function(){
     };
     var select = new Dbmng.SelectNMWidget(option);
     jQuery('#test_div').html(select.createField([1,3]));
-    equal(select.getValue(),["1","3"], "SelectNMWidget get default value");
+    deepEqual(select.getValue(),["1", "3"], "SelectNMWidget get set value");
   
     var option = { 
       field:'monthnm',
@@ -205,11 +205,11 @@ jQuery(function(){
     };
     var select = new Dbmng.SelectNMWidget(option);
     jQuery('#test_div').html(select.createField([1,3]));
-    equal(select.getValue(),[1, 3], "SelectWidget get default value");
+    deepEqual(select.getValue(),[1, 3], "SelectNMWidget get set value (integer)");
     
   });
   
-  test('CheckWidget',9, function(){
+  test('CheckWidget',8, function(){
     var option = { 
       field:'check',
       aField: {label: 'Check', default:true},
@@ -217,11 +217,12 @@ jQuery(function(){
     };
     var widget = new Dbmng.CheckboxWidget(option);
     jQuery('#test_div').html(widget.createField());
-    equal(jQuery('#test_div input').val(),'true', "CheckboxWidget get default value");
+    equal(widget.getValue(),true, "CheckboxWidget get default value");
+
     equal(jQuery('#test_div input').attr('id'),'dbmng_check', "CheckboxWidget get id attribute");
 
-    jQuery('#test_div input').val(false);
-    equal(jQuery('#test_div input').val(),'false', "(jQuery) get jquery assigned value");
+		//remove checked and check
+    jQuery('#test_div input').removeAttr('checked');   
     equal(widget.getValue(),false, "(getValue) get assigned value");
     
     var option = { 
@@ -231,7 +232,7 @@ jQuery(function(){
     };
     var widget2 = new Dbmng.CheckboxWidget(option);
     jQuery('#test_div').html(widget2.createField(true));
-    equal(jQuery('#test_div .dbmng_form_row #dbmng_check').val(),'true', "CheckboxWidget createField(true)");
+    equal(jQuery('#test_div .dbmng_form_row #dbmng_check').val(),'on', "CheckboxWidget createField(true)");
     equal(widget2.getValue(),true, "(getValue) get assigned value");
     equal(jQuery('#test_div input').hasClass('form-control'),false, "No class");
     

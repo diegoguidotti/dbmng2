@@ -40,15 +40,23 @@ private $prepare;
 	// TODO: add filter in the where clause
 	public function select($aVar = array(), $fetch_style = \PDO::FETCH_ASSOC)
 	{
-		$var=implode(",", array_keys($this->aForm['fields']));
+		$var=""; //implode(",", array_keys($this->aForm['fields']));
+		$first=true;
+		foreach ( $this->aForm['fields'] as $fld => $fld_value ){
+			if(!Util::var_equal($fld_value,'widget','select_nm')){
+				if(!$first){$var.=',';}
+				else{$first=false;}
+				$var.=	$fld;		
+			}
+		}
 
 		$sWhere = "";
 		$aWhere = array();
-		$ret=$this->createWhere($aVar, $sWhere, $aWhere);
+		$ret=$this->createWhere($aVar, $sWhere, $aWhere, false);
 		//TODO the function createWhere works only for delete for insert does not work
-		//print_r($ret);
 		
-		if($ret['ok'] && count($aVar) >0)
+		
+		if($ret['ok'] && count($aWhere) >0)
 			{
 				$sQuery='SELECT '.$var.' from '.$this->aForm['table_name'] . " WHERE $sWhere ";
 				$ret = $this->db->select($sQuery, $aWhere, $fetch_style);
@@ -79,7 +87,7 @@ private $prepare;
 			}
 	}
 
-  public function createWhere($aVars, &$sWhere, &$aWhere, $useFilter=true)
+  public function createWhere($aVars, &$sWhere, &$aWhere, $checkId=true, $useFilter=true)
   {
 		$result = Array();
 		$hasPk=false;
@@ -95,7 +103,7 @@ private $prepare;
 					}
 			}
 		
-		if(!$hasPk)
+		if(!$hasPk &&  $checkId)
 			{
 				$result['ok']      = false;
 				$result['message'] = 'You cannot delete record in a table with no primary keys defined';
@@ -104,10 +112,13 @@ private $prepare;
 			{
 				if($useFilter)
 					{
+						
+						//print_r($this->aParam['filters']);
 						if( isset($this->aParam['filters']) )
 								{
 									foreach ( $this->aParam['filters'] as $fld => $fld_value )
 										{
+											//echo "|".$fld."|";
 											$sWhere .= $fld . " = :$fld and ";
 											$aWhere = array_merge($aWhere, array(":".$fld => $fld_value));
 										}
@@ -168,7 +179,7 @@ private $prepare;
 										$sWhere2 = "";
 										$aWhere2 = array();
 
-										$ret=$this->createWhere($aVars, $sWhere2, $aWhere2, false);
+										$ret=$this->createWhere($aVars, $sWhere2, $aWhere2, true, false);
 				
 										$sql = "delete from ".$table_nm." where ".$sWhere2;
 										if($this->prepare){
@@ -797,10 +808,12 @@ private $prepare;
   \return           boolean
   */
   function checkFieldValue($aField, $val)
-  {
-    // int, double, varchar, text, date
+  {    
     $sType = $aField['type'];
-    if( $sType == 'int' )
+		if(Util::var_equal($aField,'widget','select_nm')){
+			$ret=true;
+		}		
+    else if( $sType == 'int' )
       {
         $nVal = (int)($val);
         $ret = ($val == strval($nVal) ? true : false);

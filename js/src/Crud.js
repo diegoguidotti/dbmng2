@@ -15,7 +15,7 @@ Dbmng.Crud = Class.extend({
 		//the ready variable can be used to check if it is ready the Crud to create the table)   
     this.ready=true;
 
-    aParamD = {ui: {btn_edit: {label:'Edit'},
+    var aParamD = {ui: {btn_edit: {label:'Edit'},
                     btn_edit_inline: {label:'Edit inline'},
                     btn_delete: {label:'Delete'},
                     btn_insert: {label:'Insert'},
@@ -248,7 +248,7 @@ Dbmng.Crud = Class.extend({
   getARecord: function (key,aData) {
     var aRecord=null;
     for(var i=0; i<aData.length; i++){
-      if(aData[i]['id']==key){
+      if(aData[i][this.pk]==key){
         aRecord=aData[i];
         break;
       }
@@ -269,7 +269,7 @@ Dbmng.Crud = Class.extend({
     //get the original dimension of the table
     var listWidth = [];
     jQuery(row_id+" td").each(function() {
-        listWidth.push($(this).width());
+        listWidth.push(jQuery(this).width());
     });
 
     //Complicato metodo per eliminare il form senza eliminare i value degli input

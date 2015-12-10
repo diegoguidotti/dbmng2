@@ -60,12 +60,11 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
 					$aParam['filters']['name']='Diego';
 
 					$dbmng=new Dbmng($app, $aForm, $aParam);
-					
-					$ret = $dbmng->select();
-				  $this->assertEquals(
+	
+					$ret = $dbmng->select();					
+			  	$this->assertEquals(
 				      array(
-				          array("id" => 1, "name" => "Diego"),
-				          array("id" => 2, "name" => "Michele")
+				          array("id" => 1, "name" => "Diego")				          
 							),
 				      $ret['data']
 					);
@@ -200,6 +199,12 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
  			);
  			$aParam=array();
  			$dbmng=new Dbmng($app, $aForm, $aParam);
+
+
+			//try the simple select of a nm table
+			$ret0=($dbmng->select());			
+ 			$this->assertEquals(true, $ret0['ok']);
+
  
  			$request = array('check_field' => 1, 'varchar_field' => 'abra', 'id_father_child' => array(1,3,4));
 			$array = $dbmng->processRequest($request);
@@ -216,7 +221,11 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
 			$array= $dbmng->processRequest($request);
  			
  			$ret3 = $dbmng->update($array);
+
  			$this->assertEquals(true, $ret3['ok']);
+
+
+
  		
  			$ret4 = $db->select('select varchar_field from test_father where id_father = 3', array(), \PDO::FETCH_BOTH);
  			$this->assertEquals('foo',$ret4['data'][0][0]);
