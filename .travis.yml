@@ -14,8 +14,8 @@ matrix:
 
 before_script:
   - composer --prefer-source --dev install
-	- cp phpunit.xml.dist phpunit.xml
-	- cp settings.default.php settings.php
+  - cp phpunit.xml.dist phpunit.xml
+  - cp settings.default.php settings.php
   - if [[ "$DB" == "mysql" ]]; then mysql -e "create database IF NOT EXISTS dbmng2;" -uroot; fi
   - if [[ "$DB" == "mysql" ]]; then mysql dbmng2 < sql/dbmng2.sql -uroot; fi
   - if [[ "$DB" == "mysql" ]]; then mysql dbmng2 < sql/test.sql -uroot; fi
