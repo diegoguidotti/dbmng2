@@ -71,6 +71,12 @@ Dbmng.Form = Class.extend({
 			throw "Missing primary key in aForm";
 		}
 	},
+  getWidget: function(key) {
+		return this.widgets[key];
+	},
+	getPkValue: function() {
+		return this.widgets[this.getPkField()].getValue();
+  },
   getValue: function() {
     var ret={};
     for(var key in this.aForm.fields){
@@ -89,28 +95,35 @@ Dbmng.Form = Class.extend({
     }
     return cData;
   },
-  createForm: function(aData) {
+  getFields: function(aData) {
+		var fields={};
 
 		if(!aData){
 			this.createWidgets();
 		}
-
-    var form = this.theme.getForm();
     for(var key in this.aForm.fields){
-      var aField=this.aForm.fields[key];
+      //var aField=this.aForm.fields[key];
 			
       var field;
 			
-			if(aData){
-				console.log("CF:"+aData[key]);
+			if(aData){				
 			 field = this.widgets[key].createField(aData[key]);
 			}
-			else
-			 field = this.widgets[key].createField();
-
-      form.appendChild(field);
+			else{
+			 	field = this.widgets[key].createField();
+			}
+			fields[key]=(field);
     }
+		return fields;
+	},	
+  createForm: function(aData) {
 
+
+    var form = this.theme.getForm();
+		var fields=this.getFields(aData);
+		for(var key in fields){
+      form.appendChild(fields[key]);
+		}
     return form;
   }
 });

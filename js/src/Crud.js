@@ -199,11 +199,11 @@ Dbmng.Crud = Class.extend({
   },
   deleteRecord: function (div_id, key){
     var self=this;
-    this.api.delete({key:key, success:function(data){			
+    this.api.delete({key:key, success:function(data){					
       self.createTable({div_id:div_id});
     }});
   },
-  createInsertForm: function (div_id, key){
+  createInsertForm: function (div_id){
     var self = this; 
     jQuery(div_id).html(self.form.createForm());
     

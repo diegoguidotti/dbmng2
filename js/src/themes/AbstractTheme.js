@@ -104,7 +104,7 @@ Dbmng.AbstractTheme = Class.extend({
       el.checked = true;
     }
     
-    console.log(aField);
+    //console.log(aField);
     if( aField.placeholder ) {
       el.placeholder = aField.label;
     }
@@ -130,7 +130,7 @@ Dbmng.AbstractTheme = Class.extend({
         o.value = opt;
         o.text=aField.voc_val[opt];
         if( aField.value ) {
-					console.log(aField.value+" "+ opt);
+					//console.log(aField.value+" "+ opt);
           if( aField.value == opt ) {
             o.selected = true;
           }

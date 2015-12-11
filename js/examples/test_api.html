@@ -12,6 +12,7 @@
   <script type="text/javascript" src="../src/Dbmng.js"></script> 
   <script type="text/javascript" src="../src/Api.js"></script>
   <script type="text/javascript" src="../src/Form.js"></script> 
+  <script type="text/javascript" src="../src/FormInline.js"></script> 
   <script type="text/javascript" src="../src/Crud.js"></script> 
   <script type="text/javascript" src="../src/Ie9.js"></script> 
   <script type="text/javascript" src="../src/Utilities.js"></script>
@@ -64,25 +65,26 @@
 		}
 */
 
-
-/*  TEST DIEGO */
+	
+/*  TEST DIEGO 
 
 	#test_diego{
 		display:table;
 	}
-
+#test_diego label{
+		display:none;
+	}
 	#test_diego form{
 		display:table-row;
 	}
 	#test_diego .dbmng_form_row{
 			display:table-cell;
 	}
-	#test_diego label{
-		display:none;
-	}
+
 	#test_diego .dbmng_form_field_id{
 		display:none;
 	}
+*/
 
 	</style>
 	<script>
@@ -168,14 +170,25 @@ function test_bis(){
     // Test for Bootstrap theme
     var theme_boot=new Dbmng.BootstrapTheme();
 
-    var aParam = {ui: {btn_edit: {label:'Modifica', class: 'btn-success', icon: 'fa fa-pencil'},
-                    btn_edit_inline: {label:'Modifica inline', class: 'btn-success', icon: 'fa fa-pencil-square-o'},
-                    btn_delete: {label:'Elimina', class: 'btn-danger', icon: 'fa fa-trash'},
-                    btn_insert: {label:'Inserisci', class: 'btn-success btn-block'},
-                    btn_save: {label:'Salva', class: 'btn-success btn-block'},
-                    table_class: 'table-hover'},
-              user_function: {inline:1, upd:1, del:1, ins:1}};
+		var aDati=[{"id_mon_tuta" : "57171" , "data_mon" : "2015-12-11" , "traps" : null, "type_trap" : null, "comments" : null, "id_mon_point" : "2043" , "id_pest" : "2" , "damage_leaves" : null, "damage_fruits" : null, "trap_name" : null, "phero_name" : null, "comments_local" : null, "flag" : "0" , "id_severity_index" : null, "traps_male" : null, "traps_female" : null, "stage" : null, "date_other" : null, "var1" : null, "var2" : null, "var3" : null, "time_ref" : "2015-12-11 11:35:36.51933+01" , "id_mon_pest_event" : null, "image_mobile" : null}, {"id_mon_tuta" : "57172" , "data_mon" : "2015-12-11" , "traps" : null, "type_trap" : null, "comments" : null, "id_mon_point" : "2045" , "id_pest" : "2" , "damage_leaves" : null, "damage_fruits" : null, "trap_name" : null, "phero_name" : null, "comments_local" : null, "flag" : "0" , "id_severity_index" : null, "traps_male" : null, "traps_female" : null, "stage" : null, "date_other" : null, "var1" : null, "var2" : null, "var3" : null, "time_ref" : "2015-12-11 11:35:36.51933+01" , "id_mon_pest_event" : null, "image_mobile" : null}, {"id_mon_tuta" : "57173" , "data_mon" : "2015-12-11" , "traps" : null, "type_trap" : null, "comments" : null, "id_mon_point" : "2046" , "id_pest" : "2" , "damage_leaves" : null, "damage_fruits" : null, "trap_name" : null, "phero_name" : null, "comments_local" : null, "flag" : "0" , "id_severity_index" : null, "traps_male" : null, "traps_female" : null, "stage" : null, "date_other" : null, "var1" : null, "var2" : null, "var3" : null, "time_ref" : "2015-12-11 11:35:36.51933+01" , "id_mon_pest_event" : null, "image_mobile" : null}, {"id_mon_tuta" : "57174" , "data_mon" : "2015-12-11" , "traps" : null, "type_trap" : null, "comments" : null, "id_mon_point" : "2601" , "id_pest" : "2" , "damage_leaves" : null, "damage_fruits" : null, "trap_name" : null, "phero_name" : null, "comments_local" : null, "flag" : "0" , "id_severity_index" : null, "traps_male" : null, "traps_female" : null, "stage" : null, "date_other" : null, "var1" : null, "var2" : null, "var3" : null, "time_ref" : "2015-12-11 11:35:36.51933+01" , "id_mon_pest_event" : null, "image_mobile" : null}, {"id_mon_tuta" : "57175" , "data_mon" : "2015-12-11" , "traps" : null, "type_trap" : null, "comments" : null, "id_mon_point" : "2644" , "id_pest" : "2" , "damage_leaves" : null, "damage_fruits" : null, "trap_name" : null, "phero_name" : null, "comments_local" : null, "flag" : "0" , "id_severity_index" : null, "traps_male" : null, "traps_female" : null, "stage" : null, "date_other" : null, "var1" : null, "var2" : null, "var3" : null, "time_ref" : "2015-12-11 11:35:36.51933+01" , "id_mon_pest_event" : null, "image_mobile" : null}, {"id_mon_tuta" : "57176" , "data_mon" : "2015-12-11" , "traps" : null, "type_trap" : null, "comments" : null, "id_mon_point" : "3495" , "id_pest" : "2" , "damage_leaves" : null, "damage_fruits" : null, "trap_name" : null, "phero_name" : null, "comments_local" : null, "flag" : "0" , "id_severity_index" : null, "traps_male" : null, "traps_female" : null, "stage" : null, "date_other" : null, "var1" : null, "var2" : null, "var3" : null, "time_ref" : "2015-12-11 11:35:36.51933+01" , "id_mon_pest_event" : null, "image_mobile" : null}, {"id_mon_tuta" : "57177" , "data_mon" : "2015-12-11" , "traps" : null, "type_trap" : null, "comments" : null, "id_mon_point" : "2642" , "id_pest" : "2" , "damage_leaves" : null, "damage_fruits" : null, "trap_name" : null, "phero_name" : null, "comments_local" : null, "flag" : "0" , "id_severity_index" : null, "traps_male" : null, "traps_female" : null, "stage" : null, "date_other" : null, "var1" : null, "var2" : null, "var3" : null, "time_ref" : "2015-12-11 11:35:36.51933+01" , "id_mon_pest_event" : null, "image_mobile" : null}, {"id_mon_tuta" : "57178" , "data_mon" : "2015-12-11" , "traps" : null, "type_trap" : null, "comments" : null, "id_mon_point" : "3496" , "id_pest" : "2" , "damage_leaves" : null, "damage_fruits" : null, "trap_name" : null, "phero_name" : null, "comments_local" : null, "flag" : "0" , "id_severity_index" : null, "traps_male" : null, "traps_female" : null, "stage" : null, "date_other" : null, "var1" : null, "var2" : null, "var3" : null, "time_ref" : "2015-12-11 11:35:36.51933+01" , "id_mon_pest_event" : null, "image_mobile" : null}, {"id_mon_tuta" : "57179" , "data_mon" : "2015-12-11" , "traps" : null, "type_trap" : null, "comments" : null, "id_mon_point" : "2607" , "id_pest" : "2" , "damage_leaves" : null, "damage_fruits" : null, "trap_name" : null, "phero_name" : null, "comments_local" : null, "flag" : "0" , "id_severity_index" : null, "traps_male" : null, "traps_female" : null, "stage" : null, "date_other" : null, "var1" : null, "var2" : null, "var3" : null, "time_ref" : "2015-12-11 11:35:36.51933+01" , "id_mon_pest_event" : null, "image_mobile" : null}, {"id_mon_tuta" : "57180" , "data_mon" : "2015-12-11" , "traps" : null, "type_trap" : null, "comments" : null, "id_mon_point" : "2608" , "id_pest" : "2" , "damage_leaves" : null, "damage_fruits" : null, "trap_name" : null, "phero_name" : null, "comments_local" : null, "flag" : "0" , "id_severity_index" : null, "traps_male" : null, "traps_female" : null, "stage" : null, "date_other" : null, "var1" : null, "var2" : null, "var3" : null, "time_ref" : "2015-12-11 11:35:36.51933+01" , "id_mon_pest_event" : null, "image_mobile" : null}, {"id_mon_tuta" : "57181" , "data_mon" : "2015-12-11" , "traps" : null, "type_trap" : null, "comments" : null, "id_mon_point" : "2609" , "id_pest" : "2" , "damage_leaves" : null, "damage_fruits" : null, "trap_name" : null, "phero_name" : null, "comments_local" : null, "flag" : "0" , "id_severity_index" : null, "traps_male" : null, "traps_female" : null, "stage" : null, "date_other" : null, "var1" : null, "var2" : null, "var3" : null, "time_ref" : "2015-12-11 11:35:36.51933+01" , "id_mon_pest_event" : null, "image_mobile" : null}, {"id_mon_tuta" : "57182" , "data_mon" : "2015-12-11" , "traps" : null, "type_trap" : null, "comments" : null, "id_mon_point" : "2637" , "id_pest" : "2" , "damage_leaves" : null, "damage_fruits" : null, "trap_name" : null, "phero_name" : null, "comments_local" : null, "flag" : "0" , "id_severity_index" : null, "traps_male" : null, "traps_female" : null, "stage" : null, "date_other" : null, "var1" : null, "var2" : null, "var3" : null, "time_ref" : "2015-12-11 11:35:36.51933+01" , "id_mon_pest_event" : null, "image_mobile" : null}, {"id_mon_tuta" : "57183" , "data_mon" : "2015-12-11" , "traps" : null, "type_trap" : null, "comments" : null, "id_mon_point" : "2610" , "id_pest" : "2" , "damage_leaves" : null, "damage_fruits" : null, "trap_name" : null, "phero_name" : null, "comments_local" : null, "flag" : "0" , "id_severity_index" : null, "traps_male" : null, "traps_female" : null, "stage" : null, "date_other" : null, "var1" : null, "var2" : null, "var3" : null, "time_ref" : "2015-12-11 11:35:36.51933+01" , "id_mon_pest_event" : null, "image_mobile" : null}, {"id_mon_tuta" : "57184" , "data_mon" : "2015-12-11" , "traps" : null, "type_trap" : null, "comments" : null, "id_mon_point" : "2611" , "id_pest" : "2" , "damage_leaves" : null, "damage_fruits" : null, "trap_name" : null, "phero_name" : null, "comments_local" : null, "flag" : "0" , "id_severity_index" : null, "traps_male" : null, "traps_female" : null, "stage" : null, "date_other" : null, "var1" : null, "var2" : null, "var3" : null, "time_ref" : "2015-12-11 11:35:36.51933+01" , "id_mon_pest_event" : null, "image_mobile" : null}];
 
+
+	var aForm={
+		"primary_key": ['id_mon_tuta'], 
+		"table_name": 'mon_tuta', 
+		"fields":{
+			"id_mon_tuta": {"label": "ID", "type": "integer","key":1,"readonly":true}, 
+			"data_mon": {"label": "Date", "type": "date","readonly":true}, 
+			"id_mon_point": {"label": "Mon Points", "type": "numeric", "widget":"select", "readonly":true, "voc_val":{'2043':'Point1', '2045':'Point2'}},  
+			"traps": {"label": "Traps", "type": "numeric"}, 
+			"fruit_damage": {"label": "Damage on fruits", type: "checkbox", widget:"checkbox"}, 
+			"comments": {"label": "Comments", "type": "varchar"} 
+		}
+	};
+
+
+    var aParam = {hide_label: true};
+/*
     var aForm = { table_name: 'test', 
       primary_key: Array('id'), 
       fields: {
@@ -185,36 +198,31 @@ function test_bis(){
         //,true_false: {label: 'E vero o è falso', type: 'integer',  widget: 'checkbox',voc_val: {'1':'è Vero!', '0':'Falso',null:'Boh'}}
       }
     };
-
-
 		var aDati=[{"name":"Diego"},{"name":"Diego2"},{"name":"Dieg32"},{"name":"Diego42"}];
-		var forms=[];		
+*/
 
-		for(var i=0; i<aDati.length; i++){
-			var form=new Dbmng.Form({aForm:aForm, aParam:{}, theme:theme_boot});
-			jQuery('#test_diego').append(form.createForm(aDati[i]));
-			forms.push(form);
-		}
+		var formin=new Dbmng.FormInline({"aForm":aForm, "theme":theme_boot, "aParam":aParam, 
+			"onChange":function(){
+				var w=this;
+				console.log("Field:"+w.field);
+				console.log("Value:"+w.getValue());
+				console.log("Key:"+w.pk_value);
+			} 
+		});
+		var tab=formin.createForm(aDati);
+		jQuery('#test_diego').append(tab);
 
-		var button=theme_boot.getButton("Salva")
+		var button=theme_boot.getButton("Get Value")
 		jQuery('#test_diego').append(button);
 		jQuery(button).click(function(){
 
-			var aSavedData=[];
-			for(var i=0; i<forms.length; i++){
-				t={"mode":"insert", "body":forms[i].getValue()};
-				aSavedData.push(t);
-			}
-			console.log(aSavedData);
-      // var api1=new  Dbmng.Api({aForm:aForm, url:'/dbmng2/api/test', user:'test', password:'test'});
-      var api1=new  Dbmng.Api({url:'/dbmng2/api/test', user:'test', password:'test'});
-			api1.transaction({data:aSavedData});
-		})
+			resData=formin.getValue()
+			console.log(resData);
 
-		
-		//
-		
-	
+			trans=formin.getTransaction();
+			console.log(trans);
+		})
+			
 }
 
 

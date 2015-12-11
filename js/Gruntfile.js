@@ -21,6 +21,7 @@ module.exports = function(grunt) {
             'src/Utilities.js',
             'src/Dbmng.js',
             'src/Form.js',
+            'src/FormInline.js',
             'src/Api.js',
             'src/Crud.js',
             'src/themes/*.js',
@@ -70,6 +71,8 @@ module.exports = function(grunt) {
         nonew: true,
         immed: true,
         latedef: true,
+					//unused:true,
+
         globals: {
           'jQuery': true
         },
@@ -83,6 +86,7 @@ module.exports = function(grunt) {
             'src/Utilities.js',
             'src/Dbmng.js.js',
             'src/Form.js',
+            'src/FormInline.js',
             'src/Api.js',
             'src/Crud.js',
             'src/themes/*.js',
