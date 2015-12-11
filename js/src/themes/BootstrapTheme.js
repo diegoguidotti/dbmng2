@@ -27,7 +27,7 @@ Dbmng.BootstrapTheme = Dbmng.AbstractTheme.extend({
   getTable: function(opt) {
     var div = this._super(opt);
     this.addClass(div, 'table-responsive');
-    this.addClass(div.firstChild, 'table table-hover');
+    this.addClass(div.firstChild, 'table');
     return div;
   },
   getButton: function(text, opt) {
