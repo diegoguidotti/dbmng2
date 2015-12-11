@@ -19,7 +19,8 @@ Dbmng.Crud = Class.extend({
                     btn_edit_inline: {label:'Edit inline'},
                     btn_delete: {label:'Delete'},
                     btn_insert: {label:'Insert'},
-                    btn_save: {label:'Save'}},
+                    btn_save: {label:'Save'},
+                    btn_update: {label:'Update'}}
               user_function: {inline:0, upd:1, del:1, ins:1}};
     
     this.aParam = jQuery.extend(true, aParamD,options.aParam);
