@@ -15,12 +15,18 @@ Dbmng.Crud = Class.extend({
 		//the ready variable can be used to check if it is ready the Crud to create the table)   
     this.ready=true;
 
-    var aParamD = {ui: {btn_edit: {label:'Edit'},
-                    btn_edit_inline: {label:'Edit inline'},
-                    btn_delete: {label:'Delete'},
-                    btn_insert: {label:'Insert'},
-                    btn_save: {label:'Save'}}
-              user_function: {inline:0, upd:1, del:1, ins:1}};
+    var aParamD = {
+			ui: {
+				btn_edit: {label:'Edit'},
+        btn_edit_inline: {label:'Edit inline'},
+        btn_delete: {label:'Delete'},
+        btn_insert: {label:'Insert'},
+        btn_save: {label:'Save'}
+			},
+      user_function: {
+				inline:0, upd:1, del:1, ins:1
+			}
+		};
     
     this.aParam = jQuery.extend(true, aParamD,options.aParam);
 
