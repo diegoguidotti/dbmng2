@@ -37,7 +37,7 @@ jQuery(function(){
   });
 
   
-  test('AbstractWidget',10, function(){
+  test('AbstractWidget',7, function(){
     var option = { 
       field:'month',
       aField: {label: 'AAA', 'default':1},
@@ -45,10 +45,8 @@ jQuery(function(){
     var widget = new Dbmng.AbstractWidget(option);
     jQuery('#test_div').html(widget.createField());
     equal(jQuery('#test_div input').val(),1, "AbstractWidget get default value");
-    equal(jQuery('#test_div input').attr('id'),'dbmng_month', "AbstractWidget get id attribute");
 
-    jQuery('#test_div input').val(33);
-    equal(jQuery('#test_div input').val(),33, "(jQuery) get jquery assigned value");
+    jQuery('#test_div input').val(33);    
     equal(widget.getValue(),33, "(gatValue) get assigned value");
     
     var option = { 
@@ -57,7 +55,7 @@ jQuery(function(){
     };
     var widget2 = new Dbmng.AbstractWidget(option);
     jQuery('#test_div').html(widget2.createField());
-    equal(jQuery('#test_div .dbmng_form_row #dbmng_fld').val(),'', "AbstractWidget get null value");
+    equal(widget2.getValue(),'', "AbstractWidget get null value");
     
     var option = { 
       field:'fld',
@@ -65,7 +63,6 @@ jQuery(function(){
     };
     var widget3 = new Dbmng.AbstractWidget(option);
     jQuery('#test_div').html(widget3.createField(20));
-    equal(jQuery('#test_div .dbmng_form_row #dbmng_fld').val(),20, "AbstractWidget createField(20)");
     equal(widget3.getValue(),20, "(gatValue) get assigned value");
     equal(jQuery('#test_div input').hasClass('form-control'),false, "No class");
     
@@ -82,7 +79,7 @@ jQuery(function(){
     
   });
   
-  test('PasswordWidget',10, function(){
+  test('PasswordWidget',8, function(){
     var option = { 
       field:'password',
       aField: {label: 'insert the password', default:'bar'},
@@ -90,7 +87,6 @@ jQuery(function(){
     var widget = new Dbmng.PasswordWidget(option);
     jQuery('#test_div').html(widget.createField());
     equal(jQuery('#test_div input').val(),'bar', "PasswordWidget get default value");
-    equal(jQuery('#test_div input').attr('id'),'dbmng_password', "PasswordWidget get id attribute");
 
     jQuery('#test_div input').val('test');
     equal(jQuery('#test_div input').val(),'test', "(jQuery) get jquery assigned value");
@@ -102,7 +98,7 @@ jQuery(function(){
     };
     var widget4 = new Dbmng.PasswordWidget(option);
     jQuery('#test_div').html(widget4.createField());
-    equal(jQuery('#test_div .dbmng_form_row #dbmng_password').val(),'', "PasswordWidget get null value");
+    equal(widget4.getValue(),'', "PasswordWidget get null value");
     
     var option = { 
       field:'password',
@@ -110,7 +106,6 @@ jQuery(function(){
     };
     var widget2 = new Dbmng.AbstractWidget(option);
     jQuery('#test_div').html(widget2.createField('foo'));
-    equal(jQuery('#test_div .dbmng_form_row #dbmng_password').val(),'foo', "PasswordWidget createField('foo')");
     equal(widget2.getValue(),'foo', "(gatValue) get assigned value");
     equal(jQuery('#test_div input').hasClass('form-control'),false, "No class");
     
@@ -127,7 +122,7 @@ jQuery(function(){
   });
   
   
-  test('SelectWidget',9, function(){
+  test('SelectWidget',7, function(){
     /* ---------- test #01 ---------- */
     var option = { 
       field:'month',
@@ -137,7 +132,6 @@ jQuery(function(){
     // select.createField();
     jQuery('#test_div').html(select.createField());
     equal(jQuery('#test_div select').val(),1, "SelectWidget get default value");
-    equal(jQuery('#test_div select').attr('id'),'dbmng_month', "SelectWidget get id attribute");
   
     /* ---------- test #02 ---------- */
     option = { 
@@ -173,15 +167,13 @@ jQuery(function(){
       theme: theme_boot
     };
 
-
     var selectb = new Dbmng.SelectWidget(option);
     jQuery('#test_div').html(selectb.createField(2));
     equal(jQuery('#test_div select').hasClass('form-control'),true, "BootstrapTheme check form-control class");
     equal(jQuery('#test_div select').val(),2, "SelectWidget get value (update)");
-    equal(jQuery('#test_div select').attr('id'),'dbmng_id', "SelectWidget get element id");
   });
 
-  test('SelectNMWidget', 4, function() {
+  test('SelectNMWidget', 3, function() {
     var option = { 
       field:'monthnm',
       aField: {label: 'Months', widget:'select_nm', voc_val: {1:'January', 2:'February', 3: 'March'}},
@@ -189,7 +181,6 @@ jQuery(function(){
     var select = new Dbmng.SelectNMWidget(option);
     jQuery('#test_div').html(select.createField());
     equal(jQuery('#test_div select').val(),null, "SelectNMWidget get default value");
-    equal(jQuery('#test_div select').attr('id'),'dbmng_monthnm', "SelectNMWidget get id attribute");
   
     var option = { 
       field:'monthnm',
@@ -209,7 +200,7 @@ jQuery(function(){
     
   });
   
-  test('CheckWidget',8, function(){
+  test('CheckWidget',6, function(){
     var option = { 
       field:'check',
       aField: {label: 'Check', default:true},
@@ -218,8 +209,6 @@ jQuery(function(){
     var widget = new Dbmng.CheckboxWidget(option);
     jQuery('#test_div').html(widget.createField());
     equal(widget.getValue(),true, "CheckboxWidget get default value");
-
-    equal(jQuery('#test_div input').attr('id'),'dbmng_check', "CheckboxWidget get id attribute");
 
 		//remove checked and check
     jQuery('#test_div input').removeAttr('checked');   
@@ -232,7 +221,6 @@ jQuery(function(){
     };
     var widget2 = new Dbmng.CheckboxWidget(option);
     jQuery('#test_div').html(widget2.createField(true));
-    equal(jQuery('#test_div .dbmng_form_row #dbmng_check').val(),'on', "CheckboxWidget createField(true)");
     equal(widget2.getValue(),true, "(getValue) get assigned value");
     equal(jQuery('#test_div input').hasClass('form-control'),false, "No class");
     
@@ -249,6 +237,31 @@ jQuery(function(){
     equal(widget3.aField,option.aField, "Check aField array");
   });
   
+ test('NumericWidget',5, function(){
+    var option = { 
+      field:'number',
+      aField: {label: 'Number', type: 'int', default:true}      
+    };
+    var widget = new Dbmng.NumericWidget(option);
+    jQuery('#test_div').html(widget.createField());
+    equal(widget.getValue(),null, "NumericWidget get empty value (null)");
+
+    var widget2 = new Dbmng.NumericWidget(option);
+    jQuery('#test_div').html(widget2.createField(12));
+    equal(widget2.getValue(),12, "NumericWidget get value (from widget)");
+
+		jQuery('#test_div input').val(33);
+    equal(widget2.getValue(),33, "NumericWidget get value (edited by user)");
+
+		jQuery('#test_div input').val("Pippo");
+    equal(widget2.getValue(),null, "NumericWidget should return null if a text value is entered");
+
+
+		jQuery('#test_div input').attr('type','input')
+		jQuery('#test_div input').val("pippo")
+    equal(widget2.getValue(),null, "NumericWidget should return null if a text value is entered (also if the type is not number)");
+
+  });
   
 });
 

@@ -205,7 +205,7 @@ Dbmng.AbstractTheme = Class.extend({
   
   assignAttributes: function(el, aField) {
     //console.log(aField);
-    el.setAttribute('id', 'dbmng_' + aField.field);
+    //el.setAttribute('id', 'dbmng_' + aField.field);
     if( aField.field ) {
       el.name = aField.field;
     }

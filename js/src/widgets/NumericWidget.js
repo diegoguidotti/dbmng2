@@ -9,8 +9,21 @@
 /////////////////////////////////////////////////////////////////////
 
 Dbmng.NumericWidget = Dbmng.AbstractWidget.extend({
-  getValue: function() {
-    return this.value*1;
+  getValue: function() {		
+    var el = this._super();
+		if(el===''){
+			return null;
+		}
+		else{
+			var val=	el*1;
+			if(isNaN(val)){
+				console.log('entered a text ('+el+') in a numeric value');
+				return null;
+			}
+			else{
+				return val;
+			}
+		}
   }
 });
 

@@ -177,10 +177,10 @@ function test_bis(){
 		"primary_key": ['id_mon_tuta'], 
 		"table_name": 'mon_tuta', 
 		"fields":{
-			"id_mon_tuta": {"label": "ID", "type": "integer","key":1,"readonly":true}, 
+			"id_mon_tuta": {"label": "ID", "type": "int","key":1,"readonly":true}, 
 			"data_mon": {"label": "Date", "type": "date","readonly":true}, 
-			"id_mon_point": {"label": "Mon Points", "type": "numeric", "widget":"select", "readonly":true, "voc_val":{'2043':'Point1', '2045':'Point2'}},  
-			"traps": {"label": "Traps", "type": "numeric"}, 
+			"id_mon_point": {"label": "Mon Points", "type": "int", "widget":"select", "readonly":true, "voc_val":{'2043':'Point1', '2045':'Point2'}},  
+			"traps": {"label": "Traps", "type": "int"}, 
 			"fruit_damage": {"label": "Damage on fruits", type: "checkbox", widget:"checkbox"}, 
 			"comments": {"label": "Comments", "type": "varchar"} 
 		}
