@@ -54,7 +54,12 @@ Dbmng.AbstractWidget = Class.extend({
     if( this.aParam.hide_label ) {
       if( this.aParam.hide_label === true ) {
         bHideLabel = true;
-        this.aField.placeholder = this.aField.label;
+				var show_placeholder=true;
+				if( this.aParam.hide_placeholder ===true){
+					show_placeholder=false;
+				}
+				if(show_placeholder)
+        	this.aField.placeholder = this.aField.label;
       }
     }
     
