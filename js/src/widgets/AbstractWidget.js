@@ -76,6 +76,10 @@ Dbmng.AbstractWidget = Class.extend({
       self.onChange(evt);
     };
 
+    widget.onfocus=function( evt ) {
+      self.onFocus(evt);
+    };
+
     el.appendChild(widget);
     return el;
   },
@@ -84,6 +88,9 @@ Dbmng.AbstractWidget = Class.extend({
     console.log(event);
   } ,
 
+  onFocus: function(event){
+    console.log('focus');
+  } ,
   getValue: function(){
     return this.widget.value;
   },

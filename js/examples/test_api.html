@@ -200,13 +200,29 @@ function test_bis(){
     };
 		var aDati=[{"name":"Diego"},{"name":"Diego2"},{"name":"Dieg32"},{"name":"Diego42"}];
 */
+    var old_form;
 
 		var formin=new Dbmng.FormInline({"aForm":aForm, "theme":theme_boot, "aParam":aParam, 
-			"onChange":function(){
-				var w=this;
+			"onChange":function(){				
+        /*
 				console.log("Field:"+w.field);
 				console.log("Value:"+w.getValue());
 				console.log("Key:"+w.pk_value);
+        */
+			} ,
+    "onChangeRow":function(){
+				var w=this;
+        if(!old_form){
+          console.log('First form');
+        }  
+        else if(old_form==w.form){
+          console.log('Same form');
+        }
+        else{
+          console.log('Change form!!!');
+          console.log(old_form.getValue());
+        }
+        old_form=w.form;
 			} 
 		});
 		var tab=formin.createForm(aDati);
