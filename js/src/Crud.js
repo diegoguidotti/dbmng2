@@ -163,6 +163,22 @@ Dbmng.Crud = Class.extend({
 		              jQuery(cell).append(button_delete);
 		            }
 		            
+                if( self.aParam.custom_function ) {
+                  var label_custom = self.aParam.custom_function.label; 
+                  var opt_custom = self.aParam.custom_function;
+                  console.log(opt_custom);
+                  var button_custom=jQuery(self.theme.getButton(label_custom,opt_custom));
+                  if( self.aParam.custom_function.action ) {
+                    if( typeof self.aParam.custom_function.action == 'string' ) {
+                      button_custom.click(function(){
+                        eval(self.aParam.custom_function.action)(self);
+                        // self.deleteRecord(div_id, opt.data[self.pk]);
+                      });   
+                      jQuery(cell).append(button_custom);
+                    }
+                  }
+                }
+		            
 		            return cell;
 		          }
 		        }});
