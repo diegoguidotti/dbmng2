@@ -262,6 +262,10 @@ jQuery(function(){
     equal(widget2.getValue(),null, "NumericWidget should return null if a text value is entered (also if the type is not number)");
 
   });
-  
+ 
+  test('external function', 1, function() {
+    var max = exeExternalFunction('Math.max', [3,5]);
+    equal(5, max);
+  })
 });
 
