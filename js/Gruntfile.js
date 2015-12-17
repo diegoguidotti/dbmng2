@@ -7,18 +7,18 @@ module.exports = function(grunt) {
         sourcesContent: true
       },
       target: {
-        files: { 
+        files: {
           'dist/dbmng.js': [
-            
+            'src/Utilities.js',
             // License & version info, start the containing closure
             'src/Intro.js',
-            
+
             // Simple inheritance
             'src/Class.js',
             // IE9 polyfills
             'src/Ie9.js',
             // Utils like extend, each, and trigger
-            'src/Utilities.js',
+
             'src/Dbmng.js',
             'src/Form.js',
             'src/FormInline.js',
@@ -26,7 +26,7 @@ module.exports = function(grunt) {
             'src/Crud.js',
             'src/themes/*.js',
             'src/widgets/*.js',
-            
+
             // End the closure
             'src/Outro.js'
           ],
@@ -36,7 +36,7 @@ module.exports = function(grunt) {
     removelogging : {
       main : {
         src : 'dist/dbmng.js',
-        dest : 'dist/dbmng.built.js'        
+        dest : 'dist/dbmng.built.js'
       }
     },
     uglify: {
@@ -76,21 +76,21 @@ module.exports = function(grunt) {
         globals: {
           'jQuery': true
         },
-      },      
+      },
       beforeconcat: [
          // Simple inheritance
+            'src/Utilities.js',
             'src/Class.js',
             // IE9 polyfills
             'src/Ie9.js',
             // Utils like extend, each, and trigger
-            'src/Utilities.js',
             'src/Dbmng.js.js',
             'src/Form.js',
             'src/FormInline.js',
             'src/Api.js',
             'src/Crud.js',
             'src/themes/*.js',
-            'src/widgets/*.js',        
+            'src/widgets/*.js',
       ],
       afterconcat: {
         options: {
@@ -113,7 +113,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-concat-sourcemap');
   grunt.loadNpmTasks("grunt-remove-logging");
   grunt.loadNpmTasks('grunt-contrib-qunit');
- 
+
 
 
 

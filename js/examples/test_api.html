@@ -6,15 +6,15 @@
   <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">  
-  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
   <script type="text/javascript" src="../src/Class.js"></script>
-  <script type="text/javascript" src="../src/Dbmng.js"></script> 
+  <script type="text/javascript" src="../src/Dbmng.js"></script>
   <script type="text/javascript" src="../src/Api.js"></script>
-  <script type="text/javascript" src="../src/Form.js"></script> 
-  <script type="text/javascript" src="../src/FormInline.js"></script> 
-  <script type="text/javascript" src="../src/Crud.js"></script> 
-  <script type="text/javascript" src="../src/Ie9.js"></script> 
+  <script type="text/javascript" src="../src/Form.js"></script>
+  <script type="text/javascript" src="../src/FormInline.js"></script>
+  <script type="text/javascript" src="../src/Crud.js"></script>
+  <script type="text/javascript" src="../src/Ie9.js"></script>
   <script type="text/javascript" src="../src/Utilities.js"></script>
   <script type="text/javascript" src="../src/themes/AbstractTheme.js"></script>
   <script type="text/javascript" src="../src/themes/BootstrapTheme.js"></script>
@@ -65,8 +65,8 @@
 		}
 */
 
-	
-/*  TEST DIEGO 
+
+/*  TEST DIEGO
 
 	#test_diego{
 		display:table;
@@ -93,13 +93,18 @@
 	test_base();
 	test_bis();
 
+function mostra_categorie(id,data){
+  console.log(id);
+  console.log(data);
+  alert(id);
+}
 
 function test_base(){
     // Test for Bootstrap theme
     var theme_boot=new Dbmng.BootstrapTheme();
 
 //    jQuery('#test_2').html(theme_boot.getTable({data:[{nm:'Diego',sr:'Guid'}]}));
-    
+
     /* ------------
        TABLE: test
     ---------------*/
@@ -109,20 +114,22 @@ function test_base(){
                     btn_insert: {label:'Inserisci', class: 'btn-success btn-block'},
                     btn_save: {label:'Salva', class: 'btn-success btn-block'},
                     table_class: 'table-hover'},
-              user_function: {inline:1, upd:1, del:1, ins:1}};
+              user_function: {inline:1, upd:1, del:1, ins:1},
+              custom_function:{'action':'mostra_categorie', 'label' :'Mostra categorie', 'icon' : 'fa fa-th-list' }
+          };
 
-		//vecchia versione con aForm 
-		/*   
-    var aForm = { table_name: 'test', 
-      primary_key: Array('id'), 
+		//vecchia versione con aForm
+		/*
+    var aForm = { table_name: 'test',
+      primary_key: Array('id'),
       fields: {
-        id: {label: 'ID1', type: 'int', key: 0, nullable: false}, 
+        id: {label: 'ID1', type: 'int', key: 0, nullable: false},
         name: {label: 'Name1', type: 'varchar',  nullable: false},
         sex: {label: 'Sex', type: 'varchar',  widget: 'select', voc_val: {'M':'Male', 'F':'Female'}},
         true_false: {label: 'E vero o è falso', type: 'integer',  widget: 'checkbox',voc_val: {'1':'è Vero!', '0':'Falso',null:'Boh'}}
       }
     };
-	
+
 		var crud=new Dbmng.Crud({aForm:aForm, aParam:aParam, theme:theme_boot,url:'/dbmng2/api/test', user:'test', password:'test'});
 		crud.createTable({div_id:'#test_table'});
 		*/
@@ -137,10 +144,10 @@ function test_base(){
 			}
 		);
 
-		
 
 
-		
+
+
 
 
     //var form=new Dbmng.Form({aForm:aForm, aParam:{}, theme:theme_boot});
@@ -151,10 +158,10 @@ function test_base(){
 //     /* ------------
 //        TABLE: test_child
 //     ---------------*/
-    var aCForm = { table_name: 'test_child', 
-      primary_key: Array('id_child'), 
+    var aCForm = { table_name: 'test_child',
+      primary_key: Array('id_child'),
       fields: {
-        id_child: {label: 'ID', type: 'int', key: 0, nullable: false}, 
+        id_child: {label: 'ID', type: 'int', key: 0, nullable: false},
         child_name: {label: 'Child Name', type: 'varchar',  nullable: false}
       }
     };
@@ -174,25 +181,25 @@ function test_bis(){
 
 
 	var aForm={
-		"primary_key": ['id_mon_tuta'], 
-		"table_name": 'mon_tuta', 
+		"primary_key": ['id_mon_tuta'],
+		"table_name": 'mon_tuta',
 		"fields":{
-			"id_mon_tuta": {"label": "ID", "type": "int","key":1,"readonly":true}, 
-			"data_mon": {"label": "Date", "type": "date","readonly":true}, 
-			"id_mon_point": {"label": "Mon Points", "type": "int", "widget":"select", "readonly":true, "voc_val":{'2043':'Point1', '2045':'Point2'}},  
-			"traps": {"label": "Traps", "type": "int"}, 
-			"fruit_damage": {"label": "Damage on fruits", type: "checkbox", widget:"checkbox"}, 
-			"comments": {"label": "Comments", "type": "varchar"} 
+			"id_mon_tuta": {"label": "ID", "type": "int","key":1,"readonly":true},
+			"data_mon": {"label": "Date", "type": "date","readonly":true},
+			"id_mon_point": {"label": "Mon Points", "type": "int", "widget":"select", "readonly":true, "voc_val":{'2043':'Point1', '2045':'Point2'}},
+			"traps": {"label": "Traps", "type": "int"},
+			"fruit_damage": {"label": "Damage on fruits", type: "checkbox", widget:"checkbox"},
+			"comments": {"label": "Comments", "type": "varchar"}
 		}
 	};
 
 
     var aParam = {hide_label: true};
 /*
-    var aForm = { table_name: 'test', 
-      primary_key: Array('id'), 
+    var aForm = { table_name: 'test',
+      primary_key: Array('id'),
       fields: {
-        id: {label: 'ID1', type: 'int', key: 0, nullable: false}, 
+        id: {label: 'ID1', type: 'int', key: 0, nullable: false},
         name: {label: 'Name1', type: 'varchar',  nullable: false},
         sex: {label: 'Sex', type: 'varchar',  widget: 'select', voc_val: {'M':'Male', 'F':'Female'}}
         //,true_false: {label: 'E vero o è falso', type: 'integer',  widget: 'checkbox',voc_val: {'1':'è Vero!', '0':'Falso',null:'Boh'}}
@@ -202,8 +209,8 @@ function test_bis(){
 */
     var old_form;
 
-		var formin=new Dbmng.FormInline({"aForm":aForm, "theme":theme_boot, "aParam":aParam, 
-			"onChange":function(){				
+		var formin=new Dbmng.FormInline({"aForm":aForm, "theme":theme_boot, "aParam":aParam,
+			"onChange":function(){
         /*
 				console.log("Field:"+w.field);
 				console.log("Value:"+w.getValue());
@@ -214,7 +221,7 @@ function test_bis(){
 				var w=this;
         if(!old_form){
           console.log('First form');
-        }  
+        }
         else if(old_form==w.form){
           console.log('Same form');
         }
@@ -223,7 +230,7 @@ function test_bis(){
           console.log(old_form.getValue());
         }
         old_form=w.form;
-			} 
+			}
 		});
 		var tab=formin.createForm(aDati);
 		jQuery('#test_diego').append(tab);
@@ -238,7 +245,7 @@ function test_bis(){
 			trans=formin.getTransaction();
 			console.log(trans);
 		})
-			
+
 }
 
 

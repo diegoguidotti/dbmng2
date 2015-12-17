@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////
 // CRUD The class manage all the CRUD functions
 // 2 December 2015
-// 
+//
 //
 // Developed by :
 // Diego Guidotti
@@ -9,10 +9,10 @@
 /////////////////////////////////////////////////////////////////////
 
 Dbmng.Crud = Class.extend({
-  //class constructor	
+  //class constructor
   init: function( options ) {
 
-		//the ready variable can be used to check if it is ready the Crud to create the table)   
+		//the ready variable can be used to check if it is ready the Crud to create the table)
     this.ready=true;
 
     var aParamD = {
@@ -27,25 +27,25 @@ Dbmng.Crud = Class.extend({
 				inline:0, upd:1, del:1, ins:1
 			}
 		};
-    
+
     this.aParam = jQuery.extend(true, aParamD,options.aParam);
 
-    
+
     if( options.theme ) {
       this.theme = options.theme;
     }
     else {
       this.theme = new Dbmng.AbstractTheme();
-    }		
+    }
 
     if( options.url ) {
       this.url = options.url;
     }
     else {
       this.url='?';
-    }	
+    }
 
-		if(options.aForm){	
+		if(options.aForm){
 			this.aForm  = options.aForm;
 
 		  this.form=new Dbmng.Form({aForm:this.aForm, aParam:this.aParam, theme:this.theme});
@@ -78,7 +78,7 @@ Dbmng.Crud = Class.extend({
 
 					if(typeof options.success=='function'){
 						console.log("call success");
-						options.success(self);							
+						options.success(self);
 					}
 					else{
 						console.log(this.aForm);
@@ -91,16 +91,16 @@ Dbmng.Crud = Class.extend({
 					console.log(exc);
 				}
 			});
-			
+
 		}
   },
   createTable: function( opt ){
-		
+
     var div_id=opt.div_id;
     if( div_id.substring(0, 1) != '#') {
       div_id = '#' + div_id;
     }
-		
+
 		if(this.ready){
 		  var self=this;
 
@@ -112,15 +112,15 @@ Dbmng.Crud = Class.extend({
 		        var header=[];
 		        for(var key in self.aForm.fields){
 		          if(self.aForm.fields[key].label)
-		            header.push(self.aForm.fields[key].label);	
+		            header.push(self.aForm.fields[key].label);
 		          else{
-		            header.push(key);	
+		            header.push(key);
 		          }
 		        }
 		        header.push("Func.");
-		        
+
 		        var cData = self.form.convert2html(aData);
-		      
+
 		        var html=self.theme.getTable({data:cData, header:header, aParam:self.aParam, options:{
 		          assignClass:true,
 		          setIDRow:function(aData){
@@ -128,43 +128,43 @@ Dbmng.Crud = Class.extend({
 		          },
 		          addColumn:function(opt){
 		            var cell=self.theme.getTableCell();
-		            
+
 		            if( self.aParam.user_function.upd == 1 ) {
-		              var label_edit=self.aParam.ui.btn_edit.label; 
+		              var label_edit=self.aParam.ui.btn_edit.label;
 		              var opt_edit=self.aParam.ui.btn_edit;
-		              
+
 		              var button_edit=jQuery(self.theme.getButton(label_edit,opt_edit));
 		              button_edit.click(function(){
 		                self.createForm(div_id, opt.data[self.pk], aData);
 		              });
 		              jQuery(cell).append(button_edit);
 		            }
-		            
+
 		            if( self.aParam.user_function.inline ) {
-		              var label_editi=self.aParam.ui.btn_edit_inline.label; 
+		              var label_editi=self.aParam.ui.btn_edit_inline.label;
 		              var opt_editi=self.aParam.ui.btn_edit_inline;
-		              
+
 		              var button_editi=jQuery(self.theme.getButton(label_editi,opt_editi));
 		              button_editi.click(function(){
 		                self.createFormInline(div_id, opt.data[self.pk], aData, true);
-		              });		
+		              });
 		              jQuery(cell).append(button_editi);
 		            }
 
 		            if( self.aParam.user_function.upd ) {
-		              var label_delete=self.aParam.ui.btn_delete.label; 
+		              var label_delete=self.aParam.ui.btn_delete.label;
 		              var opt_delete=self.aParam.ui.btn_delete;
-		              
+
 		              var button_delete=jQuery(self.theme.getButton(label_delete,opt_delete));
 		              button_delete.click(function(){
-		                  
+
 		                self.deleteRecord(div_id, opt.data[self.pk]);
-		              });		
+		              });
 		              jQuery(cell).append(button_delete);
 		            }
-		            
+
                 if( self.aParam.custom_function ) {
-                  var label_custom = self.aParam.custom_function.label; 
+                  var label_custom = self.aParam.custom_function.label;
                   var opt_custom = self.aParam.custom_function;
                   console.log(opt_custom);
                   var button_custom=jQuery(self.theme.getButton(label_custom,opt_custom));
@@ -172,7 +172,8 @@ Dbmng.Crud = Class.extend({
                     if( typeof self.aParam.custom_function.action == 'string' ) {
                       button_custom.click(function(){
                         var fnstring = self.aParam.custom_function.action;
-                        var fnparams = [opt.data[self.pk]];
+                        var fnparams = [opt.data[self.pk],opt.data];
+
                         exeExternalFunction(fnstring, fnparams);
 //                         var fn = window[fnstring];
 //                         if( typeof(fn) == 'function' ) {
@@ -184,20 +185,20 @@ Dbmng.Crud = Class.extend({
                     }
                   }
                 }
-		            
+
 		            return cell;
 		          }
 		        }});
 		        jQuery(div_id).html(html);
-		        
+
 		        if( self.aParam.user_function.ins ) {
-		          var label_insert=self.aParam.ui.btn_insert.label; 
+		          var label_insert=self.aParam.ui.btn_insert.label;
 		          var opt_insert=self.aParam.ui.btn_insert;
-		          
+
 		          var button_insert=jQuery(self.theme.getButton(label_insert,opt_insert));
 		          button_insert.click(function(){
 		            self.createInsertForm(div_id);
-		          });		
+		          });
 		          jQuery(div_id).append(button_insert);
 		        }
 		      }
@@ -227,17 +228,17 @@ Dbmng.Crud = Class.extend({
   },
   deleteRecord: function (div_id, key){
     var self=this;
-    this.api.delete({key:key, success:function(data){					
+    this.api.delete({key:key, success:function(data){
       self.createTable({div_id:div_id});
     }});
   },
   createInsertForm: function (div_id){
-    var self = this; 
+    var self = this;
     jQuery(div_id).html(self.form.createForm());
-    
-    var label_save=self.aParam.ui.btn_save.label; 
+
+    var label_save=self.aParam.ui.btn_save.label;
     var opt_save=self.aParam.ui.btn_save;
-    
+
     var button = self.theme.getButton(label_save, opt_save);
     jQuery(button).click(function(){
       self.api.insert({data:self.form.getValue(),success:function(data){
@@ -252,10 +253,10 @@ Dbmng.Crud = Class.extend({
     var aRecord = this.getARecord(key,aData);
 
     jQuery(div_id).html(this.form.createForm(aRecord));
-    
-    var label_save=self.aParam.ui.btn_save.label; 
+
+    var label_save=self.aParam.ui.btn_save.label;
     var opt_save=self.aParam.ui.btn_save;
-    
+
 //     var label_save='Salva'; var opt_save={};
 //       if(self.aParam.btn_save) {
 //         if(self.aParam.btn_save.label){
@@ -263,7 +264,7 @@ Dbmng.Crud = Class.extend({
 //       }
 //       opt_save=self.aParam.btn_save;
 //     }
-    
+
     var button = self.theme.getButton(label_save, opt_save);
     jQuery(button).click(function(){
       self.api.update({key:key,data:self.form.getValue(),success:function(data){
@@ -325,9 +326,9 @@ Dbmng.Crud = Class.extend({
     });
 
 
-    var label_save=self.aParam.ui.btn_save.label; 
+    var label_save=self.aParam.ui.btn_save.label;
     var opt_save=self.aParam.ui.btn_save;
-    
+
     var button=self.theme.getButton(label_save, opt_save);
     jQuery(button).click(function(){
       self.api.update({key:key,data:self.form.getValue(),success:function(data){
@@ -340,5 +341,3 @@ Dbmng.Crud = Class.extend({
     jQuery(row_id+' td.dbmng_buttons').html(button);
   }
 });
-
-

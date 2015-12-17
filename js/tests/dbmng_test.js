@@ -1,5 +1,12 @@
 
-
+function my_test_sum(a,b){
+  if(typeof a == 'undefined'){
+    return -1;
+  }
+  else{
+    return a+b;
+  }
+}
 
 jQuery(function(){
 
@@ -8,7 +15,7 @@ jQuery(function(){
     ok(true, 'this had better work.');
   });
 
-  
+
   test('AbstractTheme',4, function(){
     var theme=new Dbmng.AbstractTheme();
     equal(theme.test(2),4, "Trivial test");
@@ -18,27 +25,27 @@ jQuery(function(){
 
     jQuery('#test_div').html(theme.getInput({}));
     equal(jQuery('#test_div input').val(),'', "AbstractTheme input empty value");
-    
+
     jQuery('#test_div').html(theme.getSelect({value: 2, voc_val: {1:'January', 2:'February'}}));
     equal(jQuery('#test_div select').val(),2, "AbstractTheme select get value");
 
   });
 
-  
+
   test('BootstrapTheme',2, function(){
     var theme=new Dbmng.BootstrapTheme();
-    
+
     jQuery('#test_div').html(theme.getInput({'value':'pippo'}));
     equal(jQuery('#test_div input').val(),'pippo', "BootstrapTheme input get value");
 
     jQuery('#test_div').html(theme.getInput({}));
     equal(jQuery('#test_div input').hasClass('form-control'),true, "BootstrapTheme check form-control class");
-    
+
   });
 
-  
+
   test('AbstractWidget',7, function(){
-    var option = { 
+    var option = {
       field:'month',
       aField: {label: 'AAA', 'default':1},
     };
@@ -46,18 +53,18 @@ jQuery(function(){
     jQuery('#test_div').html(widget.createField());
     equal(jQuery('#test_div input').val(),1, "AbstractWidget get default value");
 
-    jQuery('#test_div input').val(33);    
+    jQuery('#test_div input').val(33);
     equal(widget.getValue(),33, "(gatValue) get assigned value");
-    
-    var option = { 
+
+    var option = {
       field:'fld',
       aField: {label: 'BBB'},
     };
     var widget2 = new Dbmng.AbstractWidget(option);
     jQuery('#test_div').html(widget2.createField());
     equal(widget2.getValue(),'', "AbstractWidget get null value");
-    
-    var option = { 
+
+    var option = {
       field:'fld',
       aField: {label: 'BBB'},
     };
@@ -65,9 +72,9 @@ jQuery(function(){
     jQuery('#test_div').html(widget3.createField(20));
     equal(widget3.getValue(),20, "(gatValue) get assigned value");
     equal(jQuery('#test_div input').hasClass('form-control'),false, "No class");
-    
+
     var theme_boot = new Dbmng.BootstrapTheme();
-    var option = { 
+    var option = {
       field:'fld',
       aField: {label: 'BBB'},
       theme: theme_boot
@@ -76,11 +83,11 @@ jQuery(function(){
     jQuery('#test_div').html(widget4.createField(20));
     equal(jQuery('#test_div input').hasClass('form-control'),true, "BootstrapTheme check form-control class");
     equal(widget4.aField,option.aField, "Check aField array");
-    
+
   });
-  
+
   test('PasswordWidget',8, function(){
-    var option = { 
+    var option = {
       field:'password',
       aField: {label: 'insert the password', default:'bar'},
     };
@@ -91,16 +98,16 @@ jQuery(function(){
     jQuery('#test_div input').val('test');
     equal(jQuery('#test_div input').val(),'test', "(jQuery) get jquery assigned value");
     equal(widget.getValue(),'test', "(gatValue) get assigned value");
-    
-    var option = { 
+
+    var option = {
       field:'password',
       aField: {label: 'insert the password'},
     };
     var widget4 = new Dbmng.PasswordWidget(option);
     jQuery('#test_div').html(widget4.createField());
     equal(widget4.getValue(),'', "PasswordWidget get null value");
-    
-    var option = { 
+
+    var option = {
       field:'password',
       aField: {label: 'insert the password'},
     };
@@ -108,9 +115,9 @@ jQuery(function(){
     jQuery('#test_div').html(widget2.createField('foo'));
     equal(widget2.getValue(),'foo', "(gatValue) get assigned value");
     equal(jQuery('#test_div input').hasClass('form-control'),false, "No class");
-    
+
     var theme_boot = new Dbmng.BootstrapTheme();
-    var option = { 
+    var option = {
       field:'password',
       aField: {label: 'insert the password'},
       theme: theme_boot
@@ -120,11 +127,11 @@ jQuery(function(){
     equal(jQuery('#test_div input').hasClass('form-control'),true, "BootstrapTheme check form-control class");
     equal(widget3.aField,option.aField, "Check aField array");
   });
-  
-  
+
+
   test('SelectWidget',7, function(){
     /* ---------- test #01 ---------- */
-    var option = { 
+    var option = {
       field:'month',
       aField: {label: 'Months', widget:'select', voc_val: {1:'January', 2:'February'}, 'default':1},
     };
@@ -132,9 +139,9 @@ jQuery(function(){
     // select.createField();
     jQuery('#test_div').html(select.createField());
     equal(jQuery('#test_div select').val(),1, "SelectWidget get default value");
-  
+
     /* ---------- test #02 ---------- */
-    option = { 
+    option = {
       field:'id',
       aField: {label: 'Mounth', widget:'select', voc_val: {1:'January', 2:'February'}},
     };
@@ -142,9 +149,9 @@ jQuery(function(){
     // select.createField(option);
     jQuery('#test_div').html(select2.createField(option));
     equal(jQuery('#test_div select').val(),'', "SelectWidget get null value");
-    
+
     /* ---------- test #03 ---------- */
-    option = { 
+    option = {
       field:'id',
       aField: {label: 'Mounth', widget:'select', voc_val: {1:'January', 2:'February',33:'Utbuarry'}}
     };
@@ -156,12 +163,12 @@ jQuery(function(){
     equal(select3.getValue() ,2, "test widget.getValue() using default ");
     jQuery('#test_div select').val(33);
     equal(select3.getValue() ,33, "test widget.getValue() using assigned value ");
-    
-    
-    
+
+
+
     /* ---------- test #04 ---------- */
     var theme_boot = new Dbmng.BootstrapTheme();
-    option = { 
+    option = {
       field:'id',
       aField: {label: 'Mounth', widget:'select', voc_val: {1:'January', 2:'February'}},
       theme: theme_boot
@@ -174,34 +181,34 @@ jQuery(function(){
   });
 
   test('SelectNMWidget', 3, function() {
-    var option = { 
+    var option = {
       field:'monthnm',
       aField: {label: 'Months', widget:'select_nm', voc_val: {1:'January', 2:'February', 3: 'March'}},
     };
     var select = new Dbmng.SelectNMWidget(option);
     jQuery('#test_div').html(select.createField());
     equal(jQuery('#test_div select').val(),null, "SelectNMWidget get default value");
-  
-    var option = { 
+
+    var option = {
       field:'monthnm',
       aField: {label: 'Months', widget:'select_nm', voc_val: {1:'January', 2:'February', 3: 'March'}},
     };
     var select = new Dbmng.SelectNMWidget(option);
     jQuery('#test_div').html(select.createField([1,3]));
     deepEqual(select.getValue(),["1", "3"], "SelectNMWidget get set value");
-  
-    var option = { 
+
+    var option = {
       field:'monthnm',
       aField: {label: 'Months', type: 'int', widget:'select_nm', voc_val: {1:'January', 2:'February', 3: 'March'}},
     };
     var select = new Dbmng.SelectNMWidget(option);
     jQuery('#test_div').html(select.createField([1,3]));
     deepEqual(select.getValue(),[1, 3], "SelectNMWidget get set value (integer)");
-    
+
   });
-  
+
   test('CheckWidget',6, function(){
-    var option = { 
+    var option = {
       field:'check',
       aField: {label: 'Check', default:true},
       widget: 'checkbox'
@@ -211,10 +218,10 @@ jQuery(function(){
     equal(widget.getValue(),true, "CheckboxWidget get default value");
 
 		//remove checked and check
-    jQuery('#test_div input').removeAttr('checked');   
+    jQuery('#test_div input').removeAttr('checked');
     equal(widget.getValue(),false, "(getValue) get assigned value");
-    
-    var option = { 
+
+    var option = {
       field:'check',
       aField: {label: 'Check'},
       widget: 'checkbox'
@@ -223,9 +230,9 @@ jQuery(function(){
     jQuery('#test_div').html(widget2.createField(true));
     equal(widget2.getValue(),true, "(getValue) get assigned value");
     equal(jQuery('#test_div input').hasClass('form-control'),false, "No class");
-    
+
     var theme_boot = new Dbmng.BootstrapTheme();
-    var option = { 
+    var option = {
       field:'check',
       aField: {label: 'Check'},
       widget: 'checkbox',
@@ -236,11 +243,11 @@ jQuery(function(){
     equal(jQuery('#test_div input').hasClass('form-control'),true, "BootstrapTheme check form-control class");
     equal(widget3.aField,option.aField, "Check aField array");
   });
-  
+
  test('NumericWidget',5, function(){
-    var option = { 
+    var option = {
       field:'number',
-      aField: {label: 'Number', type: 'int', default:true}      
+      aField: {label: 'Number', type: 'int', default:true}
     };
     var widget = new Dbmng.NumericWidget(option);
     jQuery('#test_div').html(widget.createField());
@@ -262,10 +269,15 @@ jQuery(function(){
     equal(widget2.getValue(),null, "NumericWidget should return null if a text value is entered (also if the type is not number)");
 
   });
- 
-  test('external function', 1, function() {
-    var max = exeExternalFunction('Math.max', [3,5]);
-    equal(5, max);
+
+
+
+  test('external function', 2, function() {
+
+    var sum = exeExternalFunction('my_test_sum', [3,5]);
+    equal(8, sum);
+
+    var sum2 = exeExternalFunction('my_test_sum');
+    equal(-1, sum2);
   })
 });
-

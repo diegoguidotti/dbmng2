@@ -1,13 +1,17 @@
-if(typeof window.console == 'undefined') { window.console = {log: function (msg) {msg="";} }; } 
+if(typeof window.console == 'undefined') { window.console = {log: function (msg) {msg="";} }; }
 
-function exeExternalFunction(fnstring, params) {
+function exeExternalFunction (fnstring, params) {
   var fn = window[fnstring];
   if( typeof fn == 'function' ) {
-    if( typeof param !== 'undefined' ) {
-      fn();
+    if( typeof params == 'undefined' ) {
+      return fn();
     }
     else {
-      fn.apply(null, params);
+      return fn.apply(null, params);
     }
+  }
+  else{
+      console.log('Function does not exists');
+      return false;
   }
 }
