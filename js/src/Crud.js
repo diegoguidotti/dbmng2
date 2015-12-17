@@ -171,8 +171,11 @@ Dbmng.Crud = Class.extend({
                   if( self.aParam.custom_function.action ) {
                     if( typeof self.aParam.custom_function.action == 'string' ) {
                       button_custom.click(function(){
-                        eval(self.aParam.custom_function.action)(self);
-                        // self.deleteRecord(div_id, opt.data[self.pk]);
+                        var fnstring = self.aParam.custom_function.action;
+                        var fn = window[fnstring];
+                        if( typeof(fn) == 'function' ) {
+                          fn();
+                        }
                       });   
                       jQuery(cell).append(button_custom);
                     }
@@ -196,7 +199,7 @@ Dbmng.Crud = Class.extend({
 		        }
 		      }
 		      else {
-		        jQuery(div_id).html(self.theme.alertMessage(data.msg));
+		        jQuery(div_id).html(self.theme.alertMessage(data.message));
 		      }
 		    },
 		    error: function(error) {
