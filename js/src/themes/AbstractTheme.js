@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////
 // AbstractTheme
 // 18 November 2015
-// 
+//
 //
 // Developed by :
 // Diego Guidotti
@@ -12,49 +12,50 @@ Dbmng.AbstractTheme = Class.extend({
   test: function(input){
     return input+2;
   },
-  
+
   getFieldContainer: function(aField) {
     // console.log(aField);
     var el = document.createElement('div');
     el.className = 'dbmng_form_row';
     el.className = el.className + ' dbmng_form_field_' + aField.field;
+
     return el;
   },
-  
+
   getLabel: function(aField) {
     var el=document.createElement('div');
     el.className='dbmng_form_label';
-    
+
     var lb = document.createElement('label');
     lb.setAttribute('for', 'dbmng_' + aField.field);
-    
+
     var txt=document.createTextNode(aField.label);
     lb.appendChild(txt);
-    
+
     if( aField.nullable === false ) {
       var sp = document.createElement('span');
       sp.className='dbmng_required';
-      
+
       var star=document.createTextNode('*');
       sp.appendChild(star);
       lb.appendChild(sp);
     }
-    
+
     el.appendChild(lb);
     return el;
   },
-  
+
   getInput: function(aField) {
     var el=document.createElement('input');
     this.assignAttributes(el, aField);
-    
+
     if(aField.value) {
       el.value=aField.value;
     }
     if( aField.placeholder ) {
       el.placeholder = aField.placeholder;
     }
-    
+
     if( aField.type == 'int' || aField.type == 'bigint' || aField.type == 'float' || aField.type == 'double' ) {
       el.type = "number";
       el.onkeypress = function( evt ) {
@@ -78,7 +79,7 @@ Dbmng.AbstractTheme = Class.extend({
     }
     return el;
   },
-/*  
+/*
   getPassword: function(aField) {
     var el=document.createElement('input');
     this.assignAttributes(el, aField);
@@ -87,11 +88,11 @@ Dbmng.AbstractTheme = Class.extend({
     if(aField.value) {
       el.value=aField.value;
     }
-    
+
     if( aField.placeholder ) {
       el.placeholder = aField.label;
     }
-    
+
     return el;
   },
   */
@@ -103,27 +104,27 @@ Dbmng.AbstractTheme = Class.extend({
     if(aField.value == 1 ) {
       el.checked = true;
     }
-    
+
     //console.log(aField);
     if( aField.placeholder ) {
       el.placeholder = aField.label;
     }
-    
+
     return el;
   },
-  
+
   getSelect: function(aField) {
     var el=document.createElement('select');
-    
+
     this.assignAttributes(el, aField);
     if(aField.voc_val) {
       var o=document.createElement('option');
-      
+
       if( aField.placeholder ) {
         o.text=aField.label;
         o.disabled = 'disabled';
       }
-      
+
       el.options.add(o);
       for (var opt in aField.voc_val) {
         o=document.createElement('option');
@@ -140,7 +141,7 @@ Dbmng.AbstractTheme = Class.extend({
     }
     return el;
   },
-  
+
   getSelectNM: function(aField) {
     //console.log(aField);
     var out_type = "select";
@@ -148,21 +149,21 @@ Dbmng.AbstractTheme = Class.extend({
     if( aField.out_type == 'checkbox' ) {
       out_type = "checkbox";
     }
-    
+
     if( out_type == 'select' ) {
       el = document.createElement('select');
       el.multiple = true;
-      
+
       this.assignAttributes(el, aField);
-      
+
       if(aField.voc_val) {
         o = document.createElement('option');
-        
+
         if( aField.placeholder ) {
           o.text = aField.label;
           o.disabled = 'disabled';
         }
-        
+
         el.options.add(o);
         for (opt in aField.voc_val) {
           o = document.createElement('option');
@@ -192,7 +193,7 @@ Dbmng.AbstractTheme = Class.extend({
         var aCB = {type: 'int', widget:'checkbox', theme:this}; // , theme:theme_boot ??
         o = new Dbmng.CheckboxWidget({field:aField.field, aField:aCB});
         o.createField(opt);
-        
+
         li.appendChild(o.widget);
 
         var txt = document.createTextNode(aField.voc_val[opt]);
@@ -202,7 +203,7 @@ Dbmng.AbstractTheme = Class.extend({
     }
     return el;
   },
-  
+
   assignAttributes: function(el, aField) {
     //console.log(aField);
     //el.setAttribute('id', 'dbmng_' + aField.field);
@@ -225,7 +226,7 @@ Dbmng.AbstractTheme = Class.extend({
       el.className = el.className + space + ;
 			*/
     }
-    
+
   },
 	addClass: function(el, className){
       var space = "";
@@ -247,14 +248,14 @@ Dbmng.AbstractTheme = Class.extend({
 		if( opt.aParam ) {
       if( opt.aParam.ui.table_class ) {
         this.addClass(el, opt.aParam.ui.table_class);
-      } 
+      }
     }
     if(opt.data){
 			el.appendChild(this.getTableHeader(opt));
 			var tbody=document.createElement('tbody');
 			for(var i=0; i<opt.data.length; i++){
 				var row=this.getTableRow({data: opt.data[i], options:opt.options });
-				if(opt.options){					
+				if(opt.options){
 					if(opt.options.assignClass){
 						this.addClass(row, "dbmng_row dbmng_row_"+i);
 					}
@@ -263,8 +264,8 @@ Dbmng.AbstractTheme = Class.extend({
 					}
 				}
 				tbody.appendChild(row);
-			}		
-			el.appendChild(tbody);	
+			}
+			el.appendChild(tbody);
 		}
 		div.appendChild(el);
     return div;
@@ -285,7 +286,7 @@ Dbmng.AbstractTheme = Class.extend({
 			}
 		}
 		el.appendChild(tr);
-		return el;		
+		return el;
 	},
   getTableRow: function(opt) {
 		var el = document.createElement('tr');
@@ -299,9 +300,9 @@ Dbmng.AbstractTheme = Class.extend({
 					if(typeof opt.options.setIDRow=='function'){
 						el.id=opt.options.setIDRow(opt.data);
 					}
-				}				
+				}
 				el.appendChild(cell);
-			}			
+			}
 		}
 		return el;
 	},
@@ -329,13 +330,13 @@ Dbmng.AbstractTheme = Class.extend({
     if( !opt ) {
       opt = {};
     }
-      
+
 		var el = document.createElement('button');
     if(opt.class){
       this.addClass(el, opt.class);
     }
-    
-    
+
+
     if(opt.icon){
       // if( jQuery('i.fa').css('font').indexOf('Awesome')>-1 ) { ... }
       var icn = document.createElement('i');
