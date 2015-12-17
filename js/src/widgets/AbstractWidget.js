@@ -14,6 +14,7 @@ Dbmng.AbstractWidget = Class.extend({
     if( !options ) {
       options={};
     }
+
     
 
     if( options.field ) {
