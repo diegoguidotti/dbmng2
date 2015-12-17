@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////
 // AbstractWidget
 // 12 November 2015
-// 
+//
 //
 // Developed by :
 // Diego Guidotti
@@ -15,13 +15,14 @@ Dbmng.AbstractWidget = Class.extend({
       options={};
     }
     
+
     if( options.field ) {
       this.field = options.field;
     }
     if( options.aField ) {
       this.aField = options.aField;
     }
-    
+
     if( options.theme ) {
       this.theme = options.theme;
     }
@@ -35,21 +36,21 @@ Dbmng.AbstractWidget = Class.extend({
       this.aParam = {};
     }
     this.widget=null;
-    
+
   },
-  
+
   createWidget: function() {
     this.aField.value = this.getFieldValue();
     var el=this.theme.getInput(this.aField);
     return el;
   },
-  
-  createField: function(data_val) {		
+
+  createField: function(data_val) {
     var self=this;
 
     this.aField.field = this.field;
     var el = this.theme.getFieldContainer(this.aField);
-    
+
     var bHideLabel = false;
     if( this.aParam.hide_label ) {
       if( this.aParam.hide_label === true ) {
@@ -62,7 +63,7 @@ Dbmng.AbstractWidget = Class.extend({
         	this.aField.placeholder = this.aField.label;
       }
     }
-    
+
     if( !bHideLabel ) {
       el.appendChild(this.theme.getLabel(this.aField));
     }
@@ -98,7 +99,7 @@ Dbmng.AbstractWidget = Class.extend({
   getDefaultValue: function( options ) {
     return '';
   },
-  
+
   getFieldValue: function() {
     var v;
     if(this.value){
@@ -109,10 +110,10 @@ Dbmng.AbstractWidget = Class.extend({
     }
     else{
       v = this.getDefaultValue();
-    }    
+    }
     return v;
   },
-  
+
   convert2html: function(val) {
     return val;
   }
