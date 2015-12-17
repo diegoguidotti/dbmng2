@@ -172,11 +172,12 @@ Dbmng.Crud = Class.extend({
                     if( typeof self.aParam.custom_function.action == 'string' ) {
                       button_custom.click(function(){
                         var fnstring = self.aParam.custom_function.action;
-                        var fn = window[fnstring];
-                        if( typeof(fn) == 'function' ) {
-                          fn();
-                        }
-                      });   
+                        exeExternalFunction(fnstring);
+//                         var fn = window[fnstring];
+//                         if( typeof(fn) == 'function' ) {
+//                           fn();
+//                         }
+                      });
                       jQuery(cell).append(button_custom);
                     }
                   }
