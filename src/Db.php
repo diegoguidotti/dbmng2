@@ -85,8 +85,8 @@ private $pdo;
         {
 						$ret['ok']=false;
 						$ret['message']=$e->getMessage();
-						$ret['query'] = $sQuery;
-						$ret['vars'] = $aVars;
+						$ret['sql'] = $sQuery;
+            $ret['vars'] = $aVars;
         }
 			return $ret;
 		}

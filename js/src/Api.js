@@ -21,7 +21,7 @@ Dbmng.Api = Class.extend({
 				"Authorization": "Basic " + btoa(this.user + ":" + this.password)
 			};
 	},
-  select: function(options) {		
+  select: function(options) {
 		jQuery.ajax({
 			url: this.url,
 			dataType:'json',

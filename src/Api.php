@@ -180,7 +180,7 @@ class Api {
                 else
                   {
                     $input['ok'] = false;
-                    $input['msg'] = "The id value doesn't exist";
+                    $input['message'] = "The id value doesn't exist";
                   }
            
             return ($input);
@@ -241,7 +241,7 @@ class Api {
 							else
 								{
 									$input['ok'] = false;
-									$input['msg'] = "Some fields are wrong";
+									$input['message'] = "Some fields are wrong";
 									$input['wrong_field'] = $aFldError;
 								}
 		
@@ -311,14 +311,14 @@ class Api {
                         // $input['aForm'] = $aForm;
                         
                         $input['ok'] = false;
-                        $input['msg'] = "Some fields are wrong";
+                        $input['message'] = "Some fields are wrong";
                         $input['wrong_field'] = $aFldError;
                       }
                   }
                 else
                   {
                     $input['ok'] = false;
-                    $input['msg'] = "The id value doesn't exist";
+                    $input['message'] = "The id value doesn't exist";
                   }
             
             //$input['body'] = $body;
