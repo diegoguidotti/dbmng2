@@ -59,13 +59,17 @@ private $prepare;
 		if($ret['ok'] && count($aWhere) >0)
 			{
 				$sQuery='SELECT '.$var.' from '.$this->aForm['table_name'] . " WHERE $sWhere ";
-				$ret = $this->db->select($sQuery, $aWhere, $fetch_style);
 			}
 		else
 			{
 				$sQuery='SELECT '.$var.' from '.$this->aForm['table_name'];
-				$ret = $this->db->select($sQuery, $aWhere, $fetch_style);
 			}
+
+		if(isset($this->aParam['tbl_order'])){
+			$sQuery.=" ORDER BY ".$this->aParam['tbl_order'];
+		}
+		$ret = $this->db->select($sQuery, $aWhere, $fetch_style);
+
 		return $ret;
 	}
 
