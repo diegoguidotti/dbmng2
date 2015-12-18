@@ -41,52 +41,6 @@
 
 
 
-	<style>
-
-/*
-    #test_table form{
-      display:block !important;
-    }
-		#test_table input{
-			border: 0px;
-			background-color:#FCC;
-		}
-
-		.dbmng_col_id {
-			width:6em;
-		}
-
-		.dbmng_col_sex {
-			width:6em;
-		}
-
-		#test_table form{
-			display:inline!important;
-		}
-*/
-
-
-/*  TEST DIEGO
-
-	#test_diego{
-		display:table;
-	}
-#test_diego label{
-		display:none;
-	}
-	#test_diego form{
-		display:table-row;
-	}
-	#test_diego .dbmng_form_row{
-			display:table-cell;
-	}
-
-	#test_diego .dbmng_form_field_id{
-		display:none;
-	}
-*/
-
-	</style>
 	<script>
 
 
@@ -115,7 +69,8 @@ function test_base(){
                     btn_save: {label:'Salva', class: 'btn-success btn-block'},
                     table_class: 'table-hover'},
               user_function: {inline:1, upd:1, del:1, ins:1},
-              custom_function:{'action':'mostra_categorie', 'label' :'Mostra categorie', 'icon' : 'fa fa-th-list' }
+              custom_function:{'action':'mostra_categorie', 'label' :'Mostra categorie', 'icon' : 'fa fa-th-list' },
+              filter:{'sex':'M'}
           };
 
 		//vecchia versione con aForm

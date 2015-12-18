@@ -15,7 +15,8 @@ Dbmng.Api = Class.extend({
 		this.url=options.url;
 		this.user=options.user;
 		this.password=options.password;
-      
+    this.search=options.search;
+
   },
 	getHeaders: function(){
 		return {
@@ -23,8 +24,12 @@ Dbmng.Api = Class.extend({
 			};
 	},
   select: function(options) {
+    var url_select= this.url;
+    if(options.search){
+      url_select+="?"+ options.search;
+    }
 		jQuery.ajax({
-			url: this.url,
+			url: url_select,
 			dataType:'json',
 			headers: this.getHeaders(),
 			success: function(data){

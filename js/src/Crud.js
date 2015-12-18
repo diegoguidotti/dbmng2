@@ -100,7 +100,7 @@ Dbmng.Crud = Class.extend({
 		if(this.ready){
 		  var self=this;
 
-		  this.api.select({
+      var sel_opt={
 		    success:function(data){
           self.generateTable(opt, data);
 		    },
@@ -118,7 +118,19 @@ Dbmng.Crud = Class.extend({
 						}
 					}
 		    }
-		  });
+		  };
+
+      //if exists a filter create the search text to be added to the GET call
+      if(this.aParam.filter){
+
+        var search="";
+        jQuery.each(this.aParam.filter,function(k,v){
+            search+='&'+k+"="+v;
+        });
+        sel_opt.search=search;
+      }
+
+		  this.api.select(sel_opt);
 		}
 		else{
 			console.log('Table not ready (need to load the a Form)');
@@ -131,7 +143,7 @@ Dbmng.Crud = Class.extend({
       div_id = '#' + div_id;
     }
     var self=this;
-    
+
     console.log(data);
     if( data.ok ) {
       var aData=data.data;
@@ -231,7 +243,7 @@ Dbmng.Crud = Class.extend({
     else {
       jQuery(div_id).html(self.theme.alertMessage(data.message));
     }
-  }, 
+  },
   deleteRecord: function (div_id, key){
     var self=this;
     this.api.delete({key:key, success:function(data){
