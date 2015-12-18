@@ -60,12 +60,13 @@ Update the configuration file
 
 	$ cp phpunit.xml.dist phpunit.xml
 	$ edit the phpunit.xml entering db_name, user and password
-	$ cp settings.default.php  settings.xml
-	$ edit the settings.xml entering db_name, user and password
+	$ cp settings.default.php  settings.php
+	$ edit the settings.php entering db_name, user and password
 
 
 For the JS library you need to install grunt (nodejs required) and then with npm install load the nodel packages
-  $ apt-get install libfontconfig1 fontconfig libfontconfig1-dev libfreetype6-dev #dipendenze per phantomJS per il test
+
+	$ apt-get install libfontconfig1 fontconfig libfontconfig1-dev libfreetype6-dev #dipendenze per phantomJS per il test
 	$ sudo npm install -g grunt-cli 
 	$ cd dbmng2/js/
 	$ npm install
@@ -81,6 +82,21 @@ To test the api you should link the folder in the apache folder
 
 	$ ln -s ../dbmng2 /var/www/
 
+Verify that the follow link respond 
+	
+	$ link: http://localhost/dbmng2/api/test_base
+	$ {"0":{"id":"1","name":"Diego","sex":""},"1":{"id":"2","name":"Michele","sex":""},"test_get":1}
+
+If the respond is not working install
+	
+	$ sudo a2enmod rewrite
+
+Create a file in apache2 conf-enabled with the following content:
+
+	$ <Directory /var/www/dbmng2/> 
+	$	FollowSymLinks 
+	$	AllowOverride All 
+	$ </Directory>
 
 Running the test
 

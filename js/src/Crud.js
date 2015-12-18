@@ -102,105 +102,7 @@ Dbmng.Crud = Class.extend({
 
 		  this.api.select({
 		    success:function(data){
-		      console.log(data);
-		      if( data.ok ) {
-		        var aData=data.data;
-		        var header=[];
-		        for(var key in self.aForm.fields){
-		          if(self.aForm.fields[key].label)
-		            header.push(self.aForm.fields[key].label);
-		          else{
-		            header.push(key);
-		          }
-		        }
-		        header.push("Func.");
-
-		        var cData = self.form.convert2html(aData);
-
-		        var html=self.theme.getTable({data:cData, header:header, aParam:self.aParam, options:{
-		          assignClass:true,
-		          setIDRow:function(aData){
-		            return "dbmng_row_id_"+aData[self.pk];
-		          },
-		          addColumn:function(opt){
-		            var cell=self.theme.getTableCell();
-
-		            if( self.aParam.user_function.upd == 1 ) {
-		              var label_edit=self.aParam.ui.btn_edit.label;
-		              var opt_edit=self.aParam.ui.btn_edit;
-
-		              var button_edit=jQuery(self.theme.getButton(label_edit,opt_edit));
-		              button_edit.click(function(){
-		                self.createForm(div_id, opt.data[self.pk], aData);
-		              });
-		              jQuery(cell).append(button_edit);
-		            }
-
-		            if( self.aParam.user_function.inline ) {
-		              var label_editi=self.aParam.ui.btn_edit_inline.label;
-		              var opt_editi=self.aParam.ui.btn_edit_inline;
-
-		              var button_editi=jQuery(self.theme.getButton(label_editi,opt_editi));
-		              button_editi.click(function(){
-		                self.createFormInline(div_id, opt.data[self.pk], aData, true);
-		              });
-		              jQuery(cell).append(button_editi);
-		            }
-
-		            if( self.aParam.user_function.upd ) {
-		              var label_delete=self.aParam.ui.btn_delete.label;
-		              var opt_delete=self.aParam.ui.btn_delete;
-
-		              var button_delete=jQuery(self.theme.getButton(label_delete,opt_delete));
-		              button_delete.click(function(){
-
-		                self.deleteRecord(div_id, opt.data[self.pk]);
-		              });
-		              jQuery(cell).append(button_delete);
-		            }
-
-                if( self.aParam.custom_function ) {
-                  var label_custom = self.aParam.custom_function.label;
-                  var opt_custom = self.aParam.custom_function;
-                  console.log(opt_custom);
-                  var button_custom=jQuery(self.theme.getButton(label_custom,opt_custom));
-                  if( self.aParam.custom_function.action ) {
-                    if( typeof self.aParam.custom_function.action == 'string' ) {
-                      button_custom.click(function(){
-                        var fnstring = self.aParam.custom_function.action;
-                        var fnparams = [opt.data[self.pk],opt.data];
-
-                        exeExternalFunction(fnstring, fnparams);
-//                         var fn = window[fnstring];
-//                         if( typeof(fn) == 'function' ) {
-//                           //fn();
-//                           fn.apply(null, fnparams);
-//                         }
-                      });
-                      jQuery(cell).append(button_custom);
-                    }
-                  }
-                }
-
-		            return cell;
-		          }
-		        }});
-		        jQuery(div_id).html(html);
-
-		        if( self.aParam.user_function.ins ) {
-		          var label_insert=self.aParam.ui.btn_insert.label;
-		          var opt_insert=self.aParam.ui.btn_insert;
-
-		          var button_insert=jQuery(self.theme.getButton(label_insert,opt_insert));
-		          button_insert.click(function(){
-		            self.createInsertForm(div_id);
-		          });
-		          jQuery(div_id).append(button_insert);
-		        }
-		      }
-		      else {
-		        jQuery(div_id).html(self.theme.alertMessage(data.message));
-		      }
+          self.generateTable(opt, data);
 		    },
 		    error: function(error) {
 					try{
@@ -223,6 +125,113 @@ Dbmng.Crud = Class.extend({
 
 		}
   },
+  generateTable: function( opt, data){
+    var div_id=opt.div_id;
+    if( div_id.substring(0, 1) != '#') {
+      div_id = '#' + div_id;
+    }
+    var self=this;
+    
+    console.log(data);
+    if( data.ok ) {
+      var aData=data.data;
+      var header=[];
+      for(var key in self.aForm.fields){
+        if(self.aForm.fields[key].label)
+          header.push(self.aForm.fields[key].label);
+        else{
+          header.push(key);
+        }
+      }
+      header.push("Func.");
+
+      var cData = self.form.convert2html(aData);
+
+      var html=self.theme.getTable({data:cData, header:header, aParam:self.aParam, options:{
+        assignClass:true,
+        setIDRow:function(aData){
+          return "dbmng_row_id_"+aData[self.pk];
+        },
+        addColumn:function(opt){
+          var cell=self.theme.getTableCell();
+
+          if( self.aParam.user_function.upd == 1 ) {
+            var label_edit=self.aParam.ui.btn_edit.label;
+            var opt_edit=self.aParam.ui.btn_edit;
+
+            var button_edit=jQuery(self.theme.getButton(label_edit,opt_edit));
+            button_edit.click(function(){
+              self.createForm(div_id, opt.data[self.pk], aData);
+            });
+            jQuery(cell).append(button_edit);
+          }
+
+          if( self.aParam.user_function.inline ) {
+            var label_editi=self.aParam.ui.btn_edit_inline.label;
+            var opt_editi=self.aParam.ui.btn_edit_inline;
+
+            var button_editi=jQuery(self.theme.getButton(label_editi,opt_editi));
+            button_editi.click(function(){
+              self.createFormInline(div_id, opt.data[self.pk], aData, true);
+            });
+            jQuery(cell).append(button_editi);
+          }
+
+          if( self.aParam.user_function.upd ) {
+            var label_delete=self.aParam.ui.btn_delete.label;
+            var opt_delete=self.aParam.ui.btn_delete;
+
+            var button_delete=jQuery(self.theme.getButton(label_delete,opt_delete));
+            button_delete.click(function(){
+
+              self.deleteRecord(div_id, opt.data[self.pk]);
+            });
+            jQuery(cell).append(button_delete);
+          }
+
+          if( self.aParam.custom_function ) {
+            var label_custom = self.aParam.custom_function.label;
+            var opt_custom = self.aParam.custom_function;
+            console.log(opt_custom);
+            var button_custom=jQuery(self.theme.getButton(label_custom,opt_custom));
+            if( self.aParam.custom_function.action ) {
+              if( typeof self.aParam.custom_function.action == 'string' ) {
+                button_custom.click(function(){
+                  var fnstring = self.aParam.custom_function.action;
+                  var fnparams = [opt.data[self.pk],opt.data];
+
+                  exeExternalFunction(fnstring, fnparams);
+//                         var fn = window[fnstring];
+//                         if( typeof(fn) == 'function' ) {
+//                           //fn();
+//                           fn.apply(null, fnparams);
+//                         }
+                });
+                jQuery(cell).append(button_custom);
+              }
+            }
+          }
+
+          return cell;
+        }
+      }});
+      jQuery(div_id).html(html);
+
+      if( self.aParam.user_function.ins ) {
+        var label_insert=self.aParam.ui.btn_insert.label;
+        var opt_insert=self.aParam.ui.btn_insert;
+
+        var button_insert=jQuery(self.theme.getButton(label_insert,opt_insert));
+        button_insert.click(function(){
+          self.createInsertForm(div_id);
+        });
+        jQuery(div_id).append(button_insert);
+      }
+    }
+    else {
+      jQuery(div_id).html(self.theme.alertMessage(data.message));
+    }
+  }, 
   deleteRecord: function (div_id, key){
     var self=this;
     this.api.delete({key:key, success:function(data){
