@@ -82,6 +82,11 @@ To test the api you should link the folder in the apache folder
 
 	$ ln -s ../dbmng2 /var/www/
 
+Verify that the follow link respond 
+	
+	$ http://localhost/dbmng2/api/test_base
+	
+
 
 Running the test
 
