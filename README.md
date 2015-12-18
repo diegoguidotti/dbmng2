@@ -11,6 +11,9 @@ Library Usage
 #create a db connection
 $db = DB::createDb($dsn, $user,$password );
 
+#create an app object containing db and other parameters
+$app=new App($db);
+
 #define the form structure
 $aForm=array(  
 	'table_name' => 'test' ,
@@ -24,7 +27,7 @@ $aForm=array(
 $aParam=array();
 
 #create a Dbmng object
-$dbmng=new Dbmng($db, $aForm, $aParam);
+$dbmng=new Dbmng($app, $aForm, $aParam);
 
 #return the data
 $ret = $dbmng->select();
