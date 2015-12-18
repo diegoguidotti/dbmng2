@@ -335,13 +335,14 @@ Dbmng.Crud = Class.extend({
 
     jQuery(row_id).find('label').hide();
 
-
-    //change the field dimension using the td width
-    jQuery(row_id+" td.dbmng_cell_inline").each(function(k,v){
-      jQuery(v).width(listWidth[k]);
-      jQuery(v).find('input').width(listWidth[k]);
-      jQuery(v).find('select').width(listWidth[k]);
-    });
+      //change the field dimension using the td width
+      jQuery(row_id+" td.dbmng_cell_inline").each(function(k,v){
+        jQuery(v).width(listWidth[k]);
+        if(!self.theme instanceof Dbmng.BootstrapTheme){
+          jQuery(v).find('input').width(listWidth[k]);
+          jQuery(v).find('select').width(listWidth[k]);
+        }
+      });
 
 
     var label_save=self.aParam.ui.btn_save.label;

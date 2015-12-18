@@ -11,10 +11,7 @@ echo "WEBROOT: $WEBROOT"
 echo "CGIROOT: $CGIROOT"
 sudo echo "<VirtualHost *:80>
         DocumentRoot $WEBROOT
-        <Directory />
-                Options FollowSymLinks
-                AllowOverride All
-        </Directory>
+        Alias /dbmng2 $WEBROOT
         <Directory $WEBROOT >
                 Options Indexes FollowSymLinks MultiViews
                 AllowOverride All
