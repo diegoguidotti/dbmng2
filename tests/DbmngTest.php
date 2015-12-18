@@ -138,11 +138,10 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
 
  		}
 
-    function testOrderBy()
+
+    function testOrderByAndSearch()
     {
-
       $app=$this->getApp();
-
       $aForm=array(
         'table_name' => 'test' ,
           'primary_key'=> array('id'),
@@ -153,19 +152,31 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
       );
 
       $aParam=array('tbl_order'=>'id desc');
-
       $dbmng=new Dbmng($app, $aForm, $aParam);
 
       $ret = $dbmng->select();
       $this->assertEquals('2', $ret['data'][0]['id']);
-
       $aParam=array('tbl_order'=>'id');
 
       $dbmng=new Dbmng($app, $aForm, $aParam);
-
       $ret = $dbmng->select();
       $this->assertEquals('1', $ret['data'][0]['id']);
 
+      //check filter (not using aparam) user can filter the records they can access
+      $ret = $dbmng->select(array('id'=>2));
+      $this->assertEquals('2', $ret['data'][0]['id']);
+
+      //if the field does not exists ignore the filter (shows all)
+      $ret = $dbmng->select(array('iasasad'=>2));
+      $this->assertEquals('1', $ret['data'][0]['id']);
+
+      //if no records matc the search not exists return empty select
+      $ret = $dbmng->select(array('id'=>3));
+      $this->assertEquals(0, count($ret['data']));
+
+      //Multiple search, if no records match the search not exists return empty select
+      $ret = $dbmng->select(array('id'=>1, 'name'=>'Michele'));
+      $this->assertEquals(0, count($ret['data']));
     }
 
  		function testPrepare()

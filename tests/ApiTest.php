@@ -23,14 +23,14 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
 								self::$pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
 								self::$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 								self::$pdo->exec("set names utf8");
-								
+
             }
             $this->conn = $this->createDefaultDBConnection(self::$pdo, $GLOBALS['DB_NAME']);
         }
         return $this->conn;
     }
     public function getDataSet() {
-        return $this->createFlatXMLDataSet(dirname(__FILE__).'/seed.xml'); 
+        return $this->createFlatXMLDataSet(dirname(__FILE__).'/seed.xml');
     }
 	/* END needed for test class */
 
@@ -44,9 +44,9 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
 
 	public function testTest() {
 		$app=$this->getApp();
-		$aForm=array(  
+		$aForm=array(
 			'table_name' => 'test' ,
-				'primary_key'=> array('id'), 
+				'primary_key'=> array('id'),
 				'fields'     => array(
 						'id' => array('label' => 'ID', 'type' => 'int', 'key' => 1 ) ,
 						'name' => array('label' => 'Name', 'type' => 'varchar')
@@ -58,10 +58,10 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
 
 		$dbmng = new Dbmng($app, $aForm, $aParam);
 		$api   = new Api($dbmng);
-					
-		
+
+
 		$this->assertTrue($api->isValid()['ok']);
-					
+
 	}
 
 
@@ -76,7 +76,7 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
 		]);
 
 		$response = $client->request('GET', $GLOBALS['SITE_FOLDER'].'/api/test_base/');
-		$this->assertEquals(200,$response->getStatusCode());	
+		$this->assertEquals(200,$response->getStatusCode());
 		// $this->assertEquals('{"test_get":1}',$response->getBody());
 
 		$response2 = $client->request('DELETE', $GLOBALS['SITE_FOLDER'].'/api/test_base/');
@@ -106,42 +106,58 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
 		$this->assertEquals(200,$response->getStatusCode());
 		$a = $response->getBody();
 		$o = json_decode($a);
+    //check if it is true and returns two record
 		$this->assertEquals(true,$o->ok);
-		
+    $this->assertEquals(2,$o->rowCount);
 /*
 		$response2 = $client->request('GET', $GLOBALS['SITE_FOLDER'].'/api/testfake/',$auths);
 		$a = $response2->getBody();
 		$o = json_decode($a);
 		$this->assertEquals(false,$o->ok);
 */
-		
+
 		$response3 = $client->request('GET', $GLOBALS['SITE_FOLDER'].'/api/test/1',$auths);
 		$this->assertEquals(200,$response3->getStatusCode());
 		$a = $response3->getBody();
 		$o = json_decode($a);
 		$this->assertEquals(true,$o->ok);
 		$this->assertEquals(1,$o->rowCount);
-	
+
+    //search for records where name is equals to Michele
+    $response = $client->request('GET', $GLOBALS['SITE_FOLDER'].'/api/test/?name=Michele',$auths);
+    $this->assertEquals(200,$response->getStatusCode());
+    $a = $response->getBody();
+    $o = json_decode($a);
+    $this->assertEquals(true,$o->ok);
+    $this->assertEquals(1,$o->rowCount);
+
+    //search for records where name is equals to Michele and id is equals 1 (no records)
+    $response = $client->request('GET', $GLOBALS['SITE_FOLDER'].'/api/test/?name=Michele&id=1',$auths);
+    $this->assertEquals(200,$response->getStatusCode());
+    $a = $response->getBody();
+    $o = json_decode($a);
+    $this->assertEquals(true,$o->ok);
+    $this->assertEquals(0,$o->rowCount);
+
 		$response4 = $client->request('PUT', $GLOBALS['SITE_FOLDER'].'/api/test/1', ['body' => '{"name":"pluto"}','auth'=>$auth]);
 		$a = $response4->getBody();
 		$o = json_decode($a);
 		$this->assertEquals(true,$o->ok);
-		
+
 		$response5 = $client->request('GET', $GLOBALS['SITE_FOLDER'].'/api/test/1',$auths);
 		$a = $response5->getBody();
 		$o = json_decode($a);
 		$this->assertEquals('pluto',$o->data[0]->name);
-		
+
 		$response6 = $client->request('PUT', $GLOBALS['SITE_FOLDER'].'/api/test/1', ['body' => '{"nama":"pluto"}','auth'=>$auth]);
 		$a = $response6->getBody();
 		$o = json_decode($a);
 		$this->assertEquals(false,$o->ok);
-		
+
 		$response7 = $client->request('PUT', $GLOBALS['SITE_FOLDER'].'/api/test/1', ['body' => '{"name":"pluto", "surname":"topolino"}','auth'=>$auth]);
 		$a = $response6->getBody();
 		$o = json_decode($a);
 		$this->assertEquals(false,$o->ok);
-		
+
 	}
 }
-

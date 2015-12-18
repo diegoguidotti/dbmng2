@@ -52,7 +52,7 @@ private $prepare;
 
 		$sWhere = "";
 		$aWhere = array();
-		$ret=$this->createWhere($aVar, $sWhere, $aWhere, false);
+		$ret=$this->createWhere($aVar, $sWhere, $aWhere, false, true, true);
 		//TODO the function createWhere works only for delete for insert does not work
 
 
@@ -91,13 +91,24 @@ private $prepare;
 			}
 	}
 
-  public function createWhere($aVars, &$sWhere, &$aWhere, $checkId=true, $useFilter=true)
+  public function createWhere($aVars, &$sWhere, &$aWhere, $checkId=true, $useFilter=true, $selectCondition=false)
   {
 		$result = Array();
 		$hasPk=false;
 		foreach ( $this->aForm['fields'] as $fld => $fld_value )
 			{
-				if( Util::var_equal($fld_value,'key', 1) ||  Util::var_equal($fld_value,'key', 2) )
+				//if the were is caled by a select allow all the fields to be filtered
+				$add_filter=false;
+				if(!$selectCondition){
+					if( Util::var_equal($fld_value,'key', 1) ||  Util::var_equal($fld_value,'key', 2) )
+						{
+							$add_filter=true;
+						}
+				}
+				else{
+					$add_filter=true;
+				}
+				if( $add_filter )
 					{
 						if(isset($aVars[$fld])){
 							$hasPk = true;
@@ -107,7 +118,7 @@ private $prepare;
 					}
 			}
 
-		if(!$hasPk &&  $checkId)
+		if(!$hasPk &&  $checkId && !$selectCondition)
 			{
 				$result['ok']      = false;
 				$result['message'] = 'You cannot delete record in a table with no primary keys defined';
