@@ -189,7 +189,7 @@ Dbmng.Crud = Class.extend({
             jQuery(cell).append(button_editi);
           }
 
-          if( self.aParam.user_function.upd ) {
+          if( self.aParam.user_function.del ) {
             var label_delete=self.aParam.ui.btn_delete.label;
             var opt_delete=self.aParam.ui.btn_delete;
 
