@@ -84,8 +84,12 @@ To test the api you should link the folder in the apache folder
 
 Verify that the follow link respond 
 	
-	$ http://localhost/dbmng2/api/test_base
+	$ link: http://localhost/dbmng2/api/test_base
+	$ {"0":{"id":"1","name":"Diego","sex":""},"1":{"id":"2","name":"Michele","sex":""},"test_get":1}
+
+If the respond is not working install
 	
+	$ sudo a2enmod rewrite
 
 
 Running the test
