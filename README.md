@@ -60,7 +60,7 @@ Update the configuration file
 
 	$ cp phpunit.xml.dist phpunit.xml
 	$ edit the phpunit.xml entering db_name, user and password
-	$ cp settings.default.php  settings.xml
+	$ cp settings.default.php  settings.php
 	$ edit the settings.xml entering db_name, user and password
 
 
