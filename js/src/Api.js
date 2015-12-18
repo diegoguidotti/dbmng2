@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////
 // Api The class manage the http call to the DBMNG web services
 // 21 November 2015
-// 
+//
 //
 // Developed by :
 // Diego Guidotti
@@ -9,7 +9,7 @@
 /////////////////////////////////////////////////////////////////////
 
 Dbmng.Api = Class.extend({
-  //class constructor	
+  //class constructor
   init: function( options ) {
     // this.aForm  = options.aForm;
 		this.url=options.url;
@@ -112,7 +112,7 @@ Dbmng.Api = Class.extend({
 				console.log(exc);
 			}
 		});
-				
+
   },
   delete: function(options) {
 		jQuery.ajax({
@@ -136,5 +136,5 @@ Dbmng.Api = Class.extend({
 			}
 		});
   }
-  
+
 });
