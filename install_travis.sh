@@ -10,19 +10,21 @@ CGIROOT=`dirname "$(which php-cgi)"`
 echo "WEBROOT: $WEBROOT"
 echo "CGIROOT: $CGIROOT"
 sudo echo "<VirtualHost *:80>
-        DocumentRoot $WEBROOT
         Alias /dbmng2 $WEBROOT
+        DocumentRoot $WEBROOT
         <Directory $WEBROOT >
-                Options Indexes FollowSymLinks MultiViews
+                Options Indexes FollowSymLinks MultiViews ExecCGI
                 AllowOverride All
-                Order allow,deny
+                Order deny,allow
                 allow from all
         </Directory>
-		# Configure PHP as CGI
-		ScriptAlias /local-bin $CGIROOT
-		DirectoryIndex index.php index.html
-		AddType application/x-httpd-php5 .php
-		Action application/x-httpd-php5 '/local-bin/php-cgi'
+        # Wire up Apache to use Travis CI's php-fpm.
+      <IfModule mod_fastcgi.c>
+        AddHandler php5-fcgi .php
+        Action php5-fcgi /php5-fcgi
+        Alias /php5-fcgi /usr/lib/cgi-bin/php5-fcgi
+        FastCgiExternalServer /usr/lib/cgi-bin/php5-fcgi -host 127.0.0.1:9000 -pass-header Authorization
+      </IfModule>
 </VirtualHost>" | sudo tee /etc/apache2/sites-available/default > /dev/null
 cat /etc/apache2/sites-available/default
 

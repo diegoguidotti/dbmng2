@@ -102,6 +102,18 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
 		$auth=[        'test', 'test'    ];
 		$auths=[    'auth' => $auth];
 
+    $response = $client->request('GET', 'http://localhost');
+		$this->assertEquals(200,$response->getStatusCode());
+
+    $response = $client->request('GET', 'http://localhost/README.md');
+		$this->assertEquals(200,$response->getStatusCode());
+
+    $response = $client->request('GET', 'http://localhost/dbmng2');
+		$this->assertEquals(200,$response->getStatusCode());
+
+    $response = $client->request('GET', 'http://localhost/dbmng2/README.md');
+		$this->assertEquals(200,$response->getStatusCode());
+
 		$response = $client->request('GET', $GLOBALS['SITE_FOLDER'].'/api/test/',$auths);
 		$this->assertEquals(200,$response->getStatusCode());
 		$a = $response->getBody();
