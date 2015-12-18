@@ -2,12 +2,12 @@
 
 /**
  * database helper class
- * 
+ *
  * @author Diego Guidotti <diego.guidotti@gmail.com>
  */
 
 namespace Dbmng;
- 
+
 class Dbmng {
 
 private $app;
@@ -30,13 +30,13 @@ private $prepare;
 	{
 		$this->prepare=$p;
 	}
-	
-	
+
+
 	public function getaForm()
 	{
 		return $this->aForm;
 	}
-	
+
 	// TODO: add filter in the where clause
 	public function select($aVar = array(), $fetch_style = \PDO::FETCH_ASSOC)
 	{
@@ -46,7 +46,7 @@ private $prepare;
 			if(!Util::var_equal($fld_value,'widget','select_nm')){
 				if(!$first){$var.=',';}
 				else{$first=false;}
-				$var.=	$fld;		
+				$var.=	$fld;
 			}
 		}
 
@@ -54,8 +54,8 @@ private $prepare;
 		$aWhere = array();
 		$ret=$this->createWhere($aVar, $sWhere, $aWhere, false);
 		//TODO the function createWhere works only for delete for insert does not work
-		
-		
+
+
 		if($ret['ok'] && count($aWhere) >0)
 			{
 				$sQuery='SELECT '.$var.' from '.$this->aForm['table_name'] . " WHERE $sWhere ";
@@ -63,12 +63,12 @@ private $prepare;
 			}
 		else
 			{
-				$sQuery='SELECT '.$var.' from '.$this->aForm['table_name'];		
+				$sQuery='SELECT '.$var.' from '.$this->aForm['table_name'];
 				$ret = $this->db->select($sQuery, $aWhere, $fetch_style);
 			}
 		return $ret;
 	}
-	
+
 	// TODO: add new method selectDecode
 	// output: the recordset decodec
 
@@ -102,7 +102,7 @@ private $prepare;
 						}
 					}
 			}
-		
+
 		if(!$hasPk &&  $checkId)
 			{
 				$result['ok']      = false;
@@ -112,7 +112,7 @@ private $prepare;
 			{
 				if($useFilter)
 					{
-						
+
 						//print_r($this->aParam['filters']);
 						if( isset($this->aParam['filters']) )
 								{
@@ -128,10 +128,10 @@ private $prepare;
 					$sWhere = substr($sWhere, 0, strlen($sWhere)-4);
 					$result['ok']      = true;
 		 	}
-		
+
 		return $result;
 	}
-	
+
 	/////////////////////////////////////////////////////////////////////////////
 	// delete
 	// ======================
@@ -141,11 +141,11 @@ private $prepare;
 	\param $prepare  	if true prepare the query without executing it
 	\return $result	SQL result
 	*/
-	function delete($aVars) 
+	function delete($aVars)
 	{
 		$aForm  = $this->aForm;
 		$aParam = $this->aParam;
-		
+
 		$sWhere = "";
 		$aWhere = array();
 
@@ -160,13 +160,13 @@ private $prepare;
 				$var=$aWhere;
 
 
-				if($this->prepare){					
-					$result[]=(object)array('sql'=>$sql, 'var'=>$var);						
+				if($this->prepare){
+					$result[]=(object)array('sql'=>$sql, 'var'=>$var);
 				}
-				else{		
+				else{
 					$result = $this->db->delete($sql, $var);
 				}
-			
+
 				if($this->prepare || $result['ok'])
 					{
 						foreach ( $aForm['fields'] as $fld => $fld_value )
@@ -180,7 +180,7 @@ private $prepare;
 										$aWhere2 = array();
 
 										$ret=$this->createWhere($aVars, $sWhere2, $aWhere2, true, false);
-				
+
 										$sql = "delete from ".$table_nm." where ".$sWhere2;
 										if($this->prepare){
 											$result[]=array('sql'=>$sql, 'var'=>$aWhere2);
@@ -206,7 +206,7 @@ private $prepare;
 	\param $aVars 		$_REQUEST associative array containing the primary key and the variable to be updated
 	\result $result	SQL result
 	*/
-	function update($aVars) 
+	function update($aVars)
 	{
 		$aForm  = $this->aForm;
 		$aParam = $this->aParam;
@@ -215,7 +215,7 @@ private $prepare;
 		$var = array();
 
 		$bSelectNM = false;
-		
+
 		foreach ( $aForm['fields'] as $fld => $fld_value )
 			{
 				$readonly=false;
@@ -228,14 +228,14 @@ private $prepare;
 					{
             if( $this::checkFieldValue($fld_value, $aVars[$fld]) )
               {
-                if( ! Util::var_equal($fld_value,'key', 1) ) 
+                if( ! Util::var_equal($fld_value,'key', 1) )
                   {
                     if( !$readonly ) //$fld_value['readonly'] != 1 )
                       {
                         if( isset($fld_value['widget']) )
                           {
                             if($fld_value['widget']!='select_nm')
-                              {		
+                              {
                                 $sSet .= $fld . " = :$fld, ";
                                 $var = array_merge($var, array(":".$fld => $aVars[$fld]));
                               }
@@ -254,7 +254,7 @@ private $prepare;
               }
           }
 			}
-		
+
 		if( isset($aParam) )
 			{
 				if( isset($aParam['auto_field']) )
@@ -295,11 +295,11 @@ private $prepare;
 				$var   = array_merge($var, $aWhere);
 
 				$sql="update " . $aForm['table_name'] . " set $sSet where $sWhere ";
-			
-					if($this->prepare){					
-						$result[]=(object)array('sql'=>$sql, 'var'=>$var);						
+
+					if($this->prepare){
+						$result[]=(object)array('sql'=>$sql, 'var'=>$var);
 					}
-					else{		
+					else{
 						$result = $this->db->update($sql, $var);
 					}
 
@@ -313,7 +313,7 @@ private $prepare;
 						}
 					}
 		}
-		
+
 		return $result;
 	}
 
@@ -325,7 +325,7 @@ private $prepare;
 	\param $aVars 		$_REQUEST associative array containing the primary key and the variable to be updated
 	\result $result	SQL result
 	*/
-	function insert($aVars) 
+	function insert($aVars)
 	{
 		$aForm  = $this->aForm;
 		$aParam = $this->aParam;
@@ -341,14 +341,14 @@ private $prepare;
 				if(isset($fld_value['readonly'])){
 					$readonly=$fld_value['readonly'];
 				}
-				
+
 				if( ! Util::var_equal($fld_value,'key', 1) && ! Util::var_equal($fld_value,'key', 2) )
 					{
 							if(! Util::var_equal($fld_value, 'widget','select_nm') && !$readonly )
 								{
-									if(isset($aVars[$fld])){	
+									if(isset($aVars[$fld])){
 										$sWhat .= $fld . ", ";
-										$sVal.=":$fld ,";	
+										$sVal.=":$fld ,";
 										$var = array_merge($var, array(":".$fld => $aVars[$fld]));
 									}
 								}
@@ -371,7 +371,7 @@ private $prepare;
 								$var = array_merge($var, array(":".$fld =>  $fld_value ));
 							}
 					}
-				
+
 				if( isset($aParam['auto_field']) )
 					{
 						foreach ( $aParam['auto_field'] as $fld => $fld_value )
@@ -382,15 +382,15 @@ private $prepare;
 											{
 												$sWhat.=$fld.", ";
 												$sVal.=":$fld, ";
-					
+
 												$var = array_merge($var, array(":".$fld =>  $fld_value ));
 											}
 									}
-								else	
+								else
 									{
 										$sWhat.=$fld.", ";
 										$sVal.=":$fld, ";
-			
+
 										$var = array_merge($var, array(":".$fld =>  $fld_value ));
 									}
 							}
@@ -402,15 +402,15 @@ private $prepare;
 
 
 		$sql    = "insert into " . $aForm['table_name'] . " (" . $sWhat . ") values (" . $sVal . ")";
-		if($this->prepare){					
-			$result[]=(object)array('sql'=>$sql, 'var'=>$var);						
+		if($this->prepare){
+			$result[]=(object)array('sql'=>$sql, 'var'=>$var);
 		}
-		else{		
+		else{
 			//echo debug_sql_statement($sql, $var);
 			//fwrite(STDERR, $this->db->getSQL($sql, $var));
 			$result = $this->db->insert($sql, $var);
 		}
-		
+
 
 
 
@@ -418,20 +418,20 @@ private $prepare;
 			{
 				if( $bSelectNM )
 					{
-						
+
 						//throw new \Exception('We need to implement the insert into table nm');
 						if($this->prepare){
-								//TODO!!!!!!!!!!!!!!!!!!!!!!	if 
+								//TODO!!!!!!!!!!!!!!!!!!!!!!	if
 								throw new \Exception('We need to implement the insertnm prepared statement (for transaction api)');
 						}
-						else{		
+						else{
 							$res = $this->insert_nm($aVars, $result['inserted_id']);
 						}
 					}
 			}
 
 		return $result;
-		
+
 	}
 
 
@@ -448,13 +448,13 @@ private $prepare;
 	{
 		$aForm = $this->aForm;
 		$aParam = $this->aParam;
-		
+
 		$aWhere = array();
 		$whereFields='';
 		$whereFieldsV='';
-		
+
 		foreach ( $aForm['fields'] as $fld => $fld_value )
-			{									
+			{
 				if( Util::var_equal($fld_value,'key', 1) || Util::var_equal($fld_value,'key', 2) )
 					{
 						$whereFields .= "$fld, ";
@@ -476,13 +476,13 @@ private $prepare;
 				if( isset($fld_value['widget']) )
 					{
 						if($fld_value['widget']=='select_nm')
-							{		
+							{
 								$table_nm=$fld_value['table_nm'];
 								$field_nm=$fld_value['field_nm'];
-								
+
 								$where_del   = substr($whereFields,0,strlen($whereFields)-2);
 								$where_del_v = substr($whereFieldsV,0,strlen($whereFieldsV)-2);
-								
+
 								$this->db->delete("delete from ".$table_nm." WHERE ". $where_del ."=".$where_del_v, $aWhere);
 								//echo "<br/>".$this->db->getSQL("delete from ".$table_nm." WHERE ". $where_del ."=".$where_del_v, $aWhere);
 								//print_r ($_POST);
@@ -491,16 +491,16 @@ private $prepare;
 
 								$vals= explode('|',$aVars[$fld]);
 								//print_r($vals);
-								
+
 								foreach ( $vals as $k => $v )
-									{	
+									{
 										$aVals = array_merge( $aWhere, array(":".$field_nm => intval($v) ) );
-										
+
 										$sql = "insert into ".$table_nm." (".$whereFields." ".$field_nm.") values (".$whereFieldsV." :".$field_nm.")";
 										//echo "<br/>".$sql." ".$k." ".$v;
 										//fwrite(STDERR, $this->db->getSQL($sql, $aVals));
 										$result = $this->db->insert( $sql, $aVals);
-				
+
 										// if(isset($result['error'])){
 										// 	print_r ($result);
 										// }
@@ -511,7 +511,7 @@ private $prepare;
 			}
 		return $result;
 	}
-	
+
 	/////////////////////////////////////////////////////////////////////////////
 	// processRequest
 	// ======================
@@ -528,23 +528,23 @@ private $prepare;
 			{
 				//type of the field
 				$sType=$fld_value['type'];
-				
+
 				//default widget
 				$widget=Util::get_val($fld_value, 'widget', 'input');
-				
+
 				//default value
 				$sDefault=Util::get_val($fld_value, 'default', null);
 
 				//default value (if exists) otherwise null
 				$sValue=Util::get_val($aRequest, $fld, null);
-	
+
 				if($widget=='multiselect')
 					{
 						$sValue=Util::get_val($aRequest, $fld."_res3", null);
 					}
 				elseif($widget=='date')
 					{
-						
+
 						if($sValue=='')
 							$sValue=null;
 					}
@@ -561,7 +561,7 @@ private $prepare;
 							}
 						if(strlen($sValue)>0)
 							{
-								$sValue = substr($sValue, 0, strlen($sValue)-1);		
+								$sValue = substr($sValue, 0, strlen($sValue)-1);
 							}
 					}
 				elseif($widget=='checkbox')
@@ -588,12 +588,12 @@ private $prepare;
 										throw new \Exception('We need to implement dbmng_uploadfile');
 										$sValue = $aFiles[$fld]['name'];
 									}
-								else 
+								else
 									{ //if the file is null use the text in the checkbox
 										$sValue = $aRequest[$fld.'_tmp_choosebox'];
 									}
 							}
-						
+
 					}
 				elseif( $widget=='picture' )
 					{
@@ -602,7 +602,7 @@ private $prepare;
 						$dir_upd_file = "docs";
 						if( isset($aParam['picture']) )
 							$dir_upd_file = $aParam['picture'];
-			
+
 						// echo "aParam dir:" . $dir_upd_file . "<br/>";
 						// echo "File: " . $aFiles[$x]['name'] . "<br/>";
 						$sValue = $dir_upd_file . $aFiles[$x]['name'];
@@ -616,36 +616,36 @@ private $prepare;
 										//echo "picture:" . $sValue;
 										if( isset($aParam['picture_version']['nrm']) )
 											{
-												$thumb=new thumbnail($sValue); 
-												$thumb->size_auto($aParam['picture_size']['nrm']);	
+												$thumb=new thumbnail($sValue);
+												$thumb->size_auto($aParam['picture_size']['nrm']);
 												$thumb->save($aParam['picture_version']['nrm'] . $aFiles[$x]['name'] );
 											}
 										if( isset($aParam['picture_version']['big']) )
 											{
-												$thumb=new thumbnail($sValue); 
-												$thumb->size_auto($aParam['picture_size']['big']);	
+												$thumb=new thumbnail($sValue);
+												$thumb->size_auto($aParam['picture_size']['big']);
 												$thumb->save($aParam['picture_version']['big'] . $aFiles[$x]['name'] );
 											}
 										if( isset($aParam['picture_version']['prw']) )
 											{
-												$thumb=new thumbnail($sValue); 
-												$thumb->size_auto($aParam['picture_size']['prw']);	
+												$thumb=new thumbnail($sValue);
+												$thumb->size_auto($aParam['picture_size']['prw']);
 												$thumb->save($aParam['picture_version']['prw'] . $aFiles[$x]['name'] );
 											}
 										if( isset($aParam['picture_version']['ext']) )
 											{
-												$thumb=new thumbnail($sValue); 
-												$thumb->size_auto($aParam['picture_size']['ext']);	
+												$thumb=new thumbnail($sValue);
+												$thumb->size_auto($aParam['picture_size']['ext']);
 												$thumb->save($aParam['picture_version']['ext'] . $aFiles[$x]['name'] );
 											}
 									}
 								$sValue = $aFiles[$x]['name'];
 
 							}
-						else 
+						else
 							{ //if the file is null use the text in the checkbox
 								$sValue = $post[$x.'_tmp_choosebox'];
-							}	
+							}
 						*/
 					}
 
@@ -668,7 +668,7 @@ private $prepare;
 							{
 								$sValue=$sDefault;
 							}
-						if ($this::is_field_type_numeric($sType)) 
+						if ($this::is_field_type_numeric($sType))
 							{
 								if ($widget=='select_nm')
 									{
@@ -678,10 +678,10 @@ private $prepare;
 									$sVal = intval($sValue);
 								elseif($sType=="float" || $sType=="double")
 									$sVal = doubleval($sValue);
-								else 
+								else
 									$sVal = doubleval($sValue);
 							}
-						else 
+						else
 							{
 								$sVal  = $sValue;
 							}
@@ -689,10 +689,10 @@ private $prepare;
 
 				if( strlen($sVal) == 0 )
 					$sVal = null;
-		
+
 				$aVars[$fld] = $sVal;
 		}
-		
+
 		return $aVars;
 	}
 
@@ -721,7 +721,7 @@ private $prepare;
 	{
 		$aForm = $this->aForm;
 		$aParam = $this->aParam;
-		
+
 		$aCheck = array();
 		$aCheck['ok'] = true;
 		$aMessage = array();
@@ -734,7 +734,7 @@ private $prepare;
 							array_push( $aMessage, 'The field '.$fld.' is a filter and cannot be present in aForm. ');
 						}
 				}
-			} 
+			}
 		$aCheck['message'] = $aMessage;
 		return $aCheck;
 	}
@@ -776,7 +776,7 @@ private $prepare;
                 {
                   $code=401;
                   $auth=false;
-                  $message="Unauthenticated user cannot access the resource";
+                  $message="Unauthenticated user cannot access the resource (role not allowed)";
                 }
             }
           else
@@ -795,7 +795,7 @@ private $prepare;
       {
         $code=401;
         $auth=false;
-        $message="Unauthenticated user cannot access the resource";
+        $message="Unauthenticated user cannot access the resource (No user)";
       }
 		return array('ok'=>$auth, 'message'=>$message, 'code'=>$code);
 	}
@@ -808,11 +808,11 @@ private $prepare;
   \return           boolean
   */
   function checkFieldValue($aField, $val)
-  {    
+  {
     $sType = $aField['type'];
 		if(Util::var_equal($aField,'widget','select_nm')){
 			$ret=true;
-		}		
+		}
     else if( $sType == 'int' )
       {
         $nVal = (int)($val);
@@ -827,10 +827,10 @@ private $prepare;
       {
         $ret = true;
       }
-    
+
     return $ret;
 	}
-	
+
 
 
 }

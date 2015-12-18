@@ -11,10 +11,8 @@
 Dbmng.Crud = Class.extend({
   //class constructor
   init: function( options ) {
-
 		//the ready variable can be used to check if it is ready the Crud to create the table)
     this.ready=true;
-
     var aParamD = {
 			ui: {
 				btn_edit: {label:'Edit'},
@@ -27,7 +25,6 @@ Dbmng.Crud = Class.extend({
 				inline:0, upd:1, del:1, ins:1
 			}
 		};
-
     this.aParam = jQuery.extend(true, aParamD,options.aParam);
 
 
@@ -47,7 +44,6 @@ Dbmng.Crud = Class.extend({
 
 		if(options.aForm){
 			this.aForm  = options.aForm;
-
 		  this.form=new Dbmng.Form({aForm:this.aForm, aParam:this.aParam, theme:this.theme});
 		  this.api=new  Dbmng.Api({aForm:this.aForm, url:this.url, user:options.user, password:options.password});
 
@@ -224,6 +220,7 @@ Dbmng.Crud = Class.extend({
 		}
 		else{
 			console.log('Table not ready (need to load the a Form)');
+
 		}
   },
   deleteRecord: function (div_id, key){
