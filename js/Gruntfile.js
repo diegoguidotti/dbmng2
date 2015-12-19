@@ -26,7 +26,7 @@ module.exports = function(grunt) {
             'src/Crud.js',
             'src/themes/*.js',
             'src/widgets/*.js',
-            'src/Default.js',
+            'src/Defaults.js',
 
             // End the closure
             'src/Outro.js'
@@ -92,7 +92,7 @@ module.exports = function(grunt) {
             'src/Crud.js',
             'src/themes/*.js',
             'src/widgets/*.js',
-            'src/Default.js',
+            'src/Defaults.js',
       ],
       afterconcat: {
         options: {

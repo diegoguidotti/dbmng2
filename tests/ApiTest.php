@@ -104,13 +104,7 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
 
     $response = $client->request('GET', 'http://localhost');
 		$this->assertEquals(200,$response->getStatusCode());
-
-    $response = $client->request('GET', 'http://localhost/README.md');
-		$this->assertEquals(200,$response->getStatusCode());
-
-    $response = $client->request('GET', 'http://localhost/dbmng2');
-		$this->assertEquals(200,$response->getStatusCode());
-
+    
     $response = $client->request('GET', 'http://localhost/dbmng2/README.md');
 		$this->assertEquals(200,$response->getStatusCode());
 

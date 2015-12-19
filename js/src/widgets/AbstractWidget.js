@@ -95,7 +95,13 @@ Dbmng.AbstractWidget = Class.extend({
     console.log('focus');
   } ,
   getValue: function(){
-    return this.widget.value;
+    if(this.widget){
+      return this.widget.value;
+    }
+    else{
+      console.log("the widget it has not been created");
+      return null;
+    }
   },
 
   getDefaultValue: function( options ) {

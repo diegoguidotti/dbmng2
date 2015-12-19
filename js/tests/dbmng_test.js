@@ -280,4 +280,33 @@ jQuery(function(){
     var sum2 = exeExternalFunction('my_test_sum');
     equal(-1, sum2);
   })
+
+
+  test('Test Form', 3, function() {
+
+    var aForm = { table_name: 'test',
+      primary_key: Array('id'),
+      fields: {
+        id: {label: 'ID1', type: 'int', key: 0, nullable: false},
+        name: {label: 'Name1', type: 'varchar',  nullable: false}
+      }
+    };
+
+    var form=new Dbmng.Form({aForm:aForm});
+    equal('id', form.getPkField());
+
+    //create the form
+    jQuery('#test_div').html(form.createForm());
+
+    //check null value
+    equal("",form.getValue().name);
+
+    //check value after enter the data
+    jQuery('#test_div input[name=name]').val('Test')
+    equal('Test',form.getValue().name);
+
+  })
+
+
+
 });

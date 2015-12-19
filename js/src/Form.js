@@ -12,13 +12,16 @@ Dbmng.Form = Class.extend({
   //class constructor
   init: function( options ) {
     this.aForm  = options.aForm;
-    this.aParam = options.aParam;
+    if(!options.aParam){
+      options.aParam={};
+    }
+    this.aParam = jQuery.extend(true, {}, Dbmng.defaults.aParam,options.aParam);
 
     if( options.theme ) {
       this.theme = options.theme;
     }
     else {
-      this.theme = Dbmng.default.theme;
+      this.theme = Dbmng.defaults.theme;
     }
 // var w1=new Dbmng.AbstractWidget({field:'id', aField:aForm.fields.id, value:obj.id, theme:theme_boot});
 		this.createWidgets();
