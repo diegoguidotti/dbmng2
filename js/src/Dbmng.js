@@ -11,4 +11,4 @@ var Dbmng = function() {
 
 };
 
-
+Dbmng.defaults = {};

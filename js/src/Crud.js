@@ -32,7 +32,7 @@ Dbmng.Crud = Class.extend({
       this.theme = options.theme;
     }
     else {
-      this.theme = new Dbmng.AbstractTheme();
+      this.theme = Dbmng.defaults.theme;
     }
 
     if( options.url ) {
