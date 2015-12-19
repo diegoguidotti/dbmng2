@@ -70,13 +70,14 @@ Dbmng.AbstractTheme = Class.extend({
       };
     }
     else {
-      if(aField.widget=='password'){
-        el.type = "password";
-      }
-      else{
-        el.type = "text";
-      }
+      el.type = "text";
     }
+
+    //if in the option there is a field_type value it will be override the previous one (if the widget is hidden and the type is int it should be hidden)
+    if(aField.field_type){
+      el.type = aField.field_type;
+    }
+
     return el;
   },
 /*

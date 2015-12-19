@@ -24,6 +24,7 @@
   <script type="text/javascript" src="../src/widgets/PasswordWidget.js"></script>
   <script type="text/javascript" src="../src/widgets/CheckboxWidget.js"></script>
   <script type="text/javascript" src="../src/widgets/SelectNMWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/HiddenWidget.js"></script>
   <script type="text/javascript" src="../src/Defaults.js"></script>
 </head>
 <body>
@@ -145,12 +146,12 @@ function test_bis(){
 		"primary_key": ['id_mon_tuta'],
 		"table_name": 'mon_tuta',
 		"fields":{
-			"id_mon_tuta": {"label": "ID", "type": "int","key":1,"readonly":true},
+			"id_mon_tuta": {"label": "ID", "type": "int","key":1,"readonly":true, "widget":"hidden"},
 			"data_mon": {"label": "Date", "type": "date","readonly":true},
 			"id_mon_point": {"label": "Mon Points", "type": "int", "widget":"select", "readonly":true, "voc_val":{'2043':'Point1', '2045':'Point2'}},
 			"traps": {"label": "Traps", "type": "int"},
 			"fruit_damage": {"label": "Damage on fruits", type: "checkbox", widget:"checkbox"},
-			"comments": {"label": "Comments", "type": "varchar"}
+			"comments": {"label": "Comments", "type": "varchar", "widget":"password"}
 		}
 	};
 
@@ -196,7 +197,7 @@ function test_bis(){
 		var tab=formin.createForm(aDati);
 		jQuery('#test_diego').append(tab);
 
-		var button=Dbmng.default.getButton("Get Value");
+		var button=Dbmng.defaults.theme.getButton("Get Value");
 		jQuery('#test_diego').append(button);
 		jQuery(button).click(function(){
 
