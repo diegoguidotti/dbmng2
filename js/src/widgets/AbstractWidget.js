@@ -54,7 +54,7 @@ Dbmng.AbstractWidget = Class.extend({
     var el = this.theme.getFieldContainer(this.aField);
 
     var label=this.getLabel();
-    if(label!=null){
+    if(label!==null){
       el.appendChild(label);
     }
 
@@ -76,10 +76,11 @@ Dbmng.AbstractWidget = Class.extend({
     return el;
   },
 
-  isVisible(){
+  isVisible: function(){
     return true;
   },
-  getTextLabel(){
+
+  getTextLabel: function(){
     if(this.aField.label)
       return this.aField.label;
     else{
@@ -87,7 +88,7 @@ Dbmng.AbstractWidget = Class.extend({
     }
 
   },
-  getLabel(){
+  getLabel: function(){
     var bHideLabel = false;
     if( this.aParam.hide_label ) {
       if( this.aParam.hide_label === true ) {

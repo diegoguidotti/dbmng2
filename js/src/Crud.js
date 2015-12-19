@@ -313,11 +313,11 @@ Dbmng.Crud = Class.extend({
     }
 
     var fields=this.form.getFields(aRecord);
-    for(var key in fields){
-      if(this.form.getWidget(key).isVisible()){
+    for(var k2 in fields){
+      if(this.form.getWidget(k2).isVisible()){
         var td=document.createElement('td');
         td.className='dbmng_cell_inline';
-        td.appendChild(fields[key]);
+        td.appendChild(fields[k2]);
         row.appendChild(td);
       }
     }
