@@ -16,7 +16,7 @@ Dbmng.Crud = Class.extend({
     if(!options.aParam){
       options.aParam={};
     }
-  
+
     this.aParam = jQuery.extend(true, {}, Dbmng.defaults.aParam, options.aParam);
 
 
@@ -141,17 +141,16 @@ Dbmng.Crud = Class.extend({
       var aData=data.data;
       var header=[];
       for(var key in self.aForm.fields){
-        if(self.aForm.fields[key].label)
-          header.push(self.aForm.fields[key].label);
-        else{
-          header.push(key);
+        var widget=self.form.getWidget(key);
+        if(widget.isVisible()){
+          header.push(widget.getTextLabel());
         }
       }
       header.push("Func.");
 
       var cData = self.form.convert2html(aData);
 
-      var html=self.theme.getTable({data:cData, header:header, aParam:self.aParam, options:{
+      var html=self.theme.getTable({data:cData, rawData:aData, header:header, aParam:self.aParam, options:{
         assignClass:true,
         setIDRow:function(aData){
           return "dbmng_row_id_"+aData[self.pk];
@@ -176,7 +175,7 @@ Dbmng.Crud = Class.extend({
 
             var button_editi=jQuery(self.theme.getButton(label_editi,opt_editi));
             button_editi.click(function(){
-              self.createFormInline(div_id, opt.data[self.pk], aData, true);
+              self.createFormInline(div_id, opt.rawData[self.pk], aData, true);
             });
             jQuery(cell).append(button_editi);
           }
@@ -196,7 +195,7 @@ Dbmng.Crud = Class.extend({
           if( self.aParam.custom_function ) {
             var label_custom = self.aParam.custom_function.label;
             var opt_custom = self.aParam.custom_function;
-            console.log(opt_custom);
+            //console.log(opt_custom);
             var button_custom=jQuery(self.theme.getButton(label_custom,opt_custom));
             if( self.aParam.custom_function.action ) {
               if( typeof self.aParam.custom_function.action == 'string' ) {
@@ -299,9 +298,6 @@ Dbmng.Crud = Class.extend({
     var aRecord=this.getARecord(key,aData);
     jQuery('button').attr('disabled','true');
 
-    //get the form
-    var html=this.form.createForm(aRecord);
-
     //define the row_id
     var row_id= div_id + ' table #dbmng_row_id_'+key;
 
@@ -311,20 +307,39 @@ Dbmng.Crud = Class.extend({
         listWidth.push(jQuery(this).width());
     });
 
+    var row=jQuery(row_id)[0];//document.getElementById('dbmng_row_id_'+key);
+    while (row.firstChild) {
+        row.removeChild(row.firstChild);
+    }
+
+    var fields=this.form.getFields(aRecord);
+    for(var key in fields){
+      if(this.form.getWidget(key).isVisible()){
+        var td=document.createElement('td');
+        td.className='dbmng_cell_inline';
+        td.appendChild(fields[key]);
+        row.appendChild(td);
+      }
+    }
+
+    /*old version
+    //get the form
+    var html=this.form.createForm(aRecord);
     //Complicato metodo per eliminare il form senza eliminare i value degli input
     var fields=html.childNodes;
-    var row=document.getElementById('dbmng_row_id_'+key);
+
     //delete all cells
     while (row.firstChild) {
         row.removeChild(row.firstChild);
     }
     while (fields.length > 0) {
+
         var td=document.createElement('td');
         td.className='dbmng_cell_inline';
         td.appendChild(fields[0]);
         row.appendChild(td);
     }
-
+    */
     jQuery(row_id).find('label').hide();
 
       //change the field dimension using the td width

@@ -124,7 +124,7 @@ function test_base(){
     var aCForm = { table_name: 'test_child',
       primary_key: Array('id_child'),
       fields: {
-        id_child: {label: 'ID', type: 'int', key: 0, nullable: false},
+        id_child: {label: 'ID', type: 'int', key: 0, nullable: false, widget:'hidden'},
         child_name: {label: 'Child Name', type: 'varchar',  nullable: false}
       }
     };
@@ -156,7 +156,7 @@ function test_bis(){
 	};
 
 
-    var aParam = {hide_label: true};
+    var aParam = {hide_label: true,hide_placeholder:true};
 /*
     var aForm = { table_name: 'test',
       primary_key: Array('id'),

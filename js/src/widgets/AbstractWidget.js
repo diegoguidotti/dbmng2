@@ -53,22 +53,11 @@ Dbmng.AbstractWidget = Class.extend({
     this.aField.field = this.field;
     var el = this.theme.getFieldContainer(this.aField);
 
-    var bHideLabel = false;
-    if( this.aParam.hide_label ) {
-      if( this.aParam.hide_label === true ) {
-        bHideLabel = true;
-				var show_placeholder=true;
-				if( this.aParam.hide_placeholder ===true){
-					show_placeholder=false;
-				}
-				if(show_placeholder)
-        	this.aField.placeholder = this.aField.label;
-      }
+    var label=this.getLabel();
+    if(label!=null){
+      el.appendChild(label);
     }
 
-    if( !bHideLabel ) {
-      el.appendChild(this.theme.getLabel(this.aField));
-    }
     if( typeof data_val != 'undefined' ) {
       this.value = data_val;
     }
@@ -85,6 +74,38 @@ Dbmng.AbstractWidget = Class.extend({
 
     el.appendChild(widget);
     return el;
+  },
+
+  isVisible(){
+    return true;
+  },
+  getTextLabel(){
+    if(this.aField.label)
+      return this.aField.label;
+    else{
+      return (this.field);
+    }
+
+  },
+  getLabel(){
+    var bHideLabel = false;
+    if( this.aParam.hide_label ) {
+      if( this.aParam.hide_label === true ) {
+        bHideLabel = true;
+				var show_placeholder=true;
+				if( this.aParam.hide_placeholder ===true){
+					show_placeholder=false;
+				}
+				if(show_placeholder)
+        	this.aField.placeholder = this.aField.label;
+      }
+    }
+    if( !bHideLabel ) {
+      return this.theme.getLabel(this.aField);
+    }
+    else{
+        return null;
+    }
   },
 
   onChange: function(event){

@@ -255,19 +255,22 @@ Dbmng.AbstractTheme = Class.extend({
 			el.appendChild(this.getTableHeader(opt));
 			var tbody=document.createElement('tbody');
 			for(var i=0; i<opt.data.length; i++){
-				var row=this.getTableRow({data: opt.data[i], options:opt.options });
+				var row=this.getTableRow({data: opt.data[i], rawData: opt.rawData[i], options:opt.options });
 				if(opt.options){
 					if(opt.options.assignClass){
 						this.addClass(row, "dbmng_row dbmng_row_"+i);
 					}
 					if(typeof opt.options.addColumn=='function'){
-						row.appendChild(opt.options.addColumn({data: opt.data[i], options:opt.options }));
+						row.appendChild(opt.options.addColumn({data: opt.data[i], rawData: opt.rawData[i], options:opt.options }));
 					}
 				}
 				tbody.appendChild(row);
 			}
 			el.appendChild(tbody);
 		}
+    if(!opt.rawData){
+      opt.rawData=opt.data;
+    }
 		div.appendChild(el);
     return div;
   },
@@ -299,7 +302,7 @@ Dbmng.AbstractTheme = Class.extend({
 						this.addClass(cell, "dbmng_cell dbmng_col_"+key);
 					}
 					if(typeof opt.options.setIDRow=='function'){
-						el.id=opt.options.setIDRow(opt.data);
+						el.id=opt.options.setIDRow(opt.rawData);
 					}
 				}
 				el.appendChild(cell);
