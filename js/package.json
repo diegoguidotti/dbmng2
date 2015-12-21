@@ -19,13 +19,26 @@
   "bugs": {
     "url": "https://github.com/diegoguidotti/dbmng2/issues"
   },
+  "jshintConfig": {
+    "options": {
+      "browser": true,
+      "nonbsp": true,
+      "nonew": true,
+      "immed": true,
+      "latedef": true,
+      "unused":true,
+      "globals": {
+        "jQuery": true
+      }
+    }
+  }
   "repository": {
     "type": "git",
     "url": "https://github.com/diegoguidotti/dbmng2.git"
   },
   "keywords": [
     "crud",
-    "form"    
+    "form"
   ],
   "license": "MIT",
   "engines": {
