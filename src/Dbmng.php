@@ -69,6 +69,36 @@ private $prepare;
 			$sQuery.=" ORDER BY ".$this->aParam['tbl_order'];
 		}
 		$ret = $this->db->select($sQuery, $aWhere, $fetch_style);
+		if(isset($this->aParam['table_extension'])){
+
+			if(isset($this->aParam['table_extension']['sql'])){
+				$aParam_ext=array();
+				if(isset($this->aParam['table_extension']['aParam'])){
+					$aParam_ext=$this->aParam['table_extension']['aParam'];
+				}
+				$ret_ext=$this->db->select($this->aParam['table_extension']['sql'],$aParam_ext);
+				if($ret_ext['ok']){
+					$pk=$this->aForm['primary_key'][0];
+					$field_name="more_data";
+					if(isset($this->aParam['table_extension']['field_name'])){
+						$field_name=$this->aParam['table_extension']['field_name'];
+					}
+					
+					for($e=0; $e<count($ret_ext['data']); $e++){
+
+						for($i=0; $i<count($ret['data']); $i++){
+
+							if($ret['data'][$i][$pk]==$ret_ext['data'][$e][$pk]){
+								if(!isset($ret['data'][$i]['more_data'])){
+									$ret['data'][$i][$field_name]=array();
+								}
+								$ret['data'][$i][$field_name][]=$ret_ext['data'][$e];
+							}
+						}
+					}
+				}
+			}
+		}
 
 		return $ret;
 	}

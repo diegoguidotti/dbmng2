@@ -6,21 +6,21 @@
 	use Dbmng\App;
 	use Dbmng\Login;
   use Respect\Rest\Router;
-	require_once 'vendor/autoload.php';	
-	require_once 'settings.php';	
+	require_once 'vendor/autoload.php';
+	require_once 'settings.php';
 
-	
+
 	$db = DB::createDb($aSetting['DB']['DB_DSN'], $aSetting['DB']['DB_USER'], $aSetting['DB']['DB_PASSWD'] );
 
 	$login=new Login($db, array('auth_type'=>'BASIC'));
 	$l=$login->auth();
-	$user=$l['user'];	
-	
+	$user=$l['user'];
+
 	$app=new App($db, array('user'=>$user));
 
-	$aForm=array(  
+	$aForm=array(
 		'table_name' => 'test' ,
-			'primary_key'=> array('id'), 
+			'primary_key'=> array('id'),
 			'fields'     => array(
 					'id' => array('label'   => 'ID', 'type' => 'int', 'key' => 1 ) ,
 					'name' => array('label'   => 'Name', 'type' => 'varchar'),
@@ -32,23 +32,28 @@
 	//$aParam['filters']['true_false'] = 1;
 	$base_path="/dbmng2";
 	$router = new \Respect\Rest\Router($base_path);
-	
+
 	$dbmng=new Dbmng($app, $aForm, $aParam);
 	$api=new Api($dbmng);
 	$api->exeRestTest($router);
 	$api->exeRest($router);
 
 
-	$aForm2=array(  
+	$aForm2=array(
 		'table_name' => 'test_child' ,
-			'primary_key'=> array('id_child'), 
+			'primary_key'=> array('id_child'),
 			'fields'     => array(
 					'id_child' => array('label'   => 'ID', 'type' => 'int', 'key' => 1 ) ,
 					'child_name' => array('label'   => 'Name', 'type' => 'varchar')
 			),
 	);
-	$aParam2=array();
-	
+	$aParam2=array(
+		'table_extension'=> array(
+			'sql'=>'SELECT c.id_child, id_father FROM test_child c, test_father_child fc WHERE c.id_child = fc.id_child',
+			'field_name'=>'father_data'
+		)
+	);
+
 	$dbmng2=new Dbmng($app, $aForm2, $aParam2);
 	$api2=new Api($dbmng2);
 	$api2->exeRest($router);

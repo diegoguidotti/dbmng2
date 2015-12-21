@@ -158,13 +158,17 @@ Dbmng.Crud = Class.extend({
         addColumn:function(opt){
           var cell=self.theme.getTableCell();
 
-          if( self.aParam.user_function.upd == 1 ) {
+          if( self.aParam.user_function.upd  ) {
             var label_edit=self.aParam.ui.btn_edit.label;
             var opt_edit=self.aParam.ui.btn_edit;
 
-            var button_edit=jQuery(self.theme.getButton(label_edit,opt_edit));
-            button_edit.click(function(){
-              self.createForm(div_id, opt.data[self.pk], aData);
+            var button_edit=(self.theme.getButton(label_edit,opt_edit));
+            if(!self.isAllowed(opt.rawData,'update')){
+              button_edit.disabled=true;
+            }
+
+            button_edit.addEventListener("click",function(){
+              self.createForm(div_id, opt.rawData[self.pk], aData);
             });
             jQuery(cell).append(button_edit);
           }
@@ -172,9 +176,11 @@ Dbmng.Crud = Class.extend({
           if( self.aParam.user_function.inline ) {
             var label_editi=self.aParam.ui.btn_edit_inline.label;
             var opt_editi=self.aParam.ui.btn_edit_inline;
-
-            var button_editi=jQuery(self.theme.getButton(label_editi,opt_editi));
-            button_editi.click(function(){
+            var button_editi=self.theme.getButton(label_editi,opt_editi);
+            if(!self.isAllowed(opt.rawData,'update')){
+              button_editi.disabled=true;
+            }
+            button_editi.addEventListener("click",function(){
               self.createFormInline(div_id, opt.rawData[self.pk], aData, true);
             });
             jQuery(cell).append(button_editi);
@@ -184,10 +190,12 @@ Dbmng.Crud = Class.extend({
             var label_delete=self.aParam.ui.btn_delete.label;
             var opt_delete=self.aParam.ui.btn_delete;
 
-            var button_delete=jQuery(self.theme.getButton(label_delete,opt_delete));
-            button_delete.click(function(){
-
-              self.deleteRecord(div_id, opt.data[self.pk]);
+            var button_delete=(self.theme.getButton(label_delete,opt_delete));
+            if(!self.isAllowed(opt.rawData,'delete')){
+              button_delete.disabled=true;
+            }
+            button_delete.addEventListener("click",function(){
+              self.deleteRecord(div_id, opt.rawData[self.pk]);
             });
             jQuery(cell).append(button_delete);
           }
@@ -196,12 +204,16 @@ Dbmng.Crud = Class.extend({
             var label_custom = self.aParam.custom_function.label;
             var opt_custom = self.aParam.custom_function;
             //console.log(opt_custom);
-            var button_custom=jQuery(self.theme.getButton(label_custom,opt_custom));
+            var button_custom=(self.theme.getButton(label_custom,opt_custom));
+            if(!self.isAllowed(opt.rawData,self.aParam.custom_function.action)){
+              button_custom.disabled=true;
+            }
+
             if( self.aParam.custom_function.action ) {
               if( typeof self.aParam.custom_function.action == 'string' ) {
-                button_custom.click(function(){
+                button_custom.addEventListener("click",function(){
                   var fnstring = self.aParam.custom_function.action;
-                  var fnparams = [opt.data[self.pk],opt.data];
+                  var fnparams = [opt.rawData[self.pk],opt.rawData];
 
                   exeExternalFunction(fnstring, fnparams);
 //                         var fn = window[fnstring];
@@ -233,6 +245,14 @@ Dbmng.Crud = Class.extend({
     }
     else {
       jQuery(div_id).html(self.theme.alertMessage(data.message));
+    }
+  },
+  isAllowed: function (data, method){
+    if(typeof this.aParam.user_function.custom_user_function=='function'){
+      return this.aParam.user_function.custom_user_function(data, method);
+    }
+    else{
+      return true;
     }
   },
   deleteRecord: function (div_id, key){

@@ -19,7 +19,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
                 self::$pdo = new \PDO( $GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD'] );
 								self::$pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
 								self::$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-								self::$pdo->exec("set names utf8");								
+								self::$pdo->exec("set names utf8");
             }
             $this->conn = $this->createDefaultDBConnection(self::$pdo, "dbmng2");
         }
@@ -27,7 +27,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     public function getDataSet() {
-        return $this->createFlatXMLDataSet(dirname(__FILE__).'/seed.xml'); 
+        return $this->createFlatXMLDataSet(dirname(__FILE__).'/seed.xml');
     }
 
 		public function testDrupal() {
@@ -39,7 +39,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
 				$pdo->exec("set names utf8");
 
 		    $db = new Db($pdo);
-		    
+
 		    $result = $db->select("SELECT a.id, a.name FROM test a", array());
 		    $articles = $result['data'];
 		    $this->assertEquals(
@@ -50,12 +50,11 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
 		        $articles);
 		}
 
-
 		public function testSelect() {
 
 		    $db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
 		    $ret = $db->select('select id, name from test', array());
-			
+
 		    $this->assertEquals(
 		        array(
 		            array("id" => 1, "name" => "Diego"),
@@ -66,7 +65,7 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
 
 		    $this->assertEquals(true,$ret['ok']);
 
-		    $ret2 = $db->select('select id, name from test WHERE id=:id', array(':id'=>1));			
+		    $ret2 = $db->select('select id, name from test WHERE id=:id', array(':id'=>1));
 		    $this->assertEquals(
 		        array(
 		            array("id" => 1, "name" => "Diego")
@@ -74,24 +73,24 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
 		        $ret2['data']
 				);
 
-		    $ret3 = $db->select('select id, name from test_no_exist WHERE id=:id', array(':id'=>1));			
+		    $ret3 = $db->select('select id, name from test_no_exist WHERE id=:id', array(':id'=>1));
 		    $this->assertEquals(false,$ret3['ok']);
 
 		    $ret4 = $db->select('select id, name from test', array(), \PDO::FETCH_BOTH);
 		    $this->assertEquals('Diego',$ret4['data'][0][1]);
-			
+
 		    $ret4 = $db->select('select id, name from test', array(), \PDO::FETCH_BOTH);
 		    $this->assertEquals(2,count($ret4['data']));
-			
+
 	}
-	
+
 	public function testInsert(){
 		    $db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
 		    $ret = $db->insert('insert into test (id, name) values(:id, :name )', array(':id'=>3, ':name'=>'Susanna'));
 
 		    $this->assertEquals(true,$ret['ok']);
  		    $this->assertEquals(3,$ret['inserted_id']);
-				
+
 				// Get the rowCount
 		    $ret2 = $db->select('select id, name from test', array(), \PDO::FETCH_BOTH);
 		    $this->assertEquals(3,$ret2['rowCount']);
@@ -109,36 +108,36 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
 					{
 						$nCnt++;
 					}
-				
+
 				$this->assertEquals(3,$nCnt);
 		    //fwrite(STDERR, print_r($ret5));
 	}
-	
+
 	public function testUpdate(){
 		    $db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
 		    $ret = $db->insert('insert into test (id, name) values(:id, :name )', array(':id'=>3, ':name'=>'Susanna'));
 				$ret2 = $db->update('update test set name = :name where id = :id', array(':id'=>3, ':name'=>'Cinzia'));
-				
+
 		    $ret4 = $db->select('select id, name from test', array(), \PDO::FETCH_BOTH);
 		    $this->assertEquals('Cinzia',$ret4['data'][2][1]);
 	}
-	
+
 	public function testDelete(){
 		    $db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
 				$ret = $db->update('delete from test where id = :id', array(':id'=>2));
-				
+
 				$this->assertEquals(true,$ret['ok']);
 
 				// Get the rowCount
 		    $ret2 = $db->select('select id, name from test', array(), \PDO::FETCH_BOTH);
 		    $this->assertEquals(1,$ret2['rowCount']);
-		    
+
 		    //fwrite(STDERR, print_r($ret2));
 	}
-	
+
 	public function testGetSQL(){
 		    $db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
-				
+
 		    $sql = $db->getSQL('select id, name from test WHERE id=:id AND nome=:nome', array(':id'=>1, ':nome'=>'Diego'));
 		    $this->assertEquals("select id, name from test WHERE id='1' AND nome='Diego'",$sql);
 
@@ -146,23 +145,24 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
 		    $this->assertEquals("select id, name from test WHERE id='1' AND nome='Die\'SQLInjection'",$sql);
 
 	}
-	
+
 	public function test_transactions() {
 				$db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
 				$aQueries[1]['sql'] = 'insert into test (id, name) values(:id, :name )';
 				$aQueries[1]['var'] = array(':id'=>3, ':name'=>'Susanna');
 				$ret = $db->transactions($aQueries);
 				$this->assertEquals(true,$ret['ok']);
-				
+
 		    $ret2 = $db->select('select id, name from test where id = :id', array(':id'=>3), \PDO::FETCH_BOTH);
 		    $this->assertEquals(1,$ret2['rowCount']);
 	}
-	
-	public function testEmoty(){
+
+
+	public function testEmpty(){
 	    $db = DB::createDb(null, null, null);
-	    
+      $this->assertEquals(null,$db);
 	}
 
-	
-}
 
+
+}
