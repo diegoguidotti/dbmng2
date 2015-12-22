@@ -24,7 +24,7 @@ Dbmng.CrudInline = Dbmng.Crud.extend({
 
     var formin=new Dbmng.FormInline({"aForm":this.aForm,  "aParam":aLocParam,
 			"onChange":function(){
-        w=this;
+        var w=this;
 				console.log("Field:"+w.field);
 				console.log("Value:"+w.getValue());
 				console.log("Key:"+w.pk_value);
