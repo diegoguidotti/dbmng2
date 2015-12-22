@@ -14,6 +14,7 @@
   <script type="text/javascript" src="../src/Form.js"></script>
   <script type="text/javascript" src="../src/FormInline.js"></script>
   <script type="text/javascript" src="../src/Crud.js"></script>
+  <script type="text/javascript" src="../src/CrudInline.js"></script>
   <script type="text/javascript" src="../src/Ie9.js"></script>
   <script type="text/javascript" src="../src/Utilities.js"></script>
   <script type="text/javascript" src="../src/themes/AbstractTheme.js"></script>
@@ -47,7 +48,8 @@
 
 
 	test_base();
-	test_bis();
+	//test_bis();
+  test_inline();
 
 function mostra_categorie(id,data){
   console.log(id);
@@ -161,6 +163,18 @@ function test_base(){
     crudchild.createTable({div_id:'test_child'});
 }
 
+function test_inline(){
+
+  //nuova versione senza aForm (lo prende online)
+  var crud=new Dbmng.CrudInline(
+    {
+      url:'/dbmng2/api/test', user:'test', password:'test',
+      success:function(self){
+        self.createTable({div_id:'#test_diego'});
+      }
+    }
+  );
+}
 
 
 function test_bis(){
