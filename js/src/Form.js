@@ -39,6 +39,7 @@ Dbmng.Form = Class.extend({
 
       var widget_opt={field:key, aField:aField, theme:this.theme, aParam:this.aParam};
       var w;
+
       if( wt == 'select' ) {
         w = new Dbmng.SelectWidget(widget_opt);
       }
@@ -54,13 +55,11 @@ Dbmng.Form = Class.extend({
       else if( wt == 'checkbox' ) {
         w = new Dbmng.CheckboxWidget(widget_opt);
       }
+      else if( wt == 'numeric' ) {
+        w = new Dbmng.NumericWidget(widget_opt);
+      }
       else{
-        if( aField.type == 'int' ) {
-          w = new Dbmng.NumericWidget(widget_opt);
-        }
-        else {
           w = new Dbmng.AbstractWidget(widget_opt);
-        }
       }
 
       this.widgets[key]=w;

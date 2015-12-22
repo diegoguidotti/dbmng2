@@ -33,8 +33,9 @@ Dbmng.Crud = Class.extend({
     else {
       this.url='?';
     }
+    if( this.url.slice(-1) != '/' ) this.url = this.url + '/';
 
-		if(options.aForm){
+    if(options.aForm){
 			this.aForm  = options.aForm;
 		  this.form=new Dbmng.Form({aForm:this.aForm, aParam:this.aParam, theme:this.theme});
 		  this.api=new  Dbmng.Api({aForm:this.aForm, url:this.url, user:options.user, password:options.password});
@@ -47,7 +48,7 @@ Dbmng.Crud = Class.extend({
 			var self=this;
 
 			jQuery.ajax({
-				url: this.url+"/schema",
+				url: this.url+"schema",
 				dataType:'json',
 				headers: {
 					"Authorization": "Basic " + btoa(this.user + ":" + this.password)
@@ -263,7 +264,15 @@ Dbmng.Crud = Class.extend({
   },
   createInsertForm: function (div_id){
     var self = this;
-    jQuery(div_id).html(self.form.createForm());
+    var aRecord = {};
+    
+    if(this.aParam.filter){
+      jQuery.each(this.aParam.filter,function(k,v){
+        aRecord[k] = v;
+      });
+    }
+    
+    jQuery(div_id).html(self.form.createForm(aRecord));
 
     var label_save=self.aParam.ui.btn_save.label;
     var opt_save=self.aParam.ui.btn_save;

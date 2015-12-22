@@ -17,6 +17,7 @@ Dbmng.Api = Class.extend({
 		this.password=options.password;
     this.search=options.search;
 
+    if( this.url.slice(-1) != '/' ) this.url = this.url + '/';
   },
 	getHeaders: function(){
 		return {
@@ -52,7 +53,7 @@ Dbmng.Api = Class.extend({
   },
   transaction: function(options) {
 		jQuery.ajax({
-			url: this.url+"/transaction",
+			url: this.url+"transaction",
 			dataType:'json',
 			method:'POST',
 			data: JSON.stringify(options.data),
@@ -98,7 +99,7 @@ Dbmng.Api = Class.extend({
   update: function(options) {
     console.log(options.data);
 		jQuery.ajax({
-			url: this.url+'/'+options.key,
+			url: this.url+options.key,
 			dataType:'json',
 			method:'PUT',
 			data: JSON.stringify(options.data),
@@ -122,7 +123,7 @@ Dbmng.Api = Class.extend({
   },
   delete: function(options) {
 		jQuery.ajax({
-			url: this.url+'/'+options.key,
+			url: this.url+options.key,
 			dataType:'json',
 			method:'DELETE',
 			headers: this.getHeaders(),
