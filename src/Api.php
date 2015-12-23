@@ -222,7 +222,7 @@ class Api {
 								{
 									if( in_array($k, $aFields) )
 										{
-											$aVar[$k] = $v;
+											$aVar[$k] = ($v == "" ? null : $v);
 											$bContinue = $bContinue && true;
 										}
 									else
