@@ -269,7 +269,8 @@ private $prepare;
 						$readonly=$fld_value['readonly'];
 					}
 
-				if(isset($aVars[$fld])) //test if the field exist in array
+				//if(isset($aVars[$fld])) //test if the field exist in array
+				if( array_key_exists($fld, $aVars) )
 					{
             if( $this::checkFieldValue($fld_value, $aVars[$fld]) )
               {
@@ -346,6 +347,7 @@ private $prepare;
 					}
 					else{
 						$result = $this->db->update($sql, $var);
+						$result['sql'] = $this->db->getSQL($sql, $var);
 					}
 
 				if(  ( ($this->prepare  || $result['ok']) && $bSelectNM))
@@ -454,6 +456,7 @@ private $prepare;
 			//echo debug_sql_statement($sql, $var);
 			//fwrite(STDERR, $this->db->getSQL($sql, $var));
 			$result = $this->db->insert($sql, $var);
+			$result['sql'] = $this->db->getSQL($sql, $var);
 		}
 
 
@@ -846,6 +849,36 @@ private $prepare;
 	}
 
    /////////////////////////////////////////////////////////////////////////////
+  // sanitize
+  // ======================
+  /// This function check the data before insert or update
+  /**
+  \return           boolean
+  */
+  function sanitize($aFormParams)
+  {
+    $auth=true;
+    $code=200;
+    $message="";
+    foreach( $this->aForm['fields'] as $fld => $fld_value )
+      {
+        foreach( $aFormParams as $k => $v )
+          {
+            if( $fld == $k )
+              {
+                if( $fld_value['type'] == 'int' || $fld_value['type'] == 'double' )
+                  {
+                    if( $v == "" )
+                      {
+                        $aFormParams->$k = null;
+                      }
+                  }
+              }
+          }
+      }
+    return array('ok'=>$auth, 'message'=>$message, 'code'=>$code, 'aFormParams' => $aFormParams);
+  }
+   /////////////////////////////////////////////////////////////////////////////
   // checkFieldValue
   // ======================
   /// This function return true if the given method is allowerd by user and aParam
@@ -855,18 +888,33 @@ private $prepare;
   function checkFieldValue($aField, $val)
   {
     $sType = $aField['type'];
-		if(Util::var_equal($aField,'widget','select_nm')){
-			$ret=true;
-		}
+    if( Util::var_equal($aField,'widget','select_nm') ) 
+      {
+        $ret=true;
+      }
     else if( $sType == 'int' )
       {
-        $nVal = (int)($val);
-        $ret = ($val == strval($nVal) ? true : false);
+        if( strlen($val) > 0 )
+          {
+            $nVal = (int)($val);
+            $ret = ($val == strval($nVal) ? true : false);
+          }
+        else
+          {
+            $ret = true;
+          }
       }
     elseif( $sType == 'double' )
       {
-        $nVal = (float)($val);
-        $ret = ($val == strval($nVal) ? true : false);
+        if( strlen($val) > 0 )
+          {
+            $nVal = (float)($val);
+            $ret = ($val == strval($nVal) ? true : false);
+          }
+        else
+          {
+            $ret = true;
+          }
       }
     else
       {
