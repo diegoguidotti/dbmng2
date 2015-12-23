@@ -51,10 +51,35 @@ class AppTest extends \PHPUnit_Extensions_Database_TestCase
 
 			 //test an empty user 
 		    $this->assertEquals(0,$app->getUser()['uid']);
-
-				
 	}	
+  
+  public function testNull() {
+    $db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
+    $app = new App($db, Array());
 
-	
+    $ret = $app->getDb()->select('select id, name, true_false from test', array());
+  
+    $this->assertEquals(
+        array(
+            array("id" => 1, "name" => "Diego", "true_false" => 0),
+            array("id" => 2, "name" => "Michele", "true_false" => 0)
+        ),
+        $ret['data']
+    );
+
+    $this->assertEquals(true,$ret['ok']);
+
+    //test an empty user 
+    $this->assertEquals(0,$app->getUser()['uid']);
+    
+    $ret2 = $app->getDb()->insert('insert into test (id, name,true_false) values(:id, :name, :true_false )', array(':id'=>4, ':name'=>'Cinzia', ':true_false' => null));
+    $this->assertEquals(true,$ret2['ok']);
+    $this->assertEquals(4,$ret2['inserted_id']);
+    
+    $ret3 = $db->select('select true_false from test where id = :id', array(':id' => 4));
+    $this->assertEquals(true,$ret3['ok']);
+    $this->assertEquals(null,$ret3['data'][0]['true_false']);
+  } 
+
 }
 

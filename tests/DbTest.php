@@ -110,7 +110,24 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
 					}
 
 				$this->assertEquals(3,$nCnt);
-		    //fwrite(STDERR, print_r($ret5));
+				
+        $ret6 = $db->insert('insert into test (id, name,true_false) values(:id, :name, :true_false )', array(':id'=>4, ':name'=>'Cinzia', ':true_false' => null));
+        $this->assertEquals(true,$ret6['ok']);
+        $this->assertEquals(4,$ret6['inserted_id']);
+        
+        $ret7 = $db->select('select true_false from test where id = :id', array(':id' => 4));
+        $this->assertEquals(true,$ret7['ok']);
+        $this->assertEquals(null,$ret7['data'][0]['true_false']);
+        // fwrite(STDERR, print_r($ret7));
+        
+        $ret8 = $db->insert('insert into test (id, name,true_false) values(:id, :name, :true_false )', array(':id'=>5, ':name'=>'Qwerty', ':true_false' => ''));
+        $this->assertEquals(true,$ret8['ok']);
+        $this->assertEquals(5,$ret8['inserted_id']);
+        
+        $ret9 = $db->select('select true_false from test where id = :id', array(':id' => 5));
+        fwrite(STDERR, print_r($ret9));
+        $this->assertEquals(true,$ret9['ok']);
+        $this->assertEquals(null,$ret9['data'][0]['true_false']);
 	}
 
 	public function testUpdate(){
