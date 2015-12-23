@@ -24,8 +24,8 @@
 			'fields'     => array(
 					'id' => array('label'   => 'ID', 'type' => 'int', 'key' => 1 ) ,
 					'name' => array('label'   => 'Name', 'type' => 'varchar'),
-					'sex' => array( 'label' => 'Sex', 'type' => 'varchar',  'widget' => 'select', 'voc_val' => array('M' =>'Male', 'F' => 'Female'))
-					//'true_false' => array( 'vero/Falso' => 'Sex', 'type' => 'integer',  'widget' => 'checkbox')
+					'sex' => array( 'label' => 'Sex', 'type' => 'varchar',  'widget' => 'select', 'voc_val' => array('M' =>'Male', 'F' => 'Female')),
+					'true_false' => array( 'vero/Falso' => 'Sex', 'type' => 'int')
 			),
 	);
 	$aParam=array();
