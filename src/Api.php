@@ -195,143 +195,160 @@ class Api {
           }
 	}
 
-	function doInsert($dbmng, $body){
-    	$allowed=$dbmng->isAllowed('insert');
-
-        if($allowed['ok'])
+	function doInsert($dbmng, $body)
+	{
+    $allowed=$dbmng->isAllowed('insert');
+    if($allowed['ok'])
+      {
+        $aBody = ($body);
+        $sanitize = $dbmng->sanitize($aBody);
+        if( $sanitize['ok'] )
           {
+            $aFormParams = $sanitize['aFormParams'];
+            // get the form_params from the rest call
 
-              // get the form_params from the rest call
+            $ret=array();
 
-              $aFormParams = ($body);
-							$ret=array();
+            $aForm = $dbmng->getaForm();
 
-		          $aForm = $dbmng->getaForm();
+            // get the info from aForm array
+            $primary_key = $aForm['primary_key'][0];
+            $aFields = array_keys($aForm['fields']);
 
-							// get the info from aForm array
-							$primary_key = $aForm['primary_key'][0];
-							$aFields = array_keys($aForm['fields']);
+            //echo "AAAA";
+            // prepare the array of vars for the update and
+            // check if the form_params passed are in the table structure
+            $bContinue = true;
+            $aVar = array();
+            $aFldError = array();
+            foreach($aFormParams as $k => $v)
+              {
+                if( in_array($k, $aFields) )
+                  {
+                    $aVar[$k] = $v;
+                    $bContinue = $bContinue && true;
+                  }
+                else
+                  {
+                    array_push($aFldError,$k);
+                    $bContinue = $bContinue && false;
+                  }
+              }
 
-								//echo "AAAA";
-								// prepare the array of vars for the update and
-								// check if the form_params passed are in the table structure
-							$bContinue = true;
-							$aVar = array();
-							$aFldError = array();
-							foreach($aFormParams as $k => $v)
-								{
-									if( in_array($k, $aFields) )
-										{
-											$aVar[$k] = $v;
-											$bContinue = $bContinue && true;
-										}
-									else
-										{
-											array_push($aFldError,$k);
-											$bContinue = $bContinue && false;
-										}
-								}
+            // execute the update only if all the form_params are in the table structure
+            if( $bContinue )
+              {
+                $input = $dbmng->insert($aVar);
 
-							// execute the update only if all the form_params are in the table structure
-							if( $bContinue )
-								{
-									$input = $dbmng->insert($aVar);
+                $input['form_params'] = $aFormParams;
+                $input['fields'] = $aFields;
+                $input['pk'] = $primary_key;
+              }
+            else
+              {
+                $input['ok'] = false;
+                $input['message'] = "Some fields are wrong";
+                $input['wrong_field'] = $aFldError;
+              }
 
-									$input['form_params'] = $aFormParams;
-									$input['fields'] = $aFields;
-									$input['pk'] = $primary_key;
-								}
-							else
-								{
-									$input['ok'] = false;
-									$input['message'] = "Some fields are wrong";
-									$input['wrong_field'] = $aFldError;
-								}
-
-
-
-		          $input['body'] = $body;
-		          return ($input);
-
+            $input['body'] = $body;
+            return ($input);
           }
         else
           {
-            http_response_code($allowed['code']);
-            return ($allowed);
+            http_response_code($sanitize['code']);
+            return ($sanitize);
           }
+      }
+    else
+      {
+        http_response_code($allowed['code']);
+        return ($allowed);
+      }
 	}
 
 	function doUpdate($dbmng, $id_value, $body){
 
-				$aFormParams=$body;
-        $allowed=$dbmng->isAllowed('update');
+    $aFormParams=$body;
+    $allowed=$dbmng->isAllowed('update');
 
-        if($allowed['ok'])
+    if($allowed['ok'])
+      {
+        $aBody = ($body);
+        $sanitize = $dbmng->sanitize($aBody);
+        if( $sanitize['ok'] )
           {
             $aForm = $dbmng->getaForm();
+            $aFormParams = $sanitize['aFormParams'];
+            
+            if( !is_null($id_value) )
+              {
+                // get the info from aForm array
+                $primary_key = $aForm['primary_key'][0];
+                $aFields = array_keys($aForm['fields']);
 
-                if( !is_null($id_value) )
+                // get the form_params from the rest call
+
+
+                // prepare the array of vars for the update and
+                // check if the form_params passed are in the table structure
+                $bContinue = true;
+                $aVar[$primary_key] = $id_value;
+                $aFldError = array();
+                foreach($aFormParams as $k => $v)
                   {
-                    // get the info from aForm array
-                    $primary_key = $aForm['primary_key'][0];
-                    $aFields = array_keys($aForm['fields']);
-
-                    // get the form_params from the rest call
-
-
-                    // prepare the array of vars for the update and
-                    // check if the form_params passed are in the table structure
-                    $bContinue = true;
-                    $aVar[$primary_key] = $id_value;
-                    $aFldError = array();
-                    foreach($aFormParams as $k => $v)
+                    if( in_array($k, $aFields) )
                       {
-                        if( in_array($k, $aFields) )
-                          {
-                            $aVar[$k] = $v;
-                            $bContinue = $bContinue && true;
-                          }
-                        else
-                          {
-                            array_push($aFldError,$k);
-                            $bContinue = $bContinue && false;
-                          }
-                      }
-
-                    // execute the update only if all the form_params are in the table structure
-                    if( $bContinue )
-                      {
-                        $input = $dbmng->update($aVar);
-
-                        $input['form_params'] = $aFormParams;
-                        $input['fields'] = $aFields;
-                        $input['pk'] = $primary_key;
+                        $aVar[$k] = $v;
+                        $bContinue = $bContinue && true;
                       }
                     else
                       {
-                        // $input['form_params'] = $aFormParams;
-                        // $input['fields'] = $aFields;
-                        // $input['aForm'] = $aForm;
-
-                        $input['ok'] = false;
-                        $input['message'] = "Some fields are wrong";
-                        $input['wrong_field'] = $aFldError;
+                        array_push($aFldError,$k);
+                        $bContinue = $bContinue && false;
                       }
+                  }
+
+                // execute the update only if all the form_params are in the table structure
+                if( $bContinue )
+                  {
+                    $input = $dbmng->update($aVar);
+
+                    $input['form_params'] = $aFormParams;
+                    $input['fields'] = $aFields;
+                    $input['pk'] = $primary_key;
                   }
                 else
                   {
+                    // $input['form_params'] = $aFormParams;
+                    // $input['fields'] = $aFields;
+                    // $input['aForm'] = $aForm;
+
                     $input['ok'] = false;
-                    $input['message'] = "The id value doesn't exist";
+                    $input['message'] = "Some fields are wrong";
+                    $input['wrong_field'] = $aFldError;
                   }
+              }
+            else
+              {
+                $input['ok'] = false;
+                $input['message'] = "The id value doesn't exist";
+              }
 
             //$input['body'] = $body;
             return ($input);
           }
         else
           {
-            http_response_code($allowed['code']);
-            return ($allowed);
+            http_response_code($sanitize['code']);
+            return ($sanitize);
           }
+      }
+    else
+      {
+        http_response_code($allowed['code']);
+        return ($allowed);
+      }
 	}
 
 
