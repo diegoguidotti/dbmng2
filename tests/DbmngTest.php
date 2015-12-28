@@ -185,6 +185,32 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
 
     }
 
+    public function testSanitize() {
+
+					$app=$this->getApp();
+					$aForm=array(
+						'table_name' => 'test' ,
+							'primary_key'=> array('id'),
+							'fields'     => array(
+									'id' => array('label'   => 'ID', 'type' => 'int', 'key' => 1 ) ,
+									'name' => array('label'   => 'Name', 'type' => 'varchar'),
+                  'true_false' => array('TF'   => 'Name', 'type' => 'int')
+							),
+					);
+          $aParam=array();
+          $dbmng=new Dbmng($app, $aForm, $aParam);
+
+          $ret=$dbmng->sanitize(array("true_false"=>""));
+          $this->assertEquals(null,$ret['aFormParams']['true_false']);
+
+          $ret=$dbmng->sanitize(array("true_false"=>null));
+          $this->assertEquals(null,$ret['aFormParams']['true_false']);
+
+          $ret=$dbmng->sanitize(array("true_false"=>"pippo"));
+
+          $this->assertEquals(false,$ret['ok']);
+      }
+
     function testOrderByAndSearch()
     {
       $app=$this->getApp();

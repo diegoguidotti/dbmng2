@@ -83,7 +83,7 @@ private $prepare;
 					if(isset($this->aParam['table_extension']['field_name'])){
 						$field_name=$this->aParam['table_extension']['field_name'];
 					}
-					
+
 					for($e=0; $e<count($ret_ext['data']); $e++){
 
 						for($i=0; $i<count($ret['data']); $i++){
@@ -870,8 +870,17 @@ private $prepare;
                   {
                     if( $v == "" )
                       {
-                        $aFormParams->$k = null;
+												if(isset($aFormParams->$k)){
+                        	$aFormParams->$k = null;
+												}
                       }
+										else{
+												if(!is_numeric ($v)){
+													$auth=false;
+													$code=200;
+													$message="You are trying to add an text value in a numeric field";
+												}
+										}
                   }
               }
           }
@@ -888,7 +897,7 @@ private $prepare;
   function checkFieldValue($aField, $val)
   {
     $sType = $aField['type'];
-    if( Util::var_equal($aField,'widget','select_nm') ) 
+    if( Util::var_equal($aField,'widget','select_nm') )
       {
         $ret=true;
       }
