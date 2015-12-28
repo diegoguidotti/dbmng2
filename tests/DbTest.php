@@ -110,24 +110,26 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
 					}
 
 				$this->assertEquals(3,$nCnt);
-				
+
         $ret6 = $db->insert('insert into test (id, name,true_false) values(:id, :name, :true_false )', array(':id'=>4, ':name'=>'Cinzia', ':true_false' => null));
         $this->assertEquals(true,$ret6['ok']);
         $this->assertEquals(4,$ret6['inserted_id']);
-        
+
         $ret7 = $db->select('select true_false from test where id = :id', array(':id' => 4));
         $this->assertEquals(true,$ret7['ok']);
         $this->assertEquals(null,$ret7['data'][0]['true_false']);
         // fwrite(STDERR, print_r($ret7));
-        
-        $ret8 = $db->insert('insert into test (id, name,true_false) values(:id, :name, :true_false )', array(':id'=>5, ':name'=>'Qwerty', ':true_false' => ''));
+
+        //check if a null insert value
+        $ret8 = $db->insert('insert into test (id, name,true_false) values(:id, :name, :true_false )', array(':id'=>5, ':name'=>'Qwerty', ':true_false' => null));
         $this->assertEquals(true,$ret8['ok']);
         $this->assertEquals(5,$ret8['inserted_id']);
-        
-        $ret9 = $db->select('select true_false from test where id = :id', array(':id' => 5));
-        fwrite(STDERR, print_r($ret9));
+
+        $ret9 = $db->select('select true_false, name from test where id = :id', array(':id' => 5));
+        //fwrite(STDERR, print_r($ret9));
         $this->assertEquals(true,$ret9['ok']);
         $this->assertEquals(null,$ret9['data'][0]['true_false']);
+
 	}
 
 	public function testUpdate(){
@@ -137,6 +139,12 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
 
 		    $ret4 = $db->select('select id, name from test', array(), \PDO::FETCH_BOTH);
 		    $this->assertEquals('Cinzia',$ret4['data'][2][1]);
+
+        $ret5 = $db->update('update test set true_false = :true_false where id = :id', array(':id'=>3, ':true_false'=>null));
+        $ret6 = $db->select('select id, name, true_false from test', array(), \PDO::FETCH_BOTH);
+        //fwrite(STDERR, print_r($ret6));
+		    $this->assertEquals(null,$ret6['data'][2][2]);
+
 	}
 
 	public function testDelete(){

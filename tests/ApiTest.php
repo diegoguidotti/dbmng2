@@ -104,7 +104,7 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
 
     $response = $client->request('GET', 'http://localhost');
 		$this->assertEquals(200,$response->getStatusCode());
-    
+
     $response = $client->request('GET', 'http://localhost/dbmng2/README.md');
 		$this->assertEquals(200,$response->getStatusCode());
 
@@ -166,4 +166,39 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
 		$this->assertEquals(false,$o->ok);
 
 	}
+
+
+  public function testApiNullValue() {
+
+    $app=$this->getApp();
+		$client = new \GuzzleHttp\Client([
+			 // Base URI is used with relative requests
+			 'base_uri' => 'http://localhost',
+			 // You can set any number of default request options.
+			 'timeout'  => 2.0,
+		]);
+
+		$auth=[        'test', 'test'    ];
+		$auths=[    'auth' => $auth];
+
+
+    $res1 = $client->request('PUT', $GLOBALS['SITE_FOLDER'].'/api/test/1', ['body' => '{"true_false":13}','auth'=>$auth]);
+		$o = json_decode($res1->getBody());
+		$this->assertEquals(true,$o->ok);
+
+    $res1=$app->getDb()->select('select true_false from test WHERE id=1',array());
+    $this->assertEquals(13,$res1['data'][0]['true_false']);
+
+    //return false if your are trying to add a text instead of a number
+    $res1 = $client->request('PUT', $GLOBALS['SITE_FOLDER'].'/api/test/1', ['body' => '{"true_false":"aaaa"}','auth'=>$auth]);
+		$o = json_decode($res1->getBody());
+		$this->assertEquals(false,$o->ok);
+
+    $res1 = $client->request('PUT', $GLOBALS['SITE_FOLDER'].'/api/test/1', ['body' => '{"true_false":""}','auth'=>$auth]);
+		$o = json_decode($res1->getBody());
+		$this->assertEquals(true,$o->ok);
+
+    $res1=$app->getDb()->select('select true_false from test WHERE id=1',array());
+    $this->assertEquals(null,$res1['data'][0]['true_false']);
+  }
 }

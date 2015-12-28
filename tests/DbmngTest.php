@@ -164,15 +164,25 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
 
       $ret2 = $app->getDb()->select('select id, name, true_false from test where id = 3', array(), \PDO::FETCH_BOTH);
       $this->assertEquals(null,$ret2['data'][0]['true_false']);
-      
-      $array= array('id'=>4, 'name'=> 'mmmm', 'true_false' => null); 
+
+      $array= array('id'=>4, 'name'=> 'mmmm', 'true_false' => null);
       $ret3 = $dbmng->insert($array);
       $this->assertEquals(true, $ret3['ok']);
 
 
       $ret4 = $app->getDb()->select('select id, name, true_false from test where id = 4', array(), \PDO::FETCH_BOTH);
       $this->assertTrue($ret4['data'][0]['true_false'] === null);
-      
+
+      $ret5 = $dbmng->update(array('id'=>4, 'true_false'=> 12));
+      $ret6 = $app->getDb()->select('select id, name, true_false from test where id = 4', array());
+      $this->assertEquals(12, $ret6['data'][0]['true_false']);
+
+      $ret7 = $dbmng->update(array('id'=>4, 'true_false'=> null));
+      $this->assertEquals(true, $ret7['ok']);
+
+      $ret8 = $app->getDb()->select('select id, name, true_false from test where id = 4', array());
+      $this->assertEquals(null, $ret8['data'][0]['true_false']);
+
     }
 
     function testOrderByAndSearch()
