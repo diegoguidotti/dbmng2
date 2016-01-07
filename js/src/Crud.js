@@ -13,6 +13,7 @@ Dbmng.Crud = Class.extend({
   init: function( options ) {
 		//the ready variable can be used to check if it is ready the Crud to create the table)
     this.ready=true;
+    this.crud_success = options.crud_success;
     if(!options.aParam){
       options.aParam={};
     }
@@ -143,7 +144,7 @@ Dbmng.Crud = Class.extend({
       var header=[];
       for(var key in self.aForm.fields){
         var widget=self.form.getWidget(key);
-        if(widget.isVisible()){
+        if( widget.isVisible() && !widget.skipInTable()){
           header.push(widget.getTextLabel());
         }
       }
@@ -280,6 +281,12 @@ Dbmng.Crud = Class.extend({
     var button = self.theme.getButton(label_save, opt_save);
     jQuery(button).click(function(){
       self.api.insert({data:self.form.getValue(),success:function(data){
+        console.log(self);
+        if(typeof self.crud_success=='function'){
+          
+            self.crud_success('insert', data);
+        }        
+        
         jQuery(div_id).html('');
         self.createTable({div_id:div_id});
       }});

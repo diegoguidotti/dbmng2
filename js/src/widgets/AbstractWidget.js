@@ -79,7 +79,11 @@ Dbmng.AbstractWidget = Class.extend({
   isVisible: function(){
     return true;
   },
-
+  
+  skipInTable: function() {
+    return (this.aField.skip_in_tbl == 1 ? true : false);
+  },
+  
   getTextLabel: function(){
     if(this.aField.label)
       return this.aField.label;
