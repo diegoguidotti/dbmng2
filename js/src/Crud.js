@@ -14,6 +14,7 @@ Dbmng.Crud = Class.extend({
 		//the ready variable can be used to check if it is ready the Crud to create the table)
     this.ready=true;
     this.crud_success = options.crud_success;
+    this.form_ready = options.form_ready;
     if(!options.aParam){
       options.aParam={};
     }
@@ -260,6 +261,9 @@ Dbmng.Crud = Class.extend({
   deleteRecord: function (div_id, key){
     var self=this;
     this.api.delete({key:key, success:function(data){
+      if(typeof self.crud_success=='function'){
+        self.crud_success('delete', data);
+      }        
       self.createTable({div_id:div_id});
     }});
   },
@@ -274,6 +278,10 @@ Dbmng.Crud = Class.extend({
     }
     
     jQuery(div_id).html(self.form.createForm(aRecord));
+    
+    if(typeof self.form_ready=='function'){
+      self.form_ready('insert', this.form);
+    }
 
     var label_save=self.aParam.ui.btn_save.label;
     var opt_save=self.aParam.ui.btn_save;
@@ -283,8 +291,7 @@ Dbmng.Crud = Class.extend({
       self.api.insert({data:self.form.getValue(),success:function(data){
         console.log(self);
         if(typeof self.crud_success=='function'){
-          
-            self.crud_success('insert', data);
+          self.crud_success('insert', data);
         }        
         
         jQuery(div_id).html('');
@@ -298,7 +305,11 @@ Dbmng.Crud = Class.extend({
     var aRecord = this.getARecord(key,aData);
 
     jQuery(div_id).html(this.form.createForm(aRecord));
-
+    
+    if(typeof self.form_ready=='function'){
+      self.form_ready('update', this.form);
+    }
+    
     var label_save=self.aParam.ui.btn_save.label;
     var opt_save=self.aParam.ui.btn_save;
 
@@ -313,6 +324,9 @@ Dbmng.Crud = Class.extend({
     var button = self.theme.getButton(label_save, opt_save);
     jQuery(button).click(function(){
       self.api.update({key:key,data:self.form.getValue(),success:function(data){
+        if(typeof self.crud_success=='function'){
+          self.crud_success('update', data);
+        }        
         jQuery(div_id).html('');
         self.createTable({div_id:div_id});
       }});
@@ -386,6 +400,10 @@ Dbmng.Crud = Class.extend({
           jQuery(v).find('select').width(listWidth[k]);
         }
       });
+    
+    if(typeof self.form_ready=='function'){
+      self.form_ready('update_inline', this.form);
+    }
 
 
     var label_save=self.aParam.ui.btn_save.label;
@@ -394,6 +412,9 @@ Dbmng.Crud = Class.extend({
     var button=self.theme.getButton(label_save, opt_save);
     jQuery(button).click(function(){
       self.api.update({key:key,data:self.form.getValue(),success:function(data){
+        if(typeof self.crud_success=='function'){
+          self.crud_success('update', data);
+        }        
         jQuery('button').removeAttr('disabled');
         jQuery(div_id).html('');
         self.createTable({div_id:div_id});

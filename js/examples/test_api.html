@@ -117,7 +117,12 @@ function test_base(){
         url:'/dbmng2/api/test', user:'test', password:'test',
 				success:function(self){
 					self.createTable({div_id:'#test_table'});
+				},
+				form_ready: function(pippo, form){
+          alert("Test!" + pippo);
+          console.log(form);
 				}
+				
 			}
 		);
 
