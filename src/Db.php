@@ -12,7 +12,7 @@ namespace Dbmng;
 class Db {
 
 private $pdo;
-
+private $debug;
 
 		/////////////////////////////////////////////////////////////////////////////
 		// DB()
@@ -23,7 +23,13 @@ private $pdo;
 		*/
     public function __construct($pdo)
     {
-			$this->pdo=$pdo;
+      $this->pdo=$pdo;
+      $this->debug = false;
+    }
+
+    public function setDebug($debug)
+    {
+      $this->debug=$debug;
     }
 
 
@@ -79,7 +85,10 @@ private $pdo;
 					$ret['data']=$records;
 					$ret['colCount'] = $res0->columnCount();
 					$ret['rowCount'] = $res0->rowCount();
-
+          if( $this->debug )
+            {
+              $ret['sql'] = $this->getSQL($sQuery, $aVars);
+            }
         }
 				catch (\PDOException $e)
         {
@@ -114,6 +123,10 @@ private $pdo;
 
 					$ret['ok']=true;
 					$ret['inserted_id'] = $id;
+          if( $this->debug )
+            {
+              $ret['sql'] = $this->getSQL($sQuery, $aVars);
+            }
         }
 				catch (\PDOException $e)
         {
@@ -144,6 +157,10 @@ private $pdo;
 					$dbh->commit();
 
 					$ret['ok']=true;
+          if( $this->debug )
+            {
+              $ret['sql'] = $this->getSQL($sQuery, $aVars);
+            }
         }
 				catch (\PDOException $e)
         {
