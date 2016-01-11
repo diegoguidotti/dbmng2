@@ -43,6 +43,10 @@ Dbmng.Crud = Class.extend({
 		  this.api=new  Dbmng.Api({aForm:this.aForm, url:this.url, user:options.user, password:options.password});
 
 		  this.pk=this.form.getPkField();
+      
+      if( typeof options.success=='function'){
+        options.success(this);
+      }
 		}
 		else{
 			//there are o aForm; call the api to get the aForm

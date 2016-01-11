@@ -58,6 +58,9 @@ Dbmng.Form = Class.extend({
       else if( wt == 'numeric' ) {
         w = new Dbmng.NumericWidget(widget_opt);
       }
+      else if( wt == 'autocomplete' ) {
+        w = new Dbmng.AutocompleteWidget(widget_opt);
+      }
       else{
           w = new Dbmng.AbstractWidget(widget_opt);
       }

@@ -76,7 +76,9 @@ module.exports = function(grunt) {
 					//unused:true,
 
         globals: {
-          'jQuery': true
+          'jQuery': true,
+          'Bloodhound': true,
+          'Handlebars': true,
         },
       },
       beforeconcat: [

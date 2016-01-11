@@ -3,6 +3,8 @@
 <head>
   <title>DBMNG Test Suite</title>
   <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
   <script type="text/javascript" src="../src/Class.js"></script>
   <script type="text/javascript" src="../src/Dbmng.js"></script> 
   <script type="text/javascript" src="../src/Form.js"></script> 
@@ -18,6 +20,8 @@
   <script type="text/javascript" src="../src/widgets/PasswordWidget.js"></script>
   <script type="text/javascript" src="../src/widgets/CheckboxWidget.js"></script>
   <script type="text/javascript" src="../src/widgets/SelectNMWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/HiddenWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/AutocompleteWidget.js"></script>
 </head>
 <body>
   <h1>Base</h1>
@@ -54,6 +58,7 @@
         name: {label: 'Name', type: 'varchar', 'default': 'Paperino', nullable: false},
 
         month: {label: 'Mounth', widget:'select', type: 'int', voc_val: {1:'January', 2:'February'}},
+        montha: {label: 'Mounth auto', widget:'select', type: 'int', autocomplete_url: 'http://localhost/registro/api?search_citta=%QUERY', autocomplete_fieldname:'citta', autocomplete_key:'cod_istat', not_found: 'Nessuna città trovata'},
         passwd: {label: 'Password', type: 'varchar', widget:'password', classes: 'aaa bbb ccc'},
         check: {label: 'Check', type: 'int', widget:'checkbox'},
         multiple: {label: 'Multiple', type: 'int', widget:'select_nm', voc_val: {1:'January', 2:'February', 3:'March', 4:'April'}},
@@ -85,7 +90,9 @@
 
     var w6=new Dbmng.SelectNMWidget({field:'multiplec', aField:aForm.fields.multiplec, theme:theme_boot});
     jQuery('#test_widget_select').append(w6.createField());
-
+    
+    var w7 = new Dbmng.AutocompleteWidget({field:'montha', aField:aForm.fields.montha, theme:theme_boot});
+    jQuery('#test_widget_select').append(w7.createField("028001"));
 
     var form=new Dbmng.Form({aForm:aForm, aParam:aParam, theme:theme_boot});
     jQuery('#test_dbmng').append(form.createForm(obj));
