@@ -7,11 +7,11 @@
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
   <script type="text/javascript" src="../src/Class.js"></script>
-  <script type="text/javascript" src="../src/Dbmng.js"></script> 
-  <script type="text/javascript" src="../src/Form.js"></script> 
-  <script type="text/javascript" src="../src/Api.js"></script> 
-  <script type="text/javascript" src="../src/Crud.js"></script> 
-  <script type="text/javascript" src="../src/Ie9.js"></script> 
+  <script type="text/javascript" src="../src/Dbmng.js"></script>
+  <script type="text/javascript" src="../src/Form.js"></script>
+  <script type="text/javascript" src="../src/Api.js"></script>
+  <script type="text/javascript" src="../src/Crud.js"></script>
+  <script type="text/javascript" src="../src/Ie9.js"></script>
   <script type="text/javascript" src="../src/Utilities.js"></script>
   <script type="text/javascript" src="../src/themes/AbstractTheme.js"></script>
   <script type="text/javascript" src="../src/themes/BootstrapTheme.js"></script>
@@ -28,10 +28,10 @@
 <body>
   <h1>Base</h1>
     <div id="test_base"></div>
-  
+
   <h1>Botstrap</h1>
     <div id="test_bootstrap"></div>
-  
+
   <h1>test widgets</h1>
     <div id="test_widget"></div>
     <form><div id="test_widget_select"></div></form>
@@ -43,20 +43,20 @@
     <div id="test_dbmng2"></div>
   <script>
 
-    var options={'value':'Ciao', 'label':'saluto'}; 
-    
+    var options={'value':'Ciao', 'label':'saluto'};
+
     //Test per i temi puri
     var theme=new Dbmng.AbstractTheme();
     jQuery('#test_base').html(theme.getInput(options));
-    
+
     // Test for Bootstrap theme
     var theme_boot=new Dbmng.BootstrapTheme();
     jQuery('#test_bootstrap').html(theme_boot.getInput(options));
 
-    var aForm = { table_name: 'test', 
-      primary_key: Array('id'), 
+    var aForm = { table_name: 'test',
+      primary_key: Array('id'),
       fields: {
-        id: {label: 'ID', type: 'int', key: 0, nullable: false}, 
+        id: {label: 'ID', type: 'int', key: 0, nullable: false},
         name: {label: 'Name', type: 'varchar', 'default': 'Paperino', nullable: false},
 
         month: {label: 'Mounth', widget:'select', type: 'int', voc_val: {1:'January', 2:'February'}},
@@ -65,22 +65,22 @@
         check: {label: 'Check', type: 'int', widget:'checkbox'},
         multiple: {label: 'Multiple', type: 'int', widget:'select_nm', voc_val: {1:'January', 2:'February', 3:'March', 4:'April'}},
         multiplec: {label: 'Multiple checkbox', type: 'int', widget:'select_nm', voc_val: {1:'January', 2:'February', 3:'March', 4:'April'}, out_type:'checkbox'},
-        data: {label: 'Data', type: 'date', widget:'date'}
+        data: {label: 'Data', type: 'date', widget:'date', date_format_view:'MM d, yy'}
       }
     };
-    
+
     // parameters in aParam array act globally and not punctual.
     var aParam = { hide_label: false, html5_input: true };
-    
+
     var obj = {id:2, name:'Diego', multiple: ['1','2'], month:'1'};
 
     var w1=new Dbmng.AbstractWidget({field:'id', aField:aForm.fields.id, theme:theme_boot});
 
     jQuery('#test_widget_select').append(w1.createField(obj.id));
-    
+
     var w2=new Dbmng.SelectWidget({field:'month', aField:aForm.fields.month, theme:theme_boot});
     jQuery('#test_widget_select').append(w2.createField(obj.month));
-    
+
     var w3=new Dbmng.AbstractWidget({field:'name', aField:aForm.fields.name, theme:theme_boot});
     jQuery('#test_widget_select').append(w3.createField(obj.name));
 
@@ -92,23 +92,23 @@
 
     var w6=new Dbmng.SelectNMWidget({field:'multiplec', aField:aForm.fields.multiplec, theme:theme_boot});
     jQuery('#test_widget_select').append(w6.createField());
-    
+
     var w7 = new Dbmng.AutocompleteWidget({field:'montha', aField:aForm.fields.montha, theme:theme_boot});
     jQuery('#test_widget_select').append(w7.createField());
 
     var w8 = new Dbmng.DateWidget({field:'data', aField:aForm.fields.data, theme:theme_boot});
-    jQuery('#test_widget_select').append(w8.createField());
+    jQuery('#test_widget_select').append(w8.createField('2015-12-31'));
 
     var form=new Dbmng.Form({aForm:aForm, aParam:aParam, theme:theme_boot});
     jQuery('#test_dbmng').append(form.createForm(obj));
 
 
 
-		var aForm2 = { table_name: 'test', 
-      primary_key: Array('id'), 
+		var aForm2 = { table_name: 'test',
+      primary_key: Array('id'),
       fields: {
-        id: {label: 'ID', type: 'int', key: 0, nullable: false}, 
-        name: {label: 'Name', type: 'varchar', 'default': 'Paperino', nullable: false}      
+        id: {label: 'ID', type: 'int', key: 0, nullable: false},
+        name: {label: 'Name', type: 'varchar', 'default': 'Paperino', nullable: false}
 			}
     };
 		var form2=new Dbmng.Form({aForm:aForm2, aParam:aParam, theme:theme_boot});
@@ -116,7 +116,7 @@
 
 		var api=new  Dbmng.Api({aForm:aForm2, url:'/dbmng2/api/test', user:'test', password:'test'});
 
-		
+
 
 		function updateRecord(){
 			value=form2.getValue();
@@ -145,37 +145,37 @@
 /*
     api.select({success: function(data){
 				console.log("Select Before");
-				console.log(data.data[0]);				
+				console.log(data.data[0]);
 				api.update({key:1,data:{'id':1,'name':'Test name:'+new Date()},success:function(data){
-					console.log("Updates");				
-					console.log(data);				
+					console.log("Updates");
+					console.log(data);
 			    api.select({success: function(data){
-						console.log("Select After");				
-						console.log(data.data[0]);				
+						console.log("Select After");
+						console.log(data.data[0]);
 
 					}});
-					
+
 				}});
 		}});
 */
 
 /*
-   var theme_boot=new Dbmng.BootstrapTheme(); 
-   var w1=new Dbmng.AbstractWidget(); 
+   var theme_boot=new Dbmng.BootstrapTheme();
+   var w1=new Dbmng.AbstractWidget();
    jQuery('#test_widget').append(w1.createWidget(
       {theme:theme, aField:aForm.fields.id}
-    )); 
+    ));
 
-   var w2=new Dbmng.NumericWidget(); 
+   var w2=new Dbmng.NumericWidget();
     jQuery('#test_widget').append(w2.createWidget(
       {theme:theme, aField:aForm.fields.name}
-    )); 
-  */  
+    ));
+  */
 //     var opt2 = {label: 'Months:', value:2, voc_val: {1:'January', 2:'February'}};
 //     var w3 = new Dbmng.AbstractTheme();
-//     jQuery('#test_widget_select').append(w3.getLabel( opt2 )); 
-//     jQuery('#test_widget_select').append(w3.getSelect( opt2 )); 
-    
+//     jQuery('#test_widget_select').append(w3.getLabel( opt2 ));
+//     jQuery('#test_widget_select').append(w3.getSelect( opt2 ));
+
 
   </script>
 </body>
