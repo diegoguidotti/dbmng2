@@ -3,6 +3,7 @@
 <head>
   <title>DBMNG Test Suite</title>
   <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
   <script type="text/javascript" src="../src/Class.js"></script>
@@ -22,6 +23,7 @@
   <script type="text/javascript" src="../src/widgets/SelectNMWidget.js"></script>
   <script type="text/javascript" src="../src/widgets/HiddenWidget.js"></script>
   <script type="text/javascript" src="../src/widgets/AutocompleteWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/DateWidget.js"></script>
 </head>
 <body>
   <h1>Base</h1>
@@ -62,8 +64,8 @@
         passwd: {label: 'Password', type: 'varchar', widget:'password', classes: 'aaa bbb ccc'},
         check: {label: 'Check', type: 'int', widget:'checkbox'},
         multiple: {label: 'Multiple', type: 'int', widget:'select_nm', voc_val: {1:'January', 2:'February', 3:'March', 4:'April'}},
-        multiplec: {label: 'Multiple checkbox', type: 'int', widget:'select_nm', voc_val: {1:'January', 2:'February', 3:'March', 4:'April'}, out_type:'checkbox'}
-
+        multiplec: {label: 'Multiple checkbox', type: 'int', widget:'select_nm', voc_val: {1:'January', 2:'February', 3:'March', 4:'April'}, out_type:'checkbox'},
+        data: {label: 'Data', type: 'date', widget:'date'}
       }
     };
     
@@ -93,6 +95,9 @@
     
     var w7 = new Dbmng.AutocompleteWidget({field:'montha', aField:aForm.fields.montha, theme:theme_boot});
     jQuery('#test_widget_select').append(w7.createField());
+
+    var w8 = new Dbmng.DateWidget({field:'data', aField:aForm.fields.data, theme:theme_boot});
+    jQuery('#test_widget_select').append(w8.createField());
 
     var form=new Dbmng.Form({aForm:aForm, aParam:aParam, theme:theme_boot});
     jQuery('#test_dbmng').append(form.createForm(obj));

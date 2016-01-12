@@ -205,28 +205,6 @@ Dbmng.AbstractTheme = Class.extend({
     return el;
   },
   
-//   getAutocomplete: function(aField) {
-//     
-//     //aField.field_type = 'hidden';
-//     
-//     var div_el = document.createElement('div');
-//     
-//     this.addClass(div_el, 'dbmng_typeahead');
-//     
-//     var elh = this.getInput(aField);
-//     
-//     var aVField = {};
-//     aVField.field = aField.field + '_view';
-//     aVField.classes = 'typeahead';
-//     
-//     var elv = this.getInput(aVField);
-//     
-//     div_el.appendChild(elh);
-//     div_el.appendChild(elv);
-//     
-//     return div_el;
-//   },
-  
   assignAttributes: function(el, aField) {
     //console.log(aField);
     //el.setAttribute('id', 'dbmng_' + aField.field);

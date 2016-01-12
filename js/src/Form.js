@@ -61,6 +61,9 @@ Dbmng.Form = Class.extend({
       else if( wt == 'autocomplete' ) {
         w = new Dbmng.AutocompleteWidget(widget_opt);
       }
+      else if( wt == 'date' ) {
+        w = new Dbmng.DateWidget(widget_opt);
+      }
       else{
           w = new Dbmng.AbstractWidget(widget_opt);
       }
