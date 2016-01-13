@@ -10,70 +10,141 @@
 
 Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
   createWidget: function(){
+    this.aField.value = this.getFieldValue();
+    if(typeof jQuery().fileupload !== 'undefined'){
+      this.aField.field_type='hidden';
+    }
+    else{
+      this.aField.field_type='file';
+    }
+    return this.theme.getInput(this.aField);
+    /*
+    var self=this;
+
+
+    var fld=this._super();
+    fld.type='file';
+    fld.name="files[]";
+    //fld.setAttribute('data-url',url);
+    fld.multiple=true;
+    return fld;
+    */
+  },
+  createField: function(data_val){
+
     var self=this;
     var url='server/php/';
     if(self.aField.url){
       url=self.aField.url;
     }
-
-    var fld=this._super();
-    fld.type='file';
-    fld.name=fld.name+"[]";
-    fld.setAttribute('data-url',url);
-    fld.multiple=true;
-    return fld;
-  },
-  createField: function(data_val){
-
-    var self=this;
-    var date_format_view='dd-mm-yy';
-    if(self.aField.date_format_view){
-      date_format_view=self.aField.date_format_view;
+    var path_file=url+"files/";
+    if(self.aField.path_file){
+      path_file=self.aField.path_file;
     }
 
+
     var el = this._super(data_val);
-    if(typeof jQuery.datepicker !== 'undefined'){
+
+
+
+    if(typeof jQuery().fileupload !== 'undefined'){
+
       var aVField = {};
-      aVField.field = this.aField.field + '_view';
+      aVField.field = this.aField.field + '_file';
 
       var elv = this.theme.getInput(aVField);
+      elv.type='file';
+      elv.name="files[]";
+
+
+      var opt={};
+      var btn_class="btn btn-success";
+      var btn_icon="glyphicon glyphicon-plus";
+      var btn_label="Select file...";
+      var uploading_text="Uploading...";
+
+      opt.class=btn_class;
+      opt.icon=btn_icon;
+      opt.label=btn_label;
+
+      el.appendChild(this.theme.createFormUpload(elv,btn_label, opt));
+
+      el.appendChild(document.createElement('br'));
+      el.appendChild(document.createElement('br'));
+
+      var el_progress=this.theme.createProgressBar({class:"progress"});
+      el.appendChild(el_progress);
+
+      var el_info=document.createElement('div');
+      this.theme.addClass(el_info,"dbmng_fileupload_container");
+      el.appendChild(el_info);
+
+      var info=jQuery(el_info);
       if(typeof data_val !== 'undefined' && data_val!=='' && data_val !==null ){
-        elv.value=jQuery.datepicker.formatDate(date_format_view,jQuery.datepicker.parseDate( "yy-mm-dd", data_val ));
+        self.addFile(info, path_file, data_val);
       }
 
-      jQuery(elv).blur(function(){
-        console.log(jQuery(elv).val());
-        if( jQuery(elv).val() === '' ) {
-          self.widget.value = "";
-        }
 
-      });
-      jQuery(elv).datepicker({altField: jQuery(self.widget),
-        dateFormat:date_format_view , altFormat:'yy-mm-dd'
-      });
 
-      el.appendChild(elv);
+      jQuery(elv).fileupload({
+          url: url,
+          dataType: 'json',
+          add: function (e, data) {
+            console.log(data);
+            info.html(uploading_text);
+            data.submit();
+          },
+          progressall: function (e, data) {
+              var progress = parseInt(data.loaded / data.total * 100, 10);
+              console.log(progress);
+              jQuery(el_progress).find(".progress-bar").css(
+                  'width',
+                  progress + '%'
+              );
+          },
+          fail:function (e, data) {
+            console.log(data);
+            info.html(self.theme.alertMessage("Error"));
+          },
+          done: function (e, data) {
+
+            console.log(data);
+            if(data.result.files.length>0){
+              info.html("");
+              jQuery.each(data.result.files, function (index, file) {
+                if(file.error){
+                  info.append(self.theme.alertMessage(file.error));
+                }
+                else{
+                  self.addFile(info, path_file, file.name);
+
+
+
+                  self.setValue(file.name);
+                }
+              });
+            }
+            else{
+                info.html("");
+                jQuery.each(data.messages, function(k,v){
+                  info.append(self.theme.alertMessage(v));
+                });
+
+            }
+          }
+      });
     }
 
     return el;
+  },
+  addFile:function(info, path_file, file){
+    info.append("<a target='_NEW' class='dbmng_fileupload_filelink' href='"+path_file+file+"'>"+file+"</a>");
+    var del=this.theme.getButton("delete",{type:'span',icon:"glyphicon glyphicon-remove"});
+    info.append(del);
+
+    jQuery(del).click(function(){
+      info.html("");
+      self.setValue("");
+    });
   }
 });
-
-/*
-<input id="fileupload" type="file" name="files[]" data-url="server/php/" multiple>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="js/vendor/jquery.ui.widget.js"></script>
-<script src="js/jquery.iframe-transport.js"></script>
-<script src="js/jquery.fileupload.js"></script>
-<script>
-$(function () {
-    $('#fileupload').fileupload({
-        dataType: 'json',
-        done: function (e, data) {
-            $.each(data.result.files, function (index, file) {
-                $('<p/>').text(file.name).appendTo(document.body);
-            });
-        }
-    });
-});
-*/

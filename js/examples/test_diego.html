@@ -4,6 +4,11 @@
   <title>DBMNG Test Suite</title>
   <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
 
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+
   <!-- for autocomplete and file upload -->
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script>
 
@@ -14,6 +19,8 @@
   <!-- for file upload -->
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.iframe-transport.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.fileupload.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/css/jquery.fileupload.min.css">
+
 
 
   <script type="text/javascript" src="../src/Class.js"></script>
@@ -77,7 +84,7 @@
         multiple: {label: 'Multiple', type: 'int', widget:'select_nm', voc_val: {1:'January', 2:'February', 3:'March', 4:'April'}},
         multiplec: {label: 'Multiple checkbox', type: 'int', widget:'select_nm', voc_val: {1:'January', 2:'February', 3:'March', 4:'April'}, out_type:'checkbox'},
         data: {label: 'Data', type: 'date', widget:'date', date_format_view:'MM d, yy'},
-        file: {label: 'File', type: 'varchar', widget:'file'}
+        file: {label: 'File', type: 'varchar', widget:'file', url:'/dbmng2/api/file', path_file:'/varie/files/'}
       }
     };
 
@@ -112,7 +119,7 @@
     jQuery('#test_widget_select').append(w8.createField('2015-12-31'));
 
     var w9 = new Dbmng.FileWidget({field:'file', aField:aForm.fields.file, theme:theme_boot});
-    jQuery('#test_widget_select').append(w9.createField());
+    jQuery('#test_widget_select').append(w9.createField('mappa-1.png'));
 
     var form=new Dbmng.Form({aForm:aForm, aParam:aParam, theme:theme_boot});
     jQuery('#test_dbmng').append(form.createForm(obj));

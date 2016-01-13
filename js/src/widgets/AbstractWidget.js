@@ -79,11 +79,11 @@ Dbmng.AbstractWidget = Class.extend({
   isVisible: function(){
     return true;
   },
-  
+
   skipInTable: function() {
     return (this.aField.skip_in_tbl == 1 ? true : false);
   },
-  
+
   getTextLabel: function(){
     if(this.aField.label)
       return this.aField.label;
@@ -120,6 +120,17 @@ Dbmng.AbstractWidget = Class.extend({
   onFocus: function(event){
     console.log('focus');
   } ,
+  setValue: function(val){
+    var ret=0;
+    if(this.widget){
+      this.widget.value=val;
+      ret=1;
+    }
+    else{
+      console.log("the widget it has not been created");
+    }
+    return ret;
+  },
   getValue: function(){
     if(this.widget){
       return this.widget.value;

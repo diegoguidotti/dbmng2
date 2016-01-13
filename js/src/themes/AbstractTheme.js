@@ -204,7 +204,7 @@ Dbmng.AbstractTheme = Class.extend({
     }
     return el;
   },
-  
+
   assignAttributes: function(el, aField) {
     //console.log(aField);
     //el.setAttribute('id', 'dbmng_' + aField.field);
@@ -231,8 +231,13 @@ Dbmng.AbstractTheme = Class.extend({
   },
 	addClass: function(el, className){
       var space = "";
-      if( el.className.length > 0 ) {
-        space = " ";
+      if(el.className){
+        if( el.className.length > 0 ) {
+          space = " ";
+        }
+      }
+      else{
+        el.className ="";
       }
       el.className = el.className + space + className;
 	},
@@ -334,8 +339,12 @@ Dbmng.AbstractTheme = Class.extend({
     if( !opt ) {
       opt = {};
     }
+    var type='button';
+    if(opt.type){
+      type=opt.type;
+    }
 
-		var el = document.createElement('button');
+		var el = document.createElement(type);
     if(opt.class){
       this.addClass(el, opt.class);
     }
@@ -347,6 +356,12 @@ Dbmng.AbstractTheme = Class.extend({
       this.addClass(icn,opt.icon);
       this.addTitle(icn, text);
       el.appendChild(icn);
+
+      if(opt.label){
+        var span=document.createElement('span');
+        span.appendChild(document.createTextNode(" "+opt.label));
+        el.appendChild(span);
+      }
     }
     else{
       el.appendChild(document.createTextNode(text));
@@ -358,5 +373,46 @@ Dbmng.AbstractTheme = Class.extend({
     this.addClass(el, 'dbmng_alert');
     el.appendChild(document.createTextNode(text));
     return el;
+  },
+  createFormUpload: function(elv, label, opt){
+
+    //var el = document.createElement('button');
+    //this.addClass(el,'fileinput-button');
+    if(!opt){
+      opt={};
+    }
+    if(!opt.class){
+      opt.class="";
+    }
+    var el=this.getButton(label,opt);
+    this.addClass(el,"fileinput-button");
+    el.appendChild(elv);
+
+    return el;
+
+
+  },
+  createProgressBar: function(opt){
+
+
+    if(!opt){
+      opt={};
+    }
+    if(!opt.class){
+      opt.class="";
+    }
+    var el = document.createElement('div');
+    this.addClass(el,opt.class);
+
+    var pr= document.createElement('div');
+    this.addClass(pr,"progress-bar progress-bar-success");
+    //pr.style.cssText="width:100%";
+    el.appendChild(pr);
+
+    return el;
+
+
   }
+
+
 });
