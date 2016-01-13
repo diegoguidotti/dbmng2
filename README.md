@@ -93,6 +93,9 @@ Verify that the follow link respond
 If the respond is not working install
 	
 	$ sudo a2enmod rewrite
+	
+The uploader need also the header apache2 module	
+	$ sudo a2enmod header
 
 Create a file in apache2 conf-enabled with the following content:
 
