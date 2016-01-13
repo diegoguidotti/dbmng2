@@ -3,9 +3,19 @@
 <head>
   <title>DBMNG Test Suite</title>
   <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+
+  <!-- for autocomplete and file upload -->
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script>
+
+  <!-- for autocomplete -->
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+
+  <!-- for file upload -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.iframe-transport.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.fileupload.min.js"></script>
+
+
   <script type="text/javascript" src="../src/Class.js"></script>
   <script type="text/javascript" src="../src/Dbmng.js"></script>
   <script type="text/javascript" src="../src/Form.js"></script>
@@ -24,6 +34,7 @@
   <script type="text/javascript" src="../src/widgets/HiddenWidget.js"></script>
   <script type="text/javascript" src="../src/widgets/AutocompleteWidget.js"></script>
   <script type="text/javascript" src="../src/widgets/DateWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/FileWidget.js"></script>
 </head>
 <body>
   <h1>Base</h1>
@@ -60,12 +71,13 @@
         name: {label: 'Name', type: 'varchar', 'default': 'Paperino', nullable: false},
 
         month: {label: 'Mounth', widget:'select', type: 'int', voc_val: {1:'January', 2:'February'}},
-        montha: {label: 'Mounth auto', widget:'select', type: 'int', autocomplete_url: 'http://localhost/registro/api?search_citta=%QUERY', autocomplete_fieldname:'citta', autocomplete_key:'cod_istat', not_found: 'Nessuna città trovata'},
+        montha: {label: 'Mounth auto', widget:'select', type: 'int', url: 'http://localhost/registro/api?search_citta=%QUERY', autocomplete_fieldname:'citta', autocomplete_key:'cod_istat', not_found: 'Nessuna città trovata'},
         passwd: {label: 'Password', type: 'varchar', widget:'password', classes: 'aaa bbb ccc'},
         check: {label: 'Check', type: 'int', widget:'checkbox'},
         multiple: {label: 'Multiple', type: 'int', widget:'select_nm', voc_val: {1:'January', 2:'February', 3:'March', 4:'April'}},
         multiplec: {label: 'Multiple checkbox', type: 'int', widget:'select_nm', voc_val: {1:'January', 2:'February', 3:'March', 4:'April'}, out_type:'checkbox'},
-        data: {label: 'Data', type: 'date', widget:'date', date_format_view:'MM d, yy'}
+        data: {label: 'Data', type: 'date', widget:'date', date_format_view:'MM d, yy'},
+        file: {label: 'File', type: 'varchar', widget:'file'}
       }
     };
 
@@ -98,6 +110,9 @@
 
     var w8 = new Dbmng.DateWidget({field:'data', aField:aForm.fields.data, theme:theme_boot});
     jQuery('#test_widget_select').append(w8.createField('2015-12-31'));
+
+    var w9 = new Dbmng.FileWidget({field:'file', aField:aForm.fields.file, theme:theme_boot});
+    jQuery('#test_widget_select').append(w9.createField());
 
     var form=new Dbmng.Form({aForm:aForm, aParam:aParam, theme:theme_boot});
     jQuery('#test_dbmng').append(form.createForm(obj));

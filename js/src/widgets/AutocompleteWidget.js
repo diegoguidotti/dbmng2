@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////
 // AbstractWidget
 // 12 November 2015
-// 
+//
 //
 // Developed by :
 // Diego Guidotti
@@ -17,14 +17,14 @@ Dbmng.AutocompleteWidget = Dbmng.AbstractWidget.extend({
   createField: function(data_val){
     var self=this;
     var el = this._super(data_val);
-    
+
     var aVField = {};
     aVField.field = this.aField.field + '_view';
     aVField.classes = 'typeahead';
-    
+
     var elv = this.theme.getInput(aVField);
     el.appendChild(elv);
-    
+
     var provider = new Bloodhound({
       datumTokenizer: function (data) {
           console.log('datumToken');
@@ -33,7 +33,7 @@ Dbmng.AutocompleteWidget = Dbmng.AbstractWidget.extend({
       },
       queryTokenizer: Bloodhound.tokenizers.whitespace,
       remote: {
-        url: self.aField.autocomplete_url, 
+        url: self.aField.url,
         wildcard: '%QUERY',
         transform: function (data){
           var label=[];
@@ -44,19 +44,19 @@ Dbmng.AutocompleteWidget = Dbmng.AbstractWidget.extend({
         }
       }
     });
-    
+
     if( data_val !== '' && data_val !== null ) {
       if( data_val !== '' ) {
         provider.search(data_val,function(d){self.autocomplete_get(d,elv);},function(d){self.autocomplete_get(d,elv);});
       }
       console.log(data_val);
     }
-    
+
     var fkey = "key";
     if( self.aField.autocomplete_key ) {
       fkey = self.aField.autocomplete_key;
     }
-    
+
     var flabel = "label";
     if( self.aField.autocomplete_fieldname ) {
       flabel = self.aField.autocomplete_fieldname;
@@ -81,14 +81,14 @@ Dbmng.AutocompleteWidget = Dbmng.AbstractWidget.extend({
           suggestion: Handlebars.compile('<div>{{'+flabel+'}}</div>')
         }
       });
-    
+
     jQuery(elv).bind('typeahead:select', function(ev, suggestion){
       console.log(self);
       self.widget.value = suggestion[fkey];
     });
     return el;
   },
-  
+
   autocomplete_get: function(val,elv){
     console.log(val);
     if(val.length>0){

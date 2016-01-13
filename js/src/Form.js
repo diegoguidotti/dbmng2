@@ -64,6 +64,9 @@ Dbmng.Form = Class.extend({
       else if( wt == 'date' ) {
         w = new Dbmng.DateWidget(widget_opt);
       }
+      else if( wt == 'file' ) {
+        w = new Dbmng.FileWidget(widget_opt);
+      }
       else{
           w = new Dbmng.AbstractWidget(widget_opt);
       }
@@ -100,7 +103,7 @@ Dbmng.Form = Class.extend({
     for( var i= 0; i < aData.length; i++ ){
       var ret = {};
       for(var key in this.aForm.fields){
-        if(this.widgets[key].isVisible() && !this.widgets[key].skipInTable()){ 
+        if(this.widgets[key].isVisible() && !this.widgets[key].skipInTable()){
           ret[key]=this.widgets[key].convert2html(aData[i][key]);
         }
 //         if( !this.widgets[key].skipInTable() ){

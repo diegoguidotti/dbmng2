@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////
-// DateWidget
+// FileWidget
 // 12 November 2015
 //
 //
@@ -8,24 +8,27 @@
 // Michele Mammini
 /////////////////////////////////////////////////////////////////////
 
-Dbmng.DateWidget = Dbmng.AbstractWidget.extend({
+Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
   createWidget: function(){
-    this.aField.value = this.getFieldValue();
-    if(typeof jQuery.datepicker !== 'undefined'){
-      this.aField.field_type='hidden';
+    var self=this;
+    var url='server/php/';
+    if(self.aField.url){
+      url=self.aField.url;
     }
-    else{
-      this.aField.field_type='date';
-    }
-    return this.theme.getInput(this.aField);
+
+    var fld=this._super();
+    fld.type='file';
+    fld.name=fld.name+"[]";
+    fld.setAttribute('data-url',url);
+    fld.multiple=true;
+    return fld;
   },
   createField: function(data_val){
 
     var self=this;
     var date_format_view='dd-mm-yy';
-    console.log(self);
     if(self.aField.date_format_view){
-      date_format_view=self.aField.date_format_view;      
+      date_format_view=self.aField.date_format_view;
     }
 
     var el = this._super(data_val);
@@ -53,14 +56,24 @@ Dbmng.DateWidget = Dbmng.AbstractWidget.extend({
     }
 
     return el;
-  },
-  getValue: function() {
-    var el = this._super();
-		if(el===''){
-			return null;
-		}
-		else{
-				return el;
-			}
-		}
+  }
 });
+
+/*
+<input id="fileupload" type="file" name="files[]" data-url="server/php/" multiple>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="js/vendor/jquery.ui.widget.js"></script>
+<script src="js/jquery.iframe-transport.js"></script>
+<script src="js/jquery.fileupload.js"></script>
+<script>
+$(function () {
+    $('#fileupload').fileupload({
+        dataType: 'json',
+        done: function (e, data) {
+            $.each(data.result.files, function (index, file) {
+                $('<p/>').text(file.name).appendTo(document.body);
+            });
+        }
+    });
+});
+*/
