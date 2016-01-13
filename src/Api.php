@@ -154,8 +154,38 @@ class Api {
 
       } );
 
+
+			$router->post('/api/'.$tablename.'/file/*', function($field) use($dbmng) {
+
+				$files= $this->doUploadFile($dbmng,$field);
+				if($files['ok']){
+					return json_encode(array('files' => $files['files']));
+				}
+				else{
+						return json_encode($files);
+				}
+
+			});
+
 	}
 
+
+	function doUploadFile($dbmng,$field){
+
+		$allowed=$dbmng->isAllowed('update');
+		$allowed2=$dbmng->isAllowed('insert');
+
+		//if($allowed['ok'] || $allowed2['ok'])
+		if(true)
+			{
+				return $dbmng->uploadFile($field);
+			}
+		else
+			{
+				http_response_code($allowed['code']);
+				return ($allowed);
+			}
+	}
 
 	function doDelete($dbmng, $id_value){
 		    $allowed=$dbmng->isAllowed('delete');
@@ -280,7 +310,7 @@ class Api {
           {
             $aForm = $dbmng->getaForm();
             $aFormParams = $sanitize['aFormParams'];
-            
+
             if( !is_null($id_value) )
               {
                 // get the info from aForm array

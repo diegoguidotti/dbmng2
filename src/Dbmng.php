@@ -483,6 +483,84 @@ private $prepare;
 	}
 
 
+function uploadFile($field){
+
+	$aForm  = $this->aForm;
+	$aParam = $this->aParam;
+	$ok=false;
+	$message="";
+	$ret=array();
+
+
+	if(isset($aForm['fields'][$field])){
+		$aField=$aForm['fields'][$field];
+		if($aField['widget']=='file'){
+			$ok=true;
+
+		}
+		else{
+			$message="The widget is not file";
+		}
+	}
+	else{
+		$message="The field does not exist";
+	}
+
+	if($ok){
+
+		$server_path='/var/www/dbmng2/files';
+		if(isset($aField['server_path'])){
+			$server_path=$aField['server_path'];
+		}
+
+
+		// Simple validation (max file size 2MB and only two allowed mime types)
+		$validator = new \FileUpload\Validator\Simple(1024 * 1024 * 20, ['image/png', 'image/jpg', 'text/plain','application/pdf']);
+
+		/**
+		*   For more flexibility, the simple Validator has been broken down since the size validator might not always be needed..
+
+				$mimeTypeValidator = new \FileUpload\Validator\MimeTypeValidator(["image/png", "image/jpeg"]);
+
+				$sizeValidator = new \FileUpload\Validator\SizeValidator("3M", "1M"); //the 1st parameter is the max size while the 2nd id the min size
+
+		**/
+
+		// Simple path resolver, where uploads will be put
+		$pathresolver = new \FileUpload\PathResolver\Simple($server_path);
+
+		// The machine's filesystem
+		$filesystem = new \FileUpload\FileSystem\Simple();
+
+		// FileUploader itself
+		$fileupload = new \FileUpload\FileUpload($_FILES['files'], $_SERVER);
+
+		// Adding it all together. Note that you can use multiple validators or none at all
+		$fileupload->setPathResolver($pathresolver);
+		$fileupload->setFileSystem($filesystem);
+		$fileupload->addValidator($validator);
+
+		// Doing the deed
+		list($files, $headers) = $fileupload->processAll();
+
+		// Outputting it, for example like this
+		foreach($headers as $header => $value) {
+			header($header . ': ' . $value);
+		}
+
+		$ret['ok']=$ok;
+		$ret['files']=$files;
+
+
+	}
+	else{
+		$ret['ok']=$ok;
+		$ret['message']=$message;
+	}
+
+	return $ret;
+}
+
 	/////////////////////////////////////////////////////////////////////////////
 	// insert_nm
 	// ======================

@@ -8,6 +8,19 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
+  <!-- for autocomplete and file upload -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script>
+
+  <!-- for autocomplete -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+
+  <!-- for file upload -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.iframe-transport.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.fileupload.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/css/jquery.fileupload.min.css">
+
+
   <script type="text/javascript" src="../src/Class.js"></script>
   <script type="text/javascript" src="../src/Dbmng.js"></script>
   <script type="text/javascript" src="../src/Api.js"></script>
@@ -27,6 +40,7 @@
   <script type="text/javascript" src="../src/widgets/SelectNMWidget.js"></script>
   <script type="text/javascript" src="../src/widgets/HiddenWidget.js"></script>
   <script type="text/javascript" src="../src/widgets/AutocompleteWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/FileWidget.js"></script>
   <script type="text/javascript" src="../src/Defaults.js"></script>
 </head>
 <body>
@@ -120,10 +134,10 @@ function test_base(){
 					self.createTable({div_id:'#test_table'});
 				},
 				form_ready: function(pippo, form){
-          alert("Test!" + pippo);
+          //alert("Test!" + pippo);
           console.log(form);
 				}
-				
+
 			}
 		);
 

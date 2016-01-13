@@ -25,7 +25,8 @@
 					'id' => array('label'   => 'ID', 'type' => 'int', 'key' => 1 ) ,
 					'name' => array('label'   => 'Name', 'type' => 'varchar'),
 					'sex' => array( 'label' => 'Sex', 'type' => 'varchar',  'widget' => 'select', 'voc_val' => array('M' =>'Male', 'F' => 'Female')),
-					'true_false' => array( 'vero/Falso' => 'Sex', 'type' => 'int')
+					'true_false' => array( 'vero/Falso' => 'Sex', 'type' => 'int'),
+					'file' => array('label'   => 'Image', 'type' => 'varchar','widget' => 'file', 'url'=>'/dbmng2/api/test/file/file','weburl_file'=>'/varie/file_upload/server/php/files/', 'server_path'=>'/var/www/varie/file_upload/server/php/files/' )
 			),
 	);
 	$aParam=array();
@@ -58,43 +59,7 @@
 	$api2=new Api($dbmng2);
 	$api2->exeRest($router);
 
-	$router->post('/api/file', function() {
-		// Simple validation (max file size 2MB and only two allowed mime types)
-    $validator = new FileUpload\Validator\Simple(1024 * 1024 * 2, ['image/png', 'image/jpg']);
 
-    /**
-    *   For more flexibility, the simple Validator has been broken down since the size validator might not always be needed..
-
-        $mimeTypeValidator = new \FileUpload\Validator\MimeTypeValidator(["image/png", "image/jpeg"]);
-
-        $sizeValidator = new \FileUpload\Validator\SizeValidator("3M", "1M"); //the 1st parameter is the max size while the 2nd id the min size
-
-    **/
-
-    // Simple path resolver, where uploads will be put
-    $pathresolver = new FileUpload\PathResolver\Simple('/var/www/varie/files');
-
-    // The machine's filesystem
-    $filesystem = new FileUpload\FileSystem\Simple();
-
-    // FileUploader itself
-    $fileupload = new FileUpload\FileUpload($_FILES['files'], $_SERVER);
-
-    // Adding it all together. Note that you can use multiple validators or none at all
-    $fileupload->setPathResolver($pathresolver);
-    $fileupload->setFileSystem($filesystem);
-    $fileupload->addValidator($validator);
-
-    // Doing the deed
-    list($files, $headers) = $fileupload->processAll();
-
-    // Outputting it, for example like this
-    foreach($headers as $header => $value) {
-      header($header . ': ' . $value);
-    }
-
-    return json_encode(array('files' => $files));
-	});
 
 
 
