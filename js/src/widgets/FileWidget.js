@@ -67,7 +67,7 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
         btn_icon = self.aField.add_icon;
       }
       if( self.aField.label_file ) {
-        btn_label = self.aField.label;
+        btn_label = self.aField.label_file;
       }
       if( self.aField.uploading_text ) {
         uploading_text = self.aField.uploading_text;
