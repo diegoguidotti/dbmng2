@@ -90,9 +90,11 @@ Verify that the follow link respond
 	$ link: http://localhost/dbmng2/api/test_base
 	$ {"0":{"id":"1","name":"Diego","sex":""},"1":{"id":"2","name":"Michele","sex":""},"test_get":1}
 
-If the respond is not working install
-	
+Apache needs some modules (for rest and file upload)
+
 	$ sudo a2enmod rewrite
+	$ sudo a2enmod header
+	$ sudo service apache2 restart
 
 Create a file in apache2 conf-enabled with the following content:
 
