@@ -357,9 +357,9 @@ Dbmng.AbstractTheme = Class.extend({
       this.addTitle(icn, text);
       el.appendChild(icn);
 
-      if(opt.label){
+      if(opt.label_file){
         var span=document.createElement('span');
-        span.appendChild(document.createTextNode(" "+opt.label));
+        span.appendChild(document.createTextNode(" "+opt.label_file));
         el.appendChild(span);
       }
     }

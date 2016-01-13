@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////
 // FileWidget
-// 12 November 2015
+// 13 January 2016
 //
 //
 // Developed by :
@@ -30,9 +30,10 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
     return fld;
     */
   },
+  
   createField: function(data_val){
-
     var self=this;
+    console.log(self);
     var url='server/php/';
     if(self.aField.url){
       url=self.aField.url;
@@ -42,10 +43,7 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
       path_file=self.aField.path_file;
     }
 
-
     var el = this._super(data_val);
-
-
 
     if(typeof jQuery().fileupload !== 'undefined'){
 
@@ -56,16 +54,28 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
       elv.type='file';
       elv.name="files[]";
 
-
       var opt={};
       var btn_class="btn btn-success";
       var btn_icon="glyphicon glyphicon-plus";
       var btn_label="Select file...";
       var uploading_text="Uploading...";
-
-      opt.class=btn_class;
-      opt.icon=btn_icon;
-      opt.label=btn_label;
+      
+      if( self.aField.class ) {
+        btn_class = self.aField.class;
+      }
+      if( self.aField.add_icon ) {
+        btn_icon = self.aField.add_icon;
+      }
+      if( self.aField.label_file ) {
+        btn_label = self.aField.label;
+      }
+      if( self.aField.uploading_text ) {
+        uploading_text = self.aField.uploading_text;
+      }
+      
+      opt.class = btn_class;
+      opt.icon  = btn_icon;
+      opt.label_file = btn_label;
 
       el.appendChild(this.theme.createFormUpload(elv,btn_label, opt));
 
@@ -83,8 +93,6 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
       if(typeof data_val !== 'undefined' && data_val!=='' && data_val !==null ){
         self.addFile(info, path_file, data_val);
       }
-
-
 
       jQuery(elv).fileupload({
           url: url,
@@ -107,7 +115,6 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
             info.html(self.theme.alertMessage("Error"));
           },
           done: function (e, data) {
-
             console.log(data);
             if(data.result.files.length>0){
               info.html("");
@@ -117,9 +124,6 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
                 }
                 else{
                   self.addFile(info, path_file, file.name);
-
-
-
                   self.setValue(file.name);
                 }
               });
@@ -129,7 +133,6 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
                 jQuery.each(data.messages, function(k,v){
                   info.append(self.theme.alertMessage(v));
                 });
-
             }
           }
       });
@@ -137,9 +140,17 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
 
     return el;
   },
+  
   addFile:function(info, path_file, file){
+    var self=this;
+
+    var btn_icon="glyphicon glyphicon-remove";
+    if( self.aField.remove_icon ) {
+      btn_icon = self.aField.remove_icon;
+    }
+
     info.append("<a target='_NEW' class='dbmng_fileupload_filelink' href='"+path_file+file+"'>"+file+"</a>");
-    var del=this.theme.getButton("delete",{type:'span',icon:"glyphicon glyphicon-remove"});
+    var del=this.theme.getButton("delete",{type:'span',icon:btn_icon});
     info.append(del);
 
     jQuery(del).click(function(){
