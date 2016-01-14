@@ -342,7 +342,7 @@ Dbmng.Crud = Class.extend({
        aRecord = this.getARecord(key,aData);
      }
      else{
-       var aRecord = {};
+       aRecord = {};
        if(this.aParam.filter){
          jQuery.each(this.aParam.filter,function(k,v){
            aRecord[k] = v;
@@ -371,6 +371,7 @@ Dbmng.Crud = Class.extend({
     jQuery(button).click(function(){
       if(type=='update'){
         self.api.update({key:key,data:self.form.getValue(),success:function(data){
+
           if(!data.ok){
             alert(data.message);
           }
