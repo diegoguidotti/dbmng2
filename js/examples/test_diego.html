@@ -94,7 +94,6 @@
     var obj = {id:2, name:'Diego', multiple: ['1','2'], month:'1'};
 
     var w1=new Dbmng.AbstractWidget({field:'id', aField:aForm.fields.id, theme:theme_boot});
-
     jQuery('#test_widget_select').append(w1.createField(obj.id));
 
     var w2=new Dbmng.SelectWidget({field:'month', aField:aForm.fields.month, theme:theme_boot});
@@ -121,9 +120,12 @@
     var w9 = new Dbmng.FileWidget({field:'file', aField:aForm.fields.file, theme:theme_boot});
     jQuery('#test_widget_select').append(w9.createField('mappa-1.png'));
 
-    var form=new Dbmng.Form({aForm:aForm, aParam:aParam, theme:theme_boot});
-    jQuery('#test_dbmng').append(form.createForm(obj));
+    jQuery('#test_widget_select').hide();
 
+    var form=new Dbmng.Form({aForm:aForm, aParam:aParam, theme:theme_boot});
+
+    var template="<div><h1>Pippo<div data-content='name'></div><table class='table' border='1'><tr><td data-content='passwd'></td><td data-content='month'></td><td data-content='data'></td></tr><tr style='height:300px'><td data-content='multiplec'></td><td data-content='multiple'></td></tr></table></div>";
+    jQuery('#test_dbmng').append(form.createForm(obj, template));
 
 
 		var aForm2 = { table_name: 'test',

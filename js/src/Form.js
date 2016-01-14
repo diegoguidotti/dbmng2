@@ -135,14 +135,36 @@ Dbmng.Form = Class.extend({
     }
 		return fields;
 	},
-  createForm: function(aData) {
+  createForm: function(aData, template) {
 
+    var fields=this.getFields(aData);
 
-    var form = this.theme.getForm();
-		var fields=this.getFields(aData);
-		for(var key in fields){
-      form.appendChild(fields[key]);
-		}
+    var normal=true;
+    var form;
+    if(typeof template!=='undefined'){
+      if(jQuery(template).length>0){
+        form=jQuery(template);
+        normal=false;
+      }
+    }
+
+    if(normal){
+      form = this.theme.getForm();
+  		for(var key in fields){
+        form.appendChild(fields[key]);
+  		}
+    }
+    else{
+      for(var key2 in fields){
+        var el=form.find('[data-content='+key2+']');
+        if(el.length===0){
+          form.append(fields[key2]);
+        }
+        else{
+          el.append(fields[key2]);
+        }
+  		}
+    }
     return form;
   }
 });

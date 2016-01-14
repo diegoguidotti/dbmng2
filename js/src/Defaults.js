@@ -8,9 +8,13 @@ Dbmng.defaults.aParam = {
     btn_edit_inline: {label:'Edit inline'},
     btn_delete: {label:'Delete'},
     btn_insert: {label:'Insert'},
-    btn_save: {label:'Save'}
+    btn_save: {label:'Save'},
+    btn_cancel: {label:'Cancel'}
   },
   user_function: {
     inline:0, upd:1, del:1, ins:1
   }
 };
+
+
+console.log(Dbmng.defaults.aParam );

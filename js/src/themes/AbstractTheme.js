@@ -252,8 +252,10 @@ Dbmng.AbstractTheme = Class.extend({
     var div = document.createElement('div');
     var el = document.createElement('table');
 		if( opt.aParam ) {
-      if( opt.aParam.ui.table_class ) {
-        this.addClass(el, opt.aParam.ui.table_class);
+      if( opt.aParam.ui ) {
+        if( opt.aParam.ui.table_class ) {
+          this.addClass(el, opt.aParam.ui.table_class);
+        }
       }
     }
     if(opt.data){

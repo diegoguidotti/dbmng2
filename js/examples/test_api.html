@@ -82,6 +82,7 @@ function test_base(){
     /* ------------
        TABLE: test
     ---------------*/
+
     Dbmng.defaults.aParam = {
       ui: {
         btn_edit: {label:'Modifica', class: 'btn-success'},
@@ -89,10 +90,12 @@ function test_base(){
         btn_delete: {label:'Elimina', class: 'btn-danger', icon: 'fa fa-trash'},
         btn_insert: {label:'Inserisci', class: 'btn-success btn-block'},
         btn_save: {label:'Salva', class: 'btn-success btn-block'},
+        btn_cancel: {label:'Annulla', class: 'btn-success btn-block'},
         table_class: 'table-hover'
       },
       user_function: {inline:1, upd:1, del:1, ins:1}
     };
+
 
 		//vecchia versione con aForm
 		/*
@@ -114,8 +117,9 @@ function test_base(){
 		//nuova versione senza aForm (lo prende online)
 		var crud=new Dbmng.Crud(
 			{
-
 				aParam:{
+          template_form: '<div><table class="table"><tr><th>ID:</th><td data-content="id"></td><th>Name:</th><td data-content="name"></td></tr><tr><td colspan="2"><img class="img-responsive" id="test_image" src="" /></td><td data-content="file" colspan="2" align="center"><h3>Inserisci il File</h3></td></tr><tr><th>True/false</th><td data-content="true_false"></td><th>Sex</th><td data-content="sex"></td></tr></table></div>',
+          hide_label:true,
           user_function: {
             'custom_user_function': function(data, method){
               var ret=true;
@@ -136,6 +140,10 @@ function test_base(){
 				form_ready: function(pippo, form){
           //alert("Test!" + pippo);
           console.log(form);
+          var fw=form.widgets.file
+          var file=fw.aField.weburl_file+fw.getValue();
+
+          jQuery('img#test_image').attr('src',file);
 				}
 
 			}

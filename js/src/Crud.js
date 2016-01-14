@@ -19,7 +19,11 @@ Dbmng.Crud = Class.extend({
       options.aParam={};
     }
 
+    console.log(Dbmng.defaults.aParam);
+    console.log(options.aParam);
+
     this.aParam = jQuery.extend(true, {}, Dbmng.defaults.aParam, options.aParam);
+    console.log(this.aParam);
 
 
     if( options.theme ) {
@@ -37,7 +41,7 @@ Dbmng.Crud = Class.extend({
     }
     if( this.url.slice(-1) != '/' ) this.url = this.url + '/';
 
-    this.aParam.url=this.url;      
+    this.aParam.url=this.url;
 
     if(options.aForm){
 			this.aForm  = options.aForm;
@@ -274,6 +278,9 @@ Dbmng.Crud = Class.extend({
     }});
   },
   createInsertForm: function (div_id){
+
+    return this.createForm(div_id);
+    /*
     var self = this;
     var aRecord = {};
 
@@ -283,7 +290,7 @@ Dbmng.Crud = Class.extend({
       });
     }
 
-    jQuery(div_id).html(self.form.createForm(aRecord));
+    jQuery(div_id).html(self.form.createForm(aRecord, self.aParam.template_form));
 
     if(typeof self.form_ready=='function'){
       self.form_ready('insert', this.form);
@@ -291,6 +298,14 @@ Dbmng.Crud = Class.extend({
 
     var label_save=self.aParam.ui.btn_save.label;
     var opt_save=self.aParam.ui.btn_save;
+    if(self.aParam.ui.btn_cancel){
+      var label_cancel=self.aParam.ui.btn_cancel.label;
+      var opt_cancel=self.aParam.ui.btn_cancel;
+    }
+    else{
+      var label_cancel='Cancel';
+      var opt_cancel={};
+    }
 
     var button = self.theme.getButton(label_save, opt_save);
     jQuery(button).click(function(){
@@ -305,39 +320,82 @@ Dbmng.Crud = Class.extend({
       }});
     });
     jQuery(div_id).append(button);
+
+    var button_cancel = self.theme.getButton(label_cancel, opt_cancel);
+    jQuery(button_cancel).click(function(){
+        jQuery(div_id).html('');
+        self.createTable({div_id:div_id});
+    });
+    jQuery(div_id).append(button_cancel);
+    */
   },
   createForm: function (div_id, key, aData){
     var self=this;
-    var aRecord = this.getARecord(key,aData);
+    var type='update';
+    if(typeof key==='undefined'){
+        type='insert';
+    }
 
-    jQuery(div_id).html(this.form.createForm(aRecord));
+
+    var aRecord;
+    if(type==='update'){
+       aRecord = this.getARecord(key,aData);
+     }
+     else{
+       if(this.aParam.filter){
+         jQuery.each(this.aParam.filter,function(k,v){
+           aRecord[k] = v;
+         });
+       }
+     }
+
+    jQuery(div_id).html(this.form.createForm(aRecord,self.aParam.template_form));
 
     if(typeof self.form_ready=='function'){
-      self.form_ready('update', this.form);
+      self.form_ready(type, this.form);
     }
 
     var label_save=self.aParam.ui.btn_save.label;
     var opt_save=self.aParam.ui.btn_save;
+    var label_cancel='Cancel';
+    var opt_cancel={};
 
-//     var label_save='Salva'; var opt_save={};
-//       if(self.aParam.btn_save) {
-//         if(self.aParam.btn_save.label){
-//           label_save=self.aParam.btn_save.label;
-//       }
-//       opt_save=self.aParam.btn_save;
-//     }
+    if(self.aParam.ui.btn_cancel){
+      label_cancel=self.aParam.ui.btn_cancel.label;
+      opt_cancel=self.aParam.ui.btn_cancel;
+    }
+
 
     var button = self.theme.getButton(label_save, opt_save);
     jQuery(button).click(function(){
-      self.api.update({key:key,data:self.form.getValue(),success:function(data){
-        if(typeof self.crud_success=='function'){
-          self.crud_success('update', data);
-        }
-        jQuery(div_id).html('');
-        self.createTable({div_id:div_id});
-      }});
+      if(type=='update'){
+        self.api.update({key:key,data:self.form.getValue(),success:function(data){
+          if(typeof self.crud_success=='function'){
+            self.crud_success('update', data);
+          }
+          jQuery(div_id).html('');
+          self.createTable({div_id:div_id});
+        }});
+      }
+      else{
+        self.api.insert({data:self.form.getValue(),success:function(data){
+          console.log(self);
+          if(typeof self.crud_success=='function'){
+            self.crud_success('insert', data);
+          }
+          jQuery(div_id).html('');
+          self.createTable({div_id:div_id});
+        }});
+      }
     });
     jQuery(div_id).append(button);
+
+    var button_cancel = self.theme.getButton(label_cancel, opt_cancel);
+    jQuery(button_cancel).click(function(){
+      jQuery(div_id).html('');
+      self.createTable({div_id:div_id});
+    });
+    jQuery(div_id).append(button_cancel);
   },
   getARecord: function (key,aData) {
     var aRecord=null;
