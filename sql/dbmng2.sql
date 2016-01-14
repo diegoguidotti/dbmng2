@@ -145,3 +145,5 @@ INSERT INTO `dbmng_role` (`rid`, `name`) VALUES
 (1, 'anonymous user'),
 (2, 'authenticated user'),
 (3, 'administrator');
+
+ALTER TABLE dbmng_tables ADD table_alias VARCHAR(100) NULL;
