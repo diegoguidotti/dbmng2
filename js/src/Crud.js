@@ -342,6 +342,7 @@ Dbmng.Crud = Class.extend({
        aRecord = this.getARecord(key,aData);
      }
      else{
+       var aRecord = {};
        if(this.aParam.filter){
          jQuery.each(this.aParam.filter,function(k,v){
            aRecord[k] = v;
@@ -370,11 +371,17 @@ Dbmng.Crud = Class.extend({
     jQuery(button).click(function(){
       if(type=='update'){
         self.api.update({key:key,data:self.form.getValue(),success:function(data){
-          if(typeof self.crud_success=='function'){
-            self.crud_success('update', data);
+          if(!data.ok){
+            alert(data.message);
           }
-          jQuery(div_id).html('');
-          self.createTable({div_id:div_id});
+          else{
+            console.log(data);
+            if(typeof self.crud_success=='function'){
+              self.crud_success('update', data);
+            }
+            jQuery(div_id).html('');
+            self.createTable({div_id:div_id});
+          }
         }});
       }
       else{

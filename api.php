@@ -25,7 +25,7 @@
 					'id' => array('label'   => 'ID', 'type' => 'int', 'key' => 1 ) ,
 					'name' => array('label'   => 'Name', 'type' => 'varchar', 'nullable'=>false),
 					'sex' => array( 'label' => 'Sex', 'type' => 'varchar',  'widget' => 'select', 'voc_val' => array('M' =>'Male', 'F' => 'Female')),
-					'true_false' => array( 'label' => 'True/false', 'type' => 'int'),
+					'true_false' => array( 'label' => 'True/false', 'type' => 'int', 'readonly'=>false),
 					'file' => array('label'   => 'Image', 'type' => 'varchar','widget' => 'file',
 						//'url'=>'/dbmng2/api/test/file/file',
 						'weburl_file'=>'/varie/file_upload/server/php/files/',
