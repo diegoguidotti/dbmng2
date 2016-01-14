@@ -116,19 +116,17 @@ Dbmng.Form = Class.extend({
   },
   getFields: function(aData) {
 		var fields={};
-    if(!aData){
-      aData={};
-    }
 
+    this.createWidgets();
     console.log(aData);
 
-		this.createWidgets();
+
     for(var key in this.aForm.fields){
       //var aField=this.aForm.fields[key];
 
       var field;
 
-			if(aData.lenght){
+			if(aData){
 			 field = this.widgets[key].createField(aData[key]);
 			}
 			else{
