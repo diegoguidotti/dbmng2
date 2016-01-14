@@ -37,13 +37,15 @@ Dbmng.Crud = Class.extend({
     }
     if( this.url.slice(-1) != '/' ) this.url = this.url + '/';
 
+    this.aParam.url=this.url;      
+
     if(options.aForm){
 			this.aForm  = options.aForm;
 		  this.form=new Dbmng.Form({aForm:this.aForm, aParam:this.aParam, theme:this.theme});
 		  this.api=new  Dbmng.Api({aForm:this.aForm, url:this.url, user:options.user, password:options.password});
 
 		  this.pk=this.form.getPkField();
-      
+
       if( typeof options.success=='function'){
         options.success(this);
       }
@@ -267,22 +269,22 @@ Dbmng.Crud = Class.extend({
     this.api.delete({key:key, success:function(data){
       if(typeof self.crud_success=='function'){
         self.crud_success('delete', data);
-      }        
+      }
       self.createTable({div_id:div_id});
     }});
   },
   createInsertForm: function (div_id){
     var self = this;
     var aRecord = {};
-    
+
     if(this.aParam.filter){
       jQuery.each(this.aParam.filter,function(k,v){
         aRecord[k] = v;
       });
     }
-    
+
     jQuery(div_id).html(self.form.createForm(aRecord));
-    
+
     if(typeof self.form_ready=='function'){
       self.form_ready('insert', this.form);
     }
@@ -296,8 +298,8 @@ Dbmng.Crud = Class.extend({
         console.log(self);
         if(typeof self.crud_success=='function'){
           self.crud_success('insert', data);
-        }        
-        
+        }
+
         jQuery(div_id).html('');
         self.createTable({div_id:div_id});
       }});
@@ -309,11 +311,11 @@ Dbmng.Crud = Class.extend({
     var aRecord = this.getARecord(key,aData);
 
     jQuery(div_id).html(this.form.createForm(aRecord));
-    
+
     if(typeof self.form_ready=='function'){
       self.form_ready('update', this.form);
     }
-    
+
     var label_save=self.aParam.ui.btn_save.label;
     var opt_save=self.aParam.ui.btn_save;
 
@@ -330,7 +332,7 @@ Dbmng.Crud = Class.extend({
       self.api.update({key:key,data:self.form.getValue(),success:function(data){
         if(typeof self.crud_success=='function'){
           self.crud_success('update', data);
-        }        
+        }
         jQuery(div_id).html('');
         self.createTable({div_id:div_id});
       }});
@@ -404,7 +406,7 @@ Dbmng.Crud = Class.extend({
           jQuery(v).find('select').width(listWidth[k]);
         }
       });
-    
+
     if(typeof self.form_ready=='function'){
       self.form_ready('update_inline', this.form);
     }
@@ -418,7 +420,7 @@ Dbmng.Crud = Class.extend({
       self.api.update({key:key,data:self.form.getValue(),success:function(data){
         if(typeof self.crud_success=='function'){
           self.crud_success('update', data);
-        }        
+        }
         jQuery('button').removeAttr('disabled');
         jQuery(div_id).html('');
         self.createTable({div_id:div_id});

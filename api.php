@@ -26,7 +26,10 @@
 					'name' => array('label'   => 'Name', 'type' => 'varchar'),
 					'sex' => array( 'label' => 'Sex', 'type' => 'varchar',  'widget' => 'select', 'voc_val' => array('M' =>'Male', 'F' => 'Female')),
 					'true_false' => array( 'vero/Falso' => 'Sex', 'type' => 'int'),
-					'file' => array('label'   => 'Image', 'type' => 'varchar','widget' => 'file', 'url'=>'/dbmng2/api/test/file/file','weburl_file'=>'/varie/file_upload/server/php/files/', 'server_path'=>'/var/www/varie/file_upload/server/php/files/' )
+					'file' => array('label'   => 'Image', 'type' => 'varchar','widget' => 'file',
+						//'url'=>'/dbmng2/api/test/file/file',
+						'weburl_file'=>'/varie/file_upload/server/php/files/',
+						'server_path'=>'/var/www/varie/file_upload/server/php/files/' )
 			),
 	);
 	$aParam=array();

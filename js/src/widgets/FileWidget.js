@@ -34,7 +34,11 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
   createField: function(data_val){
     var self=this;
     console.log(self);
+
     var url='server/php/';
+    if(self.aParam.url){
+      url=self.aParam.url+"file/"+self.field+"/";
+    }
     if(self.aField.url){
       url=self.aField.url;
     }
