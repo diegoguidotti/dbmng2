@@ -56,7 +56,7 @@ class DbmngHelper {
         $aForm['table_label'] = $table['data'][0]['table_label'];
         
         $aForm['table_alias'] = $table['data'][0]['table_name'];
-        if( isset($aForm['table_label']) )
+        if( isset($table['data'][0]['table_alias']) )
           {
             $aForm['table_alias'] = $table['data'][0]['table_alias'];
           }
