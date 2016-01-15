@@ -376,7 +376,29 @@ Dbmng.AbstractTheme = Class.extend({
     el.appendChild(document.createTextNode(text));
     return el;
   },
-  createFormUpload: function(elv, label, opt){
+  createFileUploadField: function(elv, label, opt){
+
+    var el=document.createElement('div');
+    this.addClass(el, "dbmng_fileupload_meta_container");
+
+    var el_info=document.createElement('div');
+    this.addClass(el_info,"dbmng_fileupload_container");
+    el.appendChild(el_info);
+
+    el.appendChild(document.createElement('br'));
+
+    var el_base=document.createElement('div');
+    this.addClass(el_base, "dbmng_fileupload_button_progress");
+    el.style.cssText="width:100%; float:left;";
+    el_base.appendChild(this.createFormUpload(elv, label, opt));
+
+    var el_progress=this.createProgressBar({class:"progress", width:'69'});
+    el_base.appendChild(el_progress);
+
+    el.appendChild(el_base);
+    return el;
+  },
+  createFormUpload: function( elv, label, opt){
 
     //var el = document.createElement('button');
     //this.addClass(el,'fileinput-button');
@@ -386,34 +408,40 @@ Dbmng.AbstractTheme = Class.extend({
     if(!opt.class){
       opt.class="";
     }
+    opt.type='a';
+
     var el=this.getButton(label,opt);
     this.addClass(el,"fileinput-button");
+    el.style.cssText="float:left; width:30%";
     el.appendChild(elv);
-
     return el;
-
 
   },
   createProgressBar: function(opt){
-
-
     if(!opt){
       opt={};
     }
     if(!opt.class){
       opt.class="";
     }
+    if(!opt.width){
+      opt.width=100;
+    }
+
     var el = document.createElement('div');
     this.addClass(el,opt.class);
+    el.style.cssText="width:"+opt.width+"%; border:1px solid #CCC; height:20px; float:left;";
 
     var pr= document.createElement('div');
     this.addClass(pr,"progress-bar progress-bar-success");
-    //pr.style.cssText="width:100%";
+    pr.style.cssText="background-color:#CCC; height:20px; width:0px;";
     el.appendChild(pr);
 
     return el;
-
-
+  },
+  getDeleteButton: function(label){
+    var el = this.getButton("X",{type:'span'});
+    return el;
   }
 
 

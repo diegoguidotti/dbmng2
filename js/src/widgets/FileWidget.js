@@ -81,22 +81,15 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
       opt.icon  = btn_icon;
       opt.label_file = btn_label;
 
-      var el_info=document.createElement('div');
-      this.theme.addClass(el_info,"dbmng_fileupload_container");
-      el.appendChild(el_info);
-      
+      /*
 
-      el.appendChild(document.createElement('br'));
+      */
 
-      var el_base=document.createElement('div');
-      el_base.appendChild(this.theme.createFormUpload(elv,btn_label, opt));
-      
-      var el_progress=this.theme.createProgressBar({class:"progress"});
-      el_base.appendChild(el_progress);
-      
-      el.appendChild(el_base);
+      el.appendChild(this.theme.createFileUploadField(elv,btn_label, opt));
 
-      var info=jQuery(el_info);
+      var el_progress=jQuery(el).find('.progress');
+
+      var info=jQuery(el).find('.dbmng_fileupload_container');
       if(typeof data_val !== 'undefined' && data_val!=='' && data_val !==null ){
         self.addFile(info, weburl_file, data_val);
       }
@@ -160,17 +153,17 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
     if( self.aField.remove_icon ) {
       btn_icon = self.aField.remove_icon;
     }
-    
-    var del=this.theme.getButton("delete",{type:'span',icon:btn_icon});
+
+    info.append("<a target='_NEW' class='dbmng_fileupload_filelink' href='"+weburl_file+file+"'>"+this.assignFileTypeIcon(file)+" "+file+"</a>&nbsp;");
+    var del=this.theme.getDeleteButton("delete", btn_icon);
     info.append(del);
-    info.append("&nbsp;<a target='_NEW' class='dbmng_fileupload_filelink' href='"+weburl_file+file+"'>"+this.assignFileTypeIcon(file)+" "+file+"</a>");
 
     jQuery(del).click(function(){
       info.html("");
       self.setValue("");
     });
   },
-  
+
   assignFileTypeIcon: function( file ) {
     var aFile = file.split('.');
     var file_type_icon = "";
