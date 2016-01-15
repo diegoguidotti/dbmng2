@@ -23,7 +23,7 @@
 			'primary_key'=> array('id'),
 			'fields'     => array(
 					'id' => array('label'   => 'ID', 'type' => 'int', 'key' => 1 ) ,
-					'name' => array('label'   => 'Name', 'type' => 'varchar', 'nullable'=>false),
+					'name' => array('label'   => 'Name', 'type' => 'varchar', 'nullable'=>false, 'validator'=>'ip'),
 					'sex' => array( 'label' => 'Sex', 'type' => 'varchar',  'widget' => 'select', 'voc_val' => array('M' =>'Male', 'F' => 'Female')),
 					'true_false' => array( 'label' => 'True/false', 'type' => 'int', 'readonly'=>false),
 					'file' => array('label'   => 'Image', 'type' => 'varchar','widget' => 'file',

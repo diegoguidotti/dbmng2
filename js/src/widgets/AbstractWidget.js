@@ -65,6 +65,7 @@ Dbmng.AbstractWidget = Class.extend({
     this.widget=widget;
 
     widget.onchange=function( evt ) {
+
       self.onChange(evt);
     };
 
@@ -114,7 +115,9 @@ Dbmng.AbstractWidget = Class.extend({
   },
 
   onChange: function(event){
-    console.log(event);
+    console.log('onChange');
+    this.isValid();
+
   } ,
 
   onFocus: function(event){
@@ -161,5 +164,62 @@ Dbmng.AbstractWidget = Class.extend({
 
   convert2html: function(val) {
     return val;
+  },
+
+  setErrorState: function(ok, message){
+
+    var par=jQuery(jQuery(this.widget).parents('.dbmng_form_row')[0]);
+    par.find('span.error_message').remove();
+
+    if(ok){
+      par.removeClass('alert-danger').addClass('alert-success');
+    }
+    else{
+      par.append('<span class="error_message">'+message+'</span>');
+      par.removeClass('alert-success').addClass('alert-danger');
+    }
+  },
+
+  isValid:function (){
+    var nullable=true;
+    if(typeof this.aField.nullable !== 'undefined'){
+      nullable=this.aField.nullable;
+    }
+
+    var ok=true;
+    var message='';
+    if(!nullable){
+      if(this.getValue()===null || this.getValue()===''){
+          ok=false;
+          message='Empty Field';
+      }
+    }
+
+    if(typeof this.aField.validator !== 'undefined'){
+      var regexp;
+      var base_msg;
+      if(this.aField.validator=='email'){
+        regexp=/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+        base_msg="You need to enter a valid email";
+      }
+      else if(this.aField.validator=='url'){
+        regexp=/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/;
+        base_msg="You need to enter a valid URL";
+      }
+      else if(this.aField.validator=='ip'){
+        regexp=/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/;
+        base_msg="You need to enter a IP address";
+      }
+      var ok_r=regexp.test(this.getValue());
+      if(!ok_r){
+        ok=ok_r;
+        message=base_msg;
+      }
+    }
+
+
+    this.setErrorState(ok,message);
+
+    return {'ok':ok, 'message':message};
   }
 });

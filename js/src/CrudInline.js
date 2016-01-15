@@ -33,6 +33,9 @@ Dbmng.CrudInline = Dbmng.Crud.extend({
         //var obj={w.field:w.getValue()};
         self.api.update({"key":w.pk_value, "data": obj ,
           success:function(data){
+
+            w.setErrorState(data.ok, data.message);
+            /*
             var par=jQuery(jQuery(w.widget).parents('td')[0]);
             par.find('span.error_message').remove();
 
@@ -40,9 +43,10 @@ Dbmng.CrudInline = Dbmng.Crud.extend({
               par.removeClass('danger').addClass('success');
             }
             else{
-              par.prepend('<span class="error_message">'+data.message+'</span>');
+              par.append('<span class="error_message">'+data.message+'</span>');
               par.removeClass('success').addClass('danger');
             }
+            */
             //w.widget.parent();
           },
           error:function(data){

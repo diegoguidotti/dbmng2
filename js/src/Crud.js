@@ -368,11 +368,20 @@ Dbmng.Crud = Class.extend({
 
     var button = self.theme.getButton(label_save, opt_save);
     jQuery(button).click(function(){
-      if(type=='update'){
+
+
+      var valid=self.form.isValid();
+      if(valid.ok===false){
+        jQuery(div_id).find(".dbmng_form_button_message").html(valid.message);
+      }
+      else if(type=='update'){
         self.api.update({key:key,data:self.form.getValue(),success:function(data){
 
           if(!data.ok){
-            // alert(data.message);
+
+            var msg=self.theme.alertMessage(data.message);
+            jQuery(div_id).find(".dbmng_form_button_message").html(msg);
+
           }
           else{
             console.log(data);
@@ -401,11 +410,11 @@ Dbmng.Crud = Class.extend({
       jQuery(div_id).html('');
       self.createTable({div_id:div_id});
     });
-    jQuery(div_id).append("<div class='row'><div class='dbmng_form_button_left col-sm-4'></div><div class='col-sm-4'></div><div class='dbmng_form_button_right col-sm-4'></div></div>");
+    jQuery(div_id).append("<div class='row'><div class='dbmng_form_button_message col-xs-12'></div><div class='dbmng_form_button_left col-xs-4'></div><div class='col-xs-4'></div><div class='dbmng_form_button_right col-xs-4'></div></div>");
     jQuery(div_id).find('.dbmng_form_button_left').append(button);
     jQuery(div_id).find('.dbmng_form_button_right').append(button_cancel);
   },
-  
+
   getARecord: function (key,aData) {
     var aRecord=null;
     for(var i=0; i<aData.length; i++){
@@ -416,7 +425,7 @@ Dbmng.Crud = Class.extend({
     }
     return aRecord;
   },
-  
+
   createFormInline: function (div_id, key, aData){
     var self = this;
     var aRecord=this.getARecord(key,aData);

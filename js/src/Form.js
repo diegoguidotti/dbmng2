@@ -136,6 +136,20 @@ Dbmng.Form = Class.extend({
     }
 		return fields;
 	},
+
+  isValid: function(){
+    var ok=true;
+    var message='';
+    for(var key in this.widgets){
+      var wr=this.widgets[key].isValid();
+      if(wr.ok===false){
+        ok=false;
+        message+="Field "+this.widgets[key].fiel+": "+wr.message+"<br/>";
+      }
+    }
+    return {'ok':ok,'message':message};
+  },
+
   createForm: function(aData, template) {
 
     var fields=this.getFields(aData);
