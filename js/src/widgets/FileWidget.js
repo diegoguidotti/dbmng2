@@ -158,9 +158,9 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
       btn_icon = self.aField.remove_icon;
     }
 
-    info.append("<a target='_NEW' class='dbmng_fileupload_filelink' href='"+weburl_file+file+"'>"+file+"</a>");
     var del=this.theme.getButton("delete",{type:'span',icon:btn_icon});
     info.append(del);
+    info.append("&nbsp;<a target='_NEW' class='dbmng_fileupload_filelink' href='"+weburl_file+file+"'>"+file+"</a>");
 
     jQuery(del).click(function(){
       info.html("");
