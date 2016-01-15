@@ -153,9 +153,13 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
     if( self.aField.remove_icon ) {
       btn_icon = self.aField.remove_icon;
     }
-
+    var btn_title = "Delete";
+    if( self.aField.remove_title_icon ) {
+      btn_title = self.aField.remove_title_icon;
+    }
+    
     info.append("<a target='_NEW' class='dbmng_fileupload_filelink' href='"+weburl_file+file+"'>"+this.assignFileTypeIcon(file)+" "+file+"</a>&nbsp;");
-    var del=this.theme.getDeleteButton("delete", btn_icon);
+    var del=this.theme.getDeleteButton(btn_title, btn_icon);
     info.append(del);
 
     jQuery(del).click(function(){
