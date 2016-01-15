@@ -9,10 +9,12 @@ namespace Dbmng;
 
 class DbmngHelper {
 	private $db;
-
+  private $aParam;
+  
 	public function __construct($app)
 	{
     $this->db = $app->getDb();
+    $this->aParam = $app->getParam();
 	}
   
 //   public function helper()
@@ -38,6 +40,11 @@ class DbmngHelper {
 //         $api->exeRest($router);
 //       }
 //   }
+  
+  public function exeSingleRest( $id_table )
+  {
+    
+  }
   
   public function getFormArrayById($id_table)
   {
