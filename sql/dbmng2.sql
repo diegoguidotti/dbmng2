@@ -147,3 +147,4 @@ INSERT INTO `dbmng_role` (`rid`, `name`) VALUES
 (3, 'administrator');
 
 ALTER TABLE dbmng_tables ADD table_alias VARCHAR(100) NULL;
+ALTER TABLE dbmng_tables ADD param TEXT NULL;
