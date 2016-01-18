@@ -26,10 +26,9 @@ class DbmngHelper {
     $aParam = $aForm['table_param'];
     $aParam = str_replace("'",'"',$aParam);
     
-    $aP = json_decode($aParam);
-    $aPa = Util::toArray($aP);
+    $aP = json_decode($aParam,true);
     
-    $dbmng = new Dbmng($this->app, $aForm, $aPa);
+    $dbmng = new Dbmng($this->app, $aForm, $aP);
     $api = new Api($dbmng);
     $api->exeRest($router);
   }
