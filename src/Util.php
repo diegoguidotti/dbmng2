@@ -56,9 +56,23 @@ class Util
 	\param $array  		  array to be printed
 	\return $ret			  the html version of the array 
 	*/
-	static function print_r($array){
+	static function print_r($array)
+	{
 		return "<pre class='dbmng_print_r'>".print_r($array,true)."<pre>";
 	}	
 	
-	
+	static function toArray($obj)
+  {
+    if (is_object($obj)) $obj = (array)$obj;
+    if (is_array($obj)) {
+        $new = array();
+        foreach ($obj as $key => $val) {
+            $new[$key] = $this->toArray($val);
+        }
+    } else {
+        $new = $obj;
+    }
+
+    return $new;
+  }
 }
