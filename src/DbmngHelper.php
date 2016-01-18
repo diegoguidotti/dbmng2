@@ -27,25 +27,11 @@ class DbmngHelper {
     $aParam = str_replace("'",'"',$aParam);
     
     $aP = json_decode($aParam,true);
+    $this->aParam = array_merge($this->aParam, $aP);
     
-    $dbmng = new Dbmng($this->app, $aForm, $aP);
+    $dbmng = new Dbmng($this->app, $aForm, $this->aParam);
     $api = new Api($dbmng);
     $api->exeRest($router);
-  }
-  
-  public function toArray($obj)
-  {
-    if (is_object($obj)) $obj = (array)$obj;
-    if (is_array($obj)) {
-        $new = array();
-        foreach ($obj as $key => $val) {
-            $new[$key] = $this->toArray($val);
-        }
-    } else {
-        $new = $obj;
-    }
-
-    return $new;
   }
   
   public function exeAllRest( $router, $aP )
