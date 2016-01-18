@@ -4,46 +4,73 @@
  * database helper class
  *
  * @author Diego Guidotti <diego.guidotti@gmail.com>
+ * @author Michele Mammini <mamminim@gmail.com>
  */
 namespace Dbmng;
 
 class DbmngHelper {
 	private $db;
   private $aParam;
+  private $app;
   
 	public function __construct($app)
 	{
     $this->db = $app->getDb();
     $this->aParam = $app->getParam();
+    $this->app = $app;
 	}
   
-//   public function helper()
-//   {
-//     $base_path = "/registro/rest";
-//     $router = new \Respect\Rest\Router($base_path);
-//     
-//     $sql = "select id_table from dbmng_tables where table_name = :table_name";
-//     $var = array(':table_name' => $table);
-//     $aTable = $this->db->select($sql, $var);
-//     
-//     for( $nT = 0; $nT < $aTable['rowCount']; $nT ++ )
-//       {
-//         $aParam = array('access'=> array('select' => array('authenticated user'), 
-//                                           'insert' => array('administrator', 'IT manager', 'Produttore'), 
-//                                           'update' => array('administrator', 'IT manager', 'Produttore'), 
-//                                           'delete' => array('administrator', 'IT manager', 'Produttore')
-//                                         )
-//                       );
-//         $aForm = getFormArray($aTable['data'][$nT]['id_table']);
-//         $dbmng = new Dbmng($app, $aForm, $aParam);
-//         $api = new Api($dbmng);
-//         $api->exeRest($router);
-//       }
-//   }
-  
-  public function exeSingleRest( $id_table )
+  public function exeSingleRest( $table_name, $router )
   {
+    $aForm = $this->getFormArrayByName($table_name);
+    $aParam = $aForm['table_param'];
+    $aParam = str_replace("'",'"',$aParam);
     
+    $aP = json_decode($aParam);
+    $aPa = Util::toArray($aP);
+    
+    $dbmng = new Dbmng($this->app, $aForm, $aPa);
+    $api = new Api($dbmng);
+    $api->exeRest($router);
+  }
+  
+  public function toArray($obj)
+  {
+    if (is_object($obj)) $obj = (array)$obj;
+    if (is_array($obj)) {
+        $new = array();
+        foreach ($obj as $key => $val) {
+            $new[$key] = $this->toArray($val);
+        }
+    } else {
+        $new = $obj;
+    }
+
+    return $new;
+  }
+  
+  public function exeAllRest( $router, $aP )
+  {
+    $sql = "select * from dbmng_tables ";
+    $var = array();
+    $aTbl = $this->db->select($sql, $var);
+    
+    for( $nT = 0; $nT < $aTbl['rowCount']; $nT++ )
+      {
+        $table_name = $aTbl['data'][$nT]['table_name'];
+        $this->exeSingleRest( $table_name, $router, $aP );
+      }
+  }
+  
+  public function exeAllRest2( $router, $aP )
+  {
+    $aForms = $this->getAllFormsArray();
+    foreach( $aForms as $k => $aForm )
+      {
+        $dbmng = new Dbmng($this->app, $aForm, $aP);
+        $api = new Api($dbmng);
+        $api->exeRest($router);
+      }
   }
   
   public function getFormArrayById($id_table)
@@ -67,6 +94,9 @@ class DbmngHelper {
           {
             $aForm['table_alias'] = $table['data'][0]['table_alias'];
           }
+        
+        $aForm['table_param'] = $table['data'][0]['param'];
+        
         $exist_id = true;
       }
     
@@ -247,6 +277,23 @@ class DbmngHelper {
     $aForm = $this->getFormArrayById($id_table);
     
     return $aForm;
+  }
+  
+  public function getAllFormsArray()
+  {
+    $sql = "select * from dbmng_tables ";
+    $var = array();
+    $aTbl = $this->db->select($sql, $var);
+    
+    $aForms = array();
+    for( $nT = 0; $nT < $aTbl['rowCount']; $nT++ )
+      {
+        $table_name = $aTbl['data'][$nT]['table_name'];
+        
+        $aForms[] = $this->getFormArrayByName($table_name);
+      }
+    
+    return $aForms;
   }
   
 }
