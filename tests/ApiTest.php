@@ -65,7 +65,7 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
 	}
 
 
-
+/*
 	public function testApiBasic() {
 
 		$client = new \GuzzleHttp\Client([
@@ -89,6 +89,7 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
 		$this->assertEquals('{"test_post":1}',$response4->getBody());
 
 	}
+  */
 
 	public function testApi() {
 
@@ -165,8 +166,54 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
 		$o = json_decode($a);
 		$this->assertEquals(false,$o->ok);
 
+
+
+
 	}
 
+
+
+
+  	public function testApiFilter() {
+
+  		$client = new \GuzzleHttp\Client([
+  			 // Base URI is used with relative requests
+  			 'base_uri' => 'http://localhost',
+  			 // You can set any number of default request options.
+  			 'timeout'  => 2.0,
+  		]);
+
+  		$auth=[        'test', 'test'    ];
+  		$auths=[    'auth' => $auth];
+
+      //the test_simple is an alias of test with a filters
+  		$response3 = $client->request('GET', $GLOBALS['SITE_FOLDER'].'/api/test_simple/',$auths);
+  		$this->assertEquals(200,$response3->getStatusCode());
+  		$a = $response3->getBody();
+  		$o = json_decode($a);
+  		$this->assertEquals(true,$o->ok);
+  		$this->assertEquals(0,$o->rowCount);
+
+      //insert a new record
+      $res1 = $client->request('POST', $GLOBALS['SITE_FOLDER'].'/api/test_simple/', ['body' => '{"name":"Susanna"}','auth'=>$auth]);
+
+  		$o = json_decode($res1->getBody());
+      //print_r($o);
+
+  		$this->assertEquals(true,$o->ok);
+
+      //check if the record has been added
+      $response4 = $client->request('GET', $GLOBALS['SITE_FOLDER'].'/api/test_simple/',$auths);
+  		$o2 = json_decode($response4->getBody(),true);
+      $this->assertEquals(true,$o2['ok']);
+    
+  		$this->assertEquals(1,$o2['rowCount']);
+      $this->assertEquals("Susanna",$o2['data'][0]['name']);
+
+
+      $res=$this->getApp()->getDb()->select("select name from test WHERE sex='F' AND name='Susanna'",array());
+      $this->assertEquals("Susanna",$res['data'][0]['name']);
+    }
 
   public function testApiNullValue() {
 

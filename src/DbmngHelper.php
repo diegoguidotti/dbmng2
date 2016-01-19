@@ -85,7 +85,7 @@ class DbmngHelper {
 					if(isset($table['data'][0]['param'])){
 							$txt=$table['data'][0]['param'];
 							$txt = str_replace("'",'"',$txt);
-						  $Param= json_encode($txt,true);
+						  $aParam= json_decode($txt,true);
 					}
 
         $exist_id = true;
@@ -109,10 +109,6 @@ class DbmngHelper {
         $aArray=array(
           'label' => $fields['data'][$nF]['field_label'],
           'type' => $fields['data'][$nF]['id_field_type'],
-          'widget' => $sWidget,
-          'value' => null,
-          'nullable' => $fields['data'][$nF]['nullable'],
-          'readonly' => $fields['data'][$nF]['readonly'],
           'default' => $fields['data'][$nF]['default_value'],
           'is_searchable' => $isSearcheable,
           'key' => $fields['data'][$nF]['pk'],
@@ -121,6 +117,15 @@ class DbmngHelper {
           'skip_in_tbl' => $fields['data'][$nF]['skip_in_tbl'],
           'voc_sql' => $fields['data'][$nF]['voc_sql']
         );
+
+				if(isset( $fields['data'][$nF]['nullable'])){
+					$aArray['nullable'] = $fields['data'][$nF]['nullable'];
+				}
+
+				$aArray['widget'] = $sWidget;
+				if(isset( $fields['data'][$nF]['readonly'])){
+					$aArray['readonly'] = $fields['data'][$nF]['readonly'];
+				}
 
         if( isset($fields['data'][$nF]['param']) )
           {
@@ -141,7 +146,10 @@ class DbmngHelper {
 
         if( $fields['data'][$nF]['field_widget'] == 'select' || $fields['data'][$nF]['field_widget'] == 'select_nm' )
           {
-            if( !isset($fields['data'][$nF]['voc_sql']) )
+						if(isset($fields['data'][$nF]['voc_val'])){
+							;//If already exists does not execute a query
+						}
+            else if( !isset($fields['data'][$nF]['voc_sql']) )
               {
                 // sql automatically generated throught standard coding tables definition
                 $sVoc = str_replace("id_", "", $fields['data'][$nF]['field_name']);
@@ -154,11 +162,16 @@ class DbmngHelper {
               }
 
             //TODO: review the safety of this query
+
+
+
             $rVoc  = $this->db->select($sql, array(), \PDO::FETCH_NUM);
             $aFVoc = array();
 
             $v       = 0;
-            $bVoc = false;
+            $bOkVoc = $rVoc['ok'];
+
+
             //echo print_r($aArray);
 //             if( isset($aArray['out_type']) )
 //               {
@@ -180,15 +193,15 @@ class DbmngHelper {
 //                   }
 //               }
 
-            if( !$bVoc )
+            if( $bOkVoc )
               {
                 for( $v = 0; $v < $rVoc['rowCount']; $v++ )
                   {
                     $aFVoc[$rVoc['data'][$v][0]] = $rVoc['data'][$v][1];
                   }
+									$aFields[$fields['data'][$nF]['field_name']]['voc_val'] = $aFVoc;
               }
 
-            $aFields[$fields['data'][$nF]['field_name']]['voc_val'] = $aFVoc;
           }
 
         if( $fields['data'][$nF]['field_widget'] == 'multiselect' )

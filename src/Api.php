@@ -54,13 +54,16 @@ class Api {
 
 
       $aForm = $dbmng->getaForm();
-			$tablename = $aForm['table_name'];
+			$table_alias = $aForm['table_name'];
+			if(isset($aForm['table_alias'])){
+				$table_alias = $aForm['table_alias'];
+			}
 
-			$router->get('/api/'.$tablename.'/schema', function( $id_value=null ) use($dbmng){
+			$router->get('/api/'.$table_alias.'/schema', function( $id_value=null ) use($dbmng){
 				return json_encode($dbmng->getaForm());
 			});
 
-			$router->post('/api/'.$tablename.'/transaction', function( $id_value=null ) use($dbmng){
+			$router->post('/api/'.$table_alias.'/transaction', function( $id_value=null ) use($dbmng){
 
 				$dbmng->setPrepare(true);
 				// get the form_params from the rest call
@@ -111,7 +114,7 @@ class Api {
 			});
 
 			// select
-			$router->get('/api/'.$tablename.'/*', function( $id_value=null ) use($dbmng){
+			$router->get('/api/'.$table_alias.'/*', function( $id_value=null ) use($dbmng){
 
 				$allowed=$dbmng->isAllowed('select');
 
@@ -137,25 +140,25 @@ class Api {
           }
 			} );
 
-			$router->put('/api/'.$tablename.'/*', function( $id_value=null ) use($dbmng){
+			$router->put('/api/'.$table_alias.'/*', function( $id_value=null ) use($dbmng){
 				$body = file_get_contents("php://input");
 				return json_encode($this->doUpdate($dbmng,$id_value,json_decode($body)));
 
 			} );
 
-      $router->delete('/api/'.$tablename.'/*', function(  $id_value=null ) use($dbmng){
+      $router->delete('/api/'.$table_alias.'/*', function(  $id_value=null ) use($dbmng){
 				return json_encode($this->doDelete($dbmng, $id_value));
 
       } );
 
-      $router->post('/api/'.$tablename, function( ) use($dbmng){
+      $router->post('/api/'.$table_alias, function( ) use($dbmng){
         $body = file_get_contents("php://input");
 				return json_encode($this->doInsert($dbmng,json_decode($body)));
 
       } );
 
 
-			$router->post('/api/'.$tablename.'/file/*', function($field) use($dbmng) {
+			$router->post('/api/'.$table_alias.'/file/*', function($field) use($dbmng) {
 
 				$files= $this->doUploadFile($dbmng,$field);
 				if($files['ok']){

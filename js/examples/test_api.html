@@ -197,7 +197,7 @@ function test_inline(){
   //nuova versione senza aForm (lo prende online)
   var crud=new Dbmng.CrudInline(
     {
-      url:'/dbmng2/api/test', user:'test', password:'test',
+      url:'/dbmng2/api/test_simple', user:'test', password:'test',
       success:function(self){
         self.createTable({div_id:'#test_diego'});
       }

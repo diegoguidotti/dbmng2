@@ -52,6 +52,8 @@ private $prepare;
 
 		$sWhere = "";
 		$aWhere = array();
+
+
 		$ret=$this->createWhere($aVar, $sWhere, $aWhere, false, true, true);
 		//TODO the function createWhere works only for delete for insert does not work
 
@@ -513,9 +515,19 @@ function uploadFile($field){
 			$server_path=$aField['server_path'];
 		}
 
+		$mime_types=['image/png', 'image/jpg', 'image/jpeg', 'image/gif', 'text/plain','application/pdf'];
+		if(isset($aField['mime_types'])){
+			$mime_types=$aField['mime_types'];
+		}
+
+		$size_byte=1024 * 1024 * 20;
+		if(isset($aField['size_bytes'])){
+			$size_byte=$aField['size_bytes'];
+		}
+
 
 		// Simple validation (max file size 2MB and only two allowed mime types)
-		$validator = new \FileUpload\Validator\Simple(1024 * 1024 * 20, ['image/png', 'image/jpg', 'text/plain','application/pdf']);
+		$validator = new \FileUpload\Validator\Simple($size_byte, $mile_types);
 
 		/**
 		*   For more flexibility, the simple Validator has been broken down since the size validator might not always be needed..

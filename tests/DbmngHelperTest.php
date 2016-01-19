@@ -45,7 +45,21 @@ class DbmngHelperTest extends \PHPUnit_Extensions_Database_TestCase
 
       $this->assertEquals($aDataID, $aDataName);
       $this->assertEquals($aDataID, $aDataAlias);
+
+      //if alias is null table_alias is the name of the table
       $this->assertEquals('test',$aDataID['aForm']['table_alias']);
+
+      //print_r($aDataID['aForm']['fields']['sex']['voc_val']);
+
+      $vals=array();
+        $vals['M']="Male";
+        $vals['F']="Female";
+      $this->assertEquals($vals,(array)$aDataID['aForm']['fields']['sex']['voc_val']);
+
+      $aDataSimple = $h->getFormArrayByAlias('test_simple');
+      $this->assertEquals(array('sex'=>'F'),(array)$aDataSimple['aParam']['filters']);
+
+
 
 
 		}

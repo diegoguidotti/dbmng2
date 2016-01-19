@@ -5,18 +5,30 @@
 	use Dbmng\Api;
 	use Dbmng\App;
 	use Dbmng\Login;
+	use Dbmng\DbmngHelper;
   use Respect\Rest\Router;
 	require_once 'vendor/autoload.php';
 	require_once 'settings.php';
 
 
 	$db = DB::createDb($aSetting['DB']['DB_DSN'], $aSetting['DB']['DB_USER'], $aSetting['DB']['DB_PASSWD'] );
-
+	$db->setDebug(true);
 	$login=new Login($db, array('auth_type'=>'BASIC'));
 	$l=$login->auth();
 	$user=$l['user'];
 
 	$app=new App($db, array('user'=>$user));
+
+	$helper=new DbmngHelper($app);
+	$forms = $helper->getAllFormsArray();
+
+	$base_path="/dbmng2";
+	$router = new \Respect\Rest\Router($base_path);
+
+	$helper->exeAllRest( $router,$forms);
+
+
+	/*
 
 	$aForm=array(
 		'table_name' => 'test' ,
@@ -34,8 +46,7 @@
 	);
 	$aParam=array();
 	//$aParam['filters']['true_false'] = 1;
-	$base_path="/dbmng2";
-	$router = new \Respect\Rest\Router($base_path);
+
 
 	$dbmng=new Dbmng($app, $aForm, $aParam);
 	$api=new Api($dbmng);
@@ -61,6 +72,7 @@
 	$dbmng2=new Dbmng($app, $aForm2, $aParam2);
 	$api2=new Api($dbmng2);
 	$api2->exeRest($router);
+	*/
 
 
 
