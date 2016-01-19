@@ -6,5 +6,8 @@
 	<test_father id_father="2" varchar_field="Michele" />
   <dbmng_users uid="1" name="test" pass = "098f6bcd4621d373cade4e832627b4f6" />
   <dbmng_users_roles uid="1" rid="1" />
-	<dbmng_tables id_table="1" table_name="test"  />
+  <dbmng_tables id_table="1" table_name="test"  />
+  <dbmng_fields id_field="1" id_table="1" id_field_type="int" field_name="id" field_label="ID" pk="1" />
+  <dbmng_fields id_field="2" id_table="1" id_field_type="varchar" field_name="name" field_label="Name" />
+  <dbmng_fields id_field="3" id_table="1" id_field_type="varchar" field_name="sex" field_label="Sex" />
 </dataset>
