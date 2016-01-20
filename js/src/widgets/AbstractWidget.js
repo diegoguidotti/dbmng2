@@ -179,17 +179,19 @@ Dbmng.AbstractWidget = Class.extend({
       par.removeClass('alert-success').addClass('alert-danger');
     }
   },
-
+  isValidCustom:function (){
+    return {ok:true};
+  },
   isValid:function (){
     var validated = false;
-    var nullable=true;
+    var nullable=0;
     if(typeof this.aField.nullable !== 'undefined'){
       nullable=this.aField.nullable;
     }
 
     var ok=true;
     var message='';
-    if(!nullable){
+    if(nullable){
       validated = true;
       if(this.getValue()===null || this.getValue()===''){
           ok=false;
@@ -220,10 +222,16 @@ Dbmng.AbstractWidget = Class.extend({
       }
     }
 
+    var valid_custom=this.isValidCustom();
+    if(!valid_custom.ok){
+      ok=!valid_custom.ok;
+      message+=" "+valid_custom.message;
+    }
+
     if( validated ) {
       this.setErrorState(ok,message);
     }
-    
+
     return {'ok':ok, 'message':message};
   }
 });

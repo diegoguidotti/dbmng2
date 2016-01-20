@@ -8,9 +8,9 @@
   <dbmng_users_roles uid="1" rid="1" />
   <dbmng_tables id_table="1" table_name="test"  />
   <dbmng_fields id_field="1" id_table="1" id_field_type="int" field_name="id" field_label="ID" field_widget="input" pk="1" />
-  <dbmng_fields id_field="2" id_table="1" id_field_type="varchar" field_name="name" nullable="0" field_widget="input" field_label="Name"  />
+  <dbmng_fields id_field="2" id_table="1" id_field_type="varchar" field_name="name" nullable="0" field_widget="textarea"  field_label="Name"  />
   <dbmng_fields id_field="3" id_table="1" id_field_type="varchar" field_name="sex" field_label="Sex" field_widget="select" param="{'voc_val':{'M':'Male','F':'Female'}}" />
-	<dbmng_fields id_field="4" id_table="1" id_field_type="int" field_name="true_false" field_label="True/False"  field_widget="input" readonly="0"  />
+	<dbmng_fields id_field="4" id_table="1" id_field_type="int" field_name="true_false" nullable="0" field_label="True/False"  field_widget="input"   />
 	<dbmng_fields id_field="5" id_table="1" id_field_type="varchar" field_name="file" field_label="File" field_widget="file" param="{'weburl_file':'/dbmng2/files/','server_path':'/var/www/dbmng2/files/'}" />
 	<dbmng_tables id_table="2" table_name="test_child"  />
 	<dbmng_fields id_field="6" id_table="2" id_field_type="int" field_name="id_child" field_label="ID" field_widget="input" pk="1" />

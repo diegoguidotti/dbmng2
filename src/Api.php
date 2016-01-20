@@ -62,6 +62,8 @@ class Api {
 			$router->get('/api/'.$table_alias.'/schema', function( $id_value=null ) use($dbmng){
         $allowed=$dbmng->isAllowed('select');
 
+				//print_r(   $allowed);
+
         if($allowed['ok'])
           {
             return json_encode($dbmng->getaForm());

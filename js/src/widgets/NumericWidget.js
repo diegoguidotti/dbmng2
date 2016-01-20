@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////
 // NumericWidget
 // 12 November 2015
-// 
+//
 //
 // Developed by :
 // Diego Guidotti
@@ -14,7 +14,7 @@ Dbmng.NumericWidget = Dbmng.AbstractWidget.extend({
     this.aField.field_type='number';
     return this.theme.getInput(this.aField);
   },
-  getValue: function() {		
+  getValue: function() {
     var el = this._super();
 		if(el===''){
 			return null;
@@ -31,4 +31,3 @@ Dbmng.NumericWidget = Dbmng.AbstractWidget.extend({
 		}
   }
 });
-

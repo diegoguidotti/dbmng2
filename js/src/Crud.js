@@ -59,12 +59,17 @@ Dbmng.Crud = Class.extend({
 			this.ready=false;
 			var self=this;
 
+      var heads={};
+      if(options.user){
+        heads={
+          "Authorization": "Basic " + btoa(options.user + ":" + options.password)
+        };
+      }
+
 			jQuery.ajax({
 				url: this.url+"schema",
 				dataType:'json',
-				headers: {
-					"Authorization": "Basic " + btoa(this.user + ":" + this.password)
-				},
+				headers: heads,
 				success: function(data){
 
 					self.aForm  = data;
@@ -255,7 +260,7 @@ Dbmng.Crud = Class.extend({
         });
         jQuery(div_id).append("<div id='dbmng_buttons_row' class='row' style='margin-top: 20px;margin-bottom: 100px;'><div class='dbmng_form_button_message col-xs-12'></div><div class='dbmng_form_button_left col-xs-4'></div><div class='col-xs-4'></div><div class='dbmng_form_button_right col-xs-4'></div></div>");
         jQuery(div_id).find('.dbmng_form_button_left').append(button_insert);
-        
+
         // jQuery(div_id).append(button_insert);
       }
     }

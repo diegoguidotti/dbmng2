@@ -34,6 +34,7 @@
   <script type="text/javascript" src="../src/themes/BootstrapTheme.js"></script>
   <script type="text/javascript" src="../src/widgets/AbstractWidget.js"></script>
   <script type="text/javascript" src="../src/widgets/SelectWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/TextareaWidget.js"></script>
   <script type="text/javascript" src="../src/widgets/NumericWidget.js"></script>
   <script type="text/javascript" src="../src/widgets/PasswordWidget.js"></script>
   <script type="text/javascript" src="../src/widgets/CheckboxWidget.js"></script>
@@ -119,7 +120,7 @@ function test_base(){
 			{
 				aParam:{
           template_form: '<div><table class="table"><tr><th>ID:</th><td data-content="id"></td><th>Name:</th><td data-content="name"></td></tr><tr><td colspan="2"><img class="img-responsive" id="test_image" src="" /></td><td data-content="file" colspan="2" align="center"><h3>Inserisci il File</h3></td></tr><tr><th>True/false</th><td data-content="true_false"></td><th>Sex</th><td data-content="sex"></td></tr></table></div>',
-          hide_label:true,
+          //hide_label:true,
           //filter:{'true_false':1},
           user_function: {
             'custom_user_function': function(data, method){

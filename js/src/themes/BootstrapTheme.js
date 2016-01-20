@@ -14,7 +14,6 @@ Dbmng.BootstrapTheme = Dbmng.AbstractTheme.extend({
     jQuery(el).css('font-weight','bold');
     return el;
   },
-
   assignAttributes: function(el, aField) {
     this._super(el, aField);
     this.addClass(el, 'form-control');

@@ -64,12 +64,23 @@ Dbmng.Form = Class.extend({
       else if( wt == 'date' ) {
         w = new Dbmng.DateWidget(widget_opt);
       }
+      else if( wt == 'textarea' ) {
+        w = new Dbmng.TextareaWidget(widget_opt);
+      }
       else if( wt == 'file' ) {
         w = new Dbmng.FileWidget(widget_opt);
       }
       else{
           w = new Dbmng.AbstractWidget(widget_opt);
       }
+      /* missing widget
+      datetime
+time
+html
+picture
+multiselect
+geo
+*/
 
       this.widgets[key]=w;
     }

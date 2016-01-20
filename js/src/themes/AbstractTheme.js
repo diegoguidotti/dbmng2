@@ -23,6 +23,9 @@ Dbmng.AbstractTheme = Class.extend({
   },
 
   getLabel: function(aField) {
+
+
+
     var el=document.createElement('div');
     el.className='dbmng_form_label';
 
@@ -32,7 +35,17 @@ Dbmng.AbstractTheme = Class.extend({
     var txt=document.createTextNode(aField.label);
     lb.appendChild(txt);
 
-    if( aField.nullable === false ) {
+/*
+    if(aField.nullable==0){
+      var required=document.createElement('span');
+      this.addClass(reqiured, 'dbmng_required');
+      required.appendChild(document.createTextNode('*'));
+      lb.appendChild(required);
+    }
+    */
+
+
+    if( aField.nullable  ) {
       var sp = document.createElement('span');
       sp.className='dbmng_required';
 
@@ -246,6 +259,20 @@ Dbmng.AbstractTheme = Class.extend({
   },
   getForm: function(opt) {
     var el = document.createElement('form');
+    return el;
+  },
+  getTextarea: function(aField) {
+    var el = document.createElement('textarea');
+    this.assignAttributes(el, aField);
+
+    if(aField.value) {
+      el.value=aField.value;
+    }
+    if( aField.placeholder ) {
+      el.placeholder = aField.placeholder;
+    }
+
+
     return el;
   },
   getTable: function(opt) {
