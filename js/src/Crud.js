@@ -126,10 +126,10 @@ Dbmng.Crud = Class.extend({
 		  };
 
       //if exists a filter create the search text to be added to the GET call
-      if(this.aParam.filter){
+      if(this.aParam.search){
 
         var search="";
-        jQuery.each(this.aParam.filter,function(k,v){
+        jQuery.each(this.aParam.search,function(k,v){
             search+='&'+k+"="+v;
         });
         sel_opt.search=search;
@@ -346,8 +346,8 @@ Dbmng.Crud = Class.extend({
      }
      else{
        aRecord = {};
-       if(this.aParam.filter){
-         jQuery.each(this.aParam.filter,function(k,v){
+       if(this.aParam.search){
+         jQuery.each(this.aParam.search,function(k,v){
            aRecord[k] = v;
          });
        }
