@@ -410,9 +410,9 @@ Dbmng.Crud = Class.extend({
       jQuery(div_id).html('');
       self.createTable({div_id:div_id});
     });
-    jQuery(div_id).append("<div class='row'><div class='dbmng_form_button_message col-xs-12'></div><div class='dbmng_form_button_left col-xs-4'></div><div class='col-xs-4'></div><div class='dbmng_form_button_right col-xs-4'></div></div>");
-    jQuery(div_id).find('.dbmng_form_button_left').append(button);
-    jQuery(div_id).find('.dbmng_form_button_right').append(button_cancel);
+    jQuery(div_id).append("<div id='dbmng_buttons_row' class='row' style='margin-top: 20px;margin-bottom: 100px;'><div class='dbmng_form_button_message col-xs-12'></div><div class='dbmng_form_button_left col-xs-4'></div><div class='col-xs-4'></div><div class='dbmng_form_button_right col-xs-4'></div></div>");
+    jQuery(div_id).find('.dbmng_form_button_left').append(button_cancel);
+    jQuery(div_id).find('.dbmng_form_button_right').append(button);
   },
 
   getARecord: function (key,aData) {

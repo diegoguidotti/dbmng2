@@ -181,6 +181,7 @@ Dbmng.AbstractWidget = Class.extend({
   },
 
   isValid:function (){
+    var validated = false;
     var nullable=true;
     if(typeof this.aField.nullable !== 'undefined'){
       nullable=this.aField.nullable;
@@ -189,6 +190,7 @@ Dbmng.AbstractWidget = Class.extend({
     var ok=true;
     var message='';
     if(!nullable){
+      validated = true;
       if(this.getValue()===null || this.getValue()===''){
           ok=false;
           message='Empty Field';
@@ -196,6 +198,7 @@ Dbmng.AbstractWidget = Class.extend({
     }
 
     if(typeof this.aField.validator !== 'undefined'){
+      validated = true;
       var regexp;
       var base_msg;
       if(this.aField.validator=='email'){
@@ -217,9 +220,10 @@ Dbmng.AbstractWidget = Class.extend({
       }
     }
 
-
-    this.setErrorState(ok,message);
-
+    if( validated ) {
+      this.setErrorState(ok,message);
+    }
+    
     return {'ok':ok, 'message':message};
   }
 });

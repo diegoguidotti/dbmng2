@@ -60,7 +60,17 @@ class Api {
 			}
 
 			$router->get('/api/'.$table_alias.'/schema', function( $id_value=null ) use($dbmng){
-				return json_encode($dbmng->getaForm());
+        $allowed=$dbmng->isAllowed('select');
+
+        if($allowed['ok'])
+          {
+            return json_encode($dbmng->getaForm());
+          }
+        else
+          {
+            http_response_code($allowed['code']);
+            return json_encode($allowed);
+          }
 			});
 
 			$router->post('/api/'.$table_alias.'/transaction', function( $id_value=null ) use($dbmng){
