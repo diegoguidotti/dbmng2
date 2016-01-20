@@ -40,9 +40,10 @@ class DbmngHelper {
 
 	public function exeAllRest( $router, $aForms=null )
   {
-		if($aForms==null){
-    	$aForms = $this->getAllFormsArray();
-		}
+    if($aForms==null)
+    {
+      $aForms = $this->getAllFormsArray();
+    }
 
     foreach( $aForms as $k => $aData )
       {
@@ -51,11 +52,6 @@ class DbmngHelper {
         $api->exeRest($router);
       }
   }
-
-
-
-
-
 
   public function getFormArrayById($id_table)
   {
@@ -77,16 +73,18 @@ class DbmngHelper {
         $aForm['table_alias'] = $table['data'][0]['table_name'];
         if( isset($table['data'][0]['table_alias']) )
           {
-						if($table['data'][0]['table_alias']!=null){
-            	$aForm['table_alias'] = $table['data'][0]['table_alias'];
-						}
+            if($table['data'][0]['table_alias']!=null)
+              {
+                $aForm['table_alias'] = $table['data'][0]['table_alias'];
+              }
           }
 
-					if(isset($table['data'][0]['param'])){
-							$txt=$table['data'][0]['param'];
-							$txt = str_replace("'",'"',$txt);
-						  $aParam= json_decode($txt,true);
-					}
+        if(isset($table['data'][0]['param']))
+          {
+            $txt=$table['data'][0]['param'];
+            $txt = str_replace("'",'"',$txt);
+            $aParam= json_decode($txt,true);
+          }
 
         $exist_id = true;
       }
@@ -118,14 +116,16 @@ class DbmngHelper {
           'voc_sql' => $fields['data'][$nF]['voc_sql']
         );
 
-				if(isset( $fields['data'][$nF]['nullable'])){
-					$aArray['nullable'] = $fields['data'][$nF]['nullable'];
-				}
+        if(isset( $fields['data'][$nF]['nullable']))
+          {
+            $aArray['nullable'] = $fields['data'][$nF]['nullable'];
+          }
 
-				$aArray['widget'] = $sWidget;
-				if(isset( $fields['data'][$nF]['readonly'])){
-					$aArray['readonly'] = $fields['data'][$nF]['readonly'];
-				}
+        $aArray['widget'] = $sWidget;
+        if(isset( $fields['data'][$nF]['readonly']))
+          {
+            $aArray['readonly'] = $fields['data'][$nF]['readonly'];
+          }
 
         if( isset($fields['data'][$nF]['param']) )
           {
@@ -146,9 +146,10 @@ class DbmngHelper {
 
         if( $fields['data'][$nF]['field_widget'] == 'select' || $fields['data'][$nF]['field_widget'] == 'select_nm' )
           {
-						if(isset($fields['data'][$nF]['voc_val'])){
-							;//If already exists does not execute a query
-						}
+            if(isset($fields['data'][$nF]['voc_val']))
+              {
+                ;//If already exists does not execute a query
+              }
             else if( !isset($fields['data'][$nF]['voc_sql']) )
               {
                 // sql automatically generated throught standard coding tables definition
@@ -162,8 +163,6 @@ class DbmngHelper {
               }
 
             //TODO: review the safety of this query
-
-
 
             $rVoc  = $this->db->select($sql, array(), \PDO::FETCH_NUM);
             $aFVoc = array();
@@ -246,9 +245,10 @@ class DbmngHelper {
 
     if( $exist_id )
       {
-				$ret=array();
-				$ret['aForm']=$aForm;
-				$ret['aParam']=$aParam;
+        $ret=array();
+        $ret['aForm']=$aForm;
+        $ret['aParam']=$aParam;
+        
         return $ret;
       }
     else
@@ -282,13 +282,15 @@ class DbmngHelper {
 
     $var = array(':alias' => $alias);
     $aTbl = $this->db->select($sql, $var);
-		if($aTbl['rowCount']>0){
-	    $id_table = intval($aTbl['data'][0]['id_table']);
-	    $ret = $this->getFormArrayById($id_table);
-		}
-		else{
-			$ret=$this->getFormArrayByName($alias);
-		}
+    if( $aTbl['rowCount']>0 )
+      {
+        $id_table = intval($aTbl['data'][0]['id_table']);
+        $ret = $this->getFormArrayById($id_table);
+      }
+    else
+      {
+        $ret = $this->getFormArrayByName($alias);
+      }
 
     return $ret;
   }
@@ -302,13 +304,129 @@ class DbmngHelper {
     $aForms = array();
     for( $nT = 0; $nT < $aTbl['rowCount']; $nT++ )
       {
-				$id_table = $aTbl['data'][$nT]['id_table'];
-				$ret= $this->getFormArrayById($id_table);
-				$table_alias=$ret['aForm']['table_alias'];
+        $id_table = $aTbl['data'][$nT]['id_table'];
+        $ret= $this->getFormArrayById($id_table);
+        $table_alias=$ret['aForm']['table_alias'];
         $aForms[$table_alias] = $ret;
       }
 
     return $aForms;
   }
-
+  
+  function getTableStructure($id_table, $table_schema = null)
+  {
+    $bOk = true;
+    
+    if( $table_schema == null )
+    {
+      $table_schema = $this->aParamDefault['dbname'];
+    }
+    
+    $sql = "select table_name from dbmng_tables where id_table = :id_table";
+    $var = array(':id_table' => $id_table);
+    
+    $aTable = $this->db->select($sql, $var);
+    if( $aTable['rowCount'] > 0 )
+      {
+        $tn = $aTable['data'][0]['table_name'];
+        
+        $sql = "select * from information_schema.columns where table_name = :table_name and table_schema = :table_schema";
+        $var = array(':table_name' => $tn, ':table_schema' => $table_schema);
+        $aFields = $this->db->select($sql, $var);
+        
+        for( $nF = 0; $nF < $aFields['rowCount']; $nF++ )
+          {
+            /* identify the primary key */
+            $pk = 0;
+            
+            if( strlen($aFields['data'][$nF]['COLUMN_KEY']) != 0 )
+              {
+                if( strlen(trim($aFields['data'][$nF]['EXTRA'])) != 0 )
+                  {
+                    if( $aFields['data'][$nF]['EXTRA'] == 'auto_increment' )
+                      $pk = 1;
+                    else
+                      $pk = 2;
+                  }
+              }
+            
+            /* Map type into crud type */
+            $sType ="";
+            switch( $aFields['data'][$nF]['DATA_TYPE'] )
+              {
+                case "int":
+                case "bigint":
+                  $sType = "int";
+                  break;
+                case "float":
+                case "double":
+                  $sType = "double";
+                  break;
+                case "date":
+                  $sType = "date";
+                  break;
+                case "text":
+                  $sType = "text";
+                  break;
+                default:
+                  $sType = "varchar";
+              }
+            
+            /* Assign the 'basic' widget */
+            $widget = "";
+            $voc_sql = null;
+            switch( $aFields['data'][$nF]['DATA_TYPE'] )
+              {
+                case "int":
+                  if( strpos($aFields['data'][$nF]['COLUMN_NAME'], "id_" ) !== false && $pk == 0 )
+                    {
+                      $widget = "select";
+                    }
+                  else
+                    {
+                      $widget = "input";
+                    }
+                  break;
+                case "float":
+                  $widget = "input";
+                  break;
+                case "text":
+                  $widget = "textarea";
+                  break;
+                case "date":
+                  $widget = "date";
+                  break;
+                default:
+                  $widget = "input";
+              }
+            
+            /* identify if a fields accept or no to be empty */
+            $nullable = 0;
+            if( $aFields['data'][$nF]['IS_NULLABLE'] == "YES" )
+              $nullable = 1;
+            
+            /* Prepare insert sql command */
+            $sql  = "insert into dbmng_fields( id_table, id_field_type, field_widget, field_name, nullable, field_label, field_order, pk, is_searchable ) ";
+            $sql .= "values( :id_table, :id_field_type, :field_widget, :field_name, :nullable, :field_label, :field_order, :pk, :is_searchable );";
+            $var = array(':id_table' => $id_table, 
+                        ':id_field_type' => $sType, 
+                        ':field_widget' => $widget, 
+                        ':field_name' => $aFields['data'][$nF]['COLUMN_NAME'],
+                        ':nullable' => $nullable,
+                        ':field_label' => ucfirst(str_replace("_", " ", $aFields['data'][$nF]['COLUMN_NAME'])),
+                        ':field_order' => $aFields['data'][$nF]['ORDINAL_POSITION']*10,
+                        ':pk' => $pk,
+                        ':is_searchable' => 0);
+            
+            $res = $this->db->insert($sql, $var);
+            if( !$res['ok'] )
+              {
+                $bOk = false;
+                break;
+              }
+          }
+      }
+    
+    return array('ok' => $bOk, 'id_table' => $id_table);
+  }
 }
