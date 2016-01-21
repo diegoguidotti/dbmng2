@@ -527,7 +527,7 @@ function uploadFile($field){
 
 
 		// Simple validation (max file size 2MB and only two allowed mime types)
-		$validator = new \FileUpload\Validator\Simple($size_byte, $mile_types);
+		$validator = new \FileUpload\Validator\Simple($size_byte, $mime_types);
 
 		/**
 		*   For more flexibility, the simple Validator has been broken down since the size validator might not always be needed..
