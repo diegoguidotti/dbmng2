@@ -248,4 +248,32 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
     $res1=$app->getDb()->select('select true_false from test WHERE id=1',array());
     $this->assertEquals(null,$res1['data'][0]['true_false']);
   }
+
+    public function testApiTransaction() {
+
+      $client = new \GuzzleHttp\Client([
+         // Base URI is used with relative requests
+         'base_uri' => 'http://localhost',
+         // You can set any number of default request options.
+         'timeout'  => 2.0,
+      ]);
+
+      $auth=[        'test', 'test'    ];
+      $auths=[    'auth' => $auth];
+
+      //insert a new record
+      $res1 = $client->request('POST', $GLOBALS['SITE_FOLDER'].'/api/test/transaction', [['body' => '{"name":"Susanna"}','mode' => 'insert'],'auth'=>$auth]);
+      
+      //insert a new record
+      // $res1 = $client->request('POST', $GLOBALS['SITE_FOLDER'].'/api/test/', ['body' => '{"name":"Susanna"}','auth'=>$auth]);
+
+//       $o = json_decode($res1->getBody());
+//       print_r($o);
+// 
+//       $this->assertEquals(true,$o->ok);
+// 
+// 
+//       $res=$this->getApp()->getDb()->select("select name from test WHERE name='Susanna'",array());
+//       $this->assertEquals("Susanna",$res['data'][0]['name']);
+    }
 }
