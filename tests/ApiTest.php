@@ -206,7 +206,7 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
       $response4 = $client->request('GET', $GLOBALS['SITE_FOLDER'].'/api/test_simple/',$auths);
   		$o2 = json_decode($response4->getBody(),true);
       $this->assertEquals(true,$o2['ok']);
-    
+
   		$this->assertEquals(1,$o2['rowCount']);
       $this->assertEquals("Susanna",$o2['data'][0]['name']);
 
@@ -262,18 +262,32 @@ class ApiTest extends \PHPUnit_Extensions_Database_TestCase
       $auths=[    'auth' => $auth];
 
       //insert a new record
-      $res1 = $client->request('POST', $GLOBALS['SITE_FOLDER'].'/api/test/transaction', [['body' => '{"name":"Susanna"}','mode' => 'insert'],'auth'=>$auth]);
-      
+      $res1 = $client->request('POST', $GLOBALS['SITE_FOLDER'].'/api/test/transaction', ['body' => '[{"mode":"insert","body":{"name":"Susanna"}},{"mode":"insert","body":{"name":"Pluto"}}]','auth'=>$auth]);
+
       //insert a new record
       // $res1 = $client->request('POST', $GLOBALS['SITE_FOLDER'].'/api/test/', ['body' => '{"name":"Susanna"}','auth'=>$auth]);
+       //echo $res1->getBody();
+       $o = json_decode($res1->getBody());
+       //print_r($o);
+       $this->assertEquals(true,$o->ok);
+      $res=$this->getApp()->getDb()->select("select * from test",array());
+      $this->assertEquals(4,$res['rowCount']);
 
-//       $o = json_decode($res1->getBody());
-//       print_r($o);
-// 
-//       $this->assertEquals(true,$o->ok);
-// 
-// 
-//       $res=$this->getApp()->getDb()->select("select name from test WHERE name='Susanna'",array());
-//       $this->assertEquals("Susanna",$res['data'][0]['name']);
+       $res=$this->getApp()->getDb()->select("select name from test WHERE name='Susanna'",array());
+       $this->assertEquals("Susanna",$res['data'][0]['name']);
+
+       $res2 = $client->request('POST', $GLOBALS['SITE_FOLDER'].'/api/test/transaction', ['body' => '[{"mode":"delete","key":1},{"mode":"update","key":2, "body":{"name":"Updated"}},{"mode":"insert","body":{"name":"Nuovo"}}]','auth'=>$auth]);
+       $o = json_decode($res2->getBody());
+       $this->assertEquals(true,$o->ok);
+
+       $res=$this->getApp()->getDb()->select("select * from test WHERE id=1",array());
+       $this->assertEquals(0,$res['rowCount']);
+
+       $res=$this->getApp()->getDb()->select("select name from test WHERE id=2",array());
+       $this->assertEquals("Updated",$res['data'][0]['name']);
+
+       $res=$this->getApp()->getDb()->select("select * from test order by id desc",array());
+       $this->assertEquals("Nuovo",$res['data'][0]['name']);
+
     }
 }

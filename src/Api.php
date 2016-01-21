@@ -97,7 +97,7 @@ class Api {
 						$pqueries[]=$ret;
 					}
 				}
-				print_r($pqueries);
+				//print_r($pqueries);
 				$queries=array();
 				$all_ok=true;
 				$mesages;
