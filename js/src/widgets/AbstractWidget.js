@@ -191,7 +191,7 @@ Dbmng.AbstractWidget = Class.extend({
 
     var ok=true;
     var message='';
-    if(nullable){
+    if( nullable == 0 ){
       validated = true;
       if(this.getValue()===null || this.getValue()===''){
           ok=false;
@@ -221,8 +221,6 @@ Dbmng.AbstractWidget = Class.extend({
         message=base_msg;
       }
     }
-
-    if()
 
     var valid_custom=this.isValidCustom();
     if(!valid_custom.ok){
