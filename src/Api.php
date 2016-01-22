@@ -154,6 +154,7 @@ class Api {
 
 			$router->put('/api/'.$table_alias.'/*', function( $id_value=null ) use($dbmng){
 				$body = file_get_contents("php://input");
+				
 				return json_encode($this->doUpdate($dbmng,$id_value,json_decode($body)));
 
 			} );
@@ -325,7 +326,7 @@ class Api {
           {
             $aForm = $dbmng->getaForm();
             $aFormParams = $sanitize['aFormParams'];
-
+            
             if( !is_null($id_value) )
               {
                 // get the info from aForm array

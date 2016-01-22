@@ -954,14 +954,17 @@ function uploadFile($field){
       {
         foreach( $aFormParams as $k => $v )
           {
+            // echo " |$k - $v| ";
             if( $fld == $k )
               {
                 if( $fld_value['type'] == 'int' || $fld_value['type'] == 'double' )
                   {
-                    if( $v == "" )
+                    if( $v === ""  )
                       {
+                        //echo " setnull |$k - [$v]| ";
 												if(isset($aFormParams->$k)){
-                        	$aFormParams->$k = null;
+                        // echo " setnull |$k - $v| ";
+                       	$aFormParams->$k = null;
 												}
                       }
 										else{

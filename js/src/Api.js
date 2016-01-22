@@ -98,6 +98,7 @@ Dbmng.Api = Class.extend({
   },
   update: function(options) {
     console.log(options.data);
+    console.log(this.url+options.key);
 		jQuery.ajax({
 			url: this.url+options.key,
 			dataType:'json',

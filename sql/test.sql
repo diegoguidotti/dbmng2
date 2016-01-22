@@ -36,3 +36,5 @@ ALTER TABLE `test` ADD `sex` VARCHAR(20) NOT NULL AFTER `name`;
 ALTER TABLE `test` ADD `true_false` INTEGER NOT NULL AFTER `sex`;
 --  added to test file widget.
 ALTER TABLE `test` ADD `file` VARCHAR(255);
+-- change the default to the check_field field.
+ALTER TABLE `test_father` CHANGE `check_field` `check_field` INT(11) NULL DEFAULT NULL;

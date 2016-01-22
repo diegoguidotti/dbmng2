@@ -45,7 +45,7 @@ Dbmng.AbstractTheme = Class.extend({
     */
 
 
-    if( aField.nullable == 0  ) {
+    if( parseInt(aField.nullable) == 0  ) {
       var sp = document.createElement('span');
       sp.className='dbmng_required';
 

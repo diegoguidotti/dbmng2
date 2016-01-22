@@ -289,7 +289,13 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
  			$this->assertEquals(true, $ret3['ok']);
  			$ret4 = $app->getDb()->select('select varchar_field from test_father where id_father = :id', array(':id' => $ret3['inserted_id']), \PDO::FETCH_ASSOC);
  			$this->assertEquals('foo',$ret4['data'][0]['varchar_field']);
- 			//fwrite(STDERR, print_r($ret4));
+ 			
+ 			$ret5 = $dbmng->update(array('id_father'=>1,'check_field'=>'0'));
+      $this->assertEquals(true, $ret5['ok']);
+      $ret6 = $app->getDb()->select('select check_field from test_father where id_father = :id and check_field is not null', array(':id' => 1), \PDO::FETCH_ASSOC);
+      $this->assertEquals(0,$ret6['data'][0]['check_field']);
+      
+ 			// fwrite(STDERR, print_r($ret6));
 //  			$this->assertEquals(null,$ret4['data'][0][1]);
  		}
 

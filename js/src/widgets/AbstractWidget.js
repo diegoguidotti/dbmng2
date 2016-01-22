@@ -184,9 +184,9 @@ Dbmng.AbstractWidget = Class.extend({
   },
   isValid:function (){
     var validated = false;
-    var nullable=0;
+    var nullable = 0;
     if(typeof this.aField.nullable !== 'undefined'){
-      nullable=this.aField.nullable;
+      nullable = parseInt(this.aField.nullable);
     }
 
     var ok=true;
