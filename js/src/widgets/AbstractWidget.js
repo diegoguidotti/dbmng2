@@ -222,6 +222,8 @@ Dbmng.AbstractWidget = Class.extend({
       }
     }
 
+    if()
+
     var valid_custom=this.isValidCustom();
     if(!valid_custom.ok){
       ok=!valid_custom.ok;
