@@ -947,9 +947,9 @@ function uploadFile($field){
   */
   function sanitize($aFormParams)
   {
-    $auth=true;
-    $code=200;
-    $message="";
+    $auth = true;
+    $code = 200;
+    $message = "";
     foreach( $this->aForm['fields'] as $fld => $fld_value )
       {
         foreach( $aFormParams as $k => $v )
@@ -959,25 +959,29 @@ function uploadFile($field){
               {
                 if( $fld_value['type'] == 'int' || $fld_value['type'] == 'double' )
                   {
-                    if( $v === ""  )
+                    if( strlen($v) == 0 ) // $v === "" )
                       {
                         //echo " setnull |$k - [$v]| ";
-												if(isset($aFormParams->$k)){
-                        // echo " setnull |$k - $v| ";
-                       	$aFormParams->$k = null;
-												}
+                        if( isset($aFormParams->$k) )
+                          {
+                            // echo " setnull |$k - $v| ";
+                            $aFormParams->$k = null;
+                          }
                       }
-										else{
-												if(!is_numeric ($v)){
-													$auth=false;
-													$code=200;
-													$message="You are trying to add an text value in a numeric field";
-												}
-										}
+                    else
+                      {
+                        if( !is_numeric($v) )
+                          {
+                            $auth = false;
+                            $code = 200;
+                            $message = "[".$fld_value['label']."] You are trying to add text value in a numeric field";
+                          }
+                      }
                   }
               }
           }
       }
+    
     return array('ok'=>$auth, 'message'=>$message, 'code'=>$code, 'aFormParams' => $aFormParams);
   }
    /////////////////////////////////////////////////////////////////////////////
