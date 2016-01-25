@@ -185,17 +185,19 @@ Dbmng.AbstractWidget = Class.extend({
   isValid:function (){
     var validated = false;
     var nullable = 0;
+    
     if(typeof this.aField.nullable !== 'undefined'){
       nullable = parseInt(this.aField.nullable);
     }
 
     var ok=true;
     var message='';
-    if( nullable == 0 ){
+    if( nullable == 0 && this.aField.field_type != 'hidden' ) {
       validated = true;
       if(this.getValue()===null || this.getValue()===''){
+        console.log(this.aField);
           ok=false;
-          message='Empty Field';
+          message='Empty Field ['+this.aField.field+']';
       }
     }
 
