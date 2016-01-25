@@ -192,7 +192,11 @@ Dbmng.AbstractWidget = Class.extend({
 
     var ok=true;
     var message='';
-    if( nullable == 0 && this.aField.field_type != 'hidden' ) {
+    
+    // console.log("Test [isValid]");
+    // console.log(this.aField.field + ": valore:" + nullable + " typo: "+ typeof nullable);
+    // console.log(typeof 0);
+    if( nullable === 0 && this.aField.field_type != 'hidden' ) {
       validated = true;
       if(this.getValue()===null || this.getValue()===''){
         console.log(this.aField);

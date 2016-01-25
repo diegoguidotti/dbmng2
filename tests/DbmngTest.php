@@ -413,6 +413,34 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
 
  		}
 
+    function test_dbmng_fields()
+    {
+
+      $app=$this->getApp();
+      $db=$app->getDb();
+
+      $aForm = array(
+        'table_name' => 'dbmng_fields' ,
+          'primary_key'=> array('id_field'),
+          'fields'     => array(
+              'id_field' => array('label' => 'ID', 'type' => 'int', 'key' => 1 ) ,
+              'id_field_type' => array('label' => 'Type', 'type' => 'varchar'),
+              'field_name' => array('label' => 'Name', 'type' => 'varchar'),
+              'pk' => array('label' => 'Primary', 'type' => 'int')
+          ),
+      );
+
+      $aParam=array();
+
+      //We will test the request. usually the checkbox unchecked does not produce a field in the $_REQUEST array. an empty data field should be consdered as a null value
+      $dbmng=new Dbmng($app, $aForm, $aParam);
+
+      $ret5 = $dbmng->update(array('id_field'=>2,'pk'=>'0'));
+      $this->assertEquals(true, $ret5['ok']);
+      $ret6 = $app->getDb()->select('select pk from dbmng_fields where id_field = :id ', array(':id' => 2), \PDO::FETCH_ASSOC);
+      $this->assertEquals(0,$ret6['data'][0]['pk']);
+
+    }
 
 
 }

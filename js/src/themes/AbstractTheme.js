@@ -43,9 +43,10 @@ Dbmng.AbstractTheme = Class.extend({
       lb.appendChild(required);
     }
     */
-
-
-    if( parseInt(aField.nullable) == 0  ) {
+    // console.log("Test [getLabel]");
+    // console.log(aField.field + ": valore:" + aField.nullable + " typo: "+ typeof parseInt(aField.nullable));
+    // console.log(typeof 0);
+    if( parseInt(aField.nullable) === 0  ) {
       var sp = document.createElement('span');
       sp.className='dbmng_required';
 
