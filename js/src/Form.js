@@ -155,7 +155,7 @@ geo
       var wr=this.widgets[key].isValid();
       if(wr.ok===false){
         ok=false;
-        message+="Field "+this.widgets[key].fiel+": "+wr.message+"<br/>";
+        message+="Field "+this.widgets[key].field+": "+wr.message+"<br/>";
       }
     }
     return {'ok':ok,'message':message};

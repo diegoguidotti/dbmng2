@@ -316,7 +316,7 @@ class DbmngHelper {
   function getTableStructure($id_table, $table_schema = null)
   {
     $bOk = true;
-    $aReturn = array();
+    $aQueries = array();
     
     if( $table_schema == null )
     {
@@ -412,34 +412,36 @@ class DbmngHelper {
             $field_order = $aFields['data'][$nF]['ORDINAL_POSITION']*10;
             
             // prepare single array for transaction
-            $aRecord = array();
-            $aRecord['mode'] = 'insert';
-            $aRecord['body'] = "{'id_table':$id_table, 'id_field_type':$sType, 'field_widget':$widget, 'field_name'}";
-            $aRecord['body'] = array('id_table' => $id_table, 
-                                  'id_field_type' => $sType, 
-                                  'field_widget' => $widget,
-                                  'field_name' => $field_name,
-                                  'nullable' => $nullable,
-                                  'field_label' => $field_label,
-                                  'field_order' => $field_order,
-                                  'pk' => $pk,
-                                  'is_searchable' => 0
-                                  );
-            $aReturn[] = $aRecord;
+//             $aRecord = array();
+//             $aRecord['mode'] = 'insert';
+//             $aRecord['body'] = "{'id_table':$id_table, 'id_field_type':$sType, 'field_widget':$widget, 'field_name'}";
+//             $aRecord['body'] = array('id_table' => $id_table, 
+//                                   'id_field_type' => $sType, 
+//                                   'field_widget' => $widget,
+//                                   'field_name' => $field_name,
+//                                   'nullable' => $nullable,
+//                                   'field_label' => $field_label,
+//                                   'field_order' => $field_order,
+//                                   'pk' => $pk,
+//                                   'is_searchable' => 0
+//                                   );
+//             $aReturn[] = $aRecord;
             
-//             /* Prepare insert sql command */
-//             $sql  = "insert into dbmng_fields( id_table, id_field_type, field_widget, field_name, nullable, field_label, field_order, pk, is_searchable ) ";
-//             $sql .= "values( :id_table, :id_field_type, :field_widget, :field_name, :nullable, :field_label, :field_order, :pk, :is_searchable );";
-//             $var = array(':id_table' => $id_table, 
-//                         ':id_field_type' => $sType, 
-//                         ':field_widget' => $widget, 
-//                         ':field_name' => $field_name,
-//                         ':nullable' => $nullable,
-//                         ':field_label' => $field_label,
-//                         ':field_order' => $field_order,
-//                         ':pk' => $pk,
-//                         ':is_searchable' => 0);
-//             
+            /* Prepare insert sql command */
+            $sql  = "insert into dbmng_fields( id_table, id_field_type, field_widget, field_name, nullable, field_label, field_order, pk, is_searchable ) ";
+            $sql .= "values( :id_table, :id_field_type, :field_widget, :field_name, :nullable, :field_label, :field_order, :pk, :is_searchable );";
+            $var = array(':id_table' => $id_table, 
+                        ':id_field_type' => $sType, 
+                        ':field_widget' => $widget, 
+                        ':field_name' => $field_name,
+                        ':nullable' => $nullable,
+                        ':field_label' => $field_label,
+                        ':field_order' => $field_order,
+                        ':pk' => $pk,
+                        ':is_searchable' => 0);
+            $aQueries[$nF]['sql'] = $sql;
+            $aQueries[$nF]['var'] = $var;
+            
 //             $res = $this->db->insert($sql, $var);
 //             if( !$res['ok'] )
 //               {
@@ -447,9 +449,13 @@ class DbmngHelper {
 //                 break;
 //               }
           }
+        // print_r($aQueries);
+        $ret = $this->$db->transactions($aQueries);
       }
-   
-    return array('ok' => $bOk, 'id_table' => $id_table);
-    //return array('ok' => $bOk, 'records' => $aReturn);
+    else 
+      {
+        $ret['ok'] = false;
+      }
+    return array('ok' => $ret['ok'], 'id_table' => $id_table);
   }
 }

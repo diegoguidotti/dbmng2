@@ -31,8 +31,13 @@ Dbmng.AbstractTheme = Class.extend({
 
     var lb = document.createElement('label');
     lb.setAttribute('for', 'dbmng_' + aField.field);
-
-    var txt=document.createTextNode(aField.label);
+    
+    // if set assign the label long in form mode
+    var label = aField.label;
+    if( aField.label_long ) {
+        label = aField.label_long;
+    }
+    var txt=document.createTextNode(label);
     lb.appendChild(txt);
 
 /*

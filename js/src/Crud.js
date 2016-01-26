@@ -213,7 +213,13 @@ Dbmng.Crud = Class.extend({
               button_delete.disabled=true;
             }
             button_delete.addEventListener("click",function(){
-              self.deleteRecord(div_id, opt.rawData[self.pk]);
+              var confirm_message = "Are you sure?";
+              if( self.aParam.ui.btn_delete.confirm_message ) {
+                confirm_message = self.aParam.ui.btn_delete.confirm_message;
+              }
+              if( window.confirm(confirm_message) ) {
+                self.deleteRecord(div_id, opt.rawData[self.pk]);
+              }
             });
             jQuery(cell).append(button_delete);
           }
