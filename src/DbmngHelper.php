@@ -317,7 +317,8 @@ class DbmngHelper {
   {
     $bOk = true;
     $aQueries = array();
-    
+    $db = $this->db;
+
     if( $table_schema == null )
     {
       $table_schema = $this->aParamDefault['dbname'];
@@ -334,7 +335,7 @@ class DbmngHelper {
         $sql = "select * from information_schema.columns where table_name = :table_name and table_schema = :table_schema";
         $var = array(':table_name' => $tn, ':table_schema' => $table_schema);
         $aFields = $this->db->select($sql, $var);
-        
+
         for( $nF = 0; $nF < $aFields['rowCount']; $nF++ )
           {
             /* identify the primary key */
@@ -442,15 +443,9 @@ class DbmngHelper {
             $aQueries[$nF]['sql'] = $sql;
             $aQueries[$nF]['var'] = $var;
             
-//             $res = $this->db->insert($sql, $var);
-//             if( !$res['ok'] )
-//               {
-//                 $bOk = false;
-//                 break;
-//               }
           }
         // print_r($aQueries);
-        $ret = $this->$db->transactions($aQueries);
+        $ret = $this->db->transactions($aQueries);
       }
     else 
       {

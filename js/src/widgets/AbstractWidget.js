@@ -193,12 +193,9 @@ Dbmng.AbstractWidget = Class.extend({
     var ok=true;
     var message='';
     
-    // console.log("Test [isValid]");
-    // console.log(this.aField.field + ": valore:" + nullable + " typo: "+ typeof nullable);
-    // console.log(typeof 0);
-    if( nullable === 0 && this.aField.field_type != 'hidden' ) {
+    if( this.toValidate(nullable) ) { //( nullable === 0 && this.aField.field_type != 'hidden' && this.aField.key != 1 ) {
       validated = true;
-      if(this.getValue()===null || this.getValue()===''){
+      if( this.getValue()===null || this.getValue()==='' ) {
         console.log(this.aField);
           ok=false;
           message='Empty Field ['+this.aField.field+']';
@@ -239,5 +236,9 @@ Dbmng.AbstractWidget = Class.extend({
     }
 
     return {'ok':ok, 'message':message};
+  },
+  
+  toValidate: function( nullable ) {
+    return (nullable === 0 && this.aField.field_type != 'hidden' && this.aField.key != 1);
   }
 });
