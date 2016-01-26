@@ -123,6 +123,21 @@ private $prepare;
 			}
 	}
 
+	/*extract the value of primary key from an array ($avars) */
+	public function getPkValue($aVars){
+		$pk_value="";
+		foreach ( $this->aForm['fields'] as $fld => $fld_value )
+			{
+				if( Util::var_equal($fld_value,'key', 1) ||  Util::var_equal($fld_value,'key', 2) )
+					{
+						if(isset($aVars[$fld])){
+							$pk_value=$aVars[$fld] ;
+						}
+					}
+			}
+		return $pk_value;
+	}
+
   public function createWhere($aVars, &$sWhere, &$aWhere, $checkId=true, $useFilter=true, $selectCondition=false)
   {
 		$result = Array();
@@ -239,6 +254,8 @@ private $prepare;
 							}
 					}
 			}
+		$deleted_pk=$this->getPkValue($aVars);
+		$result['deleted_id']=$deleted_pk;
 
 		return $result;
 	}
@@ -362,6 +379,8 @@ private $prepare;
 						}
 					}
 		}
+		$updated_pk=$this->getPkValue($aVars);
+		$result['updated_id']=$updated_pk;
 
 		return $result;
 	}
@@ -974,14 +993,20 @@ function uploadFile($field){
                           {
                             $auth = false;
                             $code = 200;
-                            $message = "[".$fld_value['label']."] You are trying to add text value in a numeric field";
+														$fld_label=$fld;
+
+														if(isset($fld_value['label'])){
+															$fld_label=$fld_value['label'];
+														}
+
+                            $message = "[".$fld_label."] You are trying to add text value in a numeric field";
                           }
                       }
                   }
               }
           }
       }
-    
+
     return array('ok'=>$auth, 'message'=>$message, 'code'=>$code, 'aFormParams' => $aFormParams);
   }
    /////////////////////////////////////////////////////////////////////////////
