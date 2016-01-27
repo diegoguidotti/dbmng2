@@ -404,29 +404,13 @@ class DbmngHelper {
             
             /* identify if a fields accept or no to be empty */
             $nullable = 0;
-            if( $aFields['data'][$nF]['IS_NULLABLE'] == "YES" )
+            if( $aFields['data'][$nF]['IS_NULLABLE'] == "YES" && $pk != 1 )
               $nullable = 1;
             
             
             $field_name  = $aFields['data'][$nF]['COLUMN_NAME'];
             $field_label = ucfirst(str_replace("_", " ", $aFields['data'][$nF]['COLUMN_NAME']));
             $field_order = $aFields['data'][$nF]['ORDINAL_POSITION']*10;
-            
-            // prepare single array for transaction
-//             $aRecord = array();
-//             $aRecord['mode'] = 'insert';
-//             $aRecord['body'] = "{'id_table':$id_table, 'id_field_type':$sType, 'field_widget':$widget, 'field_name'}";
-//             $aRecord['body'] = array('id_table' => $id_table, 
-//                                   'id_field_type' => $sType, 
-//                                   'field_widget' => $widget,
-//                                   'field_name' => $field_name,
-//                                   'nullable' => $nullable,
-//                                   'field_label' => $field_label,
-//                                   'field_order' => $field_order,
-//                                   'pk' => $pk,
-//                                   'is_searchable' => 0
-//                                   );
-//             $aReturn[] = $aRecord;
             
             /* Prepare insert sql command */
             $sql  = "insert into dbmng_fields( id_table, id_field_type, field_widget, field_name, nullable, field_label, field_order, pk, is_searchable ) ";
@@ -444,7 +428,6 @@ class DbmngHelper {
             $aQueries[$nF]['var'] = $var;
             
           }
-        // print_r($aQueries);
         $ret = $this->db->transactions($aQueries);
       }
     else 
