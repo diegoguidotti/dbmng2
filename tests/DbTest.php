@@ -173,13 +173,39 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
 
 	public function test_transactions() {
 				$db = DB::createDb($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
-				$aQueries[1]['sql'] = 'insert into test (id, name) values(:id, :name )';
-				$aQueries[1]['var'] = array(':id'=>3, ':name'=>'Susanna');
-				$ret = $db->transactions($aQueries);
+
+        //Transaction with an error (it should return false)
+				$aTmpQueries[1]['sql'] = 'insert into testerr (id, name) values(:id, :name )';
+				$aTmpQueries[1]['var'] = array(':id'=>3, ':name'=>'Susanna');
+				$ret = $db->transactions($aTmpQueries);
+				$this->assertEquals(false,$ret['ok']);
+
+
+
+        //Correct transaction (it should add 199 records) it should return true
+        $aQueries=array();
+        for($n=1;$n<200; $n++){
+          $aQueries[$n]['sql'] = 'insert into test (name) values(:name )';
+  				$aQueries[$n]['var'] = array(':name'=>'Test '.$n);
+        }
+        $ret = $db->transactions($aQueries);
 				$this->assertEquals(true,$ret['ok']);
 
-		    $ret2 = $db->select('select id, name from test where id = :id', array(':id'=>3), \PDO::FETCH_BOTH);
-		    $this->assertEquals(1,$ret2['rowCount']);
+        //check orwcount
+		    $ret2 = $db->select('select id, name from test', array());
+		    $this->assertEquals(201,$ret2['rowCount']);
+
+        //add a wrong record and check that no one record is added
+        $aQueries[200]['sql'] = "insert into testa (name) values(:name) ";
+        $aQueries[200]['var'] = array(':name'=>'Test Err');
+        $ret = $db->transactions($aQueries);
+        //print_r($ret);
+        $this->assertEquals(false,$ret['ok']);
+
+        $ret2 = $db->select('select id, name from test', array());
+		    $this->assertEquals(201,$ret2['rowCount']);
+
+
 	}
 
 

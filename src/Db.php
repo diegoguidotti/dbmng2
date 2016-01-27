@@ -188,6 +188,7 @@ private $debug;
 					$dbh = $this->pdo;
 					$ret=array();
 					$dbh->beginTransaction();
+          //echo " | Begin";
 					$all_ok=true;
 
 					foreach( $aQuery as $a )
@@ -196,6 +197,7 @@ private $debug;
 							$ok= $prep0->execute($a['var']);
 
 							$id = $dbh->lastInsertId();
+
 							if(!$ok){
 								$all_ok=false;
 							}
@@ -203,7 +205,6 @@ private $debug;
 							$ret0=array();
 							$ret0['ok']=$ok;
 							$ret0['sql']=$this->getSQL($a['sql'],$a['var']);
-
 							if($id>0){
 								$ret0['inserted_id']=$id;
 							}
@@ -216,9 +217,15 @@ private $debug;
 							}
 */
 							$ret[]=$ret0;
-
 						}
-						$dbh->commit();
+            if($all_ok){
+              //echo " Commit";
+			        $dbh->commit();
+            }
+            else{
+              //echo " Rollback";
+              $dbh->rollBack();
+            }
 
 						$ret['ok']=$all_ok;
         }
@@ -226,11 +233,14 @@ private $debug;
         {
 					$ret['ok']=false;
 					$ret['message']=$e->getMessage();
-					$ret['sql']=$this->getSQL($sQuery, $aVars);
+          //echo " Rollback Exc (".$e->getMessage().")";
+          $dbh->rollBack();
+					//$ret['sql']=$this->getSQL($aQuery, $aVars);
 					//fwrite(STDERR, print_r($e));
 					//$ret['sql']=$e->getMessage();
 
         }
+        //echo " End |";
 			return $ret;
 		}
 
