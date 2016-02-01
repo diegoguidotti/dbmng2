@@ -1,0 +1,42 @@
+<?php
+// DBMNG
+include_once ("sites/all/libraries/dbmng2/src/Db.php");
+include_once ("sites/all/libraries/dbmng2/src/Dbmng.php");
+include_once ("sites/all/libraries/dbmng2/src/Api.php");
+include_once ("sites/all/libraries/dbmng2/src/App.php");
+include_once ("sites/all/libraries/dbmng2/src/Login.php");
+include_once ("sites/all/libraries/dbmng2/src/DbmngHelper.php");
+
+require_once ("sites/all/libraries/dbmng2/vendor/autoload.php");
+
+include_once ("sites/all/modules/mod_dbmng2/mod_dbmng2.php");
+include_once ("sites/all/modules/mod_dbmng2/settings.php");
+
+
+function mod_dbmng2_permission() {
+	return array('dbmng manager' => array('title'=>t('Manage all meta tables')),
+					 'dbmng ajax'    => array('title'=>t('Manage ajax')));
+}
+
+function mod_dbmng2_menu() {
+  $items = array();
+
+  $items['dbmng2'] = array(
+    'title' => 'Database Management',
+    'page callback' => 'dbmng2_manager',
+    'access arguments' => array('dbmng manager'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['dbmng2/ajax'] = array(
+    'page callback' => 'dbmng2_ajax_response',
+    'access arguments' => array('dbmng ajax')
+  );
+
+  $items['dbmng2/rest'] = array(
+    'page callback' => 'dbmng2_rest_response',
+    'access arguments' => array('dbmng ajax'),
+  );
+
+  return $items;
+}

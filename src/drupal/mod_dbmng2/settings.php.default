@@ -1,0 +1,13 @@
+<?php
+  include_once ("sites/all/libraries/dbmng2/src/Db.php");
+  
+  global $DBMNG;
+  
+  $dns = "mysql:host=localhost;dbname=dbmng2;user=root;password=xxx";
+  $user="root";
+  $password="xxx";
+  
+  $DBMNG = Dbmng\Db::createDb($dns, $user, $password);
+  $DBMNG->setDebug(true);
+
+?>
