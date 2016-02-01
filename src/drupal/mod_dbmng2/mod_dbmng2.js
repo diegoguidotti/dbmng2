@@ -38,10 +38,12 @@ function dbmng2_show_tables() {
     {
       aParam:aParam, theme:theme_boot, url: path + 'api/' + table,
       success:function(self){
+        console.log("success");
         console.log(self);
         self.createTable({div_id:'#'+div_id});
       },
       crud_success: function(method, data){
+        console.log("crud_success");
         if( method == 'insert' ) {
           if( data.ok ) {
             jQuery.ajax({ 
@@ -121,13 +123,13 @@ function dbmng2_show_fields(id_table) {
   api.select({
     search: "id_table="+id_table,
     success: function(data){
+      
       jQuery(document).ajaxStop(function(){
-        jQuery('#dbmng2_table_edit').prepend("Tablename: <strong>"+data.data[0].table_name+"</strong> [id="+id_table+"]");
+        jQuery("#table_name").html("");
+        jQuery('#dbmng2_table_edit').prepend("<div id='table_name'>Tablename: <strong>"+data.data[0].table_name+"</strong> [id="+id_table+"]</div>");
+        jQuery('#dbmng2_table_edit .dbmng_form_button_right').html('<button id="back2table" class="btn-block btn btn-default">Back to table</button>');
         
-        jQuery('.dbmng_form_button_right').html('<button id="back" class="btn-block btn btn-default">Back to table</button>');
-        
-        jQuery('#back').click(function(){
-          alert("back");
+        jQuery('#back2table').click(function(){
           jQuery('#dbmng2_table_edit').hide();
           jQuery('#dbmng2_table_list').show();
         });

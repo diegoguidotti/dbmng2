@@ -68,8 +68,8 @@ function dbmng2_manager()
   drupal_add_js('sites/all/modules/mod_dbmng2/mod_dbmng2.js',array('cache' => false));
   drupal_add_css('sites/all/modules/mod_dbmng2/mod_dbmng2.css',array('cache' => false));
   
-  drupal_add_js('sites/all/libraries/rifiuti/typeahead.bundle.min.js',array('cache' => false));
-  drupal_add_js('sites/all/libraries/rifiuti/hendlebars.js',array('cache' => false));
+  drupal_add_js('sites/all/libraries/utils/typeahead.bundle.min.js',array('cache' => false));
+  drupal_add_js('sites/all/libraries/utils/hendlebars.js',array('cache' => false));
   
   global $DBMNG;
   global $user;
