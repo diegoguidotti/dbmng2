@@ -10,7 +10,7 @@ include_once ("sites/all/libraries/dbmng2/src/DbmngHelper.php");
 require_once ("sites/all/libraries/dbmng2/vendor/autoload.php");
 
 include_once ("sites/all/modules/mod_dbmng2/mod_dbmng2.php");
-include_once ("sites/all/modules/mod_dbmng2/settings.php");
+/*include_once ("sites/all/modules/mod_dbmng2/settings.php");*/
 
 
 function mod_dbmng2_permission() {

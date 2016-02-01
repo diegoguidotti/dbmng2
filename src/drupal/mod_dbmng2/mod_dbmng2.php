@@ -10,24 +10,39 @@ use Dbmng\Util;
 
 function dbmng2_rest_response()
 {
-  global $user;
-  global $DBMNG;
+  
+  
   global $base_path;
   
   $path = $base_path . "dbmng2/rest";
   $router = new \Respect\Rest\Router($path);
-  
-  $app = new App($DBMNG, array('user'=>(array)$user, 'aParamDefault' => array('dbname' => 'registro')));
+
+  $app=dbmng2_get_app();  
   $h = new DbmngHelper($app);
   $h->exeAllRest( $router );
 }
 
+
+function dbmng2_get_app(){
+
+ global $user;
+ global $databases;
+
+  $dns = "mysql:host=".$databases['default']['default']['host'].";dbname=".$databases['default']['default']['database'].";user=".$databases['default']['default']['username'].";password=".$databases['default']['default']['password']."";
+  $username=$databases['default']['default']['username'];
+  $password=$databases['default']['default']['password'];
+  
+  $DB = Db::createDb($dns, $username, $password);
+
+  $app = new App($DB, array('user'=>(array)$user, 'aParamDefault' => array('dbname' => $databases['default']['default']['database'])));
+  return $app;
+}
+
 function dbmng2_ajax_response()
 {
-  global $user;
-  global $DBMNG;
+ 
   
-  $app = new App($DBMNG, array('user'=>(array)$user, 'aParamDefault' => array('dbname' => 'registro')));
+  $app=dbmng2_get_app();  
   $h = new DbmngHelper($app);
 
   if( isset($_REQUEST['fill_dbmng_fields']) )
@@ -43,7 +58,7 @@ function dbmng2_ajax_response()
         {
           $sql = "delete from dbmng_fields where id_table = :id_table";
           $var = array(':id_table' => $_REQUEST['id_table']);
-          $res = $DBMNG->delete($sql, $var);
+          $res = $app->getDb()->delete($sql, $var);
         }
       else
         {
@@ -71,7 +86,7 @@ function dbmng2_manager()
   drupal_add_js('sites/all/libraries/utils/typeahead.bundle.min.js',array('cache' => false));
   drupal_add_js('sites/all/libraries/utils/hendlebars.js',array('cache' => false));
   
-  global $DBMNG;
+  //global $DBMNG;
   global $user;
   global $base_path;
   

@@ -95,6 +95,8 @@ Dbmng.Crud = Class.extend({
 						options.error(exc);
 					}
 					console.log(exc);
+          console.log(options);
+
 				}
 			});
 
