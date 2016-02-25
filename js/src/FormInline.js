@@ -30,6 +30,9 @@ Dbmng.FormInline = Class.extend({
     if(options.onChangeRow){
 			this.onChangeRow=options.onChangeRow;
 		}
+    if(options.addEachRow){
+			this.addEachRow=options.addEachRow;
+		}
   },
 	getTransaction: function() {
 		var val=[];
@@ -98,6 +101,10 @@ Dbmng.FormInline = Class.extend({
           }
 
 				}
+
+        if(this.addEachRow){
+          this.addEachRow(r,aData[i]);
+        }
 		}
 		//console.log(this.forms);
 		return tab;
