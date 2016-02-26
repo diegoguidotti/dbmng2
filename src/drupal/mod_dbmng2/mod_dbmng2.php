@@ -90,7 +90,7 @@ function dbmng2_manager()
   global $user;
   global $base_path;
   
-  drupal_add_js("var base_path=".$base_path, "inline");
+  drupal_add_js("var base_path='$base_path'", "inline");
   drupal_add_js("jQuery(document).ready(function(){dbmng2_show_tables()})", "inline");
   
   $html = "";
