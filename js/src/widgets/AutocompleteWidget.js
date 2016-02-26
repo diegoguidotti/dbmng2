@@ -45,7 +45,7 @@ Dbmng.AutocompleteWidget = Dbmng.AbstractWidget.extend({
       }
     });
 
-    if( data_val !== '' && data_val !== null ) {
+    if( data_val !== '' && typeof data_val !== 'undefined' ) {
       if( data_val !== '' ) {
         provider.search(data_val,function(d){self.autocomplete_get(d,elv);},function(d){self.autocomplete_get(d,elv);});
       }
