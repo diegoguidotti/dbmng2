@@ -17,7 +17,7 @@ function dbmng2_rest_response()
   $path = $base_path . "dbmng2/rest";
   $router = new \Respect\Rest\Router($path);
 
-  $app=dbmng2_get_app();  
+  $app=dbmng2_get_app();
   $h = new DbmngHelper($app);
   $h->exeAllRest( $router );
 }
@@ -27,7 +27,6 @@ function dbmng2_get_app(){
 
  global $user;
  global $databases;
-
   $dns = "mysql:host=".$databases['default']['default']['host'].";dbname=".$databases['default']['default']['database'].";user=".$databases['default']['default']['username'].";password=".$databases['default']['default']['password']."";
   $username=$databases['default']['default']['username'];
   $password=$databases['default']['default']['password'];

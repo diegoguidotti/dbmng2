@@ -56,7 +56,7 @@ class LoginTest extends \PHPUnit_Extensions_Database_TestCase
     $l2 = $login->check_authentication('test','test');
     $this->assertEquals(1,$l2['ok']);
     $this->assertEquals(1,$l2['user']['uid']);
-    // print_r($l2);
+    print_r($l2);
     
     $l3 = $login->check_authentication('testwrong','test');
     $this->assertEquals(0,$l3['ok']);

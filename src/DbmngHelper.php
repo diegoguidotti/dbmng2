@@ -51,6 +51,11 @@ class DbmngHelper {
         $api = new Api($dbmng);
         $api->exeRest($router);
       }
+      
+    $router->any('/api/**', function() use ($dbmng) {
+        $input = array('ok' => false, 'msg' => 'Table definition not found');
+        return json_encode($input);
+    });
   }
 
   public function getFormArrayById($id_table)
