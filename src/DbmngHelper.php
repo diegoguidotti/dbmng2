@@ -17,8 +17,9 @@ class DbmngHelper {
 	{
     $this->db = $app->getDb();
 
-		if(isset($app->getParam()['aParamDefault']))
-    	$this->aParamDefault = $app->getParam()['aParamDefault'];
+    $aParam = $app->getParam();
+		if(isset($aParam['aParamDefault']))
+    	$this->aParamDefault = $aParam['aParamDefault'];
 		else
 			$this->aParamDefault = Array();
 
