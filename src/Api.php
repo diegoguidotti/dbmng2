@@ -59,8 +59,12 @@ class Api {
 				$table_alias = $aForm['table_alias'];
 			}
 
-			$router->get('/api/'.$table_alias.'/schema', function( $id_value=null ) use($dbmng){
+			/*
+			echo "<h1>".'/api/'.$table_alias.'/schema'."</h1>";
+			$router->get('/api/'.$table_alias.'/schema/', function( ) use($dbmng){
         $allowed=$dbmng->isAllowed('select');
+        
+        echo "<h3>schema: ".$dbmng->getaForm()['table_name']."</h3>";
 
 				//print_r(   $allowed);
 
@@ -73,9 +77,9 @@ class Api {
             http_response_code($allowed['code']);
             return json_encode($allowed);
           }
-			});
+			});*/
 
-			$router->post('/api/'.$table_alias.'/transaction', function( $id_value=null ) use($dbmng){
+			$router->post('/api/'.$table_alias.'/transaction', function(  ) use($dbmng){
 
 				$dbmng->setPrepare(true);
 				// get the form_params from the rest call
@@ -129,21 +133,27 @@ class Api {
 			$router->get('/api/'.$table_alias.'/*', function( $id_value=null ) use($dbmng){
 
 				$allowed=$dbmng->isAllowed('select');
-
+				
 				if($allowed['ok'])
           {
             $aForm = $dbmng->getaForm();
-            $key = $aForm['primary_key'][0];
+            
+            if($id_value=='schema'){
+              return json_encode($aForm);
+            }
+            else{
+              $key = $aForm['primary_key'][0];
 
-            $aVar = array();
-            if( !is_null($id_value) )
-              $aVar = array($key => $id_value);
+              $aVar = array();
+              if( !is_null($id_value) )
+                $aVar = array($key => $id_value);
 
-            //if exists some _REQUEST get variable try to filter them (dbmng will check if aForm can accept them)
-            $aVar=array_merge($aVar,$_REQUEST);
+              //if exists some _REQUEST get variable try to filter them (dbmng will check if aForm can accept them)
+              $aVar=array_merge($aVar,$_REQUEST);
 
-            $input = $dbmng->select($aVar);
-            return json_encode($input);
+              $input = $dbmng->select($aVar);
+              return json_encode($input);
+              }
           }
 				else
           {
