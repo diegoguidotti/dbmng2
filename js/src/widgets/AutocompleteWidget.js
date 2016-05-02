@@ -24,68 +24,72 @@ Dbmng.AutocompleteWidget = Dbmng.AbstractWidget.extend({
 
     var elv = this.theme.getInput(aVField);
     el.appendChild(elv);
-
-    var provider = new Bloodhound({
-      datumTokenizer: function (data) {
-          console.log('datumToken');
-          //console.log(data);
-            return Bloodhound.tokenizers.whitespace('<b>'+data[1]+"</b>: "+data[3]);
-      },
-      queryTokenizer: Bloodhound.tokenizers.whitespace,
-      remote: {
-        url: self.aField.url,
-        wildcard: '%QUERY',
-        transform: function (data){
-          var label=[];
-          jQuery.each(data.data, function(k,v){
-            label.push(v);
-          });
-          return (label);
-        }
-      }
-    });
-
-    if( data_val !== '' && typeof data_val !== 'undefined' ) {
-      if( data_val !== '' ) {
-        provider.search(data_val,function(d){self.autocomplete_get(d,elv);},function(d){self.autocomplete_get(d,elv);});
-      }
-      console.log(data_val);
-    }
-
-    var fkey = "key";
-    if( self.aField.autocomplete_key ) {
-      fkey = self.aField.autocomplete_key;
-    }
-
-    var flabel = "label";
-    if( self.aField.autocomplete_fieldname ) {
-      flabel = self.aField.autocomplete_fieldname;
-    }
-
-    var not_found = "Not found ";
-    if( self.aField.not_found ) {
-      not_found = self.aField.not_found;
-    }
-    jQuery(elv).typeahead(
-      {   hint: true,   highlight: true,   minLength: 0 },
-      {
-        name: self.aField.autocomplete_fieldname,
-        source: provider,
-        limit: 100,
-        display: self.aField.autocomplete_fieldname,
-        templates: {
-          header: '',
-          notFound: function(q){
-            return not_found+' <b>'+q.query+"<b>";
-          },
-          suggestion: Handlebars.compile('<div>{{'+flabel+'}}</div>')
+    if( typeof Bloodhound !== 'undefined'){
+      var provider = new Bloodhound({
+        datumTokenizer: function (data) {
+            console.log('datumToken');
+            //console.log(data);
+              return Bloodhound.tokenizers.whitespace('<b>'+data[1]+"</b>: "+data[3]);
+        },
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        remote: {
+          url: self.aField.url,
+          wildcard: '%QUERY',
+          transform: function (data){
+            var label=[];
+            jQuery.each(data.data, function(k,v){
+              label.push(v);
+            });
+            return (label);
+          }
         }
       });
 
-    jQuery(elv).bind('typeahead:select', function(ev, suggestion){
-      console.log(self);
-      self.widget.value = suggestion[fkey];
-    });
+      if( data_val !== '' && typeof data_val !== 'undefined' ) {
+        if( data_val !== '' ) {
+          provider.search(data_val,function(d){self.autocomplete_get(d,elv);},function(d){self.autocomplete_get(d,elv);});
+        }
+        console.log(data_val);
+      }
+
+      var fkey = "key";
+      if( self.aField.autocomplete_key ) {
+        fkey = self.aField.autocomplete_key;
+      }
+
+      var flabel = "label";
+      if( self.aField.autocomplete_fieldname ) {
+        flabel = self.aField.autocomplete_fieldname;
+      }
+
+      var not_found = "Not found ";
+      if( self.aField.not_found ) {
+        not_found = self.aField.not_found;
+      }
+      jQuery(elv).typeahead(
+        {   hint: true,   highlight: true,   minLength: 0 },
+        {
+          name: self.aField.autocomplete_fieldname,
+          source: provider,
+          limit: 100,
+          display: self.aField.autocomplete_fieldname,
+          templates: {
+            header: '',
+            notFound: function(q){
+              return not_found+' <b>'+q.query+"<b>";
+            },
+            suggestion: Handlebars.compile('<div>{{'+flabel+'}}</div>')
+          }
+        });
+
+      jQuery(elv).bind('typeahead:select', function(ev, suggestion){
+        console.log(self);
+        self.widget.value = suggestion[fkey];
+      });
+    }
+    else {
+      el.appendChild(jQuery("<div class='alert alert-danger'><strong>DBMNG2 Error!</strong><p>Bloodhound library is not loaded</p></div>")[0]);
+    }
     return el;
   },
 
