@@ -15,6 +15,7 @@ Dbmng.Crud = Class.extend({
     this.ready=true;
     this.crud_success = options.crud_success;
     this.form_ready = options.form_ready;
+    this.prepare_cdata = options.prepare_cdata;
     if(!options.aParam){
       options.aParam={};
     }
@@ -169,6 +170,9 @@ Dbmng.Crud = Class.extend({
       header.push("Func.");
 
       var cData = self.form.convert2html(aData);
+      if(typeof self.prepare_cdata=='function'){
+        cData = self.prepare_cdata(cData);
+      }
 
       var html=self.theme.getTable({data:cData, rawData:aData, header:header, aParam:self.aParam, options:{
         assignClass:true,
