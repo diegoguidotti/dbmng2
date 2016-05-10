@@ -231,30 +231,52 @@ Dbmng.Crud = Class.extend({
           }
 
           if( self.aParam.custom_function ) {
-            var label_custom = self.aParam.custom_function.label;
-            var opt_custom = self.aParam.custom_function;
-            //console.log(opt_custom);
-            var button_custom=(self.theme.getButton(label_custom,opt_custom));
-            if(!self.isAllowed(opt.rawData,self.aParam.custom_function.action)){
-              button_custom.disabled=true;
+            
+            var aCF = self.aParam.custom_function;
+            if( ! jQuery.isArray(self.aParam.custom_function) ) {
+              aCF = [self.aParam.custom_function];
             }
-
-            if( self.aParam.custom_function.action ) {
-              if( typeof self.aParam.custom_function.action == 'string' ) {
-                button_custom.addEventListener("click",function(){
-                  var fnstring = self.aParam.custom_function.action;
-                  var fnparams = [opt.rawData[self.pk],opt.rawData];
-
-                  exeExternalFunction(fnstring, fnparams);
-//                         var fn = window[fnstring];
-//                         if( typeof(fn) == 'function' ) {
-//                           //fn();
-//                           fn.apply(null, fnparams);
-//                         }
-                });
-                jQuery(cell).append(button_custom);
+            
+            jQuery.each(aCF, function(k,v) {
+              var label_custom = v.label;
+              var opt_custom = v;
+              //console.log(opt_custom);
+              var button_custom=(self.theme.getButton(label_custom,opt_custom));
+              if(!self.isAllowed(opt.rawData,v.action)){
+                button_custom.disabled=true;
               }
-            }
+
+              if( v.action ) {
+                if( typeof v.action == 'string' ) {
+                  button_custom.addEventListener("click",function(){
+                    var fnstring = v.action;
+                    var fnparams = [opt.rawData[self.pk],opt.rawData];
+
+                    exeExternalFunction(fnstring, fnparams);
+                  });
+                  jQuery(cell).append(button_custom);
+                }
+              }
+            });
+//             var label_custom = self.aParam.custom_function.label;
+//             var opt_custom = self.aParam.custom_function;
+//             //console.log(opt_custom);
+//             var button_custom=(self.theme.getButton(label_custom,opt_custom));
+//             if(!self.isAllowed(opt.rawData,self.aParam.custom_function.action)){
+//               button_custom.disabled=true;
+//             }
+// 
+//             if( self.aParam.custom_function.action ) {
+//               if( typeof self.aParam.custom_function.action == 'string' ) {
+//                 button_custom.addEventListener("click",function(){
+//                   var fnstring = self.aParam.custom_function.action;
+//                   var fnparams = [opt.rawData[self.pk],opt.rawData];
+// 
+//                   exeExternalFunction(fnstring, fnparams);
+//                 });
+//                 jQuery(cell).append(button_custom);
+//               }
+//             }
           }
 
           return cell;
