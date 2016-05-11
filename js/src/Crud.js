@@ -157,7 +157,7 @@ Dbmng.Crud = Class.extend({
     }
     var self=this;
 
-    console.log(data);
+    //console.log(data);
     if( data.ok ) {
       var aData=data.data;
       var header=[];
@@ -171,7 +171,24 @@ Dbmng.Crud = Class.extend({
 
       var cData = self.form.convert2html(aData);
       if(typeof self.prepare_cdata=='function'){
-        cData = self.prepare_cdata(cData);
+        var pData = [];
+        
+        jQuery.each(aData, function(k,v){
+          pData.push([v,cData[k]]);
+        });
+        
+        // console.log(pData);
+        
+        var pcData = self.prepare_cdata(pData);
+        
+        var aRData = [];
+        var aCData = [];
+        jQuery.each(pcData, function(k,v) {
+          aRData.push(v[0]);
+          aCData.push(v[1]);
+        });
+        aData = aRData;
+        cData = aCData;
       }
 
       var html=self.theme.getTable({data:cData, rawData:aData, header:header, aParam:self.aParam, options:{
