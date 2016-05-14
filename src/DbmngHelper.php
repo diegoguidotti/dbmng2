@@ -60,7 +60,7 @@ class DbmngHelper {
         $api->exeRest($router);
       }
       
-    $router->any('/api/**', function() use ($dbmng) {
+    $router->any('/api/**', function() {
         $input = array('ok' => false, 'msg' => 'Table definition not found');
         return json_encode($input);
     });
