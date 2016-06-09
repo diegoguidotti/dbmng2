@@ -309,7 +309,24 @@ Dbmng.Crud = Class.extend({
         button_insert.click(function(){
           self.createInsertForm(div_id);
         });
-        jQuery(div_id).append("<div id='dbmng_buttons_row' class='row' style='margin-top: 20px;margin-bottom: 100px;'><div class='dbmng_form_button_message col-xs-12'></div><div class='dbmng_form_button_left col-xs-4'></div><div class='col-xs-4'></div><div class='dbmng_form_button_right col-xs-4'></div></div>");
+        
+        var btns_l = "<div id='dbmng_buttons_row' class='row' style='margin-top: 20px;margin-bottom: 100px;'><div class='dbmng_form_button_message col-xs-12'></div><div class='dbmng_form_button_left col-xs-4'></div><div class='col-xs-4'></div><div class='dbmng_form_button_right col-xs-4'></div></div>";
+        var btns_f = "<div id='dbmng_buttons_row' class='row' style='margin-top: 0px;margin-bottom: 0px;'><div class='dbmng_form_button_message col-xs-12'></div><div class='dbmng_form_button_left col-xs-4'></div><div class='col-xs-4'></div><div class='dbmng_form_button_right col-xs-4'></div></div>";
+        var position = 'last';
+        if( self.aParam.ui.btn_insert.position ) {
+          position = self.aParam.ui.btn_insert.position;
+        }
+        
+        if( position == 'first' ) {
+          jQuery(div_id).prepend(btns_f);
+        }
+        else if ( position == 'both' ) {
+          jQuery(div_id).append(btns_l);
+          jQuery(div_id).prepend(btns_f);
+        }
+        else {
+          jQuery(div_id).append(btns_l);
+        }
         jQuery(div_id).find('.dbmng_form_button_left').append(button_insert);
 
         // jQuery(div_id).append(button_insert);
