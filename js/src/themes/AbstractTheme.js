@@ -291,6 +291,9 @@ Dbmng.AbstractTheme = Class.extend({
         }
       }
     }
+    if(!opt.rawData){
+      opt.rawData=opt.data;
+    }
     if(opt.data){
 			el.appendChild(this.getTableHeader(opt));
 			var tbody=document.createElement('tbody');
@@ -301,34 +304,48 @@ Dbmng.AbstractTheme = Class.extend({
 						this.addClass(row, "dbmng_row dbmng_row_"+i);
 					}
 					if(typeof opt.options.addColumn=='function'){
-						row.appendChild(opt.options.addColumn({data: opt.data[i], rawData: opt.rawData[i], options:opt.options }));
+            var cell = opt.options.addColumn({data: opt.data[i], rawData: opt.rawData[i], options:opt.options });
+            if( cell !== null ) {
+              row.appendChild(cell);
+            }
 					}
 				}
 				tbody.appendChild(row);
 			}
 			el.appendChild(tbody);
 		}
-    if(!opt.rawData){
-      opt.rawData=opt.data;
-    }
 		div.appendChild(el);
     return div;
   },
 	getTableHeader: function(opt) {
+    console.log(opt);
 		var el = document.createElement('thead');
 		var tr = document.createElement('tr');
-		if(opt.header){
-				for(var i=0; i<opt.header.length; i++){
-					tr.appendChild(this.getTableHCell({content: opt.header[i], options:opt.options}));
-				}
+    
+    var keys=[];
+    var cnt=0;
+    if(opt.data){
+      if(opt.data.length>0){
+        for(var key in opt.data[0]){
+          keys[cnt]=key;
+          cnt++;
+        }
+      }
+    }
+    
+		if(!opt.header){
+      opt.header=keys;
 		}
-		else if(opt.data){
-			if(opt.data.length>0){
-				for(var key in opt.data[0]){
-					tr.appendChild(this.getTableHCell({content: key, options:opt.options}));
-				}
-			}
-		}
+		
+    for(var i=0; i<opt.header.length; i++){
+      var th=this.getTableHCell({content: opt.header[i], options:opt.options});
+      if(opt.options){
+          if(opt.options.assignClass){
+            this.addClass(th, "dbmng_cell dbmng_head dbmng_col_"+keys[i]);
+          }
+        }
+      tr.appendChild(th);
+    }
 		el.appendChild(tr);
 		return el;
 	},

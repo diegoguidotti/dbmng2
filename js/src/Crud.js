@@ -103,6 +103,26 @@ Dbmng.Crud = Class.extend({
 
 		}
   },
+  hasFunctions: function() {
+    var ret = false;
+    
+    if( this.aParam.user_function.upd && this.aParam.user_function.upd == 1 )
+      ret = true;
+    
+    if( this.aParam.user_function.inline && this.aParam.user_function.inline == 1 )
+      ret = true;
+    
+    if( this.aParam.user_function.del && this.aParam.user_function.del == 1 )
+      ret = true;
+    
+    if( this.aParam.user_function.ins && this.aParam.user_function.ins == 1 )
+      ret = true;
+    
+    if( this.aParam.custom_function )
+      ret = true;
+    
+    return ret;
+  },
   createTable: function( opt ){
 
     var div_id=opt.div_id;
@@ -167,8 +187,10 @@ Dbmng.Crud = Class.extend({
           header.push(widget.getTextLabel());
         }
       }
-      header.push("Func.");
-
+      if( this.hasFunctions() ) {
+        header.push("Func.");
+      }
+      
       var cData = self.form.convert2html(aData);
       if(typeof self.prepare_cdata=='function'){
         var pData = [];
@@ -197,106 +219,111 @@ Dbmng.Crud = Class.extend({
           return "dbmng_row_id_"+aData[self.pk];
         },
         addColumn:function(opt){
-          var cell=self.theme.getTableCell();
+          if( self.hasFunctions() ) {
+            var cell=self.theme.getTableCell();
 
-          if( self.aParam.user_function.upd  ) {
-            var label_edit=self.aParam.ui.btn_edit.label;
-            var opt_edit=self.aParam.ui.btn_edit;
+            if( self.aParam.user_function.upd  ) {
+              var label_edit=self.aParam.ui.btn_edit.label;
+              var opt_edit=self.aParam.ui.btn_edit;
 
-            var button_edit=(self.theme.getButton(label_edit,opt_edit));
-            if(!self.isAllowed(opt.rawData,'update')){
-              button_edit.disabled=true;
-            }
-
-            button_edit.addEventListener("click",function(){
-              self.createForm(div_id, opt.rawData[self.pk], aData);
-            });
-            jQuery(cell).append(button_edit);
-          }
-
-          if( self.aParam.user_function.inline ) {
-            var label_editi=self.aParam.ui.btn_edit_inline.label;
-            var opt_editi=self.aParam.ui.btn_edit_inline;
-            var button_editi=self.theme.getButton(label_editi,opt_editi);
-            if(!self.isAllowed(opt.rawData,'update')){
-              button_editi.disabled=true;
-            }
-            button_editi.addEventListener("click",function(){
-              self.createFormInline(div_id, opt.rawData[self.pk], aData, true);
-            });
-            jQuery(cell).append(button_editi);
-          }
-
-          if( self.aParam.user_function.del ) {
-            var label_delete=self.aParam.ui.btn_delete.label;
-            var opt_delete=self.aParam.ui.btn_delete;
-
-            var button_delete=(self.theme.getButton(label_delete,opt_delete));
-            if(!self.isAllowed(opt.rawData,'delete')){
-              button_delete.disabled=true;
-            }
-            button_delete.addEventListener("click",function(){
-              var confirm_message = "Are you sure?";
-              if( self.aParam.ui.btn_delete.confirm_message ) {
-                confirm_message = self.aParam.ui.btn_delete.confirm_message;
-              }
-              if( window.confirm(confirm_message) ) {
-                self.deleteRecord(div_id, opt.rawData[self.pk]);
-              }
-            });
-            jQuery(cell).append(button_delete);
-          }
-
-          if( self.aParam.custom_function ) {
-            
-            var aCF = self.aParam.custom_function;
-            if( ! jQuery.isArray(self.aParam.custom_function) ) {
-              aCF = [self.aParam.custom_function];
-            }
-            
-            jQuery.each(aCF, function(k,v) {
-              var label_custom = v.label;
-              var opt_custom = v;
-              //console.log(opt_custom);
-              var button_custom=(self.theme.getButton(label_custom,opt_custom));
-              if(!self.isAllowed(opt.rawData,v.action)){
-                button_custom.disabled=true;
+              var button_edit=(self.theme.getButton(label_edit,opt_edit));
+              if(!self.isAllowed(opt.rawData,'update')){
+                button_edit.disabled=true;
               }
 
-              if( v.action ) {
-                if( typeof v.action == 'string' ) {
-                  button_custom.addEventListener("click",function(){
-                    var fnstring = v.action;
-                    var fnparams = [opt.rawData[self.pk],opt.rawData];
+              button_edit.addEventListener("click",function(){
+                self.createForm(div_id, opt.rawData[self.pk], aData);
+              });
+              jQuery(cell).append(button_edit);
+            }
 
-                    exeExternalFunction(fnstring, fnparams);
-                  });
-                  jQuery(cell).append(button_custom);
+            if( self.aParam.user_function.inline ) {
+              var label_editi=self.aParam.ui.btn_edit_inline.label;
+              var opt_editi=self.aParam.ui.btn_edit_inline;
+              var button_editi=self.theme.getButton(label_editi,opt_editi);
+              if(!self.isAllowed(opt.rawData,'update')){
+                button_editi.disabled=true;
+              }
+              button_editi.addEventListener("click",function(){
+                self.createFormInline(div_id, opt.rawData[self.pk], aData, true);
+              });
+              jQuery(cell).append(button_editi);
+            }
+
+            if( self.aParam.user_function.del ) {
+              var label_delete=self.aParam.ui.btn_delete.label;
+              var opt_delete=self.aParam.ui.btn_delete;
+
+              var button_delete=(self.theme.getButton(label_delete,opt_delete));
+              if(!self.isAllowed(opt.rawData,'delete')){
+                button_delete.disabled=true;
+              }
+              button_delete.addEventListener("click",function(){
+                var confirm_message = "Are you sure?";
+                if( self.aParam.ui.btn_delete.confirm_message ) {
+                  confirm_message = self.aParam.ui.btn_delete.confirm_message;
                 }
-              }
-            });
-//             var label_custom = self.aParam.custom_function.label;
-//             var opt_custom = self.aParam.custom_function;
-//             //console.log(opt_custom);
-//             var button_custom=(self.theme.getButton(label_custom,opt_custom));
-//             if(!self.isAllowed(opt.rawData,self.aParam.custom_function.action)){
-//               button_custom.disabled=true;
-//             }
-// 
-//             if( self.aParam.custom_function.action ) {
-//               if( typeof self.aParam.custom_function.action == 'string' ) {
-//                 button_custom.addEventListener("click",function(){
-//                   var fnstring = self.aParam.custom_function.action;
-//                   var fnparams = [opt.rawData[self.pk],opt.rawData];
-// 
-//                   exeExternalFunction(fnstring, fnparams);
-//                 });
-//                 jQuery(cell).append(button_custom);
-//               }
-//             }
-          }
+                if( window.confirm(confirm_message) ) {
+                  self.deleteRecord(div_id, opt.rawData[self.pk]);
+                }
+              });
+              jQuery(cell).append(button_delete);
+            }
 
-          return cell;
+            if( self.aParam.custom_function ) {
+              
+              var aCF = self.aParam.custom_function;
+              if( ! jQuery.isArray(self.aParam.custom_function) ) {
+                aCF = [self.aParam.custom_function];
+              }
+              
+              jQuery.each(aCF, function(k,v) {
+                var label_custom = v.label;
+                var opt_custom = v;
+                //console.log(opt_custom);
+                var button_custom=(self.theme.getButton(label_custom,opt_custom));
+                if(!self.isAllowed(opt.rawData,v.action)){
+                  button_custom.disabled=true;
+                }
+
+                if( v.action ) {
+                  if( typeof v.action == 'string' ) {
+                    button_custom.addEventListener("click",function(){
+                      var fnstring = v.action;
+                      var fnparams = [opt.rawData[self.pk],opt.rawData, opt.data];
+
+                      exeExternalFunction(fnstring, fnparams);
+                    });
+                    jQuery(cell).append(button_custom);
+                  }
+                }
+              });
+  //             var label_custom = self.aParam.custom_function.label;
+  //             var opt_custom = self.aParam.custom_function;
+  //             //console.log(opt_custom);
+  //             var button_custom=(self.theme.getButton(label_custom,opt_custom));
+  //             if(!self.isAllowed(opt.rawData,self.aParam.custom_function.action)){
+  //               button_custom.disabled=true;
+  //             }
+  // 
+  //             if( self.aParam.custom_function.action ) {
+  //               if( typeof self.aParam.custom_function.action == 'string' ) {
+  //                 button_custom.addEventListener("click",function(){
+  //                   var fnstring = self.aParam.custom_function.action;
+  //                   var fnparams = [opt.rawData[self.pk],opt.rawData];
+  // 
+  //                   exeExternalFunction(fnstring, fnparams);
+  //                 });
+  //                 jQuery(cell).append(button_custom);
+  //               }
+  //             }
+            }
+          
+            return cell;
+          }
+          else {
+            return null;
+          }
         }
       }});
       jQuery(div_id).html(html);

@@ -78,7 +78,12 @@ private $debug;
 			$ret=array();
 			try
 				{
+					
+					
+// 					echo "sQuery: $sQuery";
+// 					print_r($aVars);
 					$res0 = $this->pdo->prepare($sQuery);
+// 					print_r($res0);
 					$res0->execute($aVars);
 					$records=$res0->fetchAll($fetch_style);
 					$ret['ok']=true;
@@ -90,6 +95,10 @@ private $debug;
               $ret['sql'] = $this->getSQL($sQuery, $aVars);
             }
         }
+//       catch(Exception $e) {
+//         var_dump($e->getTrace());
+//         $ret['ok']=false;
+//       }
 				catch (\PDOException $e)
         {
 						$ret['ok']=false;
