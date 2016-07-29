@@ -203,8 +203,8 @@ Dbmng.Crud = Class.extend({
         // console.log(pData);
         
         var pcData = self.prepare_cdata(pData);
-        
-        if( pcData === null ) {
+
+        if( pcData !== null ) {
           var aRData = [];
           var aCData = [];
           jQuery.each(pcData, function(k,v) {
