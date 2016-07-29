@@ -15,6 +15,7 @@ Dbmng.Crud = Class.extend({
     this.ready=true;
     this.crud_success = options.crud_success;
     this.form_ready = options.form_ready;
+    this.table_ready = options.table_ready;
     this.prepare_cdata = options.prepare_cdata;
     if(!options.aParam){
       options.aParam={};
@@ -203,14 +204,16 @@ Dbmng.Crud = Class.extend({
         
         var pcData = self.prepare_cdata(pData);
         
-        var aRData = [];
-        var aCData = [];
-        jQuery.each(pcData, function(k,v) {
-          aRData.push(v[0]);
-          aCData.push(v[1]);
-        });
-        aData = aRData;
-        cData = aCData;
+        if( pcData === null ) {
+          var aRData = [];
+          var aCData = [];
+          jQuery.each(pcData, function(k,v) {
+            aRData.push(v[0]);
+            aCData.push(v[1]);
+          });
+          aData = aRData;
+          cData = aCData;
+        }
       }
 
       var html=self.theme.getTable({data:cData, rawData:aData, header:header, aParam:self.aParam, options:{
@@ -328,6 +331,10 @@ Dbmng.Crud = Class.extend({
       }});
       jQuery(div_id).html(html);
 
+      if(typeof self.table_ready=='function'){
+        self.table_ready();
+      }
+      
       if( self.aParam.user_function.ins ) {
         var label_insert=self.aParam.ui.btn_insert.label;
         var opt_insert=self.aParam.ui.btn_insert;

@@ -101,7 +101,7 @@ private $prepare;
 				}
 			}
 		}
-
+    $ret['aParam'] = $this->aParam;
 		return $ret;
 	}
 
