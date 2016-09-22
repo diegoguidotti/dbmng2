@@ -1,0 +1,47 @@
+{
+    "name": "aegest/aegest",
+    "description": "Gestionale Aedit",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Diego Guidotti",
+            "email": "guidotti@aedit.it"
+        },
+				{
+            "name": "Michele Mammini",
+            "email": "mamminim@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "repositories": [
+        {
+            "url": "https://github.com/diegoguidotti/dbmng2.git",
+            "type": "git"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "dbmng/dbmng": "dev-master",
+        "adoy/oauth2": "dev-master",
+        "respect/rest": "0.6.*",
+        "twbs/bootstrap": "dev-master"
+    },
+    "require-dev": {
+        "mockery/mockery": "~0.9",
+        "phpunit/phpunit": "~4.1",
+        "phpunit/dbunit": "1.2.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "aegest\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "aegest\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "bin-dir": "bin/"
+    }
+}

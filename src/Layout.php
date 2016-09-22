@@ -32,7 +32,11 @@ class Layout
 					$this->online_lib=true;
 				}
 			}
-
+      
+      if(!isset($aPage['jquery_path'])){
+        $aPage['jquery_path']="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/";
+      }
+      
 			if(!isset($aPage['nav'])){
 				$aPage['nav']=Array();
 			}
@@ -54,41 +58,27 @@ class Layout
 
 
     public function getLayout(){
+      $aPage=$this->aPage;
 
+      $page='<!DOCTYPE html>';
+      $page.='  <html lang="en">';
+      $page.= $this->getHeader();
+      $page.='<body >';
 
-			$aPage=$this->aPage;
+      $page.=$this->getNavigation();
+      $page.=$this->getContent();
 
-			$page='
-				<!DOCTYPE html>
-				<html lang="en">
-					
-					'.$this->getHeader().'
+      $page.='
+            <script>
+              $("#menu-toggle").click(function(e) {
+                  e.preventDefault();
+                  $("#wrapper").toggleClass("toggled");
+              });
+            </script>
+          </body>
+        </html>';
 
-					<body >
-
-						';
-
-
-				$page.=$this->getNavigation();
-
-				$page.=$this->getContent();
-
-				$page.='
-
-
-
-						 <script>
-						$("#menu-toggle").click(function(e) {
-								e.preventDefault();
-								$("#wrapper").toggleClass("toggled");
-						});
-						</script>
-
-					</body>
-				</html>';
-
-
-			return $page;
+      return $page;
 		}
 
 
@@ -123,16 +113,7 @@ class Layout
 						
 						';
 
-			
-
-
-
-						if($this->online_lib){
-							$html.='<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>';
-						}
-						else{
-							$html.='<script src="'.$this->aPage['bootstrap_path'].'js/jquery.min.js"></script>';
-						}
+            $html.='<script src="'.$this->aPage['jquery_path'].'jquery.min.js"></script>';
 
 						$html.='
 						<script src="'.$this->aPage['bootstrap_path'].'js/bootstrap.min.js"></script>';
