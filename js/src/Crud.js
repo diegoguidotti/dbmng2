@@ -331,10 +331,6 @@ Dbmng.Crud = Class.extend({
       }});
       jQuery(div_id).html(html);
 
-      if(typeof self.table_ready=='function'){
-        self.table_ready();
-      }
-      
       if( self.aParam.user_function.ins ) {
         var label_insert=self.aParam.ui.btn_insert.label;
         var opt_insert=self.aParam.ui.btn_insert;
@@ -344,8 +340,8 @@ Dbmng.Crud = Class.extend({
           self.createInsertForm(div_id);
         });
         
-        var btns_l = "<div id='dbmng_buttons_row' class='row' style='margin-top: 20px;margin-bottom: 100px;'><div class='dbmng_form_button_message col-xs-12'></div><div class='dbmng_form_button_left col-xs-4'></div><div class='col-xs-4'></div><div class='dbmng_form_button_right col-xs-4'></div></div>";
-        var btns_f = "<div id='dbmng_buttons_row' class='row' style='margin-top: 0px;margin-bottom: 0px;'><div class='dbmng_form_button_message col-xs-12'></div><div class='dbmng_form_button_left col-xs-4'></div><div class='col-xs-4'></div><div class='dbmng_form_button_right col-xs-4'></div></div>";
+        var btns_l = "<div id='dbmng_buttons_row' class='row' style='margin-top: 20px;margin-bottom: 100px;'><div class='dbmng_form_button_message col-xs-12'></div><div id='dbmng_button_left' class='dbmng_form_button_left col-xs-4'></div><div id='dbmng_button_center' class='col-xs-4'></div><div id='dbmng_button_right' class='dbmng_form_button_right col-xs-4'></div></div>";
+        var btns_f = "<div id='dbmng_buttons_row' class='row' style='margin-top: 0px;margin-bottom: 0px;'><div class='dbmng_form_button_message col-xs-12'></div>   <div id='dbmng_button_left' class='dbmng_form_button_left col-xs-4'></div><div id='dbmng_button_center' class='col-xs-4'></div><div id='dbmng_button_right' class='dbmng_form_button_right col-xs-4'></div></div>";
         var position = 'last';
         if( self.aParam.ui.btn_insert.position ) {
           position = self.aParam.ui.btn_insert.position;
@@ -364,6 +360,10 @@ Dbmng.Crud = Class.extend({
         jQuery(div_id).find('.dbmng_form_button_left').append(button_insert);
 
         // jQuery(div_id).append(button_insert);
+      }
+      
+      if(typeof self.table_ready=='function'){
+        self.table_ready();
       }
     }
     else {
