@@ -53,15 +53,31 @@ CREATE TABLE `dbmng_fields` (
 --
 
 INSERT INTO `dbmng_fields` (`id_field`, `id_table`, `id_field_type`, `field_widget`, `field_name`, `field_size`, `nullable`, `readonly`, `field_note`, `default_value`, `field_label`, `field_label_long`, `field_order`, `is_searchable`, `pk`, `field_function`, `skip_in_tbl`, `voc_sql`, `param`) VALUES
-(1, 1, 'int', 'input', 'id', NULL, NULL, NULL, NULL, NULL, 'ID', NULL, NULL, NULL, 1, NULL, 0, NULL, NULL),
-(2, 1, 'varchar', 'textarea', 'name', NULL, 0, NULL, NULL, NULL, 'Name', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL),
-(3, 1, 'varchar', 'select', 'sex', NULL, NULL, NULL, NULL, NULL, 'Sex', NULL, NULL, NULL, NULL, NULL, 0, NULL, '{''voc_val'':{''M'':''Male'',''F'':''Female''}}'),
-(4, 1, 'int', 'input', 'true_false', NULL, 0, NULL, NULL, NULL, 'True/False', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL),
-(5, 1, 'varchar', 'file', 'file', NULL, NULL, NULL, NULL, NULL, 'File', NULL, NULL, NULL, NULL, NULL, 0, NULL, '{''weburl_file'':''/dbmng2/files/'',''server_path'':''/var/www/dbmng2/files/''}'),
-(6, 2, 'int', 'input', 'id_child', NULL, NULL, NULL, NULL, NULL, 'ID', NULL, NULL, NULL, 1, NULL, 0, NULL, NULL),
-(7, 2, 'varchar', 'input', 'child_name', NULL, NULL, NULL, NULL, NULL, 'Child Name', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL),
-(8, 3, 'int', 'input', 'id', NULL, NULL, NULL, NULL, NULL, 'ID', NULL, NULL, NULL, 1, NULL, 0, NULL, NULL),
-(9, 3, 'varchar', 'input', 'name', NULL, 0, NULL, NULL, NULL, 'Name', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL);
+(1, 1, 'int', 'input', 'id_table', NULL, 1, 1, '', '', 'ID', '', 10, 0, 1, '', 0, '', ''),
+(2, 1, 'varchar', 'input', 'table_name', NULL, 0, 0, '', '', 'Table name', '', 30, 0, 0, '', 0, '', ''),
+(3, 1, 'varchar', 'input', 'table_desc', NULL, 1, 0, '', '', 'Table desc', '', 40, 0, 0, '', 1, '', ''),
+(4, 1, 'varchar', 'input', 'table_label', NULL, 1, 0, NULL, NULL, 'Table label', NULL, 50, 0, 0, NULL, 0, NULL, NULL),
+(5, 1, 'varchar', 'input', 'table_alias', NULL, 1, NULL, NULL, NULL, 'Table alias', NULL, 60, 0, 0, NULL, 0, NULL, NULL),
+(6, 1, 'varchar', 'textarea', 'param', NULL, 1, 0, '', '', 'Param', '', 70, 0, 0, '', 1, '', ''),
+(7, 2, 'int', 'input', 'id_field', NULL, 1, 1, '', '', 'ID', '', 10, 0, 1, '', 0, '', ''),
+(8, 2, 'int', 'hidden', 'id_table', NULL, 1, 0, '', '', 'ID Table', '', 20, 0, 0, '', 0, '', ''),
+(9, 2, 'varchar', 'input', 'field_name', NULL, 0, 0, NULL, NULL, 'Name', NULL, 21, 0, 0, NULL, 0, NULL, NULL),
+(10, 2, 'varchar', 'input', 'field_label', NULL, 0, 0, '', '', 'Label', '', 22, 0, 0, '', 0, '', ''),
+(11, 2, 'varchar', 'select', 'id_field_type', NULL, 0, 0, '', '', 'Type', '', 30, 0, 0, '', 0, '', '{''voc_val'':{''int'':''Integer'', ''double'':''Double'', ''varchar'':''Short Text'', ''text'':''Long Text'', ''date'':''Date''}}'),
+(12, 2, 'varchar', 'select', 'field_widget', NULL, 0, 0, NULL, NULL, 'Widget', NULL, 40, 0, 0, NULL, 0, NULL, '{\r\n  ''voc_val'': {\r\n    ''checkbox'': ''CheckBox'',\r\n   ''date'': ''Date'',\r\n   ''datetime'': ''Date time'',\r\n    ''time'': ''Time'',\r\n   ''file'': ''File'',\r\n   ''html'': ''Html'',\r\n   ''picture'': ''Picture'',\r\n   ''input'': ''Input Box'',\r\n   ''hidden'': ''Hidden'',\r\n   ''numeric'': ''Numeric'',\r\n   ''password'': ''Password'',\r\n   ''select'': ''Select'',\r\n   ''select_nm'': ''Select nm'',\r\n   ''autocomplete'': ''Autocomplete'',\r\n   ''multiselect'': ''Multi-Select'',\r\n    ''textarea'': ''Text Area'',\r\n    ''geo'': ''GEO Widget''\r\n }\r\n}'),
+(13, 2, 'int', 'input', 'field_size', NULL, 1, 0, NULL, NULL, 'Field size', NULL, 60, 0, 0, NULL, 1, NULL, NULL),
+(14, 2, 'int', 'select', 'nullable', NULL, 1, 0, '', '', 'Nullable', 'Can be empty?', 70, 0, 0, '', 0, '', '{''voc_val'': {''0'': ''No'', ''1'': ''Yes''}}'),
+(15, 2, 'int', 'checkbox', 'readonly', NULL, 1, 0, '', '', 'Readonly', '', 80, 0, 0, '', 1, '', ''),
+(16, 2, 'varchar', 'input', 'field_note', NULL, 1, 0, '', '', 'Field note', '', 90, 0, 0, '', 1, '', ''),
+(17, 2, 'varchar', 'input', 'default_value', NULL, 1, 0, NULL, NULL, 'Default value', NULL, 100, 0, 0, NULL, 1, NULL, NULL),
+(18, 2, 'varchar', 'input', 'field_label_long', NULL, 1, 0, NULL, NULL, 'Field label long', NULL, 120, 0, 0, NULL, 1, NULL, NULL),
+(19, 2, 'int', 'input', 'field_order', NULL, 1, 0, NULL, NULL, 'Order', NULL, 130, 0, 0, NULL, 0, NULL, NULL),
+(20, 2, 'int', 'checkbox', 'is_searchable', NULL, 1, 0, '', '', 'Is searchable', '', 140, 0, 0, '', 1, '', ''),
+(21, 2, 'int', 'select', 'pk', NULL, 0, 0, '', '', 'Pk', '', 150, 0, 0, '', 0, '', '{''voc_val'' : {''0'' : ''Normal field'',''1'' : ''Auto-increment primary key'',''2'' : ''Standard primary key''}}'),
+(22, 2, 'varchar', 'hidden', 'field_function', NULL, 1, 0, '', '', 'Field function', '', 160, 0, 0, '', 1, '', ''),
+(23, 2, 'int', 'checkbox', 'skip_in_tbl', NULL, 1, 0, '', '', 'Skip in tbl', '', 170, 0, 0, '', 1, '', ''),
+(24, 2, 'varchar', 'textarea', 'voc_sql', NULL, 1, 0, '', '', 'Voc sql', '', 180, 0, 0, '', 1, '', ''),
+(25, 2, 'text', 'textarea', 'param', NULL, 1, 0, '', '', 'Param', '', 190, 0, 0, '', 1, '', '');
 
 -- --------------------------------------------------------
 
@@ -104,9 +120,8 @@ CREATE TABLE `dbmng_tables` (
 --
 
 INSERT INTO `dbmng_tables` (`id_table`, `id_table_type`, `table_name`, `table_desc`, `table_label`, `table_alias`, `param`) VALUES
-(1, 1, 'test', NULL, NULL, NULL, NULL),
-(2, 1, 'test_child', NULL, NULL, NULL, NULL),
-(3, 1, 'test', NULL, NULL, 'test_simple', '{''filters'':{''sex'':''F''}}');
+(1, 1, 'dbmng_tables', 'Dbmng table', 'Dbmng Tables', '', '{  ''access'': {    ''select'': [''administrator''],    ''insert'': [''administrator''],    ''update'': [''administrator''],    ''delete'': [''administrator'']  }}'),
+(2, 1, 'dbmng_fields', '', 'Dbmng Fields', '', '{''tbl_order'':''field_order''}');
 
 -- --------------------------------------------------------
 

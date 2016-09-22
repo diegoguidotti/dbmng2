@@ -139,44 +139,49 @@ class Layout
 
 
 
-   public function getNavigation(){
+  public function getNavigation(){
 
-		$aPage=$this->aPage;
-		$html="";
-		if(count($aPage['nav'])==0){
-			;
-		}
-		else{
-      $html='<nav class="navbar navbar-inverse navbar-fixed-top">
-                <div class="container">
-                  <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" >
-                      <span class="sr-only">Toggle navigation</span>
-                      <span class="icon-bar"></span>
-                      <span class="icon-bar"></span>
-                      <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="?">'.$aPage['project'].'</a>
-                  </div>
-                  <div id="navbar" class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav">';
-                    foreach($aPage['nav'] as $nav){
-                        $html.=$this->writeNav($nav);
-                    }		
-      $html.='</ul>
-
-      <ul class="nav navbar-nav navbar-right">';
-      foreach($aPage['navRight'] as $nav){
+    $aPage = $this->aPage;
+    $html = "";
+    
+    $html .= '<nav class="navbar navbar-inverse navbar-fixed-top">';
+    $html .= '          <div class="container">';
+    $html .= '            <div class="navbar-header">';
+    $html .= '              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" >';
+    $html .= '                <span class="sr-only">Toggle navigation</span>';
+    $html .= '                <span class="icon-bar"></span>';
+    $html .= '                <span class="icon-bar"></span>';
+    $html .= '                <span class="icon-bar"></span>';
+    $html .= '              </button>';
+    $html .= '              <a class="navbar-brand" href="?">'.$aPage['project'].'</a>';
+    $html .= '            </div>';
+    
+    $html .= '            <div id="navbar" class="collapse navbar-collapse">';
+    
+    if(count($aPage['nav'])>0)
+      {
+        $html.='<ul class="nav navbar-nav">';
+        foreach($aPage['nav'] as $nav)
+        {
           $html.=$this->writeNav($nav);
-      }		
-      $html.='</ul>
-              </div><!--/.nav-collapse -->
-            </div>
-          </nav>';
-    }
+        }
+        $html.='</ul>';
+      }
+    
+    if(count($aPage['navRight'])>0)
+      {
+        $html.='<ul class="nav navbar-nav navbar-right">';
+        foreach($aPage['navRight'] as $nav){
+            $html.=$this->writeNav($nav);
+        }
+        $html.='</ul>';
+      }
+    $html.='</div><!--/.nav-collapse -->';
+    $html.= '</div>';
+    $html.= '</nav>';
 
     return $html;
-	}
+  }
 
 
 	public function getContent(){

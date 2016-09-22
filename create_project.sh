@@ -33,18 +33,37 @@ done
 
 echo ""
 
-read -p "Enter MySQL User: " mysql_user
-read -s -p "Enter MySQL Password: " mysql_password
-while true; do
-  if ! mysql -u $mysql_user -p$mysql_password -e"quit" 2> /dev/null; then
-    echo ""
-    echo "Utente e/o password errate!"
-    read -p "Enter MySQL User: " mysql_user
-    read -s -p "Enter MySQL Password: " mysql_password
-  else
-    break
-  fi
-done
+if [ $mysql_engine == 1 ]; then
+  read -p "Enter MySQL User: " mysql_user
+  read -s -p "Enter MySQL Password: " mysql_password
+  while true; do
+    if ! mysql -u $mysql_user -p$mysql_password -e"quit" 2> /dev/null; then
+      echo ""
+      echo "Utente e/o password errate!"
+      read -p "Enter MySQL User: " mysql_user
+      read -s -p "Enter MySQL Password: " mysql_password
+    else
+      break
+    fi
+  done
+fi
+
+if [ $mysql_engine == 2 ]; then
+  echo "!!!!!!! da completare !!!!!!!"
+  read -p "Enter PostgreSQL User: " mysql_user
+  read -s -p "Enter MySQL Password: " mysql_password
+  while true; do
+    if ! mysql -u $mysql_user -p$mysql_password -e"quit" 2> /dev/null; then
+      echo ""
+      echo "Utente e/o password errate!"
+      read -p "Enter MySQL User: " mysql_user
+      read -s -p "Enter MySQL Password: " mysql_password
+    else
+      break
+    fi
+  done
+fi
+
 echo ""
 read -p "Enter Database Name: " mysql_database
 
@@ -58,6 +77,7 @@ mkdir src tests js
 
 touch css/$project_name.css
 touch js/$project_name.js
+touch src/$project_name.php
 
 if [ $mysql_engine == 1 ]; then
   cp settings.default.mysql.php settings.php
@@ -69,12 +89,20 @@ fi
 sed -i -- 's/aegest/'$project_name'/g' composer.json
 composer update
 
-mysql -u $mysql_user -p$mysql_password -e "create database $mysql_database DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci";
-mysql -u $mysql_user -p$mysql_password $mysql_database < sql/dbmng2.sql
+if [ $mysql_engine == 1 ]; then
+  mysql -u $mysql_user -p$mysql_password -e "create database $mysql_database DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci";
+  mysql -u $mysql_user -p$mysql_password $mysql_database < sql/dbmng2.sql
+fi
+
+if [ $mysql_engine == 2 ]; then
+  psql -U $mysql_user 
+fi
 
 sed -i -- 's/xxx_user/'$mysql_user'/g' settings.php
 sed -i -- 's/xxx_dbname/'$mysql_database'/g' settings.php
 sed -i -- 's/xxx_password/'$mysql_password'/g' settings.php
+sed -i -- 's/xxx_project_name/'$project_name'/g' settings.php
 sed -i -- 's/xxx_project_name/'$project_name'/g' index.php
+sed -i -- 's/xxx_project_name/'$project_name'/g' .htaccess
 
 tree -L 2

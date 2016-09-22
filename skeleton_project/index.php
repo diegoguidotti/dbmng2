@@ -1,12 +1,13 @@
 <?php
   require_once 'vendor/autoload.php';
   require_once 'settings.php';
+  require_once 'src/xxx_project_name.php';
 
 	echo homePage($aSetting);
 
 
 
-  function homePage($aSetting )
+  function homePage( $aSetting )
   {
     session_start();
     $db  = Dbmng\Db::createDb($aSetting['DB']['DB_DSN'], $aSetting['DB']['DB_USER'], $aSetting['DB']['DB_PASSWD'] );
@@ -123,6 +124,7 @@
     /***************************************************************************
     END CUSTOM AREA  
     ****************************************************************************/
+    
     $aPage['content'] = $body;
     $aPage['sidebar'] = $sidebar;
 
@@ -131,6 +133,7 @@
     $layout = new Dbmng\Layout($aPage);
 
     $html = $layout->getLayout();
+    
     return $html;
   }
 

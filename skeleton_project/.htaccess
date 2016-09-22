@@ -1,9 +1,4 @@
 RewriteEngine On
 
-RewriteBase /dbmng2
-RewriteRule api/(.*)$ /dbmng2/api.php
-
-# RewriteCond %{REQUEST_URI} ^/dbmng2/api/(.*)$
-# RewriteRule .* api.php [L]
-# RewriteRule .* README.md [L]
-
+RewriteBase /xxx_project_name
+RewriteRule api/(.*)$ /xxx_project_name/api.php
