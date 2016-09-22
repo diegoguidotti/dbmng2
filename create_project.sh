@@ -8,7 +8,7 @@ function USAGE()
   echo ""
   echo "USAGE:"
   echo "------"
-  echo "    setup.sh <project_name>  "
+  echo "    create_project.sh <project_name>  "
   exit $E_OPTERROR    # Exit and explain usage, if no argument(s) given.
 }
 
@@ -54,7 +54,10 @@ mkdir $fullpath
 cp -r skeleton_project/* $fullpath
 
 cd $fullpath
-mkdir src tests
+mkdir src tests js
+
+touch css/$project_name.css
+touch js/$project_name.js
 
 if [ $mysql_engine == 1 ]; then
   cp settings.default.mysql.php settings.php
@@ -64,7 +67,6 @@ if [ $mysql_engine == 2 ]; then
 fi
 
 sed -i -- 's/aegest/'$project_name'/g' composer.json
-
 composer update
 
 mysql -u $mysql_user -p$mysql_password -e "create database $mysql_database DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci";
@@ -73,5 +75,6 @@ mysql -u $mysql_user -p$mysql_password $mysql_database < sql/dbmng2.sql
 sed -i -- 's/xxx_user/'$mysql_user'/g' settings.php
 sed -i -- 's/xxx_dbname/'$mysql_database'/g' settings.php
 sed -i -- 's/xxx_password/'$mysql_password'/g' settings.php
+sed -i -- 's/xxx_project_name/'$project_name'/g' index.php
 
-ls -l
+tree -L 2

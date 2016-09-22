@@ -24,7 +24,10 @@
     $aPage['project']        = "Project Name";
     $aPage['title']          = "";
     $aPage['bootstrap_path'] = "vendor/twbs/bootstrap/dist/";
-
+    $aPage['jquery_path']    = "vendor/components/jquery/";
+    $aPage['script']         = "<script src='js/xxx_project_name.js'></script>";
+    $aPage['stylesheet']     = "<link href='css/xxx_project_name.css' rel='stylesheet' />";
+    
     $logged_in = $login_res['ok'];
     $isAdmin = false;
 
@@ -76,6 +79,7 @@
     $body .= '<script>var global_opt={};';
     if( $logged_in )
       {
+        // hide the password if exist!!!!
         $acc['pass'] = 'xxxxxxxxxxxxxxxxxxx';
         $body .= 'global_opt.user=' . json_encode($acc) . ';';
       }
@@ -113,7 +117,7 @@
         $sql = "select * from dbmng_users";
         $var = array();
         $l   = $app->getDb()->select($sql,$var);
-        $body .= "<pre>a" . print_r($l, true) . "b</pre>";
+        $body .= "<pre>" . print_r($l, true) . "</pre>";
       }
 
     /***************************************************************************

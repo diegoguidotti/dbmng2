@@ -24,7 +24,8 @@
         "dbmng/dbmng": "dev-master",
         "adoy/oauth2": "dev-master",
         "respect/rest": "0.6.*",
-        "twbs/bootstrap": "dev-master"
+        "twbs/bootstrap": "3.3.*",
+        "components/jquery": "1.12.*"
     },
     "require-dev": {
         "mockery/mockery": "~0.9",
