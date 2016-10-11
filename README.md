@@ -93,7 +93,7 @@ Verify that the follow link respond
 Apache needs some modules (for rest and file upload)
 
 	$ sudo a2enmod rewrite
-	$ sudo a2enmod header
+	$ sudo a2enmod headers
 	$ sudo service apache2 restart
 
 Create a file in apache2 conf-enabled with the following content:
