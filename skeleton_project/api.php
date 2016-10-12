@@ -2,7 +2,9 @@
   require_once 'vendor/autoload.php';
   require_once 'settings.php';
 
-  $db = Dbmng\DB::createDb($aSetting['DB']['DB_DSN'], $aSetting['DB']['DB_USER'], $aSetting['DB']['DB_PASSWD'] );
+  session_start();
+
+  $db = Dbmng\Db::createDb($aSetting['DB']['DB_DSN'], $aSetting['DB']['DB_USER'], $aSetting['DB']['DB_PASSWD'] );
   $db->setDebug($aSetting['DB']['DEBUG']);
 
   $login = new Dbmng\Login($db);

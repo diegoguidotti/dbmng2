@@ -51,7 +51,7 @@ fi
 if [ $mysql_engine == 2 ]; then
   echo "!!!!!!! da completare !!!!!!!"
   read -p "Enter PostgreSQL User: " mysql_user
-  read -s -p "Enter MySQL Password: " mysql_password
+  read -s -p "Enter PostgreSQL Password: " mysql_password
   while true; do
     if ! mysql -u $mysql_user -p$mysql_password -e"quit" 2> /dev/null; then
       echo ""
@@ -73,7 +73,7 @@ mkdir $fullpath
 cp -r skeleton_project/* $fullpath
 
 cd $fullpath
-mkdir src tests js
+mkdir src tests js css
 
 touch css/$project_name.css
 touch js/$project_name.js

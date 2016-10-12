@@ -164,21 +164,31 @@ class Api {
 
 			$router->put('/api/'.$table_alias.'/*', function( $id_value=null ) use($dbmng){
 				$body = file_get_contents("php://input");
-				
 				return json_encode($this->doUpdate($dbmng,$id_value,json_decode($body)));
-
 			} );
-
+ 
+      $router->post('/api/'.$table_alias.'/*', function( $id_value=null ) use($dbmng){
+        $body = file_get_contents("php://input");
+        if( $id_value == null )
+          {
+            return json_encode($this->doInsert($dbmng,json_decode($body)));
+          }
+        else
+          {
+            return json_encode($this->doUpdate($dbmng,$id_value,json_decode($body)));
+          }
+      } );
+ 
       $router->delete('/api/'.$table_alias.'/*', function(  $id_value=null ) use($dbmng){
 				return json_encode($this->doDelete($dbmng, $id_value));
 
       } );
 
-      $router->post('/api/'.$table_alias, function( ) use($dbmng){
-        $body = file_get_contents("php://input");
-				return json_encode($this->doInsert($dbmng,json_decode($body)));
-
-      } );
+//       $router->post('/api/'.$table_alias, function( ) use($dbmng){
+//         $body = file_get_contents("php://input");
+// 				return json_encode($this->doInsert($dbmng,json_decode($body)));
+// 
+//       } );
 
 
 			$router->post('/api/'.$table_alias.'/file/*', function($field) use($dbmng) {

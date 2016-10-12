@@ -102,7 +102,7 @@ Dbmng.Api = Class.extend({
 		jQuery.ajax({
 			url: this.url+options.key,
 			dataType:'json',
-			method:'PUT',
+			method:'POST',
 			data: JSON.stringify(options.data),
 			headers: this.getHeaders(),
 			success: function(data){
