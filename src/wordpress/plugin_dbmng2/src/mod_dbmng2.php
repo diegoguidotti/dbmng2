@@ -32,7 +32,8 @@ function dbmng2_get_db()
 }
 
 function dbmng2_rest( ) {
-  $base_path = '/wordpress/wp-json/';
+  $path = getPath();
+  $base_path = "/$path/wp-json/";
   $path   = $base_path.'aedit/v1/dbmng2/rest';
   $router = new \Respect\Rest\Router($path);
   $router->isAutoDispatched = false;
@@ -48,7 +49,8 @@ function dbmng2_rest( ) {
 }
 
 function dbmng2_ajax( ) {
-  $base_path = '/wordpress/wp-json/';
+  $path = getPath();
+  $base_path = "/$path/wp-json/";
   $path   = $base_path.'aedit/v1/dbmng2/ajax';
   $router = new \Respect\Rest\Router($path);
   $router->isAutoDispatched = false;
@@ -105,8 +107,8 @@ function dbmng2_ajax( ) {
 
 function dbmng2_manager()
 { 
-  
-  $base_path = '/wordpress/wp-json/';
+  $path = getPath();
+  $base_path = "/$path/wp-json/";
   
   $html = "";
   $html .= "<script language='javascript'>";
@@ -116,6 +118,16 @@ function dbmng2_manager()
   
   $html .= "<div id='dbmng2_table_list'></div>";
   $html .= "<div id='dbmng2_table_edit'></div>";
+
+  $html .= getPath();
   return $html;
+}
+
+function getPath()
+{
+  $aPath = explode("/",ABSPATH);
+  $nCnt  = count($aPath);
+  
+  return $aPath[$nCnt-2];
 }
 ?>
