@@ -109,7 +109,6 @@ function dbmng2_manager()
 { 
   $path = getPath();
   $base_path = "/$path/wp-json/";
-  
   $html = "";
   $html .= "<script language='javascript'>";
     $html .= "var base_path='$base_path';";
@@ -118,8 +117,6 @@ function dbmng2_manager()
   
   $html .= "<div id='dbmng2_table_list'></div>";
   $html .= "<div id='dbmng2_table_edit'></div>";
-
-  $html .= getPath();
   return $html;
 }
 
