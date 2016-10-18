@@ -24,7 +24,7 @@ Dbmng.Api = Class.extend({
 				"Authorization": "Basic " + btoa(this.user + ":" + this.password)
 			};
 	},
-  select: function(options) {
+  select: function(options) {	
     var url_select= this.url;
     if(options.search){
       url_select+="?"+ options.search;
