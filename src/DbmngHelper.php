@@ -449,4 +449,38 @@ class DbmngHelper {
       }
     return array('ok' => $ret['ok'], 'id_table' => $id_table);
   }
+
+  function exeOtherDbmngRest( $router )
+  {
+    $router->post('/fill_dbmng_fields', function()  {
+      if( isset($_REQUEST['id_table']) )
+        {
+          $id_table = $_REQUEST['id_table'];
+          $res = $this->getTableStructure($id_table);
+        }
+      else
+        {
+          $res['ok'] = false;
+          $res['message'] = "Something went wrong.";
+        }
+      
+      return json_encode($res);
+    });
+    
+    $router->post('/delete_dbmng_fields', function()  {
+      if( isset($_REQUEST['id_table']) )
+        {
+          $sql = "delete from dbmng_fields where id_table = :id_table";
+          $var = array(':id_table' => $_REQUEST['id_table']);
+          $res = $this->db->delete($sql, $var);
+        }
+      else
+        {
+          $res['ok'] = false;
+          $res['message'] = "Something went wrong.";
+        }
+        
+        return json_encode($res);
+    });
+  }
 }

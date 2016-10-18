@@ -11,7 +11,7 @@ Dbmng.defaults.aParam.user_function = {upd:1, del:1, ins:1};
 
 function dbmng2_show_tables() {
   var div_id = 'dbmng2_table_list';
-  var path   = base_path + 'dbmng2/rest/';
+  var path   = base_path + 'aedit/v1/dbmng2/rest/';
   var table  = 'dbmng_tables';
   var field  = 'dbmng_fields';
   var aParam = {};
@@ -30,7 +30,6 @@ function dbmng2_show_tables() {
     template += "</table>";
   template += "</div>";
   aParam.template_form = template;
-  
   aParam.custom_function = {action: 'dbmng2_show_fields', label: 'Show fields', icon: 'fa fa-th-list'};
 
   var theme_boot = new Dbmng.BootstrapTheme();
@@ -42,13 +41,16 @@ function dbmng2_show_tables() {
         console.log(self);
         self.createTable({div_id:'#'+div_id});
       },
+      error:function(a){
+        console.log(a);
+      },
       crud_success: function(method, data){
         console.log("crud_success");
         if( method == 'insert' ) {
           if( data.ok ) {
             jQuery.ajax({ 
               type: 'POST', 
-              url: "dbmng2/ajax/fill_dbmng_fields", 
+              url: "dbmng2/ajax?fill_dbmng_fields=on", 
               data: {id_table:data.inserted_id},
               success: function(msg){ 
                 obj = JSON.parse(msg);
@@ -62,7 +64,7 @@ function dbmng2_show_tables() {
         else if( method == 'delete' ) {
           jQuery.ajax({ 
             type: 'POST', 
-            url: "dbmng2/ajax/delete_dbmng_fields", 
+            url: "dbmng2/ajax?delete_dbmng_fields=on", 
             data: {id_table:data.deleted_id},
             success: function(msg){ 
               obj = JSON.parse(msg);
@@ -75,11 +77,12 @@ function dbmng2_show_tables() {
       }
     }
   );
+
 }
 
 function dbmng2_show_fields(id_table) {
   var div_id = 'dbmng2_table_edit';
-  var path   = base_path + 'dbmng2/rest/';
+  var path   = base_path + 'aedit/v1/dbmng2/rest/';
   var table  = 'dbmng_tables';
   var field  = 'dbmng_fields';
   var aParam = {};

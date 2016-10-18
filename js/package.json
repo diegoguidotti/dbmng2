@@ -32,7 +32,7 @@
       }
     }
   }
-  "repository": {
+  ,"repository": {
     "type": "git",
     "url": "https://github.com/diegoguidotti/dbmng2.git"
   },
