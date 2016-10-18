@@ -55,52 +55,10 @@ function dbmng2_ajax( ) {
   $router = new \Respect\Rest\Router($path);
   $router->isAutoDispatched = false;
   
-  $app = dbmng2_get_app();
-  $DB  = $app->getDb();
-  $h = new DbmngHelper($app); 
+  $app=dbmng2_get_app();
+  $h = new DbmngHelper($app);
+  $h->exeOtherDbmngRest( $router );
 
-  $router->any('/test', function() use ($DB) {
-    $ret['ok'] = true;
-    $ret['message'] = "Messaggio di test aaa";
-    return json_encode($ret);
-  });
-  
-  $router->any('/fill_dbmng_fields', function() use ($DB) {
-    $body = file_get_contents("php://input");
-    $oBody = json_decode($body);
-    
-    $ret['ok'] = true;
-    $ret['message'] = "fill_dbmng_fields";
-    $ret['body'] = $oBody;
-    $ret['id_table'] = $oBody->id_table;
-    return json_encode($ret);
-  });
-  
-//   if( isset($_REQUEST['fill_dbmng_fields']) )
-//     {
-//       $id_table = $_REQUEST['id_table'];
-//       $res = $h->getTableStructure($id_table);
-//       
-//       $result = json_encode($res);
-//     }
-//   elseif( isset($_REQUEST['delete_dbmng_fields']) )
-//     {
-//       if( isset($_REQUEST['id_table']) )
-//         {
-//           $sql = "delete from dbmng_fields where id_table = :id_table";
-//           $var = array(':id_table' => $_REQUEST['id_table']);
-//           $res = $app->getDb()->delete($sql, $var);
-//         }
-//       else
-//         {
-//           $res['ok'] = false;
-//           $res['message'] = "Something went wrong.";
-//         }
-//         
-//         $result = json_encode($res);
-//     }
-//   echo $result;
-  
   return json_decode($router->run());
 }
 

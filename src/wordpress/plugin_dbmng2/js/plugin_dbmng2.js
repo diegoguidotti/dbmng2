@@ -50,7 +50,7 @@ function dbmng2_show_tables() {
           if( data.ok ) {
             jQuery.ajax({ 
               type: 'POST', 
-              url: "dbmng2/ajax?fill_dbmng_fields=on", 
+              url: base_path + "aedit/v1/dbmng2/ajax/fill_dbmng_fields", 
               data: {id_table:data.inserted_id},
               success: function(msg){ 
                 obj = JSON.parse(msg);
@@ -64,7 +64,7 @@ function dbmng2_show_tables() {
         else if( method == 'delete' ) {
           jQuery.ajax({ 
             type: 'POST', 
-            url: "dbmng2/ajax?delete_dbmng_fields=on", 
+            url: base_path + "aedit/v1/dbmng2/ajax/delete_dbmng_fields", 
             data: {id_table:data.deleted_id},
             success: function(msg){ 
               obj = JSON.parse(msg);
