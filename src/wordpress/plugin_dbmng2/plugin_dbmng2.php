@@ -21,8 +21,21 @@ require_once ("src/mod_dbmng2.php");
 add_action( 'init', 'init_plugin_dbmng2' );
 function init_plugin_dbmng2() {
   $wp_user = wp_get_current_user();
-  $user    = array('uid'=> $wp_user->data->ID, 'mail'=>$wp_user->data->user_email, 'name'=>$wp_user->data->user_login, 'roles'=>$wp_user->roles);
+  
+  if( count($wp_user->roles) > 0 )
+    {
+      $aRoles = $wp_user->roles;
+      $uid=$wp_user->data->ID;
+    }
+  else
+    {
+      $aRoles[] = 'anonymous user';
+      $uid=10; 
+    }
+    
+  $user    = array('uid'=> $uid, 'mail'=>$wp_user->data->user_email, 'name'=>$wp_user->data->user_login, 'roles'=>$aRoles);
   $_SESSION['user'] = $user;
+//   print_r($wp_user);
 }
 
 //
