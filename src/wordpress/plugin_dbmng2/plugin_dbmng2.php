@@ -45,14 +45,15 @@ add_filter( 'the_content', 'plugin_dbmng2' );
 function plugin_dbmng2($content) {
   global $post;
   $html = "";
-  if(is_page() && $post->post_name == 'dbmng')
-    {
-      $html .=  dbmng2_manager();
-    }
-  else
-    {
-      $html = $content;
-    }
+  $html .= $content;
+//   if(is_page() && $post->post_name == 'dbmng2')
+//     {
+//       $html .=  dbmng2_manager();
+//     }
+//   else
+//     {
+//       $html = $content;
+//     }
   
   return $html;
 }
@@ -73,34 +74,68 @@ add_action( 'rest_api_init', function () {
 // Funzione per aggiungere css e js al sito
 //
 add_action( 'wp_enqueue_scripts', 'plugin_dbmng2_add_script' );
-function plugin_dbmng2_add_script()
+add_action( 'admin_enqueue_scripts', 'plugin_dbmng2_add_script' );
+function plugin_dbmng2_add_script($hook)
 {
-  wp_register_script( 'jquery-ui-js', 'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js' , array(), '', true );
-  wp_enqueue_script( 'jquery-ui-js' );
-  wp_register_script( 'jquery-iframe-transport-js', 'https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.iframe-transport.min.js' , array(), '', true );
-  wp_enqueue_script( 'jquery-iframe-transport-js' );
-  wp_register_script( 'jquery-fileupload-js', 'https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.fileupload.min.js' , array(), '', true );
-  wp_enqueue_script( 'jquery-fileupload-js' );
-  
-  wp_register_style( 'jquery-fileupload-css', 'https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/css/jquery.fileupload.min.css' );
-  wp_enqueue_style( 'jquery-fileupload-css' );
-  
-  wp_register_script( 'typeahead-bundle', 'https://cdnjs.cloudflare.com/ajax/libs/corejs-typeahead/0.11.1/typeahead.bundle.min.js', array(), '', 'all' );
-  wp_enqueue_script( 'typeahead-bundle' );
-  wp_register_script( 'handlebars-js', 'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.js', array(), '', 'all' );
-  wp_enqueue_script( 'handlebars-js' );
-  
-  wp_register_script( 'dbmng-js', '/wp-content/libraries/dbmng2/js/dist/dbmng.js', array(), '', 'all' );
-  wp_enqueue_script( 'dbmng-js' );
+  if( $hook == 'toplevel_page_plugin_dbmng2' || $hook == '' )
+    {
+      wp_register_script( 'jquery-ui-js', 'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js' , array(), '', true );
+      wp_enqueue_script( 'jquery-ui-js' );
+      wp_register_script( 'jquery-iframe-transport-js', 'https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.iframe-transport.min.js' , array(), '', true );
+      wp_enqueue_script( 'jquery-iframe-transport-js' );
+      wp_register_script( 'jquery-fileupload-js', 'https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.fileupload.min.js' , array(), '', true );
+      wp_enqueue_script( 'jquery-fileupload-js' );
+      
+      wp_register_style( 'jquery-fileupload-css', 'https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/css/jquery.fileupload.min.css' );
+      wp_enqueue_style( 'jquery-fileupload-css' );
+      
+      wp_register_script( 'typeahead-bundle', 'https://cdnjs.cloudflare.com/ajax/libs/corejs-typeahead/0.11.1/typeahead.bundle.min.js', array(), '', 'all' );
+      wp_enqueue_script( 'typeahead-bundle' );
+      wp_register_script( 'handlebars-js', 'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.js', array(), '', 'all' );
+      wp_enqueue_script( 'handlebars-js' );
+      
+      wp_register_script( 'dbmng-js', '/wp-content/libraries/dbmng2/js/dist/dbmng.js', array(), '', 'all' );
+      wp_enqueue_script( 'dbmng-js' );
 
-  // Registra il css per il plugin
-  wp_register_style( 'plugin-dbmng2-style', plugins_url( '/css/plugin_dbmng2.css', __FILE__ ) );
-  //enqueue css:
-  wp_enqueue_style( 'plugin-dbmng2-style' );
+      // Registra il css per il plugin
+      wp_register_style( 'plugin-dbmng2-style', plugins_url( '/css/plugin_dbmng2.css', __FILE__ ) );
+      //enqueue css:
+      wp_enqueue_style( 'plugin-dbmng2-style' );
 
-  wp_register_script( 'plugin-dbmng2-script', plugins_url( '/js/plugin_dbmng2.js', __FILE__ ), array(), '', 'all' );
-  wp_enqueue_script( 'plugin-dbmng2-script' );
-  
-  
+      wp_register_script( 'plugin-dbmng2-script', plugins_url( '/js/plugin_dbmng2.js', __FILE__ ), array(), '', 'all' );
+      wp_enqueue_script( 'plugin-dbmng2-script' );
+    }
 }
+
+add_action( 'admin_enqueue_scripts', 'my_admin_theme_style' );
+function my_admin_theme_style($hook)
+{
+  if( $hook == 'toplevel_page_plugin_dbmng2' )
+    {
+      wp_register_script( 'bootstrap-js', '/wp-content/themes/bootstrap-basic/js/vendor/bootstrap.min.js' , array(), '', true );
+      wp_enqueue_script( 'bootstrap-js' );
+      
+      wp_register_style( 'bootstrap-css', '/wp-content/themes/bootstrap-basic/css/bootstrap.min.css' );
+      wp_enqueue_style( 'bootstrap-css' );
+      
+      wp_register_style( 'font-awesome-css', '/wp-content/libraries/font-awesome/css/font-awesome.min.css' );
+      wp_enqueue_style( 'font-awesome-css' );
+    }
+}
+
+add_action( 'admin_menu', 'my_admin_menu' );
+function my_admin_menu() {
+  add_menu_page( 'Manage Dbmng2', 'Manage Dbmng2', 'manage_options', 'plugin_dbmng2', 'myplguin_admin_page', 'dashicons-admin-generic', 6  );
+  add_submenu_page( 'plugin_dbmng2', 'My Sub Level Menu Example', 'Sub Level Menu', 'manage_options', 'plugin_dbmng2/myplugin-admin-sub-page.php', 'myplguin_admin_sub_page' ); 
+}
+
+function myplguin_admin_page()
+{
+  echo "<h1>Manage DBMNG tables</h1>";
+  echo dbmng2_manager();
+}
+
+
+
+
 ?>
