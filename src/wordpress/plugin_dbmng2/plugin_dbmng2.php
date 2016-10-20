@@ -107,8 +107,8 @@ function plugin_dbmng2_add_script($hook)
     }
 }
 
-add_action( 'admin_enqueue_scripts', 'my_admin_theme_style' );
-function my_admin_theme_style($hook)
+add_action( 'admin_enqueue_scripts', 'dbmng2_theme_style' );
+function dbmng2_theme_style($hook)
 {
   if( $hook == 'toplevel_page_plugin_dbmng2' )
     {
