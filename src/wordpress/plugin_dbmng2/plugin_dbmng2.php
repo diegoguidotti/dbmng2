@@ -123,13 +123,13 @@ function dbmng2_theme_style($hook)
     }
 }
 
-add_action( 'admin_menu', 'my_admin_menu' );
-function my_admin_menu() {
-  add_menu_page( 'Manage Dbmng2', 'Manage Dbmng2', 'manage_options', 'plugin_dbmng2', 'myplguin_admin_page', 'dashicons-admin-generic', 6  );
+add_action( 'admin_menu', 'dbmng2_admin_menu' );
+function dbmng2_admin_menu() {
+  add_menu_page( 'Manage Dbmng2', 'Manage Dbmng2', 'manage_options', 'plugin_dbmng2', 'dbmng2_admin_page', 'dashicons-admin-generic', 6  );
   add_submenu_page( 'plugin_dbmng2', 'My Sub Level Menu Example', 'Sub Level Menu', 'manage_options', 'plugin_dbmng2/myplugin-admin-sub-page.php', 'myplguin_admin_sub_page' ); 
 }
 
-function myplguin_admin_page()
+function dbmng2_admin_page()
 {
   echo "<h1>Manage DBMNG tables</h1>";
   echo dbmng2_manager();
