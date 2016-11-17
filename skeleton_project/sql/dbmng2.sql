@@ -133,7 +133,10 @@ CREATE TABLE `dbmng_users` (
   `uid` int(10) UNSIGNED NOT NULL COMMENT 'Primary Key: Unique user ID.',
   `name` varchar(60) NOT NULL DEFAULT '' COMMENT 'Unique user name.',
   `pass` varchar(128) NOT NULL DEFAULT '' COMMENT 'User’s password (hashed).',
-  `mail` varchar(254) DEFAULT '' COMMENT 'User’s e-mail address.'
+  `mail` varchar(254) DEFAULT '' COMMENT 'User’s e-mail address.',
+  `realname` varchar(254) DEFAULT 'Real name of the user',
+  `realsurname` varchar(254) DEFAULT 'Real surname if the user',
+  `description` varchar(254) DEFAULT 'Description',
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores user data.';
 
 --

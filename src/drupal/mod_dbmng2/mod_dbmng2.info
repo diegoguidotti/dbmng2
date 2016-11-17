@@ -1,12 +1,12 @@
 name = Dbmng2 
 description = Dbmng2 module management
-package = public-action
+package = aedit-module
 version = VERSION
 core = 7.x
 files[] = mymodule.module
 
 
 ; Information added by drupal.org packaging script on 2010-03-21
-version = "7.0-alpha3"
+version = "1.0"
 project = "drupal"
 datestamp = "1269192313"

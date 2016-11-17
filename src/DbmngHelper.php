@@ -331,7 +331,7 @@ class DbmngHelper {
     $bOk = true;
     $aQueries = array();
     $db = $this->db;
-
+    $dbtype = $this->db->getDbType();
     if( $table_schema == null )
     {
       $table_schema = $this->aParamDefault['dbname'];
@@ -345,7 +345,15 @@ class DbmngHelper {
       {
         $tn = $aTable['data'][0]['table_name'];
         
-        $sql = "select * from information_schema.columns where table_name = :table_name and table_schema = :table_schema";
+        if( $dbtype == 'mysql' )
+          {
+            $sql = "select * from information_schema.columns where table_name = :table_name and table_schema = :table_schema";
+          }
+        elseif( $dbtype == 'pgsql' ) 
+          {
+            $sql = "select * from information_schema.columns where table_name = :table_name and table_catalog = :table_schema";
+          }
+          
         $var = array(':table_name' => $tn, ':table_schema' => $table_schema);
         $aFields = $this->db->select($sql, $var);
 
@@ -354,11 +362,11 @@ class DbmngHelper {
             /* identify the primary key */
             $pk = 0;
             
-            if( strlen($aFields['data'][$nF]['COLUMN_KEY']) != 0 )
+            if( strlen($aFields['data'][$nF][($dbtype == 'mysql' ? 'COLUMN_KEY' : 'column_key')]) != 0 )
               {
-                if( strlen(trim($aFields['data'][$nF]['EXTRA'])) != 0 )
+                if( strlen(trim($aFields['data'][$nF][($dbtype == 'mysql' ? 'EXTRA' : 'extra')])) != 0 )
                   {
-                    if( $aFields['data'][$nF]['EXTRA'] == 'auto_increment' )
+                    if( $aFields['data'][$nF][($dbtype == 'mysql' ? 'EXTRA' : 'extra')] == 'auto_increment' )
                       $pk = 1;
                     else
                       $pk = 2;
@@ -367,7 +375,7 @@ class DbmngHelper {
             
             /* Map type into crud type */
             $sType ="";
-            switch( $aFields['data'][$nF]['DATA_TYPE'] )
+            switch( $aFields['data'][$nF][($dbtype == 'mysql' ? 'DATA_TYPE' : 'data_type')] )
               {
                 case "int":
                 case "bigint":
@@ -390,10 +398,10 @@ class DbmngHelper {
             /* Assign the 'basic' widget */
             $widget = "";
             $voc_sql = null;
-            switch( $aFields['data'][$nF]['DATA_TYPE'] )
+            switch( $aFields['data'][$nF][($dbtype == 'mysql' ? 'DATA_TYPE' : 'data_type')] )
               {
                 case "int":
-                  if( strpos($aFields['data'][$nF]['COLUMN_NAME'], "id_" ) !== false && $pk == 0 )
+                  if( strpos($aFields['data'][$nF][($dbtype == 'mysql' ? 'COLUMN_NAME' : 'column_name')], "id_" ) !== false && $pk == 0 )
                     {
                       $widget = "select";
                     }
@@ -417,13 +425,13 @@ class DbmngHelper {
             
             /* identify if a fields accept or no to be empty */
             $nullable = 0;
-            if( $aFields['data'][$nF]['IS_NULLABLE'] == "YES" && $pk != 1 )
+            if( $aFields['data'][$nF][($dbtype == 'mysql' ? 'IS_NULLABLE' : 'is_nullable')] == "YES" && $pk != 1 )
               $nullable = 1;
             
             
-            $field_name  = $aFields['data'][$nF]['COLUMN_NAME'];
-            $field_label = ucfirst(str_replace("_", " ", $aFields['data'][$nF]['COLUMN_NAME']));
-            $field_order = $aFields['data'][$nF]['ORDINAL_POSITION']*10;
+            $field_name  = $aFields['data'][$nF][($dbtype == 'mysql' ? 'COLUMN_NAME' : 'column_name')];
+            $field_label = ucfirst(str_replace("_", " ", $aFields['data'][$nF][($dbtype == 'mysql' ? 'COLUMN_NAME' : 'column_name')]));
+            $field_order = $aFields['data'][$nF][($dbtype == 'mysql' ? 'ORDINAL_POSITION' : 'ordinal_position')]*10;
             
             /* Prepare insert sql command */
             $sql  = "insert into dbmng_fields( id_table, id_field_type, field_widget, field_name, nullable, field_label, field_order, pk, is_searchable ) ";

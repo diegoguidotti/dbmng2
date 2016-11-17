@@ -26,12 +26,21 @@ function dbmng2_get_app()
   global $user;
   global $databases;
   
-  $dns = "mysql:host=".$databases['default']['default']['host'].";dbname=".$databases['default']['default']['database'].";user=".$databases['default']['default']['username'].";password=".$databases['default']['default']['password']."";
+  if( $databases['default']['default']['driver'] == 'mysql' )
+    {
+      $dns = "mysql:host=".$databases['default']['default']['host'].";dbname=".$databases['default']['default']['database'].";user=".$databases['default']['default']['username'].";password=".$databases['default']['default']['password']."";
+    }
+  else
+    {
+      //pgsql:user=scuolabus;dbname=scuolabus;password=giallo2015
+      $dns = "pgsql:host=".$databases['default']['default']['host'].";dbname=".$databases['default']['default']['database'].";user=".$databases['default']['default']['username'].";password=".$databases['default']['default']['password']."";
+    }
   $username=$databases['default']['default']['username'];
   $password=$databases['default']['default']['password'];
   
   $DB = Db::createDb($dns, $username, $password);
-
+  $DB->setDebug(true);
+  
   $app = new App($DB, array('user'=>(array)$user, 'aParamDefault' => array('dbname' => $databases['default']['default']['database'])));
   return $app;
 }

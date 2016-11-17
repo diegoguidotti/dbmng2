@@ -476,7 +476,10 @@ private $prepare;
 		else{
 			//echo debug_sql_statement($sql, $var);
 			//fwrite(STDERR, $this->db->getSQL($sql, $var));
-			$result = $this->db->insert($sql, $var);
+			
+			$sequence = $aForm['table_name'] . "_" . $aForm['primary_key'][0] . '_seq';
+			
+			$result = $this->db->insert($sql, $var, $sequence);
 			$result['sql'] = $this->db->getSQL($sql, $var);
 		}
 

@@ -129,7 +129,6 @@ class DbTest extends \PHPUnit_Extensions_Database_TestCase
         //fwrite(STDERR, print_r($ret9));
         $this->assertEquals(true,$ret9['ok']);
         $this->assertEquals(null,$ret9['data'][0]['true_false']);
-
 	}
 
 	public function testUpdate(){

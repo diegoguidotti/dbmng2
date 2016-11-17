@@ -108,7 +108,16 @@ private $debug;
         }
 			return $ret;
 		}
-
+    
+    public function getConnection()
+    {
+      return $this->pdo;
+    }
+    
+    public function getDbType()
+    {
+      return $this->pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
+    }
 		/////////////////////////////////////////////////////////////////////////////
 		// insert
 		// ======================
@@ -117,7 +126,7 @@ private $debug;
 		\param $sQuery  the query with parameteres placeholders
 		\param $aVars   associative array with placeholders and parameters. e.g. Array(':id'=>1, ':name'=>'Foo')
 		*/
-		public function insert($sQuery, $aVars){
+		public function insert($sQuery, $aVars, $sequence = ''){
 			$ret=array();
 			try
 				{
@@ -127,7 +136,8 @@ private $debug;
 
 					$dbh->beginTransaction();
 						$res0->execute($aVars);
-						$id = $dbh->lastInsertId();
+						
+						$id = $dbh->lastInsertId($sequence);
 					$dbh->commit();
 
 					$ret['ok']=true;
@@ -202,10 +212,12 @@ private $debug;
 
 					foreach( $aQuery as $a )
 						{
+							//echo "MM: " . $this->getSQL($a['sql'],$a['var']);
+							
 							$prep0 = $dbh->prepare($a['sql']);
 							$ok= $prep0->execute($a['var']);
 
-							$id = $dbh->lastInsertId();
+							$id = 1; //$dbh->lastInsertId();
 
 							if(!$ok){
 								$all_ok=false;
