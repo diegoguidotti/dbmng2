@@ -68,7 +68,7 @@ Dbmng.AbstractTheme = Class.extend({
     var el=document.createElement('input');
     this.assignAttributes(el, aField);
 
-    if(aField.value) {
+    if(typeof aField.value !== 'undefined' ) {
       el.value=aField.value;
     }
     if( aField.placeholder ) {
@@ -150,8 +150,10 @@ Dbmng.AbstractTheme = Class.extend({
         o=document.createElement('option');
         o.value = opt;
         o.text=aField.voc_val[opt];
-        if( aField.value ) {
-					//console.log(aField.value+" "+ opt);
+        // console.log(aField);
+        // console.log(aField.label + "= out: aFval[" + aField.value+"] opt: ["+ opt+"]");
+        if( typeof aField.value !== 'undefined' ) {
+					// console.log(aField.label + "= in: aFval[" + aField.value+"] opt: ["+ opt+"]");
           if( aField.value == opt ) {
             o.selected = true;
           }

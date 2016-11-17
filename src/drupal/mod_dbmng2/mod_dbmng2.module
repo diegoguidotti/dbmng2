@@ -28,12 +28,12 @@ function mod_dbmng2_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
 
-  $items['dbmng2/ajax'] = array(
+  $items['api/dbmng2/ajax'] = array(
     'page callback' => 'dbmng2_ajax_response',
     'access arguments' => array('dbmng ajax')
   );
 
-  $items['dbmng2/rest'] = array(
+  $items['api/dbmng2/rest'] = array(
     'page callback' => 'dbmng2_rest_response',
     'access arguments' => array('dbmng ajax'),
   );

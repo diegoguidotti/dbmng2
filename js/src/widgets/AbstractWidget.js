@@ -150,7 +150,7 @@ Dbmng.AbstractWidget = Class.extend({
 
   getFieldValue: function() {
     var v;
-    if(this.value){
+    if(typeof this.value !== 'undefined'){
       v = this.value;
     }
     else if( this.aField.default ) {

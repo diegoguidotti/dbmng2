@@ -12,7 +12,7 @@ function dbmng2_rest_response()
 {
   global $base_path;
   
-  $path = $base_path . "dbmng2/rest";
+  $path = $base_path . "api/dbmng2/rest";
   $router = new \Respect\Rest\Router($path);
 
   $app=dbmng2_get_app();
@@ -49,7 +49,7 @@ function dbmng2_ajax_response()
 {
   global $base_path;
   
-  $path = $base_path . "dbmng2/ajax";
+  $path = $base_path . "api/dbmng2/ajax";
   $router = new \Respect\Rest\Router($path);
   
   $app=dbmng2_get_app();
