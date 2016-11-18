@@ -11,7 +11,7 @@ Dbmng.defaults.aParam.user_function = {upd:1, del:1, ins:1};
 
 function dbmng2_show_tables() {
   var div_id = 'dbmng2_table_list';
-  var path   = base_path + 'api/dbmng2/rest/';
+  var path   = base_path + dbmng2_api_path + '/rest/'; // 'api/dbmng2/rest/';
   var table  = 'dbmng_tables';
   var field  = 'dbmng_fields';
   var aParam = {};
@@ -48,7 +48,7 @@ function dbmng2_show_tables() {
           if( data.ok ) {
             jQuery.ajax({ 
               type: 'POST', 
-              url: "api/dbmng2/ajax/fill_dbmng_fields", 
+              url: base_path + dbmng2_api_path + "/ajax/fill_dbmng_fields", 
               data: {id_table:data.inserted_id},
               success: function(msg){ 
                 obj = JSON.parse(msg);
@@ -60,9 +60,11 @@ function dbmng2_show_tables() {
           }
         }
         else if( method == 'delete' ) {
+          var url = base_path + dbmng2_api_path + "/ajax/delete_dbmng_fields";
+          // url = base_path + "api/dbmng2/rest/api/dbmng_tables/schema/delete";
           jQuery.ajax({ 
             type: 'POST', 
-            url: "api/dbmng2/ajax/delete_dbmng_fields", 
+            url: url, 
             data: {id_table:data.deleted_id},
             success: function(msg){ 
               obj = JSON.parse(msg);
@@ -79,7 +81,7 @@ function dbmng2_show_tables() {
 
 function dbmng2_show_fields(id_table) {
   var div_id = 'dbmng2_table_edit';
-  var path   = base_path + 'api/dbmng2/rest/';
+  var path   = base_path + dbmng2_api_path + '/rest/';
   var table  = 'dbmng_tables';
   var field  = 'dbmng_fields';
   var aParam = {};

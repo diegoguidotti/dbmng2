@@ -130,7 +130,7 @@ class Api {
 			});
 
 			// select
-			$router->get('/api/'.$table_alias.'/*', function( $id_value=null ) use($dbmng){
+			$router->get('/api/'.$table_alias.'/*', function( $id_value=null) use($dbmng){
 
 				$allowed=$dbmng->isAllowed('select');
 				
@@ -138,7 +138,7 @@ class Api {
           {
             $aForm = $dbmng->getaForm();
             
-            if($id_value=='schema'){
+            if( $id_value=='schema' ){
               return json_encode($aForm);
             }
             else{

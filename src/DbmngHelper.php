@@ -41,17 +41,10 @@ class DbmngHelper {
 
 	public function exeAllRest( $router, $aForms=null )
   {
-  
-  //produttore_listino_field/schema
-//   $router->any('/api/**', function(){
-//     echo "pippo";
-//   });
-  
-  
     if($aForms==null)
-    {
-      $aForms = $this->getAllFormsArray();
-    }
+      {
+        $aForms = $this->getAllFormsArray();
+      }
 
     foreach( $aForms as $k => $aData )
       {
@@ -490,5 +483,10 @@ class DbmngHelper {
         
         return json_encode($res);
     });
+  }
+  
+  function helper_test()
+  {
+    return array("ok" => true, "message" => "helper_test");
   }
 }

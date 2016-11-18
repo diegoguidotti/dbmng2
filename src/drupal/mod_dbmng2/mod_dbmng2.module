@@ -10,8 +10,8 @@ include_once ("sites/all/libraries/dbmng2/src/DbmngHelper.php");
 require_once ("sites/all/libraries/dbmng2/vendor/autoload.php");
 
 include_once ("sites/all/modules/mod_dbmng2/mod_dbmng2.php");
-/*include_once ("sites/all/modules/mod_dbmng2/settings.php");*/
 
+define( 'DBMNG2_API_PATH', 'api/dbmng2' );
 
 function mod_dbmng2_permission() {
 	return array('dbmng manager' => array('title'=>t('Manage all meta tables')),
@@ -28,12 +28,12 @@ function mod_dbmng2_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
 
-  $items['api/dbmng2/ajax'] = array(
+  $items[DBMNG2_API_PATH.'/ajax'] = array(
     'page callback' => 'dbmng2_ajax_response',
     'access arguments' => array('dbmng ajax')
   );
 
-  $items['api/dbmng2/rest'] = array(
+  $items[DBMNG2_API_PATH.'/rest'] = array(
     'page callback' => 'dbmng2_rest_response',
     'access arguments' => array('dbmng ajax'),
   );

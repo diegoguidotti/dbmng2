@@ -12,7 +12,7 @@ function dbmng2_rest_response()
 {
   global $base_path;
   
-  $path = $base_path . "api/dbmng2/rest";
+  $path = $base_path . DBMNG2_API_PATH."/rest";
   $router = new \Respect\Rest\Router($path);
 
   $app=dbmng2_get_app();
@@ -49,7 +49,7 @@ function dbmng2_ajax_response()
 {
   global $base_path;
   
-  $path = $base_path . "api/dbmng2/ajax";
+  $path = $base_path . DBMNG2_API_PATH."/ajax";
   $router = new \Respect\Rest\Router($path);
   
   $app=dbmng2_get_app();
@@ -76,6 +76,7 @@ function dbmng2_manager()
   global $base_path;
   
   drupal_add_js("var base_path='$base_path'", "inline");
+  drupal_add_js("var dbmng2_api_path='".DBMNG2_API_PATH."'", "inline");
   drupal_add_js("jQuery(document).ready(function(){dbmng2_show_tables()})", "inline");
   
   $html = "";
