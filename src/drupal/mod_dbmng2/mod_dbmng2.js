@@ -43,9 +43,8 @@ function dbmng2_show_tables() {
         self.createTable({div_id:'#'+div_id});
       },
       crud_success: function(method, data){
-        var url = base_path + dbmng2_api_path + "/ajax/fill_dbmng_fields";
-        url = base_path + dbmng2_api_path + "/rest/api/dbmng_tables/schema/fill";
         if( method == 'insert' ) {
+          var url = base_path + dbmng2_api_path + "/rest/api/dbmng_tables/schema/fill";
           if( data.ok ) {
             jQuery.ajax({ 
               type: 'POST', 
@@ -62,8 +61,7 @@ function dbmng2_show_tables() {
           }
         }
         else if( method == 'delete' ) {
-          var url = base_path + dbmng2_api_path + "/ajax/delete_dbmng_fields";
-          url = base_path + dbmng2_api_path + "/rest/api/dbmng_tables/schema/delete";
+          var url = base_path + dbmng2_api_path + "/rest/api/dbmng_tables/schema/delete";
           jQuery.ajax({ 
             type: 'POST', 
             url: url, 

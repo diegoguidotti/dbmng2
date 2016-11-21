@@ -129,7 +129,7 @@ class Api {
 
 			});
 
-      $router->any('/api/'.$table_alias.'/schema/*', function($id_value) use($dbmng) {
+      $router->any('/api/'.$table_alias.'/schema/*', function($id_value = null) use($dbmng) {
         $bOk = false;
         $out = json_encode(array('ok' => false, 'msg' => "The function '$id_value' is not defined in the API"));
         $allowed=$dbmng->isAllowed('admin');

@@ -48,7 +48,16 @@ class DbmngHelper {
 
     foreach( $aForms as $k => $aData )
       {
-        $dbmng = new Dbmng($this->app, $aData['aForm'], array_merge($this->aParamDefault, $aData['aParam']));
+        if( is_array($aData['aParam']) )
+          {
+            $aMerge = array_merge($this->aParamDefault, $aData['aParam']);
+          }
+        else
+          {
+            $aMerge = $this->aParamDefault;
+          }
+        
+        $dbmng = new Dbmng($this->app, $aData['aForm'], $aMerge);
         $api = new Api($dbmng);
         $api->exeRest($router);
       }
