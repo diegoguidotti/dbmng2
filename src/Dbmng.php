@@ -22,10 +22,40 @@ private $prepare;
 		$this->app=$app;
 		$this->db=$app->getDb();
 		$this->aForm=$aForm;
-		$this->aParam=$aParam;
+		$this->aParam=$this->checkaParam($aParam);
 		$this->prepare=false;
 	}
+  
+  public function checkaParam($aParam)
+  {
+    if( !isset($aParam['access']) )
+      {
+        $aParam['access'] = [];
+      }
+    
+    if( !isset($aParam['access']['admin']) )
+      $aParam['access']['admin'] = ['administrator'];
+        
+    if( !isset($aParam['access']['select']) )
+        $aParam['access']['select'] = ['authenticated user'];
+        
+    if( !isset($aParam['access']['insert']) )
+        $aParam['access']['insert'] = ['administrator'];
+    
+    if( !isset($aParam['access']['update']) )
+        $aParam['access']['update'] = ['administrator'];
+    
+    if( !isset($aParam['access']['delete']) )
+        $aParam['access']['delete'] = ['administrator'];
 
+    return $aParam;
+  }
+	
+	public function getParam()
+	{
+    return $this->aParam;
+	}
+	
 	public function setPrepare($p)
 	{
 		$this->prepare=$p;
@@ -36,7 +66,12 @@ private $prepare;
 	{
 		return $this->aForm;
 	}
-
+  
+  public function getDb()
+  {
+    return $this->db;
+  }
+  
 	// TODO: add filter in the where clause
 	public function select($aVar = array(), $fetch_style = \PDO::FETCH_ASSOC)
 	{
@@ -101,7 +136,7 @@ private $prepare;
 				}
 			}
 		}
-    $ret['aParam'] = $this->aParam;
+    //$ret['aParam'] = $this->aParam;
 		return $ret;
 	}
 
@@ -919,45 +954,48 @@ function uploadFile($field){
 		$message="";
 
 		$user=$this->app->getUser();
-		if($user['uid']!=0){
-      if(isset($this->aParam['access']))
-        {
-          if( isset($this->aParam['access'][$method]) )
-            {
-//               print_r($this->aParam['access'][$method]);
-//               print_r($user,true);
-              $interset = array_intersect($this->aParam['access'][$method], $user['roles']);
-              if( count($interset) > 0 )
-                {
-                  $code=200;
-                  $auth=true;
-                }
-              else
-                {
-                  $code=401;
-                  $auth=false;
-                  $message="Unauthenticated user cannot access the resource (role not allowed)";
-                }
-            }
-          else
-            {
-              $code=200;
-              $auth=true;
-            }
-        }
-      else
-        {
-          $code=200;
-          $auth=true;
-        }
-		}
-		else
+    if(isset($this->aParam['access']))
       {
-        $code=401;
-        $auth=false;
-        $message="Unauthenticated user cannot access the resource (No user)";
+        if( $method == 'admin' )
+          {
+            
+          }
+        if( isset($this->aParam['access'][$method]) )
+          {
+            $allowed_roles = [];
+            if( isset($this->aParam['access'][$method]) )
+              $allowed_roles = $this->aParam['access'][$method];
+            
+            // add to all users authenticaded and anonymous the role *
+            $user_roles = $user['roles'];
+            $user_roles[] = '*';
+            
+            $interset = array_intersect($allowed_roles, $user_roles);
+            if( count($interset) > 0 )
+              {
+                $code=200;
+                $auth=true;
+              }
+            else
+              {
+                $code=401;
+                $auth=false;
+                $message="Unauthenticated user cannot access the resource (role not allowed) needed:[" . implode("|",$allowed_roles) . "] user:[" . implode("|",$user_roles)."]";
+              }
+          }
+        else
+          {
+            $code=401;
+            $auth=false;
+            $message="Access variable has not defined any roles for method: $method ";
+          }
       }
-		return array('ok'=>$auth, 'message'=>$message, 'code'=>$code);
+    else
+      {
+        $code=200;
+        $auth=true;
+      }
+		return array('ok'=>$auth, 'message'=>$message, 'code'=>$code);  //, 'user'=>$user, 'roles' =>$user['roles'], 'method'=> $method, 'aParam' =>$this->aParam
 	}
 
    /////////////////////////////////////////////////////////////////////////////

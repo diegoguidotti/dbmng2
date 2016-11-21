@@ -63,7 +63,7 @@ class Api {
 			echo "<h1>".'/api/'.$table_alias.'/schema'."</h1>";
 			$router->get('/api/'.$table_alias.'/schema/', function( ) use($dbmng){
         $allowed=$dbmng->isAllowed('select');
-        
+
         echo "<h3>schema: ".$dbmng->getaForm()['table_name']."</h3>";
 
 				//print_r(   $allowed);
@@ -129,44 +129,105 @@ class Api {
 
 			});
 
+      $router->any('/api/'.$table_alias.'/schema/*', function($id_value) use($dbmng) {
+        $bOk = false;
+        $out = json_encode(array('ok' => false, 'msg' => "The function '$id_value' is not defined in the API"));
+        $allowed=$dbmng->isAllowed('admin');
+
+        if($allowed['ok'])
+          {
+            $id_table = $_REQUEST['id_table'];
+            if( $id_value == 'delete' )
+              {
+                $db = $dbmng->getDb();
+                $sql = "delete from dbmng_fields where id_table = :id_table";
+                $var = array(':id_table' => $id_table);
+                
+                $ret = $db->delete($sql, $var);
+                $out = json_encode(array("id"=>$id_value, "ret"=>$ret));
+                $bOk = true;
+              }
+            elseif( $id_value == 'fill' )
+              {
+                $ret = $this->fillDbmngFields($dbmng, $id_table);
+                $out = json_encode(array("id"=>$id_value, "ret"=>$ret));
+                $bOk = true;
+              }
+            else
+              {
+                $out = json_encode(array('ok' => false, 'msg' => "The function '$id_value' is not defined in the API"));
+              }
+          }
+        else
+          {
+            $out = json_encode($allowed);
+          }
+        
+        $allowed=$dbmng->isAllowed('select');
+
+        if($allowed['ok'])
+          {
+            if($id_value == '')
+              {
+                $aForm = $dbmng->getaForm();
+                $out = json_encode($aForm);
+                $bOk = true;
+              }
+          }
+        else
+          {
+            $out = json_encode($allowed);
+          }
+        
+        if( ! $bOk )
+          {
+            http_response_code(401);
+          }
+        
+        return $out;
+      });
+			
 			// select
 			$router->get('/api/'.$table_alias.'/*', function( $id_value=null) use($dbmng){
-
 				$allowed=$dbmng->isAllowed('select');
-				
-				if($allowed['ok'])
+
+				if( $allowed['ok'] )
           {
             $aForm = $dbmng->getaForm();
-            
-            if( $id_value=='schema' ){
-              return json_encode($aForm);
-            }
-            else{
-              $key = $aForm['primary_key'][0];
 
-              $aVar = array();
-              if( !is_null($id_value) )
-                $aVar = array($key => $id_value);
+            $key = $aForm['primary_key'][0];
 
-              //if exists some _REQUEST get variable try to filter them (dbmng will check if aForm can accept them)
-              $aVar=array_merge($aVar,$_REQUEST);
-
-              $input = $dbmng->select($aVar);
-              return json_encode($input);
+            $aVar = array();
+            if( $id_value !== null )
+              {
+                if( $id_value == 'schema' )
+                  {
+                    $aForm = $dbmng->getaForm();
+                    return json_encode($aForm);
+                  }
+                else
+                  $aVar = array($key => $id_value);
               }
+
+            //if exists some _REQUEST get variable try to filter them (dbmng will check if aForm can accept them)
+            $aVar=array_merge($aVar,$_REQUEST);
+
+            $input = $dbmng->select($aVar);
+            return json_encode($input);
           }
 				else
           {
             http_response_code($allowed['code']);
             return json_encode($allowed);
           }
+        
 			} );
 
 			$router->put('/api/'.$table_alias.'/*', function( $id_value=null ) use($dbmng){
 				$body = file_get_contents("php://input");
 				return json_encode($this->doUpdate($dbmng,$id_value,json_decode($body)));
 			} );
- 
+
       $router->post('/api/'.$table_alias.'/*', function( $id_value=null ) use($dbmng){
         $body = file_get_contents("php://input");
         if( $id_value == null )
@@ -178,7 +239,7 @@ class Api {
             return json_encode($this->doUpdate($dbmng,$id_value,json_decode($body)));
           }
       } );
- 
+
       $router->delete('/api/'.$table_alias.'/*', function(  $id_value=null ) use($dbmng){
 				return json_encode($this->doDelete($dbmng, $id_value));
 
@@ -187,7 +248,7 @@ class Api {
 //       $router->post('/api/'.$table_alias, function( ) use($dbmng){
 //         $body = file_get_contents("php://input");
 // 				return json_encode($this->doInsert($dbmng,json_decode($body)));
-// 
+//
 //       } );
 
 
@@ -346,7 +407,7 @@ class Api {
           {
             $aForm = $dbmng->getaForm();
             $aFormParams = $sanitize['aFormParams'];
-            
+
             if( !is_null($id_value) )
               {
                 // get the info from aForm array
@@ -418,19 +479,190 @@ class Api {
 	}
 
 
-	function isValid(){
-		return $this->dbmng->isValid();
-	}
+  function fillDbmngFields($dbmng, $id_table, $table_schema = null)
+  {
+    $bOk = true;
+    $aQueries = array();
+    $db = $dbmng->getDb();
+    $dbtype = $db->getDbType();
+    
+    $aParam = $dbmng->getParam();
+    if( $table_schema == null )
+    {
+      $table_schema = $aParam['dbname'];
+    }
+    
+    $sql = "select table_name from dbmng_tables where id_table = :id_table";
+    $var = array(':id_table' => $id_table);
+    
+    $aTable = $db->select($sql, $var);
+    if( $aTable['rowCount'] > 0 )
+      {
+        $tn = $aTable['data'][0]['table_name'];
+        
+        if( $dbtype == 'mysql' )
+          {
+            $sql = "select * from information_schema.columns where table_name = :table_name and table_schema = :table_schema";
+            $var = array(':table_name' => $tn, ':table_schema' => $table_schema);
+          }
+        elseif( $dbtype == 'pgsql' ) 
+          {
+            $aTn = explode('.', $tn);
+            if( count($aTn) == 1 )
+              {
+                $sql = "select * from information_schema.columns where table_name = :table_name and table_catalog = :table_catalog";
+                $var = array(':table_name' => $tn, ':table_catalog' => $table_schema);
+              }
+            elseif( count($aTn) == 2 )
+              {
+                $sql = "select * from information_schema.columns where table_name = :table_name and table_catalog = :table_catalog and table_schema = :table_schema";
+                $var = array(':table_name' => $aTn[1], ':table_schema' => $aTn[0], ':table_catalog' => $table_schema);
+              }
+          }
+          
+        $aFields = $db->select($sql, $var);
 
-	function enableAccessControl(){
-		if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-			header('Access-Control-Allow-Origin: *');
-			header('Access-Control-Allow-Methods: POST, GET, PUT, DELETE');
-			header('Access-Control-Allow-Headers: X-Requested-With, Content-Type');
-		}
-		else {
-			header('Access-Control-Allow-Origin: *');
-		}
-	}
+        for( $nF = 0; $nF < $aFields['rowCount']; $nF++ )
+          {
+            /* identify the primary key */
+            $pk = 0;
+            
+            // only for MySQL
+            if( strlen($aFields['data'][$nF]['COLUMN_KEY']) != 0 )
+              {
+                if( strlen(trim($aFields['data'][$nF]['EXTRA'])) != 0 )
+                  {
+                    if( $aFields['data'][$nF]['EXTRA'] == 'auto_increment' )
+                      $pk = 1;
+                    else
+                      $pk = 2;
+                  }
+              }
+            
+            $pos = strpos($aFields['data'][$nF]['column_default'], 'nextval');
+            if( $pos !== false )
+              {
+                $pk = 1;
+              }
+            
+            
+            /* Map type into crud type */
+            $sType ="";
+            switch( $aFields['data'][$nF][($dbtype == 'mysql' ? 'DATA_TYPE' : 'data_type')] )
+              {
+                case "int":
+                case "bigint":
+                case "integer":
+                  $sType = "int";
+                  break;
+                
+                case "float":
+                case "double":
+                case "real":
+                  $sType = "double";
+                  break;
+                
+                case "date":
+                  $sType = "date";
+                  break;
+                
+                case "text":
+                  $sType = "text";
+                  break;
+                
+                default:
+                  $sType = "varchar";
+              }
+            
+            /* Assign the 'basic' widget */
+            $widget = "";
+            $voc_sql = null;
+            switch( $sType )
+              {
+                case "int":
+                  if( strpos($aFields['data'][$nF][($dbtype == 'mysql' ? 'COLUMN_NAME' : 'column_name')], "id_" ) !== false && $pk == 0 )
+                    {
+                      $widget = "select";
+                    }
+                  else
+                    {
+                      $widget = "input";
+                      if( $pk == 1 )  // se chiave primaria si imposta ad hidden il campo
+                        $widget = "hidden";
+                    }
+                  break;
+                
+                case "double":
+                  $widget = "input";
+                  break;
+                
+                case "text":
+                  $widget = "textarea";
+                  break;
+                
+                case "date":
+                  $widget = "date";
+                  break;
+                
+                default:
+                  $widget = "input";
+              }
+            
+            /* identify if a fields accept or no to be empty */
+            $nullable = 0;
+            if( $aFields['data'][$nF][($dbtype == 'mysql' ? 'IS_NULLABLE' : 'is_nullable')] == "YES" && $pk != 1 )
+              $nullable = 1;
+            
+            
+            $field_name  = $aFields['data'][$nF][($dbtype == 'mysql' ? 'COLUMN_NAME' : 'column_name')];
+            $field_label = ucfirst(str_replace("_", " ", $aFields['data'][$nF][($dbtype == 'mysql' ? 'COLUMN_NAME' : 'column_name')]));
+            if( $pk == 1 )  // se chiave primaria si imposta la label del campo 
+              $field_label = "ID";
+            
+            $field_order = $aFields['data'][$nF][($dbtype == 'mysql' ? 'ORDINAL_POSITION' : 'ordinal_position')]*10;
+            
+            /* Prepare insert sql command */
+            $sql  = "insert into dbmng_fields( id_table, id_field_type, field_widget, field_name, nullable, field_label, field_order, pk, is_searchable ) ";
+            $sql .= "values( :id_table, :id_field_type, :field_widget, :field_name, :nullable, :field_label, :field_order, :pk, :is_searchable );";
+            $var = array(':id_table' => $id_table, 
+                        ':id_field_type' => $sType, 
+                        ':field_widget' => $widget, 
+                        ':field_name' => $field_name,
+                        ':nullable' => $nullable,
+                        ':field_label' => $field_label,
+                        ':field_order' => $field_order,
+                        ':pk' => $pk,
+                        ':is_searchable' => 0);
+            $aQueries[$nF]['sql'] = $sql;
+            $aQueries[$nF]['var'] = $var;
+            
+          }
+        $ret = $db->transactions($aQueries);
+        $ret['aField'] = $aFields;
+        $ret['aParam'] = $dbmng->getParam();
+      }
+    else 
+      {
+        $ret['ok'] = false;
+      }
+    return array('ok' => $ret['ok'], 'id_table' => $id_table, 'ret' => $ret);
+  }
+  
+  
+  function isValid(){
+    return $this->dbmng->isValid();
+  }
+
+
+  function enableAccessControl(){
+    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+      header('Access-Control-Allow-Origin: *');
+      header('Access-Control-Allow-Methods: POST, GET, PUT, DELETE');
+      header('Access-Control-Allow-Headers: X-Requested-With, Content-Type');
+    }
+    else {
+      header('Access-Control-Allow-Origin: *');
+    }
+  }
 
 }

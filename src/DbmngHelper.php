@@ -48,7 +48,7 @@ class DbmngHelper {
 
     foreach( $aForms as $k => $aData )
       {
-        $dbmng = new Dbmng($this->app, $aData['aForm'], $aData['aParam']);
+        $dbmng = new Dbmng($this->app, $aData['aForm'], array_merge($this->aParamDefault, $aData['aParam']));
         $api = new Api($dbmng);
         $api->exeRest($router);
       }
@@ -324,7 +324,7 @@ class DbmngHelper {
     $bOk = true;
     $aQueries = array();
     $db = $this->db;
-    $dbtype = $this->db->getDbType();
+    $dbtype = $db->getDbType();
     if( $table_schema == null )
     {
       $table_schema = $this->aParamDefault['dbname'];
@@ -341,13 +341,23 @@ class DbmngHelper {
         if( $dbtype == 'mysql' )
           {
             $sql = "select * from information_schema.columns where table_name = :table_name and table_schema = :table_schema";
+            $var = array(':table_name' => $tn, ':table_schema' => $table_schema);
           }
         elseif( $dbtype == 'pgsql' ) 
           {
-            $sql = "select * from information_schema.columns where table_name = :table_name and table_catalog = :table_schema";
+            $aTn = explode('.', $tn);
+            if( count($aTn) == 1 )
+              {
+                $sql = "select * from information_schema.columns where table_name = :table_name and table_catalog = :table_catalog";
+                $var = array(':table_name' => $tn, ':table_catalog' => $table_schema);
+              }
+            elseif( count($aTn) == 2 )
+              {
+                $sql = "select * from information_schema.columns where table_name = :table_name and table_catalog = :table_catalog and table_schema = :table_schema";
+                $var = array(':table_name' => $aTn[1], ':table_schema' => $aTn[0], ':table_catalog' => $table_schema);
+              }
           }
           
-        $var = array(':table_name' => $tn, ':table_schema' => $table_schema);
         $aFields = $this->db->select($sql, $var);
 
         for( $nF = 0; $nF < $aFields['rowCount']; $nF++ )
@@ -355,16 +365,24 @@ class DbmngHelper {
             /* identify the primary key */
             $pk = 0;
             
-            if( strlen($aFields['data'][$nF][($dbtype == 'mysql' ? 'COLUMN_KEY' : 'column_key')]) != 0 )
+            // only for MySQL
+            if( strlen($aFields['data'][$nF]['COLUMN_KEY']) != 0 )
               {
-                if( strlen(trim($aFields['data'][$nF][($dbtype == 'mysql' ? 'EXTRA' : 'extra')])) != 0 )
+                if( strlen(trim($aFields['data'][$nF]['EXTRA'])) != 0 )
                   {
-                    if( $aFields['data'][$nF][($dbtype == 'mysql' ? 'EXTRA' : 'extra')] == 'auto_increment' )
+                    if( $aFields['data'][$nF]['EXTRA'] == 'auto_increment' )
                       $pk = 1;
                     else
                       $pk = 2;
                   }
               }
+            
+            $pos = strpos($aFields['data'][$nF]['column_default'], 'nextval');
+            if( $pos !== false )
+              {
+                $pk = 1;
+              }
+            
             
             /* Map type into crud type */
             $sType ="";
@@ -372,18 +390,24 @@ class DbmngHelper {
               {
                 case "int":
                 case "bigint":
+                case "integer":
                   $sType = "int";
                   break;
+                
                 case "float":
                 case "double":
+                case "real":
                   $sType = "double";
                   break;
+                
                 case "date":
                   $sType = "date";
                   break;
+                
                 case "text":
                   $sType = "text";
                   break;
+                
                 default:
                   $sType = "varchar";
               }
@@ -391,7 +415,7 @@ class DbmngHelper {
             /* Assign the 'basic' widget */
             $widget = "";
             $voc_sql = null;
-            switch( $aFields['data'][$nF][($dbtype == 'mysql' ? 'DATA_TYPE' : 'data_type')] )
+            switch( $sType )
               {
                 case "int":
                   if( strpos($aFields['data'][$nF][($dbtype == 'mysql' ? 'COLUMN_NAME' : 'column_name')], "id_" ) !== false && $pk == 0 )
@@ -401,17 +425,23 @@ class DbmngHelper {
                   else
                     {
                       $widget = "input";
+                      if( $pk == 1 )  // se chiave primaria si imposta ad hidden il campo
+                        $widget = "hidden";
                     }
                   break;
-                case "float":
+                
+                case "double":
                   $widget = "input";
                   break;
+                
                 case "text":
                   $widget = "textarea";
                   break;
+                
                 case "date":
                   $widget = "date";
                   break;
+                
                 default:
                   $widget = "input";
               }
@@ -424,6 +454,9 @@ class DbmngHelper {
             
             $field_name  = $aFields['data'][$nF][($dbtype == 'mysql' ? 'COLUMN_NAME' : 'column_name')];
             $field_label = ucfirst(str_replace("_", " ", $aFields['data'][$nF][($dbtype == 'mysql' ? 'COLUMN_NAME' : 'column_name')]));
+            if( $pk == 1 )  // se chiave primaria si imposta la label del campo 
+              $field_label = "ID";
+            
             $field_order = $aFields['data'][$nF][($dbtype == 'mysql' ? 'ORDINAL_POSITION' : 'ordinal_position')]*10;
             
             /* Prepare insert sql command */
@@ -443,12 +476,14 @@ class DbmngHelper {
             
           }
         $ret = $this->db->transactions($aQueries);
+        $ret['aField'] = $aFields;
+        $ret['aParam'] = $aParam;
       }
     else 
       {
         $ret['ok'] = false;
       }
-    return array('ok' => $ret['ok'], 'id_table' => $id_table);
+    return array('ok' => $ret['ok'], 'id_table' => $id_table, 'ret' => $ret);
   }
 
   function exeOtherDbmngRest( $router )
