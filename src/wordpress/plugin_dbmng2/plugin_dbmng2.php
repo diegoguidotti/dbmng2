@@ -18,6 +18,8 @@ include_once (WP_CONTENT_DIR."/libraries/dbmng2/src/DbmngHelper.php");
 require_once (WP_CONTENT_DIR."/libraries/dbmng2/vendor/autoload.php");
 require_once ("src/mod_dbmng2.php");
 
+define( 'DBMNG2_API_PATH', 'api/dbmng2' );
+
 add_action( 'init', 'init_plugin_dbmng2' );
 function init_plugin_dbmng2() {
   $wp_user = wp_get_current_user();
@@ -25,6 +27,7 @@ function init_plugin_dbmng2() {
   if( count($wp_user->roles) > 0 )
     {
       $aRoles = $wp_user->roles;
+      $aRoles[] = 'authenticated user';
       $uid=$wp_user->data->ID;
     }
   else
@@ -59,11 +62,11 @@ function plugin_dbmng2($content) {
 }
 
 add_action( 'rest_api_init', function () {
-  register_rest_route( 'aedit/v1', 'dbmng2/rest/(\S?)+', array(
+  register_rest_route( DBMNG2_API_PATH, '/rest/(\S?)+', array(
     'methods' => WP_REST_Server::ALLMETHODS,
     'callback' => 'dbmng2_rest',
   ) );
-  register_rest_route( 'aedit/v1', 'dbmng2/ajax/(\S?)+', array(
+  register_rest_route( DBMNG2_API_PATH, '/ajax/(\S?)+', array(
     'methods' => WP_REST_Server::ALLMETHODS,
     'callback' => 'dbmng2_ajax',
   ) );

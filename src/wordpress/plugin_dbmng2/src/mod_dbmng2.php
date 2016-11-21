@@ -34,7 +34,7 @@ function dbmng2_get_db()
 function dbmng2_rest( ) {
   $path = getPath();
   $base_path = "/$path/wp-json/";
-  $path   = $base_path.'aedit/v1/dbmng2/rest';
+  $path   = $base_path . DBMNG2_API_PATH . '/rest';
   $router = new \Respect\Rest\Router($path);
   $router->isAutoDispatched = false;
   
@@ -44,14 +44,13 @@ function dbmng2_rest( ) {
   $h = new DbmngHelper($app);
   $h->exeAllRest( $router );
   
-  
   return json_decode($router->run());
 }
 
 function dbmng2_ajax( ) {
   $path = getPath();
   $base_path = "/$path/wp-json/";
-  $path   = $base_path.'aedit/v1/dbmng2/ajax';
+  $path   = $base_path . DBMNG2_API_PATH . '/ajax';
   $router = new \Respect\Rest\Router($path);
   $router->isAutoDispatched = false;
   
@@ -70,6 +69,7 @@ function dbmng2_manager()
   $html = "";
   $html .= "<script language='javascript'>";
     $html .= "var base_path='$base_path';";
+    $html .= "var dbmng2_api_path='".DBMNG2_API_PATH."';";
     $html .= "jQuery(document).ready(function(){dbmng2_show_tables()})";
   $html .= "</script>";
   
