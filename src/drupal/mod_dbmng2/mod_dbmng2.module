@@ -11,16 +11,23 @@ require_once ("sites/all/libraries/dbmng2/vendor/autoload.php");
 
 include_once ("sites/all/modules/mod_dbmng2/mod_dbmng2.php");
 
+/**
+* Definisce la variabile globale dove viene indicato il path relativo alle API
+*/
 define( 'DBMNG2_API_PATH', 'api/dbmng2' );
 
+
 function mod_dbmng2_permission() {
-	return array('dbmng manager' => array('title'=>t('Manage all meta tables')),
-					 'dbmng ajax'    => array('title'=>t('Manage ajax')));
+  return array('dbmng manager' => array('title'=>t('Manage all meta tables')),
+          'dbmng ajax'    => array('title'=>t('Manage ajax')));
 }
 
 function mod_dbmng2_menu() {
   $items = array();
 
+  /**
+  * Questo menu serve per la visualizzazione delle informazioni 
+  */
   $items['dbmng2'] = array(
     'title' => 'Database Management',
     'page callback' => 'dbmng2_manager',
@@ -28,12 +35,18 @@ function mod_dbmng2_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
 
+  /**
+  * Questo entry menu serve a sviluppare le API proprie dell'applicazione 
+  */
   $items[DBMNG2_API_PATH.'/ajax'] = array(
     'page callback' => 'dbmng2_ajax_response',
     'access arguments' => array('dbmng ajax')
   );
 
-  $items[DBMNG2_API_PATH.'/rest'] = array(
+  /**
+  * Questo entry menu serve ad utilizzare la libreria DBMNG2 per realizzare i CRUD libreria
+  */
+  $items[DBMNG2_API_PATH] = array(
     'page callback' => 'dbmng2_rest_response',
     'access arguments' => array('dbmng ajax'),
   );

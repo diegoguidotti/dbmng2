@@ -62,7 +62,7 @@ function plugin_dbmng2($content) {
 }
 
 add_action( 'rest_api_init', function () {
-  register_rest_route( DBMNG2_API_PATH, '/rest/(\S?)+', array(
+  register_rest_route( DBMNG2_API_PATH, '/(\S?)+', array(
     'methods' => WP_REST_Server::ALLMETHODS,
     'callback' => 'dbmng2_rest',
   ) );

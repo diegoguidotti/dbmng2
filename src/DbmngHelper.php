@@ -328,206 +328,206 @@ class DbmngHelper {
     return $aForms;
   }
   
-  function getTableStructure($id_table, $table_schema = null)
-  {
-    $bOk = true;
-    $aQueries = array();
-    $db = $this->db;
-    $dbtype = $db->getDbType();
-    if( $table_schema == null )
-    {
-      $table_schema = $this->aParamDefault['dbname'];
-    }
-    
-    $sql = "select table_name from dbmng_tables where id_table = :id_table";
-    $var = array(':id_table' => $id_table);
-    
-    $aTable = $this->db->select($sql, $var);
-    if( $aTable['rowCount'] > 0 )
-      {
-        $tn = $aTable['data'][0]['table_name'];
-        
-        if( $dbtype == 'mysql' )
-          {
-            $sql = "select * from information_schema.columns where table_name = :table_name and table_schema = :table_schema";
-            $var = array(':table_name' => $tn, ':table_schema' => $table_schema);
-          }
-        elseif( $dbtype == 'pgsql' ) 
-          {
-            $aTn = explode('.', $tn);
-            if( count($aTn) == 1 )
-              {
-                $sql = "select * from information_schema.columns where table_name = :table_name and table_catalog = :table_catalog";
-                $var = array(':table_name' => $tn, ':table_catalog' => $table_schema);
-              }
-            elseif( count($aTn) == 2 )
-              {
-                $sql = "select * from information_schema.columns where table_name = :table_name and table_catalog = :table_catalog and table_schema = :table_schema";
-                $var = array(':table_name' => $aTn[1], ':table_schema' => $aTn[0], ':table_catalog' => $table_schema);
-              }
-          }
-          
-        $aFields = $this->db->select($sql, $var);
-
-        for( $nF = 0; $nF < $aFields['rowCount']; $nF++ )
-          {
-            /* identify the primary key */
-            $pk = 0;
-            
-            // only for MySQL
-            if( strlen($aFields['data'][$nF]['COLUMN_KEY']) != 0 )
-              {
-                if( strlen(trim($aFields['data'][$nF]['EXTRA'])) != 0 )
-                  {
-                    if( $aFields['data'][$nF]['EXTRA'] == 'auto_increment' )
-                      $pk = 1;
-                    else
-                      $pk = 2;
-                  }
-              }
-            
-            $pos = strpos($aFields['data'][$nF]['column_default'], 'nextval');
-            if( $pos !== false )
-              {
-                $pk = 1;
-              }
-            
-            
-            /* Map type into crud type */
-            $sType ="";
-            switch( $aFields['data'][$nF][($dbtype == 'mysql' ? 'DATA_TYPE' : 'data_type')] )
-              {
-                case "int":
-                case "bigint":
-                case "integer":
-                  $sType = "int";
-                  break;
-                
-                case "float":
-                case "double":
-                case "real":
-                  $sType = "double";
-                  break;
-                
-                case "date":
-                  $sType = "date";
-                  break;
-                
-                case "text":
-                  $sType = "text";
-                  break;
-                
-                default:
-                  $sType = "varchar";
-              }
-            
-            /* Assign the 'basic' widget */
-            $widget = "";
-            $voc_sql = null;
-            switch( $sType )
-              {
-                case "int":
-                  if( strpos($aFields['data'][$nF][($dbtype == 'mysql' ? 'COLUMN_NAME' : 'column_name')], "id_" ) !== false && $pk == 0 )
-                    {
-                      $widget = "select";
-                    }
-                  else
-                    {
-                      $widget = "input";
-                      if( $pk == 1 )  // se chiave primaria si imposta ad hidden il campo
-                        $widget = "hidden";
-                    }
-                  break;
-                
-                case "double":
-                  $widget = "input";
-                  break;
-                
-                case "text":
-                  $widget = "textarea";
-                  break;
-                
-                case "date":
-                  $widget = "date";
-                  break;
-                
-                default:
-                  $widget = "input";
-              }
-            
-            /* identify if a fields accept or no to be empty */
-            $nullable = 0;
-            if( $aFields['data'][$nF][($dbtype == 'mysql' ? 'IS_NULLABLE' : 'is_nullable')] == "YES" && $pk != 1 )
-              $nullable = 1;
-            
-            
-            $field_name  = $aFields['data'][$nF][($dbtype == 'mysql' ? 'COLUMN_NAME' : 'column_name')];
-            $field_label = ucfirst(str_replace("_", " ", $aFields['data'][$nF][($dbtype == 'mysql' ? 'COLUMN_NAME' : 'column_name')]));
-            if( $pk == 1 )  // se chiave primaria si imposta la label del campo 
-              $field_label = "ID";
-            
-            $field_order = $aFields['data'][$nF][($dbtype == 'mysql' ? 'ORDINAL_POSITION' : 'ordinal_position')]*10;
-            
-            /* Prepare insert sql command */
-            $sql  = "insert into dbmng_fields( id_table, id_field_type, field_widget, field_name, nullable, field_label, field_order, pk, is_searchable ) ";
-            $sql .= "values( :id_table, :id_field_type, :field_widget, :field_name, :nullable, :field_label, :field_order, :pk, :is_searchable );";
-            $var = array(':id_table' => $id_table, 
-                        ':id_field_type' => $sType, 
-                        ':field_widget' => $widget, 
-                        ':field_name' => $field_name,
-                        ':nullable' => $nullable,
-                        ':field_label' => $field_label,
-                        ':field_order' => $field_order,
-                        ':pk' => $pk,
-                        ':is_searchable' => 0);
-            $aQueries[$nF]['sql'] = $sql;
-            $aQueries[$nF]['var'] = $var;
-            
-          }
-        $ret = $this->db->transactions($aQueries);
-        $ret['aField'] = $aFields;
-        $ret['aParam'] = $aParam;
-      }
-    else 
-      {
-        $ret['ok'] = false;
-      }
-    return array('ok' => $ret['ok'], 'id_table' => $id_table, 'ret' => $ret);
-  }
-
-  function exeOtherDbmngRest( $router )
-  {
-    $router->post('/fill_dbmng_fields', function()  {
-      if( isset($_REQUEST['id_table']) )
-        {
-          $id_table = $_REQUEST['id_table'];
-          $res = $this->getTableStructure($id_table);
-        }
-      else
-        {
-          $res['ok'] = false;
-          $res['message'] = "Something went wrong.";
-        }
-      
-      return json_encode($res);
-    });
-    
-    $router->post('/delete_dbmng_fields', function()  {
-      if( isset($_REQUEST['id_table']) )
-        {
-          $sql = "delete from dbmng_fields where id_table = :id_table";
-          $var = array(':id_table' => $_REQUEST['id_table']);
-          $res = $this->db->delete($sql, $var);
-        }
-      else
-        {
-          $res['ok'] = false;
-          $res['message'] = "Something went wrong.";
-        }
-        
-        return json_encode($res);
-    });
-  }
+//   function getTableStructure($id_table, $table_schema = null)
+//   {
+//     $bOk = true;
+//     $aQueries = array();
+//     $db = $this->db;
+//     $dbtype = $db->getDbType();
+//     if( $table_schema == null )
+//     {
+//       $table_schema = $this->aParamDefault['dbname'];
+//     }
+//     
+//     $sql = "select table_name from dbmng_tables where id_table = :id_table";
+//     $var = array(':id_table' => $id_table);
+//     
+//     $aTable = $this->db->select($sql, $var);
+//     if( $aTable['rowCount'] > 0 )
+//       {
+//         $tn = $aTable['data'][0]['table_name'];
+//         
+//         if( $dbtype == 'mysql' )
+//           {
+//             $sql = "select * from information_schema.columns where table_name = :table_name and table_schema = :table_schema";
+//             $var = array(':table_name' => $tn, ':table_schema' => $table_schema);
+//           }
+//         elseif( $dbtype == 'pgsql' ) 
+//           {
+//             $aTn = explode('.', $tn);
+//             if( count($aTn) == 1 )
+//               {
+//                 $sql = "select * from information_schema.columns where table_name = :table_name and table_catalog = :table_catalog";
+//                 $var = array(':table_name' => $tn, ':table_catalog' => $table_schema);
+//               }
+//             elseif( count($aTn) == 2 )
+//               {
+//                 $sql = "select * from information_schema.columns where table_name = :table_name and table_catalog = :table_catalog and table_schema = :table_schema";
+//                 $var = array(':table_name' => $aTn[1], ':table_schema' => $aTn[0], ':table_catalog' => $table_schema);
+//               }
+//           }
+//           
+//         $aFields = $this->db->select($sql, $var);
+// 
+//         for( $nF = 0; $nF < $aFields['rowCount']; $nF++ )
+//           {
+//             /* identify the primary key */
+//             $pk = 0;
+//             
+//             // only for MySQL
+//             if( strlen($aFields['data'][$nF]['COLUMN_KEY']) != 0 )
+//               {
+//                 if( strlen(trim($aFields['data'][$nF]['EXTRA'])) != 0 )
+//                   {
+//                     if( $aFields['data'][$nF]['EXTRA'] == 'auto_increment' )
+//                       $pk = 1;
+//                     else
+//                       $pk = 2;
+//                   }
+//               }
+//             
+//             $pos = strpos($aFields['data'][$nF]['column_default'], 'nextval');
+//             if( $pos !== false )
+//               {
+//                 $pk = 1;
+//               }
+//             
+//             
+//             /* Map type into crud type */
+//             $sType ="";
+//             switch( $aFields['data'][$nF][($dbtype == 'mysql' ? 'DATA_TYPE' : 'data_type')] )
+//               {
+//                 case "int":
+//                 case "bigint":
+//                 case "integer":
+//                   $sType = "int";
+//                   break;
+//                 
+//                 case "float":
+//                 case "double":
+//                 case "real":
+//                   $sType = "double";
+//                   break;
+//                 
+//                 case "date":
+//                   $sType = "date";
+//                   break;
+//                 
+//                 case "text":
+//                   $sType = "text";
+//                   break;
+//                 
+//                 default:
+//                   $sType = "varchar";
+//               }
+//             
+//             /* Assign the 'basic' widget */
+//             $widget = "";
+//             $voc_sql = null;
+//             switch( $sType )
+//               {
+//                 case "int":
+//                   if( strpos($aFields['data'][$nF][($dbtype == 'mysql' ? 'COLUMN_NAME' : 'column_name')], "id_" ) !== false && $pk == 0 )
+//                     {
+//                       $widget = "select";
+//                     }
+//                   else
+//                     {
+//                       $widget = "input";
+//                       if( $pk == 1 )  // se chiave primaria si imposta ad hidden il campo
+//                         $widget = "hidden";
+//                     }
+//                   break;
+//                 
+//                 case "double":
+//                   $widget = "input";
+//                   break;
+//                 
+//                 case "text":
+//                   $widget = "textarea";
+//                   break;
+//                 
+//                 case "date":
+//                   $widget = "date";
+//                   break;
+//                 
+//                 default:
+//                   $widget = "input";
+//               }
+//             
+//             /* identify if a fields accept or no to be empty */
+//             $nullable = 0;
+//             if( $aFields['data'][$nF][($dbtype == 'mysql' ? 'IS_NULLABLE' : 'is_nullable')] == "YES" && $pk != 1 )
+//               $nullable = 1;
+//             
+//             
+//             $field_name  = $aFields['data'][$nF][($dbtype == 'mysql' ? 'COLUMN_NAME' : 'column_name')];
+//             $field_label = ucfirst(str_replace("_", " ", $aFields['data'][$nF][($dbtype == 'mysql' ? 'COLUMN_NAME' : 'column_name')]));
+//             if( $pk == 1 )  // se chiave primaria si imposta la label del campo 
+//               $field_label = "ID";
+//             
+//             $field_order = $aFields['data'][$nF][($dbtype == 'mysql' ? 'ORDINAL_POSITION' : 'ordinal_position')]*10;
+//             
+//             /* Prepare insert sql command */
+//             $sql  = "insert into dbmng_fields( id_table, id_field_type, field_widget, field_name, nullable, field_label, field_order, pk, is_searchable ) ";
+//             $sql .= "values( :id_table, :id_field_type, :field_widget, :field_name, :nullable, :field_label, :field_order, :pk, :is_searchable );";
+//             $var = array(':id_table' => $id_table, 
+//                         ':id_field_type' => $sType, 
+//                         ':field_widget' => $widget, 
+//                         ':field_name' => $field_name,
+//                         ':nullable' => $nullable,
+//                         ':field_label' => $field_label,
+//                         ':field_order' => $field_order,
+//                         ':pk' => $pk,
+//                         ':is_searchable' => 0);
+//             $aQueries[$nF]['sql'] = $sql;
+//             $aQueries[$nF]['var'] = $var;
+//             
+//           }
+//         $ret = $this->db->transactions($aQueries);
+//         $ret['aField'] = $aFields;
+//         $ret['aParam'] = $aParam;
+//       }
+//     else 
+//       {
+//         $ret['ok'] = false;
+//       }
+//     return array('ok' => $ret['ok'], 'id_table' => $id_table, 'ret' => $ret);
+//   }
+// 
+//   function exeOtherDbmngRest( $router )
+//   {
+//     $router->post('/fill_dbmng_fields', function()  {
+//       if( isset($_REQUEST['id_table']) )
+//         {
+//           $id_table = $_REQUEST['id_table'];
+//           $res = $this->getTableStructure($id_table);
+//         }
+//       else
+//         {
+//           $res['ok'] = false;
+//           $res['message'] = "Something went wrong.";
+//         }
+//       
+//       return json_encode($res);
+//     });
+//     
+//     $router->post('/delete_dbmng_fields', function()  {
+//       if( isset($_REQUEST['id_table']) )
+//         {
+//           $sql = "delete from dbmng_fields where id_table = :id_table";
+//           $var = array(':id_table' => $_REQUEST['id_table']);
+//           $res = $this->db->delete($sql, $var);
+//         }
+//       else
+//         {
+//           $res['ok'] = false;
+//           $res['message'] = "Something went wrong.";
+//         }
+//         
+//         return json_encode($res);
+//     });
+//   }
   
   function helper_test()
   {

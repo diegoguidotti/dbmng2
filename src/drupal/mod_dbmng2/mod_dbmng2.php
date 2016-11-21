@@ -8,19 +8,6 @@ use Respect\Rest\Router;
 use Dbmng\DbmngHelper;
 use Dbmng\Util;
 
-function dbmng2_rest_response()
-{
-  global $base_path;
-  
-  $path = $base_path . DBMNG2_API_PATH."/rest";
-  $router = new \Respect\Rest\Router($path);
-
-  $app=dbmng2_get_app();
-  $h = new DbmngHelper($app);
-  $h->exeAllRest( $router );
-}
-
-
 function dbmng2_get_app()
 {
   global $user;
@@ -32,11 +19,10 @@ function dbmng2_get_app()
     }
   else
     {
-      //pgsql:user=scuolabus;dbname=scuolabus;password=giallo2015
       $dns = "pgsql:host=".$databases['default']['default']['host'].";dbname=".$databases['default']['default']['database'].";user=".$databases['default']['default']['username'].";password=".$databases['default']['default']['password']."";
     }
-  $username=$databases['default']['default']['username'];
-  $password=$databases['default']['default']['password'];
+  $username = $databases['default']['default']['username'];
+  $password = $databases['default']['default']['password'];
   
   $DB = Db::createDb($dns, $username, $password);
   $DB->setDebug(true);
@@ -45,17 +31,39 @@ function dbmng2_get_app()
   return $app;
 }
 
-function dbmng2_ajax_response()
+function dbmng2_get_db()
+{
+  $app = dbmng2_get_app();
+  $DB  = $app->getDb();
+  return $DB;
+}
+
+function dbmng2_rest_response()
 {
   global $base_path;
   
-  $path = $base_path . DBMNG2_API_PATH."/ajax";
+  $path = $base_path . DBMNG2_API_PATH;
   $router = new \Respect\Rest\Router($path);
-  
+
   $app=dbmng2_get_app();
   $h = new DbmngHelper($app);
-  $h->exeOtherDbmngRest( $router );
+  $h->exeAllRest( $router );
 }
+
+/**
+  Michele: TO BE DELETED. 
+*/
+// function dbmng2_ajax_response()
+// {
+//   global $base_path;
+//   
+//   $path = $base_path . DBMNG2_API_PATH."/ajax";
+//   $router = new \Respect\Rest\Router($path);
+//   
+//   $app=dbmng2_get_app();
+//   $h = new DbmngHelper($app);
+//   $h->exeOtherDbmngRest( $router );
+// }
 
 function dbmng2_manager() 
 {
@@ -76,7 +84,7 @@ function dbmng2_manager()
   global $base_path;
   
   drupal_add_js("var base_path='$base_path'", "inline");
-  drupal_add_js("var dbmng2_api_path='".DBMNG2_API_PATH."'", "inline");
+  drupal_add_js("var dbmng2_api_path='".DBMNG2_API_PATH."/'", "inline");
   drupal_add_js("jQuery(document).ready(function(){dbmng2_show_tables()})", "inline");
   
   $html = "";
