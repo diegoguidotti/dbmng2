@@ -21,7 +21,7 @@
 	
 	$user=$l['user'];
 
-	$app=new App($db, array('user'=>$user));
+	$app=new App($db, array('user'=>$user, 'roles' => array(1=>'authenticated user')));
 
 	$helper=new DbmngHelper($app);
 	$forms = $helper->getAllFormsArray();
@@ -77,9 +77,5 @@
 	$api2=new Api($dbmng2);
 	$api2->exeRest($router);
 	*/
-
-
-
-
 
 ?>

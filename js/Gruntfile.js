@@ -21,6 +21,7 @@ module.exports = function(grunt) {
 
             'src/Dbmng.js',
             'src/Form.js',
+            'src/FormCrud.js',
             'src/FormInline.js',
             'src/Api.js',
             'src/Crud.js',
@@ -90,6 +91,7 @@ module.exports = function(grunt) {
             // Utils like extend, each, and trigger
             'src/Dbmng.js.js',
             'src/Form.js',
+            'src/FormCrud.js',
             'src/FormInline.js',
             'src/Api.js',
             'src/Crud.js',
