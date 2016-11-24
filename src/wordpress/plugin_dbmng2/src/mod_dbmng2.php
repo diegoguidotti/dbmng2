@@ -32,7 +32,7 @@ function dbmng2_get_db()
 }
 
 function dbmng2_rest( ) {
-  $path = getPath();
+  $path = getPath(); 
   $base_path = "/$path/wp-json/";
   $path   = $base_path . DBMNG2_API_PATH; // . '/rest';
   $router = new \Respect\Rest\Router($path);

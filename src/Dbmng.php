@@ -971,7 +971,7 @@ function uploadFile($field){
             $user_roles[] = '*';
             
             $interset = array_intersect($allowed_roles, $user_roles);
-            if( count($interset) > 0 or true )
+            if( count($interset) > 0 )
               {
                 $code=200;
                 $auth=true;
