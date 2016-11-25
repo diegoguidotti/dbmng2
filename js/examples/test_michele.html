@@ -25,7 +25,7 @@
   <script type="text/javascript" src="../src/Form.js"></script>
   <script type="text/javascript" src="../src/Api.js"></script>
   <script type="text/javascript" src="../src/Crud.js"></script>
-  <script type="text/javascript" src="../src/FormCrud.js"></script>
+  <script type="text/javascript" src="../src/CrudForm.js"></script>
   <script type="text/javascript" src="../src/Ie9.js"></script>
   <script type="text/javascript" src="../src/Utilities.js"></script>
   <script type="text/javascript" src="../src/themes/AbstractTheme.js"></script>
@@ -78,10 +78,17 @@
 
 		var api=new  Dbmng.Api({aForm:aForm2, url:'/dbmng2/api/test', user:'test', password:'test'});
 		
-		var fc = new Dbmng.CrudForm({aForm:aForm2, aParam:aParam, theme:theme_boot,url:'/dbmng2/api/test', div_id:'test_form'});
+		var fc = new Dbmng.CrudForm(
+        {
+          aForm:aForm2, 
+          aParam:aParam, 
+          theme:theme_boot,
+          url:'/dbmng2/api/test', 
+          div_id:'test_form',
+          success: function(self) {
+            self.createForm();
+          }
+        });
 		
-		var id = 2;
-		fc.createForm(id);
-    
   </script>
 </body>
