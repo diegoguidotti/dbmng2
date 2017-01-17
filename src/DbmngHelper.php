@@ -41,7 +41,7 @@ class DbmngHelper {
 
 	public function exeAllRest( $router, $aForms=null )
   {
-    if($aForms==null)
+    if($aForms===null)
       {
         $aForms = $this->getAllFormsArray();
       }
@@ -63,7 +63,7 @@ class DbmngHelper {
       }
 
     $router->any('/api/**', function()  {
-        $input = array('ok' => false, 'msg' => 'Table definition not found');
+        $input = array('ok' => false, 'msg' => 'Table definition not found','form'=>$aForms);
         return json_encode($input);
     });
   }
@@ -268,7 +268,7 @@ class DbmngHelper {
       }
     else
       {
-        return null;
+        return "a";
       }
   }
 
@@ -315,8 +315,7 @@ class DbmngHelper {
     $sql = "select * from dbmng_tables ";
     $var = array();
     $aTbl = $this->db->select($sql, $var);
-
-    $aForms = array();
+		$aForms = array();
     for( $nT = 0; $nT < $aTbl['rowCount']; $nT++ )
       {
         $id_table = $aTbl['data'][$nT]['id_table'];
@@ -324,7 +323,7 @@ class DbmngHelper {
         $table_alias=$ret['aForm']['table_alias'];
         $aForms[$table_alias] = $ret;
       }
-
+			$aForms['aedit_block_chain']=array();
     return $aForms;
   }
 
