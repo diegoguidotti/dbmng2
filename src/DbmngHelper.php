@@ -45,29 +45,33 @@ class DbmngHelper {
       {
         $aForms = $this->getAllFormsArray();
       }
-
+//print_r($aForms);
     foreach( $aForms as $k => $aData )
       {
-        if( is_array($aData['aParam']) )
-          {
-            $aMerge = array_merge($this->aParamDefault, $aData['aParam']);
-          }
-        else
-          {
-            $aMerge = $this->aParamDefault;
-          }
+				if (isset ($aData['aForm']))
+				{
+	        if( is_array($aData['aParam']) )
+	          {
+	            $aMerge = array_merge($this->aParamDefault, $aData['aParam']);
+	          }
+	        else
+	          {
+	            $aMerge = $this->aParamDefault;
+	          }
 
-        $dbmng = new Dbmng($this->app, $aData['aForm'], $aMerge);
-        $api = new Api($dbmng);
-        $api->exeRest($router);
+	        $dbmng = new Dbmng($this->app, $aData['aForm'], $aMerge);
+	        $api = new Api($dbmng);
+	        $api->exeRest($router);
+				}
       }
+
 
     $router->any('/api/**', function()  {
         $input = array('ok' => false, 'msg' => 'Table definition not found','form'=>$aForms);
         return json_encode($input);
     });
-  }
 
+  }
   public function getFormArrayById($id_table)
   {
     $exist_id=false;
@@ -312,7 +316,7 @@ class DbmngHelper {
 
   public function getAllFormsArray()
   {
-    $sql = "select * from dbmng_tables ";
+    $sql = "select * from dbmng_tables";
     $var = array();
     $aTbl = $this->db->select($sql, $var);
 		$aForms = array();
@@ -323,7 +327,7 @@ class DbmngHelper {
         $table_alias=$ret['aForm']['table_alias'];
         $aForms[$table_alias] = $ret;
       }
-			$aForms['aedit_block_chain']=array();
+			//$aForms['aedit_block_chain']=array();
     return $aForms;
   }
 
