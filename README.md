@@ -52,6 +52,66 @@ Install the dbmng2 dependencies using composer
 
 	$ composer update
 
+Edit the file Router.php (vendor/respect/rest/library/Respect/Rest/Router.php) replacing the function sortRoutesByComplexity with the following one:
+
+```php
+    protected function sortRoutesByComplexity()
+    {
+        usort(
+            $this->routes,
+            function ($a, $b) {
+                $elementsa = preg_split('#/#', $a->pattern, 0, PREG_SPLIT_NO_EMPTY);
+                $elementsb = preg_split('#/#', $b->pattern, 0, PREG_SPLIT_NO_EMPTY);
+                if(end($elementsa) == '**' && end($elementsb) == '**')
+                   return count($elementsa) < count($elementsb);
+                if(end($elementsa) == '**')
+                   return 1;
+                if(end($elementsb) == '**')
+                   return -1;
+                if(count($elementsa) < count($elementsb)){
+                   return -1;
+                }
+                if(count($elementsa) > count($elementsb)){
+                   return 1;
+                }
+                $keysa = array_keys($elementsa, '*');
+                $keysb = array_keys($elementsb, '*');
+                if(count($keysa) < count($keysb)){
+                   return -1;
+                }
+                if(count($keysa) > count($keysb)){
+                   return 1;
+                }
+                for($index=0; $index < count($keysa); $index++){
+                   if($keysa[$index] == $keysb[$index])
+                       continue;
+                   return $keysa[$index]<$keysb[$index];
+                }
+                return $a->method>$b->method;
+                /*
+                $a = $a->pattern;
+                $b = $b->pattern;
+                $pi = AbstractRoute::PARAM_IDENTIFIER;
+
+                //Compare similarity and ocurrences of "/"
+                if (Router::compareRoutePatterns($a, $b, '/')) {
+                    return 1;
+
+                //Compare similarity and ocurrences of /*
+                } elseif (Router::compareRoutePatterns($a, $b, $pi)) {
+                    return -1;
+
+                //Hard fallback for consistency
+                } else {
+                    return 1;
+                }
+                */
+           }
+        );
+    }
+
+```
+
 Create a mySQL database and populate it using the file sql/dbmng2.sql and sql/test.sql (change root if you want to install using a different user) You can skip test.sql if you wan't run test unit
 
 	$ mysql -u root -p -e "create database dbmng2"
