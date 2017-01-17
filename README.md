@@ -52,7 +52,7 @@ Install the dbmng2 dependencies using composer
 
 	$ composer update
 
-Edit the file Router.php (vendor/respect/rest/library/Respect/Rest/Router.php) replacing the function sortRoutesByComplexity with the following one:
+Edit the file Router.php (vendor/respect/rest/library/Respect/Rest/Router.php) replacing the function sortRoutesByComplexity with the following one to allow a correct sort using PHP 7:
 
 ```php
     protected function sortRoutesByComplexity()
@@ -88,7 +88,8 @@ Edit the file Router.php (vendor/respect/rest/library/Respect/Rest/Router.php) r
                    return $keysa[$index]<$keysb[$index];
                 }
                 return $a->method>$b->method;
-                /*
+                /* 
+		// Previous code - do not work correct with PHP 7
                 $a = $a->pattern;
                 $b = $b->pattern;
                 $pi = AbstractRoute::PARAM_IDENTIFIER;
