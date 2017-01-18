@@ -223,7 +223,7 @@ class Layout
 				else{
 				//Normal page without sidebar
 				$html.='
-						<div class="container">
+						<div class="container-fluid">
 
 							<div class="starter-template">';
 

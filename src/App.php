@@ -2,17 +2,17 @@
 
 /**
  * Class containing all the objects (Db, Auth, aParam, aPage) to be shared in a single application.
- * 
+ *
  * @author Diego Guidotti <diego.guidotti@gmail.com>
  */
 
 namespace Dbmng;
- 
+
 class App {
 
 	private $db;
 	private $aParam;
-    
+
 
 		/////////////////////////////////////////////////////////////////////////////
 		// DB()
@@ -38,7 +38,7 @@ class App {
 		}
 
 		public function getUser(){
-			if(isset($this->aParam['user']))
+			if(isset($this->aParam['user']))      
 				return $this->aParam['user'];
 			else
 				return $emptyUser=array('uid'=>0, 'mail'=>null, 'name'=>null, 'roles'=>array(0=>'anonymous')); ;
