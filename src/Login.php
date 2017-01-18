@@ -2,11 +2,11 @@
 
 /**
  *a Class to authenticate the http call
- * 
+ *
  */
 
 namespace Dbmng;
- 
+
 class Login {
 
 	private $db;
@@ -44,11 +44,11 @@ class Login {
     }
 		else if($this->aut_type=='Drupal'){
 			global $user;
-			$ret = $user;			
+			$ret = $user;
 		}
     else{
       $provided_user=null;
-      $provided_password=null;	
+      $provided_password=null;
       if($this->aut_type=='BASIC')
         {
           if(!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']))
@@ -66,25 +66,25 @@ class Login {
             }
           $provided_user=Util::get_val($_REQUEST,$pref.'user_id');
           $provided_password=Util::get_val($_REQUEST,$pref.'password');
-        }		
+        }
       $ret=$this->check_authentication($provided_user,$provided_password);
     }
-    
+
     return $ret;
-  } 
+  }
 
   public function doLogout()
   {
     unset($_SESSION['DBMNG_USER']);
   }
 
-  function check_authentication( $user, $pass ) 
-  {		 
+  function check_authentication( $user, $pass )
+  {
     $ret=array();
-    
+
     if($user==null || $pass==null)
       {
-        $ret=$this->returnEmptyUser(0,"The user has not provided userID or password");	
+        $ret=$this->returnEmptyUser(0,"The user has not provided userID or password");
       }
     else
       {
@@ -94,7 +94,7 @@ class Login {
           {
             $ret=$this->returnEmptyUser(1,"The db does not contain the right table");
           }
-        elseif( count($l['data']) == 0 ) 
+        elseif( count($l['data']) == 0 )
           {
               $ret=$this->returnEmptyUser(2,"The user ".$user." does not exists.");
           }
@@ -104,8 +104,8 @@ class Login {
               {
                 $ret['user']=$l['data'][0];
                 $ret['ok']=true;
-                
-                
+
+
                 // get the roles associated to the user
                 $uid = $l['data'][0]['uid'];
                 $sql = "select r.rid, r.name from dbmng_users_roles ur, dbmng_role r where r.rid = ur.rid and ur.uid = :uid";
@@ -120,20 +120,23 @@ class Login {
                         $aRoles[$rid] = $name;
                       }
                     $ret['user']['roles'] = $aRoles;
+                    $ret['user']['roles'][] = 'authenticated user';
+
+
                   }
                 else
                   {
-                    $ret['user']['roles'] = array(1=>'anonymous user');
+                    $ret['user']['roles'][] = 'authenticated user';
                   }
                   $_SESSION['DBMNG_USER'] = json_encode($ret);
-               } 
-            else 
+               }
+            else
               {
                 $ret=$this->returnEmptyUser(3,"The password provided is not correct.");
               }
           }
       }
-    
+
     return $ret;
   }
 
@@ -141,11 +144,11 @@ class Login {
 	function returnEmptyUser( $code, $message )
   {
     $ret=array();
-    $ret['user'] = $this->emptyUser; 
-    $ret['error_code'] = $code; 
+    $ret['user'] = $this->emptyUser;
+    $ret['error_code'] = $code;
     $ret['message'] = $message;
     $ret['ok'] = false;
-    
+
     return $ret;
   }
 
