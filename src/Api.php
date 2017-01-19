@@ -21,12 +21,12 @@ class Api {
 			$dbmng=$this->dbmng;
 
 				// DELETE Method - 200 (OK). 404 (Not Found), if ID not found or invalid.
-				$router->delete('/api/test_base', function() use ($dbmng) {
+				$router->delete($api_base_path.'test_base', function() use ($dbmng) {
 					return '{"test_delete":1}';
 				});
 
 				// UPDATE Method - 200 (OK) or 204 (No Content). 404 (Not Found), if ID not found or invalid.
-				$router->put('/api/test_base', function() use ($dbmng) {
+				$router->put($api_base_path.'test_base', function() use ($dbmng) {
 					$body = file_get_contents("php://input");
 					//true return an associative array
 					$input=json_decode($body,true);
@@ -35,13 +35,13 @@ class Api {
 				});
 
 				// POST Method - 201 (Created), 404 (Not Found), 409 (Conflict) if resource already exists.
-				$router->post('/api/test_base', function() use ($dbmng) {
+				$router->post($api_base_path.'test_base', function() use ($dbmng) {
 					$input['test_post'] = 1;
 					return json_encode($input);
 				});
 
 				// READ Method - 200 (OK), single customer. 404 (Not Found), if ID not found or invalid.
-				$router->get('/api/test_base', function() use ($dbmng) {
+				$router->get($api_base_path.'test_base', function() use ($dbmng) {
 					$input = $dbmng->select()['data'];
 					$input['test_get'] = 1;
 					return json_encode($input);
@@ -54,10 +54,19 @@ class Api {
 
 
       $aForm = $dbmng->getaForm();
+			$aParam = $dbmng->getParam();
+
+			$api_base_path = "/api/";
+			if( isset($aParam['api_prefix']) )
+				{
+					$api_base_path = $aParam['api_prefix'];
+				}
+
 			$table_alias = $aForm['table_name'];
-			if(isset($aForm['table_alias'])){
-				$table_alias = $aForm['table_alias'];
-			}
+			if(isset($aForm['table_alias']))
+				{
+					$table_alias = $aForm['table_alias'];
+				}
 
 			/*
 			echo "<h1>".'/api/'.$table_alias.'/schema'."</h1>";
@@ -79,7 +88,7 @@ class Api {
           }
 			});*/
 
-			$router->post('/api/'.$table_alias.'/transaction', function(  ) use($dbmng){
+			$router->post($api_base_path.$table_alias.'/transaction', function(  ) use($dbmng){
 
 				$dbmng->setPrepare(true);
 				// get the form_params from the rest call
@@ -129,7 +138,7 @@ class Api {
 
 			});
 
-      $router->any('/api/'.$table_alias.'/schema/*', function($id_value = null) use($dbmng) {
+      $router->any($api_base_path.$table_alias.'/schema/*', function($id_value = null) use($dbmng) {
         $bOk = false;
         $out = json_encode(array('ok' => false, 'msg' => "The function '$id_value' is not defined in the API"));
         $allowed=$dbmng->isAllowed('admin');
@@ -188,7 +197,7 @@ class Api {
       });
 
 			// select
-			$router->get('/api/'.$table_alias.'/*', function( $id_value=null) use($dbmng){
+			$router->get($api_base_path.$table_alias.'/*', function( $id_value=null) use($dbmng){
 				$allowed=$dbmng->isAllowed('select');
 
 				if( $allowed['ok'] )
@@ -223,12 +232,12 @@ class Api {
 
 			} );
 
-			$router->put('/api/'.$table_alias.'/*', function( $id_value=null ) use($dbmng){
+			$router->put($api_base_path.$table_alias.'/*', function( $id_value=null ) use($dbmng){
 				$body = file_get_contents("php://input");
 				return json_encode($this->doUpdate($dbmng,$id_value,json_decode($body)));
 			} );
 
-      $router->post('/api/'.$table_alias.'/*', function( $id_value=null ) use($dbmng){
+      $router->post($api_base_path.$table_alias.'/*', function( $id_value=null ) use($dbmng){
         $body = file_get_contents("php://input");
         if( $id_value == null )
           {
@@ -240,7 +249,7 @@ class Api {
           }
       } );
 
-      $router->delete('/api/'.$table_alias.'/*', function(  $id_value=null ) use($dbmng){
+      $router->delete($api_base_path.$table_alias.'/*', function(  $id_value=null ) use($dbmng){
 				return json_encode($this->doDelete($dbmng, $id_value));
 
       } );
@@ -252,7 +261,7 @@ class Api {
 //       } );
 
 
-			$router->post('/api/'.$table_alias.'/file/*', function($field) use($dbmng) {
+			$router->post($api_base_path.$table_alias.'/file/*', function($field) use($dbmng) {
 
 				$files= $this->doUploadFile($dbmng,$field);
 				if($files['ok']){
