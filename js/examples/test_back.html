@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>DBMNG Test Api</title>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  <!-- for autocomplete and file upload -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script>
+
+  <!-- for autocomplete -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+  <!-- for file upload -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.iframe-transport.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.fileupload.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/css/jquery.fileupload.min.css">
+
+  <script type="text/javascript" src="../src/Class.js"></script>
+  <script type="text/javascript" src="../src/Dbmng.js"></script>
+  <script type="text/javascript" src="../src/Api.js"></script>
+  <script type="text/javascript" src="../src/Form.js"></script>
+  <script type="text/javascript" src="../src/FormInline.js"></script>
+  <script type="text/javascript" src="../src/Crud.js"></script>
+  <script type="text/javascript" src="../src/CrudInline.js"></script>
+  <script type="text/javascript" src="../src/Ie9.js"></script>
+  <script type="text/javascript" src="../src/Utilities.js"></script>
+  <script type="text/javascript" src="../src/themes/AbstractTheme.js"></script>
+  <script type="text/javascript" src="../src/themes/BootstrapTheme.js"></script>
+  <script type="text/javascript" src="../src/widgets/AbstractWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/SelectWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/TextareaWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/NumericWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/PasswordWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/CheckboxWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/SelectNMWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/HiddenWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/AutocompleteWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/FileWidget.js"></script>
+  <script type="text/javascript" src="../src/Defaults.js"></script>
+
+
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled/html4+html5/jquery.history.min.js"></script>
+</head>
+<body>
+
+
+  <button onClick="functA()">A</button>
+  <button onClick="functB()">B</button>
+
+  <div id="result">Empty</div>
+
+	<script>
+
+
+  function functA(){
+    var random=Math.random();
+    //func("A", random);
+    console.log("PUSH");
+    History.pushState({'page':'A','r':random}, "Pagina A", "?page=A");
+  }
+  function functB(){
+    var random=Math.random();
+    console.log("PUSH");
+    //func("B", random);
+    History.pushState({'page':'B','r':random}, "Pagina B", "?page=B");
+  }
+
+  function func(txt,random){
+    console.log("PRINT"+txt+"|"+random);
+    if(txt=='Empty'){
+      jQuery("#result").html('');
+    }
+    jQuery("#result").append(txt+"-"+random+"<br/>");
+
+  }
+
+  jQuery(function(){
+
+    History.pushState({"page":"Empty", "r":0}, "a", "?a");
+
+    // Bind to StateChange Event
+  History.Adapter.bind(window,'statechange',function(){ // Note: We are using statechange instead of popstate
+      var state = History.getState(); // Note: We are using History.getState() instead of event.state
+      console.log(state.data.page);
+      func(state.data.page, state.data.r);
+
+
+  });
+
+
+    /*
+    // Change our States
+    History.pushState({state:1}, "State 1", "?state=1"); // logs {state:1}, "State 1", "?state=1"
+    History.pushState({state:2}, "State 2", "?state=2"); // logs {state:2}, "State 2", "?state=2"
+    History.replaceState({state:3}, "State 3", "?state=3"); // logs {state:3}, "State 3", "?state=3"
+    History.pushState(null, null, "?state=4"); // logs {}, '', "?state=4"
+    History.back(); // logs {state:3}, "State 3", "?state=3"
+    History.back(); // logs {state:1}, "State 1", "?state=1"
+    History.back(); // logs {}, "Home Page", "?"
+    History.go(2); // logs {state:3}, "State 3", "?state=3"
+    */
+
+  });
+
+
+  </script>
+</body>
