@@ -88,6 +88,9 @@ class Api {
           }
 			});*/
 
+      //print $api_base_path;
+
+
 			$router->post($api_base_path.$table_alias.'/transaction', function(  ) use($dbmng){
 
 				$dbmng->setPrepare(true);

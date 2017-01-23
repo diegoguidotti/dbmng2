@@ -71,9 +71,10 @@ class DbmngHelper {
 				}
       }
 
+    $aParam=$this->aParamDefault;
+    $router->any('/api/**', function() use ($aParam){ //use  ($aForms)
 
-    $router->any($api_base_path.'**', function()  {
-        $input = array('ok' => false, 'msg' => 'Table definition not found');
+        $input = array('ok' => false, 'msg' => 'Table definition not found', 'aParam'=>$aParam);
         return json_encode($input);
     });
 
