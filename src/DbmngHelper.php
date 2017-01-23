@@ -41,11 +41,17 @@ class DbmngHelper {
 
 	public function exeAllRest( $router, $aForms=null )
   {
-    if($aForms===null)
+		$api_base_path = "/api/";
+		if( isset($this->aParamDefault['api_prefix']) )
+			{
+				$api_base_path = $this->aParamDefault['api_prefix'];
+			}
+
+		if($aForms===null)
       {
         $aForms = $this->getAllFormsArray();
       }
-//print_r($aForms);
+
     foreach( $aForms as $k => $aData )
       {
 				if (isset ($aData['aForm']))
@@ -66,8 +72,8 @@ class DbmngHelper {
       }
 
 
-    $router->any('/api/**', function()  {
-        $input = array('ok' => false, 'msg' => 'Table definition not found','form'=>$aForms);
+    $router->any($api_base_path.'**', function()  {
+        $input = array('ok' => false, 'msg' => 'Table definition not found');
         return json_encode($input);
     });
 
