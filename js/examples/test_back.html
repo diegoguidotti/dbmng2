@@ -2,108 +2,118 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>DBMNG Test Api</title>
+  <title>Test history</title>
   <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-
-  <!-- for autocomplete and file upload -->
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script>
-
-  <!-- for autocomplete -->
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
-  <!-- for file upload -->
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.iframe-transport.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.fileupload.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/css/jquery.fileupload.min.css">
-
-  <script type="text/javascript" src="../src/Class.js"></script>
-  <script type="text/javascript" src="../src/Dbmng.js"></script>
-  <script type="text/javascript" src="../src/Api.js"></script>
-  <script type="text/javascript" src="../src/Form.js"></script>
-  <script type="text/javascript" src="../src/FormInline.js"></script>
-  <script type="text/javascript" src="../src/Crud.js"></script>
-  <script type="text/javascript" src="../src/CrudInline.js"></script>
-  <script type="text/javascript" src="../src/Ie9.js"></script>
-  <script type="text/javascript" src="../src/Utilities.js"></script>
-  <script type="text/javascript" src="../src/themes/AbstractTheme.js"></script>
-  <script type="text/javascript" src="../src/themes/BootstrapTheme.js"></script>
-  <script type="text/javascript" src="../src/widgets/AbstractWidget.js"></script>
-  <script type="text/javascript" src="../src/widgets/SelectWidget.js"></script>
-  <script type="text/javascript" src="../src/widgets/TextareaWidget.js"></script>
-  <script type="text/javascript" src="../src/widgets/NumericWidget.js"></script>
-  <script type="text/javascript" src="../src/widgets/PasswordWidget.js"></script>
-  <script type="text/javascript" src="../src/widgets/CheckboxWidget.js"></script>
-  <script type="text/javascript" src="../src/widgets/SelectNMWidget.js"></script>
-  <script type="text/javascript" src="../src/widgets/HiddenWidget.js"></script>
-  <script type="text/javascript" src="../src/widgets/AutocompleteWidget.js"></script>
-  <script type="text/javascript" src="../src/widgets/FileWidget.js"></script>
-  <script type="text/javascript" src="../src/Defaults.js"></script>
-
-
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled/html4+html5/jquery.history.min.js"></script>
 </head>
 <body>
 
 
-  <button onClick="functA()">A</button>
-  <button onClick="functB()">B</button>
+  <h1>Pagine</h1>
+  <ul id="main">
+    <li onclick="visitPage('a')">a</li>
+    <li onclick="visitPage('b')">b</li>
+    <li onclick="visitPage('c')">c</li>
+  </ul>
+    <h1>Sezioni</h1>
+    <ul id="main">
+      <li onclick="visitSezione('a')">a</li>
+      <li onclick="visitSezione('b')">b</li>
+      <li onclick="visitSezione('c')">c</li>
+    </ul>
 
-  <div id="result">Empty</div>
-  <div id="dbmng2">DBMNG2</div>
+    <h1>Tabella</h1>
+    <table>
+      <tr><td onClick="visitTable('A',1)">A1</td><td  onClick="visitTable('B',1)">B1</td></tr>
+      <tr><td onClick="visitTable('A',2)">A2</td><td  onClick="visitTable('B',2)">B2</td></tr>
+    </table>
+
+    <h1>Somma</h1>
+    <input id="primo" value="12"/>
+    <input id="secondo" value="12"/>
+    <input id="sum" type="submit" value="Somma"/>
+
+    <h1>Risultato</h1>
+  <div id="result"></div>
 
 	<script>
 
 
-  function functA(){
-    var random=Math.random();
-    //func("A", random);
-    console.log("PUSH");
-    History.pushState({'page':'A','r':random}, "Pagina A", "?page=A");
-  }
-  function functB(){
-    var random=Math.random();
-    console.log("PUSH");
-    //func("B", random);
-    History.pushState({'page':'B','r':random}, "Pagina B", "?page=B");
-  }
-
-  function func(txt,random){
-    console.log("PRINT"+txt+"|"+random);
-    if(txt=='Empty'){
-      jQuery("#result").html('');
-    }
-    jQuery("#result").append(txt+"-"+random+"<br/>");
-
-  }
-
-  jQuery(function(){
-
-    History.pushState({"page":"Empty", "r":0}, "a", "?a");
-
-    // Bind to StateChange Event
-    History.Adapter.bind(window,'statechange',function(){ // Note: We are using statechange instead of popstate
-        var state = History.getState(); // Note: We are using History.getState() instead of event.state
-        console.log(state.data.page);
-        func(state.data.page, state.data.r);
-    });
-
-
-    var theme_boot=new Dbmng.BootstrapTheme();
-    var crud=new Dbmng.Crud(
-      {
-        aParam:{}, theme:theme_boot, url: '/dbmng2/api/test',
-        user:'test',
-        password:'test',
-        success:function(self){
-          self.createTable({div_id:'#dbmng2'});
-        },
+  var aehist={
+    'change_page': {
+      'function':function(state){
+        console.log(state);
+        jQuery('#result').html("Pagina "+state.data.obj.page);
       }
-    );
+    },
+    'change_sezione': {
+      'function':function(state){
+        jQuery('#result').html("Sezione "+state.data.obj.sezione);
+      }
+    },
+    'change_table': {
+      'function':function(state){
+        jQuery('#result').html("Table A: "+state.data.obj.a+" B: "+state.data.obj.b);
+      }
+    },
+    'do_sum': {
+      'function':function(state){
+        primo=state.data.obj.primo;
+        secondo=state.data.obj.secondo;
+        jQuery('#result').html(primo+secondo);
+      }
+    }
+  }
 
-  });
+
+  function hist_call(type, obj){
+    if(typeof aehist[type]!=='undefined'){
+      var label='?';
+      var title="";
+      jQuery.each(obj, function(k){
+        label+=k+"="+obj[k];
+        title+=k+"="+obj[k]+" ";
+      });
+      History.pushState({'type':type, 'obj':obj },title,label);
+    }
+    else{
+      console.log("Error in history, type unknow!!!");
+    }
+  }
+
+    function visitPage(a){
+      hist_call('change_page',{'page':a});
+      //History.pushState({'type':'change_page', 'obj':{'page':a} },'Page '+a,'?page='+a);
+    }
+
+    function visitSezione(a){
+      hist_call('change_sezione',{'sezione':a});
+      // History.pushState({'type':'change_sezione', 'obj':{'sezione':a} },'Sezione '+a,'?sezione='+a);
+    }
+
+    function visitTable(a,b){
+      hist_call('change_table',{'a':a, 'b':b});
+      // History.pushState({'type':'change_table', 'obj':{'a':a, 'b':b} },'Table '+a+' '+b,'?table=ok&a='+a+'&b='+b);
+    }
+
+      jQuery(function(){
+
+        jQuery('#sum').click(function(){
+          hist_call('do_sum',{'primo':jQuery('#primo').val(), 'secondo':jQuery('#secondo').val()});
+        });
+
+        History.Adapter.bind(window,'statechange',function(){ // Note: We are using statechange instead of popstate
+            var state = History.getState(); // Note: We are using History.getState() instead of event.state
+            if(typeof aehist[state.data.type]!=='undefined'){
+              aehist[state.data.type]['function'](state);
+            }
+            else{
+              console.log("Error in history, type unknow!!!");
+            }
+        });
+
+        //History.pushState({'page':'back_monit', 'obj':  {} },'Monitoring page','?');
+      });
 
 
   </script>
