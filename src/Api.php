@@ -7,6 +7,71 @@
  */
 namespace Dbmng;
 
+//We add this function to allow the library to work with php<5.4
+if (!function_exists('http_response_code')) {
+        function http_response_code($code = NULL) {
+            if ($code !== NULL) {
+
+                switch ($code) {
+                    case 100: $text = 'Continue'; break;
+                    case 101: $text = 'Switching Protocols'; break;
+                    case 200: $text = 'OK'; break;
+                    case 201: $text = 'Created'; break;
+                    case 202: $text = 'Accepted'; break;
+                    case 203: $text = 'Non-Authoritative Information'; break;
+                    case 204: $text = 'No Content'; break;
+                    case 205: $text = 'Reset Content'; break;
+                    case 206: $text = 'Partial Content'; break;
+                    case 300: $text = 'Multiple Choices'; break;
+                    case 301: $text = 'Moved Permanently'; break;
+                    case 302: $text = 'Moved Temporarily'; break;
+                    case 303: $text = 'See Other'; break;
+                    case 304: $text = 'Not Modified'; break;
+                    case 305: $text = 'Use Proxy'; break;
+                    case 400: $text = 'Bad Request'; break;
+                    case 401: $text = 'Unauthorized'; break;
+                    case 402: $text = 'Payment Required'; break;
+                    case 403: $text = 'Forbidden'; break;
+                    case 404: $text = 'Not Found'; break;
+                    case 405: $text = 'Method Not Allowed'; break;
+                    case 406: $text = 'Not Acceptable'; break;
+                    case 407: $text = 'Proxy Authentication Required'; break;
+                    case 408: $text = 'Request Time-out'; break;
+                    case 409: $text = 'Conflict'; break;
+                    case 410: $text = 'Gone'; break;
+                    case 411: $text = 'Length Required'; break;
+                    case 412: $text = 'Precondition Failed'; break;
+                    case 413: $text = 'Request Entity Too Large'; break;
+                    case 414: $text = 'Request-URI Too Large'; break;
+                    case 415: $text = 'Unsupported Media Type'; break;
+                    case 500: $text = 'Internal Server Error'; break;
+                    case 501: $text = 'Not Implemented'; break;
+                    case 502: $text = 'Bad Gateway'; break;
+                    case 503: $text = 'Service Unavailable'; break;
+                    case 504: $text = 'Gateway Time-out'; break;
+                    case 505: $text = 'HTTP Version not supported'; break;
+                    default:
+                        exit('Unknown http status code "' . htmlentities($code) . '"');
+                    break;
+                }
+
+                $protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
+
+                header($protocol . ' ' . $code . ' ' . $text);
+
+                $GLOBALS['http_response_code'] = $code;
+
+            } else {
+
+                $code = (isset($GLOBALS['http_response_code']) ? $GLOBALS['http_response_code'] : 200);
+
+            }
+
+            return $code;
+
+        }
+    }
+
 class Api {
 
 	private $dbmng;
@@ -42,7 +107,8 @@ class Api {
 
 				// READ Method - 200 (OK), single customer. 404 (Not Found), if ID not found or invalid.
 				$router->get($api_base_path.'test_base', function() use ($dbmng) {
-					$input = $dbmng->select()['data'];
+					$input_q = $dbmng->select();
+          $input = $input_q['data'];
 					$input['test_get'] = 1;
 					return json_encode($input);
 				});
@@ -51,6 +117,8 @@ class Api {
 	public function exeRest($router){
 
 			$dbmng=$this->dbmng;
+
+      $api_self=$this;
 
 
       $aForm = $dbmng->getaForm();
@@ -68,30 +136,10 @@ class Api {
 					$table_alias = $aForm['table_alias'];
 				}
 
-			/*
-			echo "<h1>".'/api/'.$table_alias.'/schema'."</h1>";
-			$router->get('/api/'.$table_alias.'/schema/', function( ) use($dbmng){
-        $allowed=$dbmng->isAllowed('select');
-
-        echo "<h3>schema: ".$dbmng->getaForm()['table_name']."</h3>";
-
-				//print_r(   $allowed);
-
-        if($allowed['ok'])
-          {
-            return json_encode($dbmng->getaForm());
-          }
-        else
-          {
-            http_response_code($allowed['code']);
-            return json_encode($allowed);
-          }
-			});*/
-
-      //print $api_base_path;
 
 
-			$router->post($api_base_path.$table_alias.'/transaction', function(  ) use($dbmng){
+
+			$router->post($api_base_path.$table_alias.'/transaction', function(  ) use($dbmng,$api_self){
 
 				$dbmng->setPrepare(true);
 				// get the form_params from the rest call
@@ -101,15 +149,15 @@ class Api {
 				$pqueries=array();
 				foreach( $transactions as $k=>$transaction){
 					if($transaction->mode == 'delete'){
-						$ret=$this->doDelete($dbmng, $transaction->key);
+						$ret=$api_self->doDelete($dbmng, $transaction->key);
 						$pqueries[]=$ret;
 					}
 					else if($transaction->mode == 'insert'){
-						$ret=$this->doInsert($dbmng, $transaction->body);
+						$ret=$api_self->doInsert($dbmng, $transaction->body);
 						$pqueries[]=$ret;
 					}
 					else if($transaction->mode == 'update'){
-						$ret=$this->doUpdate($dbmng, $transaction->key, $transaction->body);
+						$ret=$api_self->doUpdate($dbmng, $transaction->key, $transaction->body);
 						$pqueries[]=$ret;
 					}
 				}
@@ -141,7 +189,7 @@ class Api {
 
 			});
 
-      $router->any($api_base_path.$table_alias.'/schema/*', function($id_value = null) use($dbmng) {
+      $router->any($api_base_path.$table_alias.'/schema/*', function($id_value = null) use($dbmng,$api_self) {
         $bOk = false;
         $out = json_encode(array('ok' => false, 'msg' => "The function '$id_value' is not defined in the API"));
         $allowed=$dbmng->isAllowed('admin');
@@ -161,7 +209,7 @@ class Api {
               }
             elseif( $id_value == 'fill' )
               {
-                $ret = $this->fillDbmngFields($dbmng, $id_table);
+                $ret = $api_self->fillDbmngFields($dbmng, $id_table);
                 $out = json_encode(array("id"=>$id_value, "ret"=>$ret));
                 $bOk = true;
               }
@@ -200,7 +248,7 @@ class Api {
       });
 
 			// select
-			$router->get($api_base_path.$table_alias.'/*', function( $id_value=null) use($dbmng){
+			$router->get($api_base_path.$table_alias.'/*', function( $id_value=null) use($dbmng,$api_self){
 				$allowed=$dbmng->isAllowed('select');
 
 				if( $allowed['ok'] )
@@ -235,25 +283,25 @@ class Api {
 
 			} );
 
-			$router->put($api_base_path.$table_alias.'/*', function( $id_value=null ) use($dbmng){
+			$router->put($api_base_path.$table_alias.'/*', function( $id_value=null ) use($dbmng, $api_self){
 				$body = file_get_contents("php://input");
-				return json_encode($this->doUpdate($dbmng,$id_value,json_decode($body)));
+				return json_encode($api_self->doUpdate($dbmng,$id_value,json_decode($body)));
 			} );
 
-      $router->post($api_base_path.$table_alias.'/*', function( $id_value=null ) use($dbmng){
+      $router->post($api_base_path.$table_alias.'/*', function( $id_value=null ) use($dbmng, $api_self){
         $body = file_get_contents("php://input");
         if( $id_value == null )
           {
-            return json_encode($this->doInsert($dbmng,json_decode($body)));
+            return json_encode($api_self->doInsert($dbmng,json_decode($body)));
           }
         else
           {
-            return json_encode($this->doUpdate($dbmng,$id_value,json_decode($body)));
+            return json_encode($api_self->doUpdate($dbmng,$id_value,json_decode($body)));
           }
       } );
 
-      $router->delete($api_base_path.$table_alias.'/*', function(  $id_value=null ) use($dbmng){
-				return json_encode($this->doDelete($dbmng, $id_value));
+      $router->delete($api_base_path.$table_alias.'/*', function(  $id_value=null ) use($dbmng,$api_self){
+				return json_encode($api_self->doDelete($dbmng, $id_value));
 
       } );
 
@@ -264,9 +312,9 @@ class Api {
 //       } );
 
 
-			$router->post($api_base_path.$table_alias.'/file/*', function($field) use($dbmng) {
+			$router->post($api_base_path.$table_alias.'/file/*', function($field) use($dbmng,$api_self) {
 
-				$files= $this->doUploadFile($dbmng,$field);
+				$files= $api_self->doUploadFile($dbmng,$field);
 				if($files['ok']){
 					return json_encode(array('files' => $files['files']));
 				}

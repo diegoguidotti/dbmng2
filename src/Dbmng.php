@@ -30,23 +30,23 @@ private $prepare;
   {
     if( !isset($aParam['access']) )
       {
-        $aParam['access'] = [];
+        $aParam['access'] = Array();
       }
 
     if( !isset($aParam['access']['admin']) )
-      $aParam['access']['admin'] = ['administrator'];
+      $aParam['access']['admin'] = Array('administrator');
 
     if( !isset($aParam['access']['select']) )
-        $aParam['access']['select'] = ['authenticated user'];
+        $aParam['access']['select'] = Array('authenticated user');
 
     if( !isset($aParam['access']['insert']) )
-        $aParam['access']['insert'] = ['administrator'];
+        $aParam['access']['insert'] = Array('administrator');
 
     if( !isset($aParam['access']['update']) )
-        $aParam['access']['update'] = ['administrator'];
+        $aParam['access']['update'] = Array('administrator');
 
     if( !isset($aParam['access']['delete']) )
-        $aParam['access']['delete'] = ['administrator'];
+        $aParam['access']['delete'] = Array('administrator');
 
     return $aParam;
   }
@@ -572,7 +572,7 @@ function uploadFile($field){
 			$server_path=$aField['server_path'];
 		}
 
-		$mime_types=['image/png', 'image/jpg', 'image/jpeg', 'image/gif', 'text/plain','application/pdf'];
+		$mime_types=Array('image/png', 'image/jpg', 'image/jpeg', 'image/gif', 'text/plain','application/pdf');
 		if(isset($aField['mime_types'])){
 			$mime_types=$aField['mime_types'];
 		}
@@ -963,7 +963,7 @@ function uploadFile($field){
           }
         if( isset($this->aParam['access'][$method]) )
           {
-            $allowed_roles = [];
+            $allowed_roles = Array();
             if( isset($this->aParam['access'][$method]) )
               $allowed_roles = $this->aParam['access'][$method];
 
