@@ -5,6 +5,9 @@
   <title>Test history</title>
   <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled/html4+html5/jquery.history.min.js"></script>
+  <script type="text/javascript" src="../src/Class.js"></script>
+  <script type="text/javascript" src="../src/Dbmng.js"></script>
+  <script type="text/javascript" src="../src/History.js"></script>
 </head>
 <body>
 
@@ -65,52 +68,54 @@
     }
   }
 
+  var hist=new Dbmng.History(aehist);
 
-  function hist_call(type, obj){
-    if(typeof aehist[type]!=='undefined'){
-      var label='?';
-      var title="";
-      jQuery.each(obj, function(k){
-        label+=k+"="+obj[k];
-        title+=k+"="+obj[k]+" ";
-      });
-      History.pushState({'type':type, 'obj':obj },title,label);
-    }
-    else{
-      console.log("Error in history, type unknow!!!");
-    }
-  }
+  // function hist_call(type, obj){
+  //   if(typeof aehist[type]!=='undefined'){
+  //     var label='?';
+  //     var title="";
+  //     jQuery.each(obj, function(k){
+  //       label+=k+"="+obj[k];
+  //       title+=k+"="+obj[k]+" ";
+  //     });
+  //     History.pushState({'type':type, 'obj':obj },title,label);
+  //   }
+  //   else{
+  //     console.log("Error in history, type unknow!!!");
+  //   }
+  // }
 
     function visitPage(a){
-      hist_call('change_page',{'page':a});
+      hist.call('change_page',{'page':a});
       //History.pushState({'type':'change_page', 'obj':{'page':a} },'Page '+a,'?page='+a);
     }
 
     function visitSezione(a){
-      hist_call('change_sezione',{'sezione':a});
+      hist.call('change_sezione',{'sezione':a});
       // History.pushState({'type':'change_sezione', 'obj':{'sezione':a} },'Sezione '+a,'?sezione='+a);
     }
 
     function visitTable(a,b){
-      hist_call('change_table',{'a':a, 'b':b});
+      hist.call('change_table',{'a':a, 'b':b});
+      // hist_call('change_table',{'a':a, 'b':b});
       // History.pushState({'type':'change_table', 'obj':{'a':a, 'b':b} },'Table '+a+' '+b,'?table=ok&a='+a+'&b='+b);
     }
 
       jQuery(function(){
 
         jQuery('#sum').click(function(){
-          hist_call('do_sum',{'primo':jQuery('#primo').val(), 'secondo':jQuery('#secondo').val()});
+          hist.call('do_sum',{'primo':jQuery('#primo').val(), 'secondo':jQuery('#secondo').val()});
         });
-
-        History.Adapter.bind(window,'statechange',function(){ // Note: We are using statechange instead of popstate
-            var state = History.getState(); // Note: We are using History.getState() instead of event.state
-            if(typeof aehist[state.data.type]!=='undefined'){
-              aehist[state.data.type]['function'](state);
-            }
-            else{
-              console.log("Error in history, type unknow!!!");
-            }
-        });
+        hist.bindStateChange();
+        // History.Adapter.bind(window,'statechange',function(){ // Note: We are using statechange instead of popstate
+        //     var state = History.getState(); // Note: We are using History.getState() instead of event.state
+        //     if(typeof aehist[state.data.type]!=='undefined'){
+        //       aehist[state.data.type]['function'](state);
+        //     }
+        //     else{
+        //       console.log("Error in history, type unknow!!!");
+        //     }
+        // });
 
         //History.pushState({'page':'back_monit', 'obj':  {} },'Monitoring page','?');
       });

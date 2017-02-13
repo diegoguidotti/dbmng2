@@ -500,7 +500,7 @@ class Api {
                 if( $bContinue )
                   {
                     $input = $dbmng->update($aVar);
-
+                    $input['aVar'] = $sanitize;
                     $input['form_params'] = $aFormParams;
                     $input['fields'] = $aFields;
                     $input['pk'] = $primary_key;

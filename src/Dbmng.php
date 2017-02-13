@@ -410,7 +410,8 @@ private $prepare;
 							throw new \Exception('We need to implement the insert_nm prepared function');
 						}
 						else{
-							$this->insert_nm($aVars, null);
+							$result['nm_vars'] =$aVars;
+							$result['nm'] = $this->insert_nm($aVars, null);
 						}
 					}
 		}
@@ -684,7 +685,8 @@ function uploadFile($field){
 
 								//echo ("<br/>!|".dbmng_value_prepare($fld_value,$fld,$_POST,$aParam)."|!</br>");
 
-								$vals= explode('|',$aVars[$fld]);
+								// $vals= explode('|',$aVars[$fld]);
+								$vals = $aVars[$fld];
 								//print_r($vals);
 
 								foreach ( $vals as $k => $v )
