@@ -77,12 +77,20 @@ private $prepare;
 	{
 		$var=""; //implode(",", array_keys($this->aForm['fields']));
 		$first=true;
+
+    $nm_fields=Array();
 		foreach ( $this->aForm['fields'] as $fld => $fld_value ){
 			if(!Util::var_equal($fld_value,'widget','select_nm')){
 				if(!$first){$var.=',';}
 				else{$first=false;}
 				$var.=	$fld;
 			}
+      else{
+        $data=Array();
+        //$fld_value['select_nm...']
+        //$db->select($query)
+        $nm_fields[]=Array("field_name"=>$fld, "data"=>$data);
+      }
 		}
 
 		$sWhere = "";
@@ -91,7 +99,6 @@ private $prepare;
 
 		$ret=$this->createWhere($aVar, $sWhere, $aWhere, false, true, true);
 		//TODO the function createWhere works only for delete for insert does not work
-
 
 		if($ret['ok'] && count($aWhere) >0)
 			{
@@ -136,6 +143,16 @@ private $prepare;
 				}
 			}
 		}
+
+
+		foreach ( $nm_fields as $nm_field ){
+      $field_name=$nm_field['field_name'];
+      for($e=0; $e<count( $ret['data']); $e++){
+        
+         $ret['data'][$e][$field_name]=[];
+      }
+    }
+
     //$ret['aParam'] = $this->aParam;
 		return $ret;
 	}

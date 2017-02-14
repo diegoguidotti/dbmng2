@@ -323,16 +323,29 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
 			$ret0=($dbmng->select());
  			$this->assertEquals(true, $ret0['ok']);
 
+      $this->assertEquals(true, isset($ret0['data'][0]['id_father_child']));
+      $this->assertEquals(Array(), ($ret0['data'][0]['id_father_child']));
 
  			$request = array('check_field' => 1, 'varchar_field' => 'abra', 'id_father_child' => array(1,3,4));
 			$array = $dbmng->processRequest($request);
 			$ret = $dbmng->insert($array);
  			$this->assertEquals(true, $ret['ok']);
 
+      $inserted_id=$ret['inserted_id'];
+
  			$sql = "select count(*) from test_father_child where id_father = :id";
- 			$var = array(":id" => $ret['inserted_id']);
+ 			$var = array(":id" => $inserted_id);
  			$ret2 = $db->select($sql, $var, \PDO::FETCH_BOTH );
  			$this->assertEquals(3, $ret2['data'][0][0]);
+
+      //faccio la select dopo aver fatto l'insert
+      $ret0=($dbmng->select());
+      $this->assertEquals(true, $ret0['ok']);
+      print_r($ret0);
+      $this->assertEquals(Array(), ($ret0['data'][2]['id_father_child']));
+      $this->assertEquals(3, count($ret0['data'][2]['id_father_child']));
+      $this->assertEquals(0, count($ret0['data'][0]['id_father_child']));
+
 
 
 			$request=array('id_father'=>3,'varchar_field'=>'foo', 'id_father_child' => array(9,8));
