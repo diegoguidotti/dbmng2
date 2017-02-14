@@ -242,7 +242,7 @@ geo
   },
   getFields: function(aData) {
 		var fields={};
-debugger;
+
     this.createWidgets();
     console.log(aData);
 
@@ -585,8 +585,7 @@ Dbmng.Api = Class.extend({
 				"Authorization": "Basic " + btoa(this.user + ":" + this.password)
 			};
 	},
-  select: function(options) {
-    console.log(options);
+  select: function(options) {   
     var url_select= this.url;
     if(options.search){
       url_select+="?"+ options.search;

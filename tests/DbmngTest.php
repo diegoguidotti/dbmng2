@@ -328,7 +328,7 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
 
  			$request = array('check_field' => 1, 'varchar_field' => 'abra', 'id_father_child' => array(1,3,4));
 			$array = $dbmng->processRequest($request);
-      print_r($array);
+      //print_r($array);
 			$ret = $dbmng->insert($array);
  			$this->assertEquals(true, $ret['ok']);
 
@@ -343,7 +343,7 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
       $ret0=($dbmng->select());
       $this->assertEquals(true, $ret0['ok']);
       print_r($ret0);
-      $this->assertEquals(Array(), ($ret0['data'][2]['id_father_child']));
+      $this->assertEquals(Array(), ($ret0['data'][0]['id_father_child']));
       $this->assertEquals(3, count($ret0['data'][2]['id_father_child']));
       $this->assertEquals(0, count($ret0['data'][0]['id_father_child']));
 

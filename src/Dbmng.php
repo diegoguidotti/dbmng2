@@ -86,15 +86,19 @@ private $prepare;
 			}
 			else{
         $data = array();
+				// print_r($fld_value);
+				$pk=$this->aForm['primary_key'][0];
+				$sql_nm = "select * from " . $fld_value['table_nm'];
+				$data = $this->db->select($sql_nm, array(), $fetch_style);
         //$fld_value['select_nm...']
         //$db->select($query)
-        $nm_fields[] = array("field_name"=>$fld, "data"=>$data);
+        $nm_fields[] = array("field_name"=>$fld, "data"=>$data, "field_nm"=>$fld_value['field_nm']);
       }
 		}
 
 		$sWhere = "";
 		$aWhere = array();
-
+		//print_r($nm_fields);
 
 		$ret=$this->createWhere($aVar, $sWhere, $aWhere, false, true, true);
 		//TODO the function createWhere works only for delete for insert does not work
@@ -143,13 +147,30 @@ private $prepare;
 			}
 		}
 
+		$pk=$this->aForm['primary_key'][0];
 
 		foreach ( $nm_fields as $nm_field ){
       $field_name=$nm_field['field_name'];
-      for($e=0; $e<count( $ret['data']); $e++){
+			$field_val = $nm_field['data']['data'];
+			$field_nm = $nm_field['field_nm'];
+			// print_r($field_val);
+			for( $i=0; $i < count($field_val); $i++ )
+				{
 
-         $ret['data'][$e][$field_name]=[];
-      }
+					for( $e=0; $e < count( $ret['data']); $e++ )
+						{
+							if( ! isset($ret['data'][$e][$field_name]) )
+								{
+									$ret['data'][$e][$field_name]=array();
+								}
+							if( $ret['data'][$e][$pk]==$field_val[$i][$pk] )
+								{
+									// print($pk);
+									$ret['data'][$e][$field_name][] = $field_val[$i][$field_nm];
+								}
+
+			      }
+				}
     }
 
     //$ret['aParam'] = $this->aParam;
@@ -767,15 +788,16 @@ function uploadFile($field){
 
 						if(isset($aRequest[$fld]))
 							{
-								foreach ( $aRequest[$fld] as $vocKey => $vocValue )
-									{
-										$sValue.=$vocValue.'|';
-									}
+								$sValue = $aRequest[$fld];
+								// foreach ( $aRequest[$fld] as $vocKey => $vocValue )
+								// 	{
+								// 		$sValue.=$vocValue.'|';
+								// 	}
 							}
-						if(strlen($sValue)>0)
-							{
-								$sValue = substr($sValue, 0, strlen($sValue)-1);
-							}
+						// if(strlen($sValue)>0)
+						// 	{
+						// 		$sValue = substr($sValue, 0, strlen($sValue)-1);
+						// 	}
 					}
 				elseif($widget=='checkbox')
 					{
@@ -871,37 +893,45 @@ function uploadFile($field){
 					}
 
 				//if exists a default value use the default values instead of null
-				if( strlen($sValue)==0 && is_null($sDefault) )
+				if( ! is_array($sValue) )
 					{
-						$sVal  = null;
-					}
-				else
-					{
-						if(strlen($sValue)==0)
+						if( strlen($sValue)==0 && is_null($sDefault) )
 							{
-								$sValue=$sDefault;
-							}
-						if ($this::is_field_type_numeric($sType))
-							{
-								if ($widget=='select_nm')
-									{
-										$sVal  = ($sValue);
-									}
-								elseif($sType=="int" || $sType=="bigint")
-									$sVal = intval($sValue);
-								elseif($sType=="float" || $sType=="double")
-									$sVal = doubleval($sValue);
-								else
-									$sVal = doubleval($sValue);
+								$sVal  = null;
 							}
 						else
 							{
-								$sVal  = $sValue;
+								if(strlen($sValue)==0)
+									{
+										$sValue=$sDefault;
+									}
+								if ($this::is_field_type_numeric($sType))
+									{
+										// if ($widget=='select_nm')
+										// 	{
+										// 		$sVal  = ($sValue);
+										// 	}
+										// else
+										if($sType=="int" || $sType=="bigint")
+											$sVal = intval($sValue);
+										elseif($sType=="float" || $sType=="double")
+											$sVal = doubleval($sValue);
+										else
+											$sVal = doubleval($sValue);
+									}
+								else
+									{
+										$sVal  = $sValue;
+									}
 							}
-					}
 
-				if( strlen($sVal) == 0 )
-					$sVal = null;
+						if( strlen($sVal) == 0 )
+							$sVal = null;
+					}
+				else
+					{
+						$sVal = $sValue;
+					}
 
 				$aVars[$fld] = $sVal;
 		}
