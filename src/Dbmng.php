@@ -77,20 +77,12 @@ private $prepare;
 	{
 		$var=""; //implode(",", array_keys($this->aForm['fields']));
 		$first=true;
-
-    $nm_fields=Array();
 		foreach ( $this->aForm['fields'] as $fld => $fld_value ){
 			if(!Util::var_equal($fld_value,'widget','select_nm')){
 				if(!$first){$var.=',';}
 				else{$first=false;}
 				$var.=	$fld;
 			}
-      else{
-        $data=Array();
-        //$fld_value['select_nm...']
-        //$db->select($query)
-        $nm_fields[]=Array("field_name"=>$fld, "data"=>$data);
-      }
 		}
 
 		$sWhere = "";

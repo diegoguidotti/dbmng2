@@ -242,7 +242,7 @@ geo
   },
   getFields: function(aData) {
 		var fields={};
-
+debugger;
     this.createWidgets();
     console.log(aData);
 
@@ -585,7 +585,8 @@ Dbmng.Api = Class.extend({
 				"Authorization": "Basic " + btoa(this.user + ":" + this.password)
 			};
 	},
-  select: function(options) {	
+  select: function(options) {
+    console.log(options);
     var url_select= this.url;
     if(options.search){
       url_select+="?"+ options.search;
@@ -634,7 +635,8 @@ Dbmng.Api = Class.extend({
 				console.log(exc);
 			}
 		});
-  },insert: function(options) {
+  },
+  insert: function(options) {
 		jQuery.ajax({
 			url: this.url,
 			dataType:'json',
@@ -2897,7 +2899,7 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
   createWidget: function(){
     this.aField.value = this.getFieldValue();
     this.aField.field = this.field;
-    console.log("obj");
+
     return this.theme.getSelectNM(this.aField);
   },
 
