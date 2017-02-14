@@ -328,6 +328,7 @@ class DbmngTest extends \PHPUnit_Extensions_Database_TestCase
 
  			$request = array('check_field' => 1, 'varchar_field' => 'abra', 'id_father_child' => array(1,3,4));
 			$array = $dbmng->processRequest($request);
+      print_r($array);
 			$ret = $dbmng->insert($array);
  			$this->assertEquals(true, $ret['ok']);
 

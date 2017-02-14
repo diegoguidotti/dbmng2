@@ -77,12 +77,19 @@ private $prepare;
 	{
 		$var=""; //implode(",", array_keys($this->aForm['fields']));
 		$first=true;
+		$nm_fields = array();
 		foreach ( $this->aForm['fields'] as $fld => $fld_value ){
 			if(!Util::var_equal($fld_value,'widget','select_nm')){
 				if(!$first){$var.=',';}
 				else{$first=false;}
 				$var.=	$fld;
 			}
+			else{
+        $data = array();
+        //$fld_value['select_nm...']
+        //$db->select($query)
+        $nm_fields[] = array("field_name"=>$fld, "data"=>$data);
+      }
 		}
 
 		$sWhere = "";
@@ -140,7 +147,7 @@ private $prepare;
 		foreach ( $nm_fields as $nm_field ){
       $field_name=$nm_field['field_name'];
       for($e=0; $e<count( $ret['data']); $e++){
-        
+
          $ret['data'][$e][$field_name]=[];
       }
     }
