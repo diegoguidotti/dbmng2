@@ -724,7 +724,7 @@ function uploadFile($field){
 
 								// $vals= explode('|',$aVars[$fld]);
 								$vals = $aVars[$fld];
-								//print_r($vals);
+								print_r($vals);
 
 								foreach ( $vals as $k => $v )
 									{
