@@ -28,7 +28,7 @@
     $aPage['jquery_path']    = "vendor/components/jquery/";
     $aPage['script']         = "<script src='js/xxx_project_name.js'></script>";
     $aPage['stylesheet']     = "<link href='css/xxx_project_name.css' rel='stylesheet' />";
-    
+
     $logged_in = $login_res['ok'];
     $isAdmin = false;
 
@@ -47,7 +47,7 @@
 
         if( isset($_REQUEST['do_login']) )
           {
-            $body .= '<form>';
+            $body .= '<form method="POST">';
             $body .= '<input class="form-control" name="dbmng_user_id" placeholder="user ID" />';
             $body .= '<input type="password" class="form-control" name="dbmng_password" placeholder="password" />';
             $body .= '<input class="form-control" type="submit" value="login"></form>';
@@ -66,13 +66,13 @@
             $aPage['navRight'][0]['title'] = 'Hi '.$acc['name'];
             if( isset($acc['roles']) )
               {
-                if (in_array("administrator", $acc['roles']) ) 
+                if (in_array("administrator", $acc['roles']) )
                   {
                     $isAdmin = true;
                   }
               }
           }
-        
+
         $aPage['navRight'][1]['title'] = 'Logout';
         $aPage['navRight'][1]['link']  = '?do_logout=true';
     }
@@ -88,7 +88,7 @@
 
 
     /***************************************************************************
-    START CUSTOM AREA  
+    START CUSTOM AREA
     ****************************************************************************/
 
     $aPage['nav'][0]['title'] = 'Sezione1';
@@ -122,9 +122,9 @@
       }
 
     /***************************************************************************
-    END CUSTOM AREA  
+    END CUSTOM AREA
     ****************************************************************************/
-    
+
     $aPage['content'] = $body;
     $aPage['sidebar'] = $sidebar;
 
@@ -133,7 +133,7 @@
     $layout = new Dbmng\Layout($aPage);
 
     $html = $layout->getLayout();
-    
+
     return $html;
   }
 
