@@ -452,19 +452,18 @@ Dbmng.Crud = Class.extend({
         type='insert';
     }
 
-
     var aRecord;
     if(type==='update'){
        aRecord = this.getARecord(key,aData);
      }
-     else{
-       aRecord = {};
-       if(this.aParam.search){
-         jQuery.each(this.aParam.search,function(k,v){
-           aRecord[k] = v;
-         });
-       }
-     }
+    else{
+      aRecord = {};
+      if(this.aParam.search){
+        jQuery.each(this.aParam.search,function(k,v){
+          aRecord[k] = v;
+        });
+      }
+    }
 
     jQuery(div_id).html(this.form.createForm(aRecord,self.aParam.template_form));
 

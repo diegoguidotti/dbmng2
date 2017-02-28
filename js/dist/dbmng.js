@@ -585,7 +585,7 @@ Dbmng.Api = Class.extend({
 				"Authorization": "Basic " + btoa(this.user + ":" + this.password)
 			};
 	},
-  select: function(options) {   
+  select: function(options) {
     var url_select= this.url;
     if(options.search){
       url_select+="?"+ options.search;
@@ -1163,19 +1163,18 @@ Dbmng.Crud = Class.extend({
         type='insert';
     }
 
-
     var aRecord;
     if(type==='update'){
        aRecord = this.getARecord(key,aData);
      }
-     else{
-       aRecord = {};
-       if(this.aParam.search){
-         jQuery.each(this.aParam.search,function(k,v){
-           aRecord[k] = v;
-         });
-       }
-     }
+    else{
+      aRecord = {};
+      if(this.aParam.search){
+        jQuery.each(this.aParam.search,function(k,v){
+          aRecord[k] = v;
+        });
+      }
+    }
 
     jQuery(div_id).html(this.form.createForm(aRecord,self.aParam.template_form));
 
@@ -1351,6 +1350,7 @@ Dbmng.CrudForm = Class.extend({
     this.div_id = options.div_id;
     this.aParam = jQuery.extend(true, {}, Dbmng.defaults.aParam, options.aParam);
     this.form_ready = options.form_ready;
+    this.crud_success = options.crud_success;
 
     if( options.theme ) {
       this.theme = options.theme;
@@ -1358,7 +1358,7 @@ Dbmng.CrudForm = Class.extend({
     else {
       this.theme = Dbmng.defaults.theme;
     }
-    
+
     if( options.url ) {
       this.url = options.url;
     }
@@ -1368,7 +1368,7 @@ Dbmng.CrudForm = Class.extend({
     if( this.url.slice(-1) != '/' ) this.url = this.url + '/';
 
     this.aParam.url = this.url;
-    
+
     if( options.aForm ) {
       this.aForm = options.aForm;
       this.form = new Dbmng.Form({aForm:this.aForm, aParam:this.aParam, theme:this.theme});
@@ -1397,7 +1397,7 @@ Dbmng.CrudForm = Class.extend({
         dataType:'json',
         headers: heads,
         success: function(data){
-          
+
           self.aForm = data;
           self.ready = true;
           console.log("aForm loaded");
@@ -1427,7 +1427,7 @@ Dbmng.CrudForm = Class.extend({
       });
     }
   },
-  
+
   createForm: function( id ){
     if( this.ready ) {
       var type='update';
@@ -1461,11 +1461,11 @@ Dbmng.CrudForm = Class.extend({
     else {
       jQuery('#'+self.div_id).append(self.form.createForm());
     }
-    
+
     if(typeof self.form_ready=='function'){
       self.form_ready(type, this.form);
     }
-    
+
     // Copiata e modificata a partire da Crud.createForm !!!
     var label_save=self.aParam.ui.btn_save.label;
     var opt_save=self.aParam.ui.btn_save;
@@ -1490,6 +1490,9 @@ Dbmng.CrudForm = Class.extend({
             jQuery('#'+self.div_id).find(".dbmng_form_button_message").html(msg);
           }
           else{
+            if(typeof self.crud_success=='function'){
+              self.crud_success('update', data);
+            }
             self.createForm(id);
           }
         }});
@@ -1516,6 +1519,7 @@ Dbmng.CrudForm = Class.extend({
     jQuery('#'+self.div_id).find('.dbmng_form_button_right').append(button);
   }
 });
+
 /////////////////////////////////////////////////////////////////////
 // CRUDInline The class manage all the CRUD functions for an inline forms
 // 22 December 2015
