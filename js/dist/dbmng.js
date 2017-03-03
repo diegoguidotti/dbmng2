@@ -1647,13 +1647,18 @@ Dbmng.AbstractTheme = Class.extend({
 
     var lb = document.createElement('label');
     lb.setAttribute('for', 'dbmng_' + aField.field);
-    
+
     // if set assign the label long in form mode
     var label = aField.label;
     if( aField.label_long ) {
         label = aField.label_long;
     }
-    var txt=document.createTextNode(label);
+    // var txt=document.createTextNode(jQuery("<div>"+label+"</div>")[0]);
+
+    var wrapper= document.createElement('div');
+    wrapper.innerHTML= "<span>"+label+"</span>";
+    var txt = wrapper.firstChild;
+    //var txt = jQuery("<span>"+label+"</span>")[0];
     lb.appendChild(txt);
 
 /*
@@ -1939,7 +1944,7 @@ Dbmng.AbstractTheme = Class.extend({
     console.log(opt);
 		var el = document.createElement('thead');
 		var tr = document.createElement('tr');
-    
+
     var keys=[];
     var cnt=0;
     if(opt.data){
@@ -1950,11 +1955,11 @@ Dbmng.AbstractTheme = Class.extend({
         }
       }
     }
-    
+
 		if(!opt.header){
       opt.header=keys;
 		}
-		
+
     for(var i=0; i<opt.header.length; i++){
       var th=this.getTableHCell({content: opt.header[i], options:opt.options});
       if(opt.options){
