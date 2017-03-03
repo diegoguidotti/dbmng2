@@ -1511,7 +1511,10 @@ Dbmng.CrudForm = Class.extend({
 
     var button_cancel = self.theme.getButton(label_cancel, opt_cancel);
     jQuery(button_cancel).click(function(){
-      jQuery('#'+self.div_id).html('');
+      if(typeof self.crud_success=='function'){
+        self.crud_success('cancel');
+      }
+      jQuery(self.div_id).html('');
       //self.createTable({div_id:self.div_id});
     });
     jQuery('#'+self.div_id).append("<div id='dbmng_buttons_row' class='row' style='margin-top: 20px;margin-bottom: 100px;'><div class='dbmng_form_button_message col-xs-12'></div><div class='dbmng_form_button_left col-xs-4'></div><div class='col-xs-4'></div><div class='dbmng_form_button_right col-xs-4'></div></div>");
