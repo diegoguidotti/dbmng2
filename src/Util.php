@@ -47,20 +47,20 @@ class Util
 			return $defVal;
 		}
 
-	}	
+	}
 
 	/////////////////////////////////////////////////////////////////////////////
 	// print an array (with <pre> html tags)
 	// ======================
 	/**
 	\param $array  		  array to be printed
-	\return $ret			  the html version of the array 
+	\return $ret			  the html version of the array
 	*/
 	static function print_r($array)
 	{
 		return "<pre class='dbmng_print_r'>".print_r($array,true)."<pre>";
-	}	
-	
+	}
+
 	static function toArray($obj)
   {
     if (is_object($obj)) $obj = (array)$obj;
@@ -75,4 +75,16 @@ class Util
 
     return $new;
   }
+
+
+  static function template_var($txt, $array){
+
+    foreach($array as $k=>$v){
+      // echo $k;
+      // echo $v;
+        $txt=str_replace("{{".$k."}}",$v,$txt);
+    }
+    return $txt;
+  }
+
 }
