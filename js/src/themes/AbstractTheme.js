@@ -130,8 +130,8 @@ Dbmng.AbstractTheme = Class.extend({
     if(typeof aField.value !== 'undefined' ) {
       el.value=aField.value;
     }
-    debugger;
-    if(aField.value == 1 ) {
+
+    if(aField.checked) {
       el.checked = true;
     }
 
@@ -395,7 +395,12 @@ Dbmng.AbstractTheme = Class.extend({
 		}
 		var el = document.createElement('td');
 		if(opt.content){
-				el.appendChild(document.createTextNode(opt.content));
+      if(typeof opt.content ==='object'){
+        el.appendChild(opt.content);
+      }
+      else{
+        el.appendChild(document.createTextNode(opt.content));
+      }
 		}
 		return el;
 	},

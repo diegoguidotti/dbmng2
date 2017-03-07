@@ -11,6 +11,9 @@
 Dbmng.CheckboxWidget = Dbmng.AbstractWidget.extend({
   createWidget: function(){
     this.aField.value = this.getFieldValue();
+    if(this.aField.value==1){
+      this.aField.checked=true;
+    }
     return this.theme.getCheckbox(this.aField);
   },
 

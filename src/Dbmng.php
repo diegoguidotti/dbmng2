@@ -685,6 +685,7 @@ function uploadFile($field){
 		$aWhere = array();
 		$whereFields='';
 		$whereFieldsV='';
+    $result=Array();
 
 		foreach ( $aForm['fields'] as $fld => $fld_value )
 			{
