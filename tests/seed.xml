@@ -18,4 +18,9 @@
 	<dbmng_tables id_table="3" table_name="test"  table_alias="test_simple"  param="{'filters':{'sex':'F'}}"  />
   <dbmng_fields id_field="8" id_table="3" id_field_type="int" field_name="id" field_label="ID" field_widget="input" pk="1" />
   <dbmng_fields id_field="9" id_table="3" id_field_type="varchar" field_name="name" nullable="0" field_widget="input" field_label="Name"  />
+
+	<dbmng_tables id_table="4" table_name="test_father"  />
+	<dbmng_fields id_field="10" id_table="4" id_field_type="int" field_name="id_father" field_label="ID" field_widget="input" pk="1" />
+	<dbmng_fields id_field="11" id_table="4" id_field_type="varchar" field_name="varchar_field" nullable="0" field_widget="input" field_label="Name"  />
+	<dbmng_fields id_field="12" id_table="4" id_field_type="varchar" field_name="id_father_child" nullable="0" field_widget="select_nm" field_label="Name" voc_sql="select id_child, child_name from test_child" param="{'out_type:'checkbox, 'table_nm:'test_father_child,  'field_nm:'id_child}"/>
 </dataset>
