@@ -12,13 +12,13 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
   createWidget: function(){
     this.aField.value = this.getFieldValue();
     this.aField.field = this.field;
-
+    debugger;
     return this.theme.getSelectNM(this.aField);
   },
 
   getValue: function(){
     var aVal, aRet;
-
+    console.log(this.aField);
     var out_type = "select";
     if( this.aField.out_type == 'checkbox' ) {
       out_type = "checkbox";
@@ -48,6 +48,7 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
       });
       aRet = aVal;
     }
+    console.log(aRet);
     return aRet;
   }
 });

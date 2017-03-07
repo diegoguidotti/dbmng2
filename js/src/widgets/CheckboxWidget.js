@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////
 // AbstractWidget
 // 18 November 2015
-// 
+//
 //
 // Developed by :
 // Diego Guidotti
@@ -13,7 +13,7 @@ Dbmng.CheckboxWidget = Dbmng.AbstractWidget.extend({
     this.aField.value = this.getFieldValue();
     return this.theme.getCheckbox(this.aField);
   },
-  
+
   getValue: function(){
     var ret;
     if( this.aField.type == 'int' ) {

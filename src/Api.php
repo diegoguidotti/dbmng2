@@ -243,7 +243,6 @@ class Api {
           {
             http_response_code(401);
           }
-
         return $out;
       });
 
@@ -254,7 +253,7 @@ class Api {
 				if( $allowed['ok'] )
           {
             $aForm = $dbmng->getaForm();
-
+            $aParam = $dbmng->getParam();
             $key = $aForm['primary_key'][0];
 
             $aVar = array();
@@ -263,6 +262,7 @@ class Api {
                 if( $id_value == 'schema' )
                   {
                     $aForm = $dbmng->getaForm();
+                    $aForm['aParam'] = $aParam;
                     return json_encode($aForm);
                   }
                 else

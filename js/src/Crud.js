@@ -68,8 +68,15 @@ Dbmng.Crud = Class.extend({
         };
       }
 
-			jQuery.ajax({
-				url: this.url+"schema",
+      var search="?";
+      if(this.aParam.search){
+        jQuery.each(this.aParam.search,function(k,v){
+            search+='&'+k+"="+v;
+        });
+      }
+
+      jQuery.ajax({
+				url: this.url+"schema"+search,
 				dataType:'json',
 				headers: heads,
 				success: function(data){
@@ -156,7 +163,6 @@ Dbmng.Crud = Class.extend({
 
       //if exists a filter create the search text to be added to the GET call
       if(this.aParam.search){
-
         var search="";
         jQuery.each(this.aParam.search,function(k,v){
             search+='&'+k+"="+v;
@@ -164,6 +170,7 @@ Dbmng.Crud = Class.extend({
         sel_opt.search=search;
       }
 
+      console.log(sel_opt);
 		  this.api.select(sel_opt);
 		}
 		else{

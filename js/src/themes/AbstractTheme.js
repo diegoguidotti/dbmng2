@@ -124,8 +124,13 @@ Dbmng.AbstractTheme = Class.extend({
   getCheckbox: function(aField) {
     var el=document.createElement('input');
     this.assignAttributes(el, aField);
-    // console.log(aField);
+    console.log(aField);
+
     el.type = "checkbox";
+    if(typeof aField.value !== 'undefined' ) {
+      el.value=aField.value;
+    }
+    debugger;
     if(aField.value == 1 ) {
       el.checked = true;
     }
@@ -209,9 +214,9 @@ Dbmng.AbstractTheme = Class.extend({
       }
     }
     else if( out_type == 'checkbox' ) {
-      console.log(options);
+      //console.log(options);
       el = document.createElement('ul');
-
+      this.addClass(el, 'dbmng_checkbox_ul');
       this.assignAttributes(el, aField);
 
       for (opt in aField.voc_val) {

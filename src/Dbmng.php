@@ -724,7 +724,7 @@ function uploadFile($field){
 
 								// $vals= explode('|',$aVars[$fld]);
 								$vals = $aVars[$fld];
-								print_r($vals);
+								// print_r($vals);
 
 								foreach ( $vals as $k => $v )
 									{
@@ -1063,9 +1063,9 @@ function uploadFile($field){
       {
         foreach( $aFormParams as $k => $v )
           {
-            // echo " |$k - $v| ";
             if( $fld == $k )
               {
+								// echo " |$k - $v| ";
                 if( $fld_value['type'] == 'int' || $fld_value['type'] == 'double' )
                   {
                     if( strlen($v) == 0 ) // $v === "" )

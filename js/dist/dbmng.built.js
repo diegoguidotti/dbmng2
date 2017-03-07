@@ -779,8 +779,15 @@ Dbmng.Crud = Class.extend({
         };
       }
 
-			jQuery.ajax({
-				url: this.url+"schema",
+      var search="?";
+      if(this.aParam.search){
+        jQuery.each(this.aParam.search,function(k,v){
+            search+='&'+k+"="+v;
+        });
+      }
+
+      jQuery.ajax({
+				url: this.url+"schema"+search,
 				dataType:'json',
 				headers: heads,
 				success: function(data){
@@ -867,7 +874,6 @@ Dbmng.Crud = Class.extend({
 
       //if exists a filter create the search text to be added to the GET call
       if(this.aParam.search){
-
         var search="";
         jQuery.each(this.aParam.search,function(k,v){
             search+='&'+k+"="+v;
@@ -875,6 +881,7 @@ Dbmng.Crud = Class.extend({
         sel_opt.search=search;
       }
 
+      
 		  this.api.select(sel_opt);
 		}
 		else{
@@ -1789,7 +1796,7 @@ Dbmng.AbstractTheme = Class.extend({
   },
 
   getSelectNM: function(aField) {
-    //
+    // 
     var out_type = "select";
     var el, o, opt;
     if( aField.out_type == 'checkbox' ) {
@@ -1828,9 +1835,9 @@ Dbmng.AbstractTheme = Class.extend({
       }
     }
     else if( out_type == 'checkbox' ) {
-      
+      //
       el = document.createElement('ul');
-
+      this.addClass(el, 'dbmng_checkbox_ul');
       this.assignAttributes(el, aField);
 
       for (opt in aField.voc_val) {
@@ -1976,6 +1983,7 @@ Dbmng.AbstractTheme = Class.extend({
 		return el;
 	},
   getTableRow: function(opt) {
+    
 		var el = document.createElement('tr');
 		if(opt.data){
 			for (var key in opt.data) {
@@ -2916,7 +2924,7 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
 
   getValue: function(){
     var aVal, aRet;
-
+    
     var out_type = "select";
     if( this.aField.out_type == 'checkbox' ) {
       out_type = "checkbox";
