@@ -123,8 +123,10 @@ Dbmng.AbstractTheme = Class.extend({
   */
   getCheckbox: function(aField) {
     var el=document.createElement('input');
-    this.assignAttributes(el, aField);
-    console.log(aField);
+    if(! aField.exclude_attribute) {
+      this.assignAttributes(el, aField);
+    }
+    //console.log(aField);
 
     el.type = "checkbox";
     if(typeof aField.value !== 'undefined' ) {
