@@ -57,10 +57,12 @@
     aParam.ui.btn_save = {label:'Save table', class:'btn-success btn-block'};
 
     var theme_boot=new Dbmng.BootstrapTheme();
+
     var crud = new Dbmng.Crud({
         aParam:aParam,
         theme:theme_boot,
         url: '/dbmng2/api/test_father', user:'test', password:'test',
+        offline: {jstorage: true},
         success:function(self){
           console.log("success");
           console.log(self);

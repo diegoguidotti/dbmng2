@@ -11,7 +11,6 @@
 Dbmng.Api = Class.extend({
   //class constructor
   init: function( options ) {
-    // this.aForm  = options.aForm;
 		this.url=options.url;
 		this.user=options.user;
 		this.password=options.password;

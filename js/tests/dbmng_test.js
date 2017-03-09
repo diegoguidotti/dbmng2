@@ -180,7 +180,7 @@ jQuery(function(){
     equal(jQuery('#test_div select').val(),2, "SelectWidget get value (update)");
   });
 
-  test('SelectNMWidget', 3, function() {
+  test('SelectNMWidget', 6, function() {
     var option = {
       field:'monthnm',
       aField: {label: 'Months', widget:'select_nm', voc_val: {1:'January', 2:'February', 3: 'March'}},
@@ -191,11 +191,36 @@ jQuery(function(){
 
     var option = {
       field:'monthnm',
-      aField: {label: 'Months', widget:'select_nm', voc_val: {1:'January', 2:'February', 3: 'March'}},
+      aField: {type:'int', label: 'Months', widget:'select_nm', voc_val: {1:'January', 2:'February', 3: 'March'}},
     };
     var select = new Dbmng.SelectNMWidget(option);
     jQuery('#test_div').html(select.createField([1,3]));
-    deepEqual(select.getValue(),["1", "3"], "SelectNMWidget get set value");
+    deepEqual(select.getValue(),[1, 3], "SelectNMWidget get set value");
+
+    var option2 = {
+      field:'monthnm',
+      aField: {type:'int', out_type:'checkbox', label: 'Months', widget:'select_nm', voc_val: {1:'January', 2:'February', 3: 'March'}},
+    };
+    var select2 = new Dbmng.SelectNMWidget(option2);
+    jQuery('#test_div').html(select2.createField([1,2]));
+    deepEqual(select2.getValue(),[1, 2], "SelectNMWidget checkbox, get set value");
+
+    option2 = {
+      field:'monthnm',
+      aField: {out_type:'checkbox', label: 'Months', widget:'select_nm', voc_val: {'J':'January', 'F':'February', 'M': 'March'}},
+    };
+    select2 = new Dbmng.SelectNMWidget(option2);
+    jQuery('#test_div').html(select2.createField(['J','M']));
+    deepEqual(select2.getValue(),['J','M'], "SelectNMWidget checkbox, text fk get set value");
+
+    option2 = {
+      field:'monthnm',
+      aField: {label: 'Months', widget:'select_nm', voc_val: {'J':'January', 'F':'February', 'M': 'March'}},
+    };
+    select2 = new Dbmng.SelectNMWidget(option2);
+    jQuery('#test_div').html(select2.createField(['J','M']));
+    deepEqual(select2.getValue(),['J','M'], "SelectNMWidget select text fk, get set value");
+
 
     var option = {
       field:'monthnm',

@@ -10,6 +10,7 @@
 
 Dbmng.CrudForm = Class.extend({
   init: function( options ) {
+    var self = this;
     this.ready=true;
     this.div_id = options.div_id;
     this.aParam = jQuery.extend(true, {}, Dbmng.defaults.aParam, options.aParam);
@@ -33,11 +34,16 @@ Dbmng.CrudForm = Class.extend({
 
     this.aParam.url = this.url;
 
+    var api_opt={url:self.url, user:options.user, password:options.password};
+    if(typeof this.offline!=='undefined'){
+      api_opt.offline=this.offline;
+    }
+    self.api = new Dbmng.Api(api_opt);
+
+
     if( options.aForm ) {
       this.aForm = options.aForm;
       this.form = new Dbmng.Form({aForm:this.aForm, aParam:this.aParam, theme:this.theme});
-      this.api = new Dbmng.Api({aForm:this.aForm, url:this.url, user:options.user, password:options.password});
-
       this.pk=this.form.getPkField();
 
       if( typeof options.success=='function' ){
@@ -47,7 +53,7 @@ Dbmng.CrudForm = Class.extend({
     else {
       //there are o aForm; call the api to get the aForm
       this.ready = false;
-      var self = this;
+
 
       var heads = {};
       if( options.user ){
@@ -76,7 +82,6 @@ Dbmng.CrudForm = Class.extend({
           console.log(this.aForm);
 
           self.form = new Dbmng.Form({aForm:self.aForm, aParam:self.aParam, theme:self.theme});
-          self.api = new Dbmng.Api({aForm:self.aForm, url:self.url, user:options.user, password:options.password});
 
           self.pk=self.form.getPkField();
 

@@ -14,7 +14,7 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
 
     this.aField.value = this.getFieldValue();
     this.aField.field = this.field;
-    var el, opt;
+    var el, fk;
 
     var out_type = "select";
     if( self.aField.out_type == 'checkbox' ) {
@@ -36,15 +36,15 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
         }
 
         el.options.add(o);
-        for (opt in self.aField.voc_val) {
+        for ( fk in self.aField.voc_val) {
           o = document.createElement('option');
-          o.value = opt;
-          o.text = self.aField.voc_val[opt];
+          o.value = fk;
+          o.text = self.aField.voc_val[fk];
           if( self.aField.value ) {
             if( typeof self.aField.value[0] == 'number') {
-              opt = parseInt(opt);
+              fk = parseInt(fk);
             }
-            if( self.aField.value.indexOf(opt) > -1 ) {
+            if( self.aField.value.indexOf(fk) > -1 ) {
               o.selected = true;
             }
           }
@@ -95,17 +95,19 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
       self.theme.addClass(ul, 'dbmng_checkbox_ul');
       //self.theme.assignAttributes(el, self.aField);
 
-      for (opt in self.aField.voc_val) {
+      for ( fk in self.aField.voc_val) {
         var li = document.createElement('li');
 
-        var fk=opt;
-        var fvalue=self.aField.voc_val[opt];
-        var sel_values=this.aField.value;
-
         var checked=false;
-        if(sel_values.indexOf(fk)>-1){
-          checked=true;
+        if( self.aField.value ) {
+          if( typeof self.aField.value[0] == 'number') {
+            fk = parseInt(fk);
+          }
+          if( self.aField.value.indexOf(fk) > -1 ) {
+            checked=true;
+          }
         }
+        var fvalue=self.aField.voc_val[fk];
         var opt_checkbox={'checked':checked, 'value':fk, 'label':fvalue, 'exclude_attribute':true};
 
         li.appendChild(this.theme.getCheckbox(opt_checkbox));
@@ -142,7 +144,9 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
   },
   getValue: function(){
     var aVal, aRet;
-    console.log(this.aField);
+    var self=this;
+
+
     var out_type = "select";
     if( this.aField.out_type == 'checkbox' ) {
       out_type = "checkbox";
@@ -167,7 +171,12 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
       cb.each(function(k,v){
         if( v.checked ) {
           console.log(v.value);
-          aVal.push(parseInt(v.value));
+          if(self.aField.type == 'int'){
+            aVal.push(parseInt(v.value));
+          }
+          else{
+            aVal.push((v.value));
+          }
         }
       });
       aRet = aVal;
