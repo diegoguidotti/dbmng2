@@ -572,7 +572,6 @@ Dbmng.FormInline = Class.extend({
 Dbmng.Api = Class.extend({
   //class constructor
   init: function( options ) {
-    // this.aForm  = options.aForm;
 		this.url=options.url;
 		this.user=options.user;
 		this.password=options.password;
@@ -722,6 +721,8 @@ Dbmng.Api = Class.extend({
 Dbmng.Crud = Class.extend({
   //class constructor
   init: function( options ) {
+    var self=this;
+
 		//the ready variable can be used to check if it is ready the Crud to create the table)
     this.ready=true;
     this.crud_success = options.crud_success;
@@ -756,11 +757,15 @@ Dbmng.Crud = Class.extend({
 
     this.aParam.url=this.url;
 
+    var api_opt={url:self.url, user:options.user, password:options.password};
+    if(typeof this.offline!=='undefined'){
+      api_opt.offline=this.offline;
+    }
+    self.api = new Dbmng.Api(api_opt);
+
     if(options.aForm){
 			this.aForm  = options.aForm;
 		  this.form=new Dbmng.Form({aForm:this.aForm, aParam:this.aParam, theme:this.theme});
-		  this.api=new  Dbmng.Api({aForm:this.aForm, url:this.url, user:options.user, password:options.password});
-
 		  this.pk=this.form.getPkField();
 
       if( typeof options.success=='function'){
@@ -768,9 +773,8 @@ Dbmng.Crud = Class.extend({
       }
 		}
 		else{
-			//there are o aForm; call the api to get the aForm
+			//there are no aForm; call the api to get the aForm
 			this.ready=false;
-			var self=this;
 
       var heads={};
       if(options.user){
@@ -798,7 +802,6 @@ Dbmng.Crud = Class.extend({
 					console.log(this.aForm);
 
 					self.form=new Dbmng.Form({aForm:self.aForm, aParam:self.aParam, theme:self.theme});
-					self.api=new  Dbmng.Api({aForm:self.aForm, url:self.url, user:options.user, password:options.password});
 
 					self.pk=self.form.getPkField();
 
@@ -1353,6 +1356,7 @@ Dbmng.Crud = Class.extend({
 
 Dbmng.CrudForm = Class.extend({
   init: function( options ) {
+    var self = this;
     this.ready=true;
     this.div_id = options.div_id;
     this.aParam = jQuery.extend(true, {}, Dbmng.defaults.aParam, options.aParam);
@@ -1376,11 +1380,16 @@ Dbmng.CrudForm = Class.extend({
 
     this.aParam.url = this.url;
 
+    var api_opt={url:self.url, user:options.user, password:options.password};
+    if(typeof this.offline!=='undefined'){
+      api_opt.offline=this.offline;
+    }
+    self.api = new Dbmng.Api(api_opt);
+
+
     if( options.aForm ) {
       this.aForm = options.aForm;
       this.form = new Dbmng.Form({aForm:this.aForm, aParam:this.aParam, theme:this.theme});
-      this.api = new Dbmng.Api({aForm:this.aForm, url:this.url, user:options.user, password:options.password});
-
       this.pk=this.form.getPkField();
 
       if( typeof options.success=='function' ){
@@ -1390,7 +1399,7 @@ Dbmng.CrudForm = Class.extend({
     else {
       //there are o aForm; call the api to get the aForm
       this.ready = false;
-      var self = this;
+
 
       var heads = {};
       if( options.user ){
@@ -1399,8 +1408,15 @@ Dbmng.CrudForm = Class.extend({
         };
       }
 
+      var search="?";
+      if(this.aParam.search){
+        jQuery.each(this.aParam.search,function(k,v){
+            search+='&'+k+"="+v;
+        });
+      }
+
       jQuery.ajax({
-        url: this.url+"schema",
+        url: this.url+"schema"+search,
         dataType:'json',
         headers: heads,
         success: function(data){
@@ -1412,7 +1428,6 @@ Dbmng.CrudForm = Class.extend({
           console.log(this.aForm);
 
           self.form = new Dbmng.Form({aForm:self.aForm, aParam:self.aParam, theme:self.theme});
-          self.api = new Dbmng.Api({aForm:self.aForm, url:self.url, user:options.user, password:options.password});
 
           self.pk=self.form.getPkField();
 
@@ -1749,10 +1764,17 @@ Dbmng.AbstractTheme = Class.extend({
   */
   getCheckbox: function(aField) {
     var el=document.createElement('input');
-    this.assignAttributes(el, aField);
-    // console.log(aField);
+    if(! aField.exclude_attribute) {
+      this.assignAttributes(el, aField);
+    }
+    //console.log(aField);
+
     el.type = "checkbox";
-    if(aField.value == 1 ) {
+    if(typeof aField.value !== 'undefined' ) {
+      el.value=aField.value;
+    }
+
+    if(aField.checked) {
       el.checked = true;
     }
 
@@ -1796,7 +1818,7 @@ Dbmng.AbstractTheme = Class.extend({
   },
 
   getSelectNM: function(aField) {
-    // console.log(aField);
+    //console.log(aField);
     var out_type = "select";
     var el, o, opt;
     if( aField.out_type == 'checkbox' ) {
@@ -1983,7 +2005,6 @@ Dbmng.AbstractTheme = Class.extend({
 		return el;
 	},
   getTableRow: function(opt) {
-    console.log(opt);
 		var el = document.createElement('tr');
 		if(opt.data){
 			for (var key in opt.data) {
@@ -2017,7 +2038,12 @@ Dbmng.AbstractTheme = Class.extend({
 		}
 		var el = document.createElement('td');
 		if(opt.content){
-				el.appendChild(document.createTextNode(opt.content));
+      if(typeof opt.content ==='object'){
+        el.appendChild(opt.content);
+      }
+      else{
+        el.appendChild(document.createTextNode(opt.content));
+      }
 		}
 		return el;
 	},
@@ -2548,7 +2574,7 @@ Dbmng.AutocompleteWidget = Dbmng.AbstractWidget.extend({
 /////////////////////////////////////////////////////////////////////
 // AbstractWidget
 // 18 November 2015
-// 
+//
 //
 // Developed by :
 // Diego Guidotti
@@ -2558,9 +2584,12 @@ Dbmng.AutocompleteWidget = Dbmng.AbstractWidget.extend({
 Dbmng.CheckboxWidget = Dbmng.AbstractWidget.extend({
   createWidget: function(){
     this.aField.value = this.getFieldValue();
+    if(this.aField.value==1){
+      this.aField.checked=true;
+    }
     return this.theme.getCheckbox(this.aField);
   },
-  
+
   getValue: function(){
     var ret;
     if( this.aField.type == 'int' ) {
@@ -2916,15 +2945,143 @@ Dbmng.PasswordWidget = Dbmng.AbstractWidget.extend({
 
 Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
   createWidget: function(){
+    var self=this;
+
     this.aField.value = this.getFieldValue();
     this.aField.field = this.field;
+    var el, fk;
 
-    return this.theme.getSelectNM(this.aField);
+    var out_type = "select";
+    if( self.aField.out_type == 'checkbox' ) {
+      out_type = "checkbox";
+    }
+
+    if( out_type == 'select' ) {
+      el = document.createElement('select');
+      el.multiple = true;
+
+      self.theme.assignAttributes(el, self.aField);
+
+      if(self.aField.voc_val) {
+        var o = document.createElement('option');
+
+        if( self.aField.placeholder ) {
+          o.text = self.aField.label;
+          o.disabled = 'disabled';
+        }
+
+        el.options.add(o);
+        for ( fk in self.aField.voc_val) {
+          o = document.createElement('option');
+          o.value = fk;
+          o.text = self.aField.voc_val[fk];
+          if( self.aField.value ) {
+            if( typeof self.aField.value[0] == 'number') {
+              fk = parseInt(fk);
+            }
+            if( self.aField.value.indexOf(fk) > -1 ) {
+              o.selected = true;
+            }
+          }
+          el.options.add(o);
+        }
+      }
+    }
+    else if( out_type == 'checkbox' ) {
+      //console.log(options);
+      el = document.createElement('div');
+      var ul = document.createElement('ul');
+      ul.id = "ul_"+self.aField.field;
+
+      var search_nm = false;
+      if( typeof self.aField.search_nm !== 'undefined' ) {
+        var placeholder = "";
+        if( typeof self.aField.search_nm_placeholder !== 'undefined' ) {
+          placeholder = self.aField.search_nm_placeholder;
+        }
+        var s = document.createElement('input');
+        self.theme.addClass(s, 'dbmng_search_nm');
+        self.theme.assignAttributes(s, self.aField);
+        s.placeholder = placeholder;
+
+        s.onkeyup = function(txt_search){
+          var aRow = jQuery('#ul_'+self.aField.field+' li');
+          var txt = txt_search.target.value.toLowerCase();
+          if( txt.length > 1){
+            jQuery.each(aRow, function(k,row){
+              var rowText = jQuery(row).text().toLowerCase();
+              if( rowText.search(txt) > -1 ) {
+                jQuery(row).show();
+              }
+              else {
+                jQuery(row).hide();
+              }
+            });
+          }
+          else {
+            jQuery(aRow).show();
+          }
+          console.log("change:"+txt_search.target.value);
+        };
+        el.appendChild(s);
+
+      }
+
+      self.theme.addClass(ul, 'dbmng_checkbox_ul');
+      //self.theme.assignAttributes(el, self.aField);
+
+      for ( fk in self.aField.voc_val) {
+        var li = document.createElement('li');
+
+        var checked=false;
+        if( self.aField.value ) {
+          if( typeof self.aField.value[0] == 'number') {
+            fk = parseInt(fk);
+          }
+          if( self.aField.value.indexOf(fk) > -1 ) {
+            checked=true;
+          }
+        }
+        var fvalue=self.aField.voc_val[fk];
+        var opt_checkbox={'checked':checked, 'value':fk, 'label':fvalue, 'exclude_attribute':true};
+
+        li.appendChild(this.theme.getCheckbox(opt_checkbox));
+
+        var txt = document.createTextNode(fvalue);
+        li.appendChild(txt);
+        ul.appendChild(li);
+      }
+      el.appendChild(ul);
+    }
+
+
+
+    // return this.theme.getSelectNM(this.aField);
+    return el;
   },
-
+  convert2html: function(val) {
+    var self=this;
+    var sep="<span class='dbmng_select_nm_sep'>,</span>&nbsp;";
+    var ret="";
+    var first=true;
+    if( typeof val !== 'undefined' ) {
+      jQuery.each(val,function(k,v){
+        if(!first){
+          ret+=sep;
+        }
+        else{
+          first=false;
+        }
+        ret+="<span class='dbmng_select_nm_item'>"+self.aField.voc_val[v]+"</span>";
+      });
+      return jQuery("<div>"+ret+"</div>")[0];
+    }
+  },
   getValue: function(){
     var aVal, aRet;
-    console.log(this.aField);
+    var self=this;
+
+
     var out_type = "select";
     if( this.aField.out_type == 'checkbox' ) {
       out_type = "checkbox";
@@ -2944,16 +3101,22 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
       }
     }
     else if( out_type == "checkbox" ) {
-      var cb = jQuery(this.widget).children('li').children();
+      var cb = jQuery(this.widget).find('input[type=checkbox]');
       aVal = [];
       cb.each(function(k,v){
         if( v.checked ) {
           console.log(v.value);
-          aVal.push(parseInt(v.value));
+          if(self.aField.type == 'int'){
+            aVal.push(parseInt(v.value));
+          }
+          else{
+            aVal.push((v.value));
+          }
         }
       });
       aRet = aVal;
     }
+    console.log(aRet);
     return aRet;
   }
 });
