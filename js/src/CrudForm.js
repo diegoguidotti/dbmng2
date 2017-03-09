@@ -56,8 +56,15 @@ Dbmng.CrudForm = Class.extend({
         };
       }
 
+      var search="?";
+      if(this.aParam.search){
+        jQuery.each(this.aParam.search,function(k,v){
+            search+='&'+k+"="+v;
+        });
+      }
+
       jQuery.ajax({
-        url: this.url+"schema",
+        url: this.url+"schema"+search,
         dataType:'json',
         headers: heads,
         success: function(data){
