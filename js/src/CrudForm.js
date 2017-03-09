@@ -171,33 +171,33 @@ Dbmng.CrudForm = Class.extend({
         jQuery('#'+self.div_id).find(".dbmng_form_button_message").html(msg);
       }
       else {
-      if(valid.ok===false){
-        jQuery('#'+self.div_id).find(".dbmng_form_button_message").html(valid.message);
-      }
-      else if(type=='update'){
-        self.api.update({key:key,data:self.form.getValue(),success:function(data){
-          if(!data.ok){
-            var msg=self.theme.alertMessage(data.message);
-            jQuery('#'+self.div_id).find(".dbmng_form_button_message").html(msg);
-          }
-          else{
-            if(typeof self.crud_success=='function'){
-              self.crud_success('update', data);
+        if(valid.ok===false){
+          jQuery('#'+self.div_id).find(".dbmng_form_button_message").html(valid.message);
+        }
+        else if(type=='update'){
+          self.api.update({key:key,data:self.form.getValue(),success:function(data){
+            if(!data.ok){
+              msg=self.theme.alertMessage(data.message);
+              jQuery('#'+self.div_id).find(".dbmng_form_button_message").html(msg);
             }
-            self.createForm(id);
-          }
-        }});
-      }
-      else if(type=='insert'){
-        self.api.insert({data:self.form.getValue(),success:function(data){
-          console.log(data);
-          if(typeof self.crud_success=='function'){
-            self.crud_success('insert', data);
-          }
-          jQuery(self.div_id).html('');
-          self.createForm(data.inserted_id);
-        }});
-      }
+            else{
+              if(typeof self.crud_success=='function'){
+                self.crud_success('update', data);
+              }
+              self.createForm(id);
+            }
+          }});
+        }
+        else if(type=='insert'){
+          self.api.insert({data:self.form.getValue(),success:function(data){
+            console.log(data);
+            if(typeof self.crud_success=='function'){
+              self.crud_success('insert', data);
+            }
+            jQuery(self.div_id).html('');
+            self.createForm(data.inserted_id);
+          }});
+        }
       }
 
     });
