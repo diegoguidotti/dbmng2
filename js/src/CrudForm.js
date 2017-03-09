@@ -17,6 +17,9 @@ Dbmng.CrudForm = Class.extend({
     this.form_ready = options.form_ready;
     this.crud_success = options.crud_success;
 
+    // add form validation [MICHELE]
+    this.form_validation = options.form_validation;
+
     if( options.theme ) {
       this.theme = options.theme;
     }
@@ -156,6 +159,18 @@ Dbmng.CrudForm = Class.extend({
     var button = self.theme.getButton(label_save, opt_save);
     jQuery(button).click(function(){
       var valid=self.form.isValid();
+
+      var validation = true;
+      if(typeof self.form_validation=='function'){
+        validation = self.form_validation();
+      }
+
+      var msg;
+      if( validation.ok === false ) {
+        msg=self.theme.alertMessage(validation.msg);
+        jQuery('#'+self.div_id).find(".dbmng_form_button_message").html(msg);
+      }
+      else {
       if(valid.ok===false){
         jQuery('#'+self.div_id).find(".dbmng_form_button_message").html(valid.message);
       }
@@ -183,6 +198,8 @@ Dbmng.CrudForm = Class.extend({
           self.createForm(data.inserted_id);
         }});
       }
+      }
+
     });
 
     var button_cancel = self.theme.getButton(label_cancel, opt_cancel);
