@@ -19,6 +19,7 @@ Dbmng.Crud = Class.extend({
     this.form_ready = options.form_ready;
     this.table_ready = options.table_ready;
     this.prepare_cdata = options.prepare_cdata;
+    this.form_validation = options.form_validation;
     if(!options.aParam){
       options.aParam={};
     }
@@ -494,40 +495,50 @@ Dbmng.Crud = Class.extend({
 
     var button = self.theme.getButton(label_save, opt_save);
     jQuery(button).click(function(){
-
-
       var valid=self.form.isValid();
-      if(valid.ok===false){
-        jQuery(div_id).find(".dbmng_form_button_message").html(valid.message);
+
+      var validation = true;
+      if(typeof self.form_validation=='function'){
+        validation = self.form_validation();
       }
-      else if(type=='update'){
-        self.api.update({key:key,data:self.form.getValue(),success:function(data){
 
-          if(!data.ok){
+      if( validation.ok === false ) {
+        msg=self.theme.alertMessage(validation.msg);
+        jQuery('#'+self.div_id).find(".dbmng_form_button_message").html(msg);
+      }
+      else {
+        if(valid.ok===false){
+          jQuery(div_id).find(".dbmng_form_button_message").html(valid.message);
+        }
+        else if(type=='update'){
+          self.api.update({key:key,data:self.form.getValue(),success:function(data){
 
-            var msg=self.theme.alertMessage(data.message);
-            jQuery(div_id).find(".dbmng_form_button_message").html(msg);
+            if(!data.ok){
 
-          }
-          else{
-            console.log(data);
+              var msg=self.theme.alertMessage(data.message);
+              jQuery(div_id).find(".dbmng_form_button_message").html(msg);
+
+            }
+            else{
+              console.log(data);
+              if(typeof self.crud_success=='function'){
+                self.crud_success('update', data);
+              }
+              jQuery(div_id).html('');
+              self.createTable({div_id:div_id});
+            }
+          }});
+        }
+        else{
+          self.api.insert({data:self.form.getValue(),success:function(data){
+            console.log(self);
             if(typeof self.crud_success=='function'){
-              self.crud_success('update', data);
+              self.crud_success('insert', data);
             }
             jQuery(div_id).html('');
             self.createTable({div_id:div_id});
-          }
-        }});
-      }
-      else{
-        self.api.insert({data:self.form.getValue(),success:function(data){
-          console.log(self);
-          if(typeof self.crud_success=='function'){
-            self.crud_success('insert', data);
-          }
-          jQuery(div_id).html('');
-          self.createTable({div_id:div_id});
-        }});
+          }});
+        }
       }
     });
 
