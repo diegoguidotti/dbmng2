@@ -33,6 +33,7 @@ Dbmng.CheckboxWidget = Dbmng.AbstractWidget.extend({
 		}
 		else{
 			return val;
-		}
+      // return '<input type="checkbox" value='+val+'/>';
+    }
   }
 });
