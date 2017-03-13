@@ -396,6 +396,7 @@ Dbmng.AbstractTheme = Class.extend({
 			opt={};
 		}
 		var el = document.createElement('td');
+    console.log(opt.content);
 		if(opt.content){
       if(typeof opt.content ==='object'){
         el.appendChild(opt.content);
