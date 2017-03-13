@@ -400,6 +400,14 @@ Dbmng.AbstractTheme = Class.extend({
       if(typeof opt.content ==='object'){
         el.appendChild(opt.content);
       }
+      else if(opt.content.startsWith('<')){
+        try{
+          el.appendChild(jQuery(opt.content)[0]);
+        }
+        catch(e){
+          el.appendChild(document.createTextNode(opt.content));
+        }
+      }
       else{
         el.appendChild(document.createTextNode(opt.content));
       }
