@@ -401,7 +401,7 @@ Dbmng.AbstractTheme = Class.extend({
       if(typeof opt.content ==='object'){
         el.appendChild(opt.content);
       }
-      else if(opt.content.startsWith('<')){
+      else if((""+opt.content).startsWith('<')){
         try{
           el.appendChild(jQuery(opt.content)[0]);
         }
