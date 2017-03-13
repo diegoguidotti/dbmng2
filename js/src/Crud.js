@@ -503,7 +503,7 @@ Dbmng.Crud = Class.extend({
       }
 
       if( validation.ok === false ) {
-        msg=self.theme.alertMessage(validation.msg);
+        var msg=self.theme.alertMessage(validation.msg);
         jQuery('#'+self.div_id).find(".dbmng_form_button_message").html(msg);
       }
       else {

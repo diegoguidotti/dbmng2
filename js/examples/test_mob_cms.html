@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Test history</title>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled/html4+html5/jquery.history.min.js"></script>
+  <script type="text/javascript" src="../src/Class.js"></script>
+  <script type="text/javascript" src="../src/Dbmng.js"></script>
+  <script type="text/javascript" src="../src/History.js"></script>
+  <script type="text/javascript" src="../src/Cms.js"></script>
+</head>
+<body>
+<div id="mobile_container">
+</div>
+
+	<script>
+
+var opt={
+  'div':'#mobile_container',
+  'home':'home',
+  'pages':{
+    'home':{
+      'title':'Home',
+      'body': function(page, cms){
+          var html="Ciao<select id='sel'><option value='A'>A</option><option value='B'>B</option></select>";
+          html+="<button id='go'>Go</button>";
+          html+="<button goto-target='terza' id='aaa'>Vai alla terza</button>"
+          return html;
+        },
+        'actions':{
+          '#go':function(cms){
+            cms.goto('seconda',{'val':jQuery('#sel').val()});
+          },
+        }
+      },
+      'seconda':{
+        'title':'Seconda',
+        'body': function(page, cms){
+            var html="Arrivato con valore "+page.data.val+"<button data-goto='home' id='go'>back</button>";
+            return html;
+          }
+        }
+      }
+    };
+
+opt.pages['terza']={
+  'title':"terza","body": function(page,csm){return "terza<button data-goto='home' id='back'>Home</button>"},
+};
+
+var cms= new Dbmng.Cms(opt);
+cms.draw();
+
+  </script>
+</body>

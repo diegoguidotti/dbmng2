@@ -30,8 +30,16 @@ Dbmng.History = Class.extend({
       var label='?';
       var title="";
       jQuery.each(obj, function(k){
-        label+=k+"="+obj[k];
-        title+=k+"="+obj[k]+" ";
+
+        var value=obj[k];        
+        if(typeof value=='object'){
+          value='';
+          jQuery.each(obj[k],function(k2){
+            value+="&"+k2+"="+obj[k][k2];
+          });
+        }
+        label+="&"+k+"="+value;
+        title+=k+"="+value+" ";
       });
       History.pushState({'type':type, 'obj':obj },title,label);
     }

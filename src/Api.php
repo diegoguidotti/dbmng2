@@ -194,28 +194,34 @@ class Api {
         $out = json_encode(array('ok' => false, 'msg' => "The function '$id_value' is not defined in the API"));
         $allowed=$dbmng->isAllowed('admin');
 
+
         if($allowed['ok'])
           {
-            $id_table = $_REQUEST['id_table'];
-            if( $id_value == 'delete' )
-              {
-                $db = $dbmng->getDb();
-                $sql = "delete from dbmng_fields where id_table = :id_table";
-                $var = array(':id_table' => $id_table);
+            if(isset($_REQUEST['id_table'])){
+              $id_table = $_REQUEST['id_table'];
+              if( $id_value == 'delete' )
+                {
+                  $db = $dbmng->getDb();
+                  $sql = "delete from dbmng_fields where id_table = :id_table";
+                  $var = array(':id_table' => $id_table);
 
-                $ret = $db->delete($sql, $var);
-                $out = json_encode(array("id"=>$id_value, "ret"=>$ret));
-                $bOk = true;
+                  $ret = $db->delete($sql, $var);
+                  $out = json_encode(array("id"=>$id_value, "ret"=>$ret));
+                  $bOk = true;
+                }
+              elseif( $id_value == 'fill' )
+                {
+                  $ret = $api_self->fillDbmngFields($dbmng, $id_table);
+                  $out = json_encode(array("id"=>$id_value, "ret"=>$ret));
+                  $bOk = true;
+                }
+              else
+                {
+                  $out = json_encode(array('ok' => false, 'msg' => "The function '$id_value' is not defined in the API"));
+                }
               }
-            elseif( $id_value == 'fill' )
-              {
-                $ret = $api_self->fillDbmngFields($dbmng, $id_table);
-                $out = json_encode(array("id"=>$id_value, "ret"=>$ret));
-                $bOk = true;
-              }
-            else
-              {
-                $out = json_encode(array('ok' => false, 'msg' => "The function '$id_value' is not defined in the API"));
+              else{
+                $out = json_encode(array('ok' => false, 'msg' => "The call need an id_table to fill or delete the schema fields"));
               }
           }
         else
