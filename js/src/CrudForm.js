@@ -141,9 +141,6 @@ Dbmng.CrudForm = Class.extend({
       jQuery('#'+self.div_id).append(self.form.createForm());
     }
 
-    if(typeof self.form_ready=='function'){
-      self.form_ready(type, this.form);
-    }
 
     // Copiata e modificata a partire da Crud.createForm !!!
     var label_save=self.aParam.ui.btn_save.label;
@@ -213,5 +210,9 @@ Dbmng.CrudForm = Class.extend({
     jQuery('#'+self.div_id).append("<div id='dbmng_buttons_row' class='row' style='margin-top: 20px;margin-bottom: 100px;'><div class='dbmng_form_button_message col-xs-12'></div><div class='dbmng_form_button_left col-xs-4'></div><div class='col-xs-4'></div><div class='dbmng_form_button_right col-xs-4'></div></div>");
     jQuery('#'+self.div_id).find('.dbmng_form_button_left').append(button_cancel);
     jQuery('#'+self.div_id).find('.dbmng_form_button_right').append(button);
+
+    if(typeof self.form_ready=='function'){
+      self.form_ready(type, this.form);
+    }
   }
 });
