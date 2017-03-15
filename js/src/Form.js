@@ -129,7 +129,7 @@ geo
 		var fields={};
 
     this.createWidgets();
-    console.log(aData);
+    // console.log(aData);
 
 
     for(var key in this.aForm.fields){

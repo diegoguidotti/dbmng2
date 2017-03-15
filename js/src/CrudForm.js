@@ -80,28 +80,28 @@ Dbmng.CrudForm = Class.extend({
 
           self.aForm = data;
           self.ready = true;
-          console.log("aForm loaded");
-          console.log(self.aForm);
-          console.log(this.aForm);
+          // console.log("aForm loaded");
+          // console.log(self.aForm);
+          // console.log(this.aForm);
 
           self.form = new Dbmng.Form({aForm:self.aForm, aParam:self.aParam, theme:self.theme});
 
           self.pk=self.form.getPkField();
 
           if( typeof options.success=='function' ){
-            console.log("call success");
+            // console.log("call success");
             options.success(self);
           }
           else{
-            console.log(this.aForm);
+            // console.log(this.aForm);
           }
         },
         error: function(exc){
           if( typeof options.error=='function' ){
             options.error(exc);
           }
-          console.log(exc);
-          console.log(options);
+          // console.log(exc);
+          // console.log(options);
         }
       });
     }
@@ -133,7 +133,7 @@ Dbmng.CrudForm = Class.extend({
   generateForm: function( type, key, id, data ) {
     var self = this;
     jQuery('#'+self.div_id).html("");
-    console.log(data);
+    // console.log(data);
     if( typeof data !== 'undefined' ) {
       jQuery('#'+self.div_id).append(self.form.createForm(data.data[0],self.aParam.template_form));
     }
@@ -187,7 +187,7 @@ Dbmng.CrudForm = Class.extend({
         }
         else if(type=='insert'){
           self.api.insert({data:self.form.getValue(),success:function(data){
-            console.log(data);
+            // console.log(data);
             if(typeof self.crud_success=='function'){
               self.crud_success('insert', data);
             }

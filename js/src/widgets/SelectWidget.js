@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////
 // AbstractWidget
 // 12 November 2015
-// 
+//
 //
 // Developed by :
 // Diego Guidotti
@@ -13,10 +13,10 @@ Dbmng.SelectWidget = Dbmng.AbstractWidget.extend({
     //var aField=this.aField;
     this.aField.value = this.getFieldValue();
     this.aField.field = this.field;
-    
+
     return this.theme.getSelect(this.aField);
   },
-  
+
   getValue: function(){
     var val;
     if( this.aField.type == 'int' ) {
@@ -25,7 +25,7 @@ Dbmng.SelectWidget = Dbmng.AbstractWidget.extend({
     else {
       val = jQuery(this.widget).val();
     }
-		console.log('getValue '+val);
+		// console.log('getValue '+val);
     return val;
   },
   convert2html: function(val) {

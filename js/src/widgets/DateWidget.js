@@ -23,9 +23,9 @@ Dbmng.DateWidget = Dbmng.AbstractWidget.extend({
 
     var self=this;
     var date_format_view='dd-mm-yy';
-    console.log(self);
+    // console.log(self);
     if(self.aField.date_format_view){
-      date_format_view=self.aField.date_format_view;      
+      date_format_view=self.aField.date_format_view;
     }
 
     var el = this._super(data_val);

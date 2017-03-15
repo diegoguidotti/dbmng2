@@ -33,7 +33,7 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
 
   createField: function(data_val){
     var self=this;
-    console.log(self);
+    // console.log(self);
 
     var url='server/php/';
     if(self.aParam.url){
@@ -157,7 +157,7 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
     if( self.aField.remove_title_icon ) {
       btn_title = self.aField.remove_title_icon;
     }
-    
+
     info.append("<a target='_NEW' class='dbmng_fileupload_filelink' href='"+weburl_file+file+"'>"+this.assignFileTypeIcon(file)+" "+file+"</a>&nbsp;");
     var del=this.theme.getDeleteButton(btn_title, btn_icon);
     info.append(del);

@@ -47,7 +47,7 @@ Dbmng.BootstrapTheme = Dbmng.AbstractTheme.extend({
     prg.wrap('<div class="col-xs-6" style="padding-top: 7px;"></div>');
     prg.find('.progress-bar')[0].style.cssText="";
 
-    console.log(el);
+    // console.log(el);
 
     return el;
   },

@@ -115,13 +115,13 @@ Dbmng.AbstractWidget = Class.extend({
   },
 
   onChange: function(event){
-    console.log('onChange');
+    //console.log('onChange');
     this.isValid();
 
   } ,
 
   onFocus: function(event){
-    console.log('focus');
+    //console.log('focus');
   } ,
   setValue: function(val){
     var ret=0;
@@ -185,14 +185,14 @@ Dbmng.AbstractWidget = Class.extend({
   isValid:function (){
     var validated = false;
     var nullable = 0;
-    
+
     if(typeof this.aField.nullable !== 'undefined'){
       nullable = parseInt(this.aField.nullable);
     }
 
     var ok=true;
     var message='';
-    
+
     if( this.toValidate(nullable) ) { //( nullable === 0 && this.aField.field_type != 'hidden' && this.aField.key != 1 ) {
       validated = true;
       if( this.getValue()===null || this.getValue()==='' ) {
@@ -237,7 +237,7 @@ Dbmng.AbstractWidget = Class.extend({
 
     return {'ok':ok, 'message':message};
   },
-  
+
   toValidate: function( nullable ) {
     return (nullable === 0 && this.aField.field_type != 'hidden' && this.aField.key != 1);
   }
