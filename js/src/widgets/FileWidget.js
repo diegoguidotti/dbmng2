@@ -142,6 +142,9 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
           }
       });
     }
+    else {
+      info.append(self.theme.alertMessage("Resources missing! Please load the following files: jquery-ui.js, jquery.iframe-transport and jquery.fileupload"));
+    }
 
     return el;
   },
