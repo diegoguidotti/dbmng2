@@ -49,6 +49,7 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
 
     var el = this._super(data_val);
 
+    var info=jQuery(el).find('.dbmng_fileupload_container');
     if(typeof jQuery().fileupload !== 'undefined'){
 
       var aVField = {};
@@ -89,7 +90,7 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
 
       var el_progress=jQuery(el).find('.progress');
 
-      var info=jQuery(el).find('.dbmng_fileupload_container');
+      // var info=jQuery(el).find('.dbmng_fileupload_container');
       if(typeof data_val !== 'undefined' && data_val!=='' && data_val !==null ){
         self.addFile(info, weburl_file, data_val);
       }
