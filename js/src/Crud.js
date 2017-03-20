@@ -381,7 +381,7 @@ Dbmng.Crud = Class.extend({
       }
 
       if(typeof self.table_ready=='function'){
-        self.table_ready();
+        self.table_ready(self.form);
       }
     }
     else {
