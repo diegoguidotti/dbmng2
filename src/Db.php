@@ -78,8 +78,8 @@ private $debug;
 			$ret=array();
 			try
 				{
-					
-					
+
+
 // 					echo "sQuery: $sQuery";
 // 					print_r($aVars);
 					$res0 = $this->pdo->prepare($sQuery);
@@ -108,12 +108,12 @@ private $debug;
         }
 			return $ret;
 		}
-    
+
     public function getConnection()
     {
       return $this->pdo;
     }
-    
+
     public function getDbType()
     {
       return $this->pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
@@ -136,7 +136,7 @@ private $debug;
 
 					$dbh->beginTransaction();
 						$res0->execute($aVars);
-						
+
 						$id = $dbh->lastInsertId($sequence);
 					$dbh->commit();
 
@@ -213,7 +213,7 @@ private $debug;
 					foreach( $aQuery as $a )
 						{
 							//echo "MM: " . $this->getSQL($a['sql'],$a['var']);
-							
+
 							$prep0 = $dbh->prepare($a['sql']);
 							$ok= $prep0->execute($a['var']);
 
@@ -295,7 +295,8 @@ private $debug;
 				{
 					foreach ($aVars as $key => $value)
 						{
-							$sql = str_replace($key, $this->pdo->quote($value), $sql);
+							$re = '/('.$key.')\b/';
+							$sql = preg_replace($re, $this->pdo->quote($value), $sql);
 						}
 				}
 			return $sql;

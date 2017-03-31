@@ -15,7 +15,15 @@ Dbmng.DateWidget = Dbmng.AbstractWidget.extend({
       this.aField.field_type='hidden';
     }
     else{
-      this.aField.field_type='date';
+      if( this.aField.type == 'date' ) {
+        this.aField.field_type='date';
+      }
+      else if( this.aField.type == 'time' ) {
+        this.aField.field_type='time';
+      }
+      else if( this.aField.type == 'datetime-local' ) {
+        this.aField.field_type='datetime-local';
+      }
     }
     return this.theme.getInput(this.aField);
   },
@@ -29,7 +37,7 @@ Dbmng.DateWidget = Dbmng.AbstractWidget.extend({
     }
 
     var el = this._super(data_val);
-    if(typeof jQuery.datepicker !== 'undefined'){
+    if(typeof jQuery.datepicker !== 'undefined' ){
       var aVField = {};
       aVField.field = this.aField.field + '_view';
 

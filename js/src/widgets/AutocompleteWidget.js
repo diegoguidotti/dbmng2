@@ -84,6 +84,9 @@ Dbmng.AutocompleteWidget = Dbmng.AbstractWidget.extend({
 
       jQuery(elv).bind('typeahead:select', function(ev, suggestion){
         console.log(self);
+        console.log(suggestion);
+        console.log(fkey);
+        console.log(suggestion[fkey]);
         self.widget.value = suggestion[fkey];
       });
     }
