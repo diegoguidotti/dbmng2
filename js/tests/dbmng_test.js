@@ -269,7 +269,7 @@ jQuery(function(){
     equal(widget3.aField,option.aField, "Check aField array");
   });
 
- test('NumericWidget',5, function(){
+ test('NumericWidget',6, function(){
     var option = {
       field:'number',
       aField: {label: 'Number', type: 'int', default:true}
@@ -289,9 +289,13 @@ jQuery(function(){
     equal(widget2.getValue(),null, "NumericWidget should return null if a text value is entered");
 
 
-		jQuery('#test_div input').attr('type','input')
-		jQuery('#test_div input').val("pippo")
+		jQuery('#test_div input').attr('type','input');
+		jQuery('#test_div input').val("pippo");
     equal(widget2.getValue(),null, "NumericWidget should return null if a text value is entered (also if the type is not number)");
+
+    var widget3 = new Dbmng.NumericWidget(option);
+    jQuery('#test_div').html(widget3.createField(0));
+    equal(widget3.getValue(),0, "NumericWidget get 0 value (from widget)");
 
   });
 
@@ -304,8 +308,20 @@ jQuery(function(){
 
     var sum2 = exeExternalFunction('my_test_sum');
     equal(-1, sum2);
-  })
+  });
 
+  test('Test Theme', 2, function() {
+    var theme=new Dbmng.AbstractTheme();
+    var tab=theme.getTable({'data':[[0,"0"],[3,0],["0",0]]});
+    jQuery('#test_div').html(tab);
+    equal("0", jQuery(jQuery('#test_div td')[0]).html());
+
+
+    var tab=theme.getTable({'data':[[null,"pippo"],[3,0],["0",0]]});
+    jQuery('#test_div').html(tab);
+    equal("", jQuery(jQuery('#test_div td')[0]).html());
+
+  });
 
   test('Test Form', 3, function() {
 
