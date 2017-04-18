@@ -657,6 +657,7 @@ function uploadFile($field){
 
 		$ret['ok']=$ok;
 		$ret['files']=$files;
+		$ret['headers']=$headers;
 
 
 	}
