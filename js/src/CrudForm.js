@@ -138,7 +138,7 @@ Dbmng.CrudForm = Class.extend({
       jQuery('#'+self.div_id).append(self.form.createForm(data.data[0],self.aParam.template_form));
     }
     else {
-      jQuery('#'+self.div_id).append(self.form.createForm());
+      jQuery('#'+self.div_id).append(self.form.createForm(null,self.aParam.template_form));
     }
 
 
