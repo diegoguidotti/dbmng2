@@ -49,7 +49,6 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
 
     var el = this._super(data_val);
 
-    var info=jQuery(el).find('.dbmng_fileupload_container');
     if(typeof jQuery().fileupload !== 'undefined'){
 
       var aVField = {};
@@ -82,11 +81,9 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
       opt.icon  = btn_icon;
       opt.label_file = btn_label;
 
-      /*
-
-      */
-
       el.appendChild(this.theme.createFileUploadField(elv,btn_label, opt));
+
+      var info=jQuery(el).find('.dbmng_fileupload_container');
 
       var el_progress=jQuery(el).find('.progress');
 
@@ -144,7 +141,7 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
       });
     }
     else {
-      info.append(self.theme.alertMessage("Resources missing! Please load the following files: jquery-ui.js, jquery.iframe-transport and jquery.fileupload"));
+      jQuery(el).append(self.theme.alertMessage("Resources missing! Please load the following files: jquery-ui.js, jquery.iframe-transport and jquery.fileupload"));
     }
 
     return el;
@@ -152,7 +149,6 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
 
   addFile:function(info, weburl_file, file){
     var self=this;
-
     var btn_icon="glyphicon glyphicon-remove";
     if( self.aField.remove_icon ) {
       btn_icon = self.aField.remove_icon;
@@ -165,6 +161,7 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
     info.append("<a target='_NEW' class='dbmng_fileupload_filelink' href='"+weburl_file+file+"'>"+this.assignFileTypeIcon(file)+" "+file+"</a>&nbsp;");
     var del=this.theme.getDeleteButton(btn_title, btn_icon);
     info.append(del);
+    console.log("addFile");console.log(weburl_file);console.log(file);
 
     jQuery(del).click(function(){
       info.html("");
