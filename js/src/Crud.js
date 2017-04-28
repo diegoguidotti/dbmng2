@@ -358,8 +358,8 @@ Dbmng.Crud = Class.extend({
           // MM aggiungere funzione per history
         });
 
-        var btns_l = "<div id='dbmng_buttons_row' class='row' style='margin-top: 20px;margin-bottom: 100px;'><div class='dbmng_form_button_message col-xs-12'></div><div id='dbmng_button_left' class='dbmng_form_button_left col-xs-4'></div><div id='dbmng_button_center' class='col-xs-4'></div><div id='dbmng_button_right' class='dbmng_form_button_right col-xs-4'></div></div>";
-        var btns_f = "<div id='dbmng_buttons_row' class='row' style='margin-top: 0px;margin-bottom: 0px;'><div class='dbmng_form_button_message col-xs-12'></div>   <div id='dbmng_button_left' class='dbmng_form_button_left col-xs-4'></div><div id='dbmng_button_center' class='col-xs-4'></div><div id='dbmng_button_right' class='dbmng_form_button_right col-xs-4'></div></div>";
+        var btns_l = "<div id='dbmng_buttons_row' class='row' style='margin-top: 20px;margin-bottom: 100px;'><div class='dbmng_form_button_message col-md-12'></div><div id='dbmng_button_left' class='dbmng_form_button_left col-md-4 col-xs-12 '></div><div id='dbmng_button_center' class='col-md-4 col-xs-12 '></div><div id='dbmng_button_right' class='dbmng_form_button_right col-md-4 col-xs-12 '></div></div>";
+        var btns_f = "<div id='dbmng_buttons_row' class='row' style='margin-top: 0px;margin-bottom: 0px;'><div class='dbmng_form_button_message col-md-12'></div>   <div id='dbmng_button_left' class='dbmng_form_button_left col-md-4 col-xs-12 '></div><div id='dbmng_button_center' class='col-md-4 col-xs-12 '></div><div id='dbmng_button_right' class='dbmng_form_button_right col-md-4 col-xs-12 '></div></div>";
         var position = 'last';
         if( self.aParam.ui.btn_insert.position ) {
           position = self.aParam.ui.btn_insert.position;
@@ -547,7 +547,7 @@ Dbmng.Crud = Class.extend({
       jQuery(div_id).html('');
       self.createTable({div_id:div_id});
     });
-    jQuery(div_id).append("<div id='dbmng_buttons_row' class='row' style='margin-top: 20px;margin-bottom: 100px;'><div class='dbmng_form_button_message col-xs-12'></div><div class='dbmng_form_button_left col-xs-4'></div><div class='col-xs-4'></div><div class='dbmng_form_button_right col-xs-4'></div></div>");
+    jQuery(div_id).append("<div id='dbmng_buttons_row' class='row' style='margin-top: 20px;margin-bottom: 100px;'><div class='dbmng_form_button_message col-md-12'></div><div class='dbmng_form_button_left col-md-4 col-xs-12 '></div><div class='col-md-4 col-xs-12 '></div><div class='dbmng_form_button_right col-md-4 col-xs-12 '></div></div>");
     jQuery(div_id).find('.dbmng_form_button_left').append(button_cancel);
     jQuery(div_id).find('.dbmng_form_button_right').append(button);
   },
