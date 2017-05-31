@@ -32,28 +32,33 @@ function dbmng2_get_db()
 }
 
 function dbmng2_rest( ) {
-  $path = getPath(); 
-  $base_path = "/$path/wp-json/";
+  // NOTE: BASE_PATH NON E' DEFINITO IN WP_CONFIG.PHP DI DEFAULT
+  // $path = "/".getPath();
+  $path = BASE_PATH;
+
+  $base_path = $path."/wp-json/";
+
   $path   = $base_path . DBMNG2_API_PATH; // . '/rest';
   $router = new \Respect\Rest\Router($path);
   $router->isAutoDispatched = false;
-  
+
   $app = dbmng2_get_app();
   $DB  = $app->getDb();
-  
+
   $h = new DbmngHelper($app);
   $h->exeAllRest( $router );
-  
+
   return json_decode($router->run());
 }
 
 function dbmng2_ajax( ) {
-  $path = getPath();
-  $base_path = "/$path/wp-json/";
+  // NOTE: BASE_PATH NON E' DEFINITO IN WP_CONFIG.PHP DI DEFAULT
+  $path = BASE_PATH;
+  $base_path = $path."/wp-json/";
   $path   = $base_path . DBMNG2_API_PATH . '/ajax';
   $router = new \Respect\Rest\Router($path);
   $router->isAutoDispatched = false;
-  
+
   $app=dbmng2_get_app();
   $h = new DbmngHelper($app);
   $h->exeOtherDbmngRest( $router );
@@ -63,16 +68,17 @@ function dbmng2_ajax( ) {
 
 
 function dbmng2_manager()
-{ 
-  $path = getPath();
-  $base_path = "/$path/wp-json/";
+{
+  // NOTE: BASE_PATH NON E' DEFINITO IN WP_CONFIG.PHP DI DEFAULT
+  $path = BASE_PATH;
+  $base_path = $path."/wp-json/";
   $html = "";
   $html .= "<script language='javascript'>";
     $html .= "var base_path='$base_path';";
     $html .= "var dbmng2_api_path='".DBMNG2_API_PATH."/';";
     $html .= "jQuery(document).ready(function(){dbmng2_show_tables()})";
   $html .= "</script>";
-  
+
   $html .= "<div id='dbmng2_table_list'></div>";
   $html .= "<div id='dbmng2_table_edit'></div>";
   return $html;
@@ -82,7 +88,7 @@ function getPath()
 {
   $aPath = explode("/",ABSPATH);
   $nCnt  = count($aPath);
-  
+
   return $aPath[$nCnt-2];
 }
 ?>
