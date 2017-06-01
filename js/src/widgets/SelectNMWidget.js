@@ -53,7 +53,6 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
       }
     }
     else if( out_type == 'checkbox' ) {
-      //console.log(options);
       el = document.createElement('div');
       var ul = document.createElement('ul');
       ul.id = "ul_"+self.aField.field;
@@ -94,27 +93,55 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
 
       self.theme.addClass(ul, 'dbmng_checkbox_ul');
       //self.theme.assignAttributes(el, self.aField);
+      if( typeof self.aField.voc_val[0] == 'object' ) {
+        jQuery.each(self.aField.voc_val, function(k,v){
+          jQuery.each(v, function(index, el) {
+            fk = index;
+            var li = document.createElement('li');
 
-      for ( fk in self.aField.voc_val) {
-        var li = document.createElement('li');
+            var checked=false;
+            if( self.aField.value ) {
+              if( typeof self.aField.value[0] == 'number') {
+                fk = parseInt(index);
+              }
+              if( self.aField.value.indexOf(fk) > -1 ) {
+                checked=true;
+              }
+            }
+            var fvalue=el;
+            var opt_checkbox={'checked':checked, 'value':fk, 'label':fvalue, 'exclude_attribute':true};
+            li.appendChild(self.theme.getCheckbox(opt_checkbox));
 
-        var checked=false;
-        if( self.aField.value ) {
-          if( typeof self.aField.value[0] == 'number') {
-            fk = parseInt(fk);
+            var txt = document.createTextNode(fvalue);
+            li.appendChild(txt);
+            ul.appendChild(li);
+          });
+        });
+      }
+      else {
+        for ( fk in self.aField.voc_val) {
+          var li = document.createElement('li');
+
+          var checked=false;
+          if( self.aField.value ) {
+            if( typeof self.aField.value[0] == 'number') {
+              fk = parseInt(fk);
+            }
+            if( self.aField.value.indexOf(fk) > -1 ) {
+              checked=true;
+            }
           }
-          if( self.aField.value.indexOf(fk) > -1 ) {
-            checked=true;
-          }
+          var fvalue=self.aField.voc_val[fk];
+
+          var opt_checkbox={'checked':checked, 'value':fk, 'label':fvalue, 'exclude_attribute':true};
+
+          li.appendChild(this.theme.getCheckbox(opt_checkbox));
+
+          var txt = document.createTextNode(fvalue);
+          li.appendChild(txt);
+          ul.appendChild(li);
         }
-        var fvalue=self.aField.voc_val[fk];
-        var opt_checkbox={'checked':checked, 'value':fk, 'label':fvalue, 'exclude_attribute':true};
 
-        li.appendChild(this.theme.getCheckbox(opt_checkbox));
-
-        var txt = document.createTextNode(fvalue);
-        li.appendChild(txt);
-        ul.appendChild(li);
       }
       el.appendChild(ul);
     }
@@ -130,14 +157,30 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
     var ret="";
     var first=true;
     if( typeof val !== 'undefined' ) {
+      console.log(self.aField.voc_val);
       jQuery.each(val,function(k,v){
+        console.log(v);
         if(!first){
           ret+=sep;
         }
         else{
           first=false;
         }
-        ret+="<span class='dbmng_select_nm_item'>"+self.aField.voc_val[v]+"</span>";
+
+        if( typeof self.aField.voc_val[v] == 'object' ) {
+          jQuery.each(self.aField.voc_val, function(j, obj){
+            if( typeof obj == 'object' ) {
+              jQuery.each(obj, function(key, value){
+                if( key == v ) {
+                  ret+="<span class='dbmng_select_nm_item'>"+value+"</span>";
+                }
+              });
+            }
+          });
+        }
+        else {
+          ret+="<span class='dbmng_select_nm_item'>"+self.aField.voc_val[v]+"</span>";
+        }
       });
       return jQuery("<div>"+ret+"</div>")[0];
     }

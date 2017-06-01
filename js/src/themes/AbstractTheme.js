@@ -175,19 +175,30 @@ Dbmng.AbstractTheme = Class.extend({
         }
       }
       else if(Object.prototype.toString.call(aField.voc_val) === '[object Array]') {
+        // console.log(aField.voc_val);
         jQuery.each(aField.voc_val, function(k,v){
-          // console.log(v);
-          jQuery.each(v, function(key,text){
-
+          if(typeof v !== 'string') {
+            jQuery.each(v, function(key,text){
+              o=document.createElement('option');
+              o.value = key; // v[0];
+              o.text= text; // v[1];
+              if( typeof aField.value !== 'undefined' ) {
+                if( aField.value == key ) {
+                  o.selected = true;
+                }
+              }
+            });
+          }
+          else {
             o=document.createElement('option');
-            o.value = key; // v[0];
-            o.text= text; // v[1];
+            o.value = opt;
+            o.text=aField.voc_val[opt];
             if( typeof aField.value !== 'undefined' ) {
-              if( aField.value == key ) {
+              if( aField.value == opt ) {
                 o.selected = true;
               }
             }
-          });
+          }
           el.options.add(o);
         });
       }
