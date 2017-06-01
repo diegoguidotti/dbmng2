@@ -147,7 +147,7 @@ Dbmng.AbstractTheme = Class.extend({
 
   getSelect: function(aField) {
     var el=document.createElement('select');
-
+    // console.log(Object.prototype.toString.call(aField.voc_val));
     this.assignAttributes(el, aField);
     if(aField.voc_val) {
       var o=document.createElement('option');
@@ -158,19 +158,38 @@ Dbmng.AbstractTheme = Class.extend({
       }
 
       el.options.add(o);
-      for (var opt in aField.voc_val) {
-        o=document.createElement('option');
-        o.value = opt;
-        o.text=aField.voc_val[opt];
-        // console.log(aField);
-        // console.log(aField.label + "= out: aFval[" + aField.value+"] opt: ["+ opt+"]");
-        if( typeof aField.value !== 'undefined' ) {
-					// console.log(aField.label + "= in: aFval[" + aField.value+"] opt: ["+ opt+"]");
-          if( aField.value == opt ) {
-            o.selected = true;
+      if(Object.prototype.toString.call(aField.voc_val) === '[object Object]') {
+        for (var opt in aField.voc_val) {
+          o=document.createElement('option');
+          o.value = opt;
+          o.text=aField.voc_val[opt];
+          // console.log(aField);
+          // console.log(aField.label + "= out: aFval[" + aField.value+"] opt: ["+ opt+"]");
+          if( typeof aField.value !== 'undefined' ) {
+            // console.log(aField.label + "= in: aFval[" + aField.value+"] opt: ["+ opt+"]");
+            if( aField.value == opt ) {
+              o.selected = true;
+            }
           }
+          el.options.add(o);
         }
-        el.options.add(o);
+      }
+      else if(Object.prototype.toString.call(aField.voc_val) === '[object Array]') {
+        jQuery.each(aField.voc_val, function(k,v){
+          // console.log(v);
+          jQuery.each(v, function(key,text){
+
+            o=document.createElement('option');
+            o.value = key; // v[0];
+            o.text= text; // v[1];
+            if( typeof aField.value !== 'undefined' ) {
+              if( aField.value == key ) {
+                o.selected = true;
+              }
+            }
+          });
+          el.options.add(o);
+        });
       }
     }
     return el;

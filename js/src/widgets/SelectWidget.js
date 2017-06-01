@@ -25,10 +25,26 @@ Dbmng.SelectWidget = Dbmng.AbstractWidget.extend({
     else {
       val = jQuery(this.widget).val();
     }
-		// console.log('getValue '+val);
     return val;
   },
   convert2html: function(val) {
-    return this.aField.voc_val[val];
+    var ret;
+    if( Object.prototype.toString.call(this.aField.voc_val) == '[object Object]' ){
+      ret = this.aField.voc_val[val];
+    }
+    else if( Object.prototype.toString.call(this.aField.voc_val) == '[object Array]' ) {
+      // console.log(val);
+      // console.log(this.aField.voc_val);
+      jQuery.each(this.aField.voc_val, function(k,voc){
+        // console.log(voc);
+        // console.log(val);
+        jQuery.each(voc, function(v,text){
+          if( v == val ){
+            ret = text;
+          }
+        });
+      });
+    }
+    return ret;
   }
 });

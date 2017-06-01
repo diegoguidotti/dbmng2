@@ -159,7 +159,7 @@ class DbmngHelper {
             $param = $fields['data'][$nF]['param'];
             $param = str_replace("'",'"',$param);
 
-            $js = json_decode($param);
+            $js = json_decode($param,true);
             if( isset($js) )
               {
                 foreach( $js as $key => $val )
@@ -173,11 +173,12 @@ class DbmngHelper {
 
         if( $fields['data'][$nF]['field_widget'] == 'select' || $fields['data'][$nF]['field_widget'] == 'select_nm' )
           {
+						// print_r($fields['data'][$nF]);
             if(isset($fields['data'][$nF]['voc_val']))
               {
                 ;//If already exists does not execute a query
               }
-            else if( !isset($fields['data'][$nF]['voc_sql']) )
+            else if( !isset($fields['data'][$nF]['voc_sql']) && strpos($fields['data'][$nF]['field_name'], "id_") !== false )
               {
                 // sql automatically generated throught standard coding tables definition
                 $sVoc = str_replace("id_", "", $fields['data'][$nF]['field_name']);
@@ -226,11 +227,15 @@ class DbmngHelper {
 
             if( $bOkVoc )
               {
+								$aVoc = [];
                 for( $v = 0; $v < $rVoc['rowCount']; $v++ )
                   {
-                    $aFVoc[$rVoc['data'][$v][0]] = $rVoc['data'][$v][1];
+										$obj = array($rVoc['data'][$v][0] => $rVoc['data'][$v][1]);
+                    // $aFVoc[$rVoc['data'][$v][0]] = $rVoc['data'][$v][1];
+										$aVoc[] = $obj;
                   }
-									$aFields[$fields['data'][$nF]['field_name']]['voc_val'] = $aFVoc;
+									// $aFields[$fields['data'][$nF]['field_name']]['voc_val'] = $aFVoc;
+									$aFields[$fields['data'][$nF]['field_name']]['voc_val'] = $aVoc;
               }
 
           }
@@ -281,7 +286,7 @@ class DbmngHelper {
         $ret['aForm']=$aForm;
         $ret['aParam']=$aParam;
 
-        return $ret;
+				return $ret;
       }
     else
       {

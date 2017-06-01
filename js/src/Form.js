@@ -23,7 +23,28 @@ Dbmng.Form = Class.extend({
     else {
       this.theme = Dbmng.defaults.theme;
     }
-// var w1=new Dbmng.AbstractWidget({field:'id', aField:aForm.fields.id, value:obj.id, theme:theme_boot});
+    // var w1=new Dbmng.AbstractWidget({field:'id', aField:aForm.fields.id, value:obj.id, theme:theme_boot});
+    // for(var key in this.aForm.fields){
+    //   var aField=this.aForm.fields[key];
+    //
+    //   var wt = '';
+    //   if(aField.widget){
+    //     wt=aField.widget;
+    //   }
+    //
+    //   if( wt == 'select' ) {
+    //     var sortable = [];
+    //     for (var voc in aField.voc_val) {
+    //         sortable.push([voc, aField.voc_val[voc]]);
+    //     }
+    //
+    //     sortable.sort(function(a, b) {
+    //         return a[1] > b[1];
+    //     });
+    //     aField.voc_val = sortable;
+    //   }
+    // }
+    //console.log(this.aForm.fields);
 		this.createWidgets();
 
   },
