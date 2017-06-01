@@ -27,7 +27,7 @@ Dbmng.AutocompleteWidget = Dbmng.AbstractWidget.extend({
     if( typeof Bloodhound !== 'undefined'){
       var provider = new Bloodhound({
         datumTokenizer: function (data) {
-            console.log('datumToken');
+            // console.log('datumToken');
             //console.log(data);
               return Bloodhound.tokenizers.whitespace('<b>'+data[1]+"</b>: "+data[3]);
         },
@@ -49,7 +49,7 @@ Dbmng.AutocompleteWidget = Dbmng.AbstractWidget.extend({
         if( data_val !== '' ) {
           provider.search(data_val,function(d){self.autocomplete_get(d,elv);},function(d){self.autocomplete_get(d,elv);});
         }
-        console.log(data_val);
+        // console.log(data_val);
       }
 
       var fkey = "key";
@@ -83,10 +83,10 @@ Dbmng.AutocompleteWidget = Dbmng.AbstractWidget.extend({
         });
 
       jQuery(elv).bind('typeahead:select', function(ev, suggestion){
-        console.log(self);
-        console.log(suggestion);
-        console.log(fkey);
-        console.log(suggestion[fkey]);
+        // console.log(self);
+        // console.log(suggestion);
+        // console.log(fkey);
+        // console.log(suggestion[fkey]);
         self.widget.value = suggestion[fkey];
       });
     }
@@ -97,11 +97,11 @@ Dbmng.AutocompleteWidget = Dbmng.AbstractWidget.extend({
   },
 
   autocomplete_get: function(val,elv){
-    console.log(val);
+    // console.log(val);
     if(val.length>0){
       var label= val[0][this.aField.autocomplete_fieldname];
       elv.value=label;
-      console.log(label);
+      // console.log(label);
     }
     // console.log(val[0][this.aField.autocomplete_fieldname]);
   }

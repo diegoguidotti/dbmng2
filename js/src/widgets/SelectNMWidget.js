@@ -85,7 +85,6 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
           else {
             jQuery(aRow).show();
           }
-          console.log("change:"+txt_search.target.value);
         };
         el.appendChild(s);
 
@@ -157,9 +156,7 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
     var ret="";
     var first=true;
     if( typeof val !== 'undefined' ) {
-      console.log(self.aField.voc_val);
       jQuery.each(val,function(k,v){
-        console.log(v);
         if(!first){
           ret+=sep;
         }
