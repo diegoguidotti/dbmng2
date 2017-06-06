@@ -163,8 +163,7 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
         else{
           first=false;
         }
-
-        if( typeof self.aField.voc_val[v] == 'object' ) {
+        if( typeof self.aField.voc_val[0] == 'object' ) {
           jQuery.each(self.aField.voc_val, function(j, obj){
             if( typeof obj == 'object' ) {
               jQuery.each(obj, function(key, value){
