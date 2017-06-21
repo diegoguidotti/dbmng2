@@ -195,10 +195,11 @@ Dbmng.AbstractWidget = Class.extend({
 
     if( this.toValidate(nullable) ) { //( nullable === 0 && this.aField.field_type != 'hidden' && this.aField.key != 1 ) {
       validated = true;
-      if( this.getValue()===null || this.getValue()==='' ) {
+
+      if( this.getValue()===null || this.getValue()==='' || isNaN(this.getValue()) ) {
         console.log(this.aField);
-          ok=false;
-          message='Empty Field ['+this.aField.field+']';
+        ok=false;
+        message='Empty Field ['+this.aField.field+']';
       }
     }
 
