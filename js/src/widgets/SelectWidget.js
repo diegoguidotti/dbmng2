@@ -18,12 +18,14 @@ Dbmng.SelectWidget = Dbmng.AbstractWidget.extend({
   },
 
   getValue: function(){
-    var val;
-    if( this.aField.type == 'int' ) {
-      val = parseInt(jQuery(this.widget).val());
-    }
-    else {
-      val = jQuery(this.widget).val();
+    var val = '';
+    if( jQuery(this.widget).val() !== '' ) {
+      if( this.aField.type == 'int' ) {
+        val = parseInt(jQuery(this.widget).val());
+      }
+      else {
+        val = jQuery(this.widget).val();
+      }
     }
     return val;
   },
