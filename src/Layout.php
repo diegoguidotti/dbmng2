@@ -12,7 +12,7 @@ class Layout
 				$this->online_lib=false;
         $this->aPage = $this->cleanPage($aPage);
     }
-    
+
     public function cleanPage($aPage){
 
 			if(!isset($aPage['title'])){
@@ -32,11 +32,11 @@ class Layout
 					$this->online_lib=true;
 				}
 			}
-      
+
       if(!isset($aPage['jquery_path'])){
         $aPage['jquery_path']="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/";
       }
-      
+
 			if(!isset($aPage['nav'])){
 				$aPage['nav']=Array();
 			}
@@ -55,7 +55,7 @@ class Layout
       if(!isset($aPage['stylesheet'])){
         $aPage['stylesheet']="";
       }
-			
+
 			return $aPage;
 		}
 
@@ -100,7 +100,7 @@ class Layout
             <link rel="stylesheet" href="'.$this->aPage['bootstrap_path'].'css/bootstrap.min.css" />
 
             <link href="css/simple-sidebar.css" rel="stylesheet" />
-            
+
             <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
             <!--[if lt IE 9]>
               <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -110,9 +110,9 @@ class Layout
             <!-- Bootstrap core JavaScript
             ================================================== -->
             <!-- Placed at the end of the document so the pages load faster -->';
-      
+
       $html.= $this->aPage['stylesheet'];
-      
+
       $html.='<script src="'.$this->aPage['jquery_path'].'jquery.min.js"></script>';
 
       $html.='<script src="'.$this->aPage['bootstrap_path'].'js/bootstrap.min.js"></script>';
@@ -143,7 +143,7 @@ class Layout
 
     $aPage = $this->aPage;
     $html = "";
-    
+
     $html .= '<nav class="navbar navbar-inverse navbar-fixed-top">';
     $html .= '          <div class="container">';
     $html .= '            <div class="navbar-header">';
@@ -155,9 +155,9 @@ class Layout
     $html .= '              </button>';
     $html .= '              <a class="navbar-brand" href="?">'.$aPage['project'].'</a>';
     $html .= '            </div>';
-    
+
     $html .= '            <div id="navbar" class="collapse navbar-collapse">';
-    
+
     if(count($aPage['nav'])>0)
       {
         $html.='<ul class="nav navbar-nav">';
@@ -167,7 +167,7 @@ class Layout
         }
         $html.='</ul>';
       }
-    
+
     if(count($aPage['navRight'])>0)
       {
         $html.='<ul class="nav navbar-nav navbar-right">';
@@ -187,6 +187,10 @@ class Layout
 	public function getContent(){
 
 		$html='';
+    $container_type="container-fluid";
+    if(isset($this->aPage['container_type'])){
+      $container_type=$this->aPage['container_type'];
+    }
 
 		if(isset($this->aPage['sidebar'])){
 				$html.='
@@ -200,12 +204,12 @@ class Layout
 
 								<!-- Page Content -->
 								<div id="page-content-wrapper">
-								    <div class="container-fluid">
+								    <div class="'.$container_type.'">
 								        <div class="row">
 								            <div class="col-lg-12">';
 
 																if($this->aPage['title']<>'')
-																	$html.='<h1>'.$this->aPage['title'].'</h1>';
+																	$html.='<h1 class="dbmng_page_title">'.$this->aPage['title'].'</h1>';
 
 																	$html.=''.$this->aPage['content'].'
 								                <!-- <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>-->
@@ -223,18 +227,28 @@ class Layout
 				else{
 				//Normal page without sidebar
 				$html.='
-						<div class="container-fluid">
+						<div class="'.$container_type.'">
 
 							<div class="starter-template">';
 
 								if($this->aPage['title']<>'')
-									$html.='<h1>'.$this->aPage['title'].'</h1>';
+									$html.='<h1 class="dbmng_page_title">'.$this->aPage['title'].'</h1>';
 
 								$html.=$this->aPage['content'].'
 							</div>
 
 						</div><!-- /.container -->';
 				}
+
+        if(isset($this->aPage['footer'])){
+          $html.='
+          <footer class="footer">
+            <div class="'.$container_type.'">
+              '.$this->aPage['footer'].'
+            </div>
+          </footer>
+          ';
+        }
 
 		return $html;
 	}
@@ -244,11 +258,11 @@ class Layout
 		$link="";
 		if(isset($nav['title'])){
 			$tit=$nav['title'];
-		}	
+		}
 		if(isset($nav['link'])){
 			$link=$nav['link'];
-		}	
-	
+		}
+
 		$cl="";
 		if(isset($nav['active'])){
 			$cl='active';
@@ -256,5 +270,5 @@ class Layout
 		$html='<li class="'.$cl.'"><a href="'.$link.'">'.$tit.'</a></li>';
 		return $html;
 	}
-		
+
 }
