@@ -6,4 +6,5 @@ updateDBMNG2.sh
 bin/
 vendor/
 js/node_modules/
-#js/dist/
+js/dist/
+

@@ -16,6 +16,19 @@ function exeExternalFunction (fnstring, params) {
   }
 }
 
+if (typeof String.prototype.startsWith != 'function') {
+  // see below for better implementation!
+  String.prototype.startsWith = function (str){
+    return this.indexOf(str) === 0;
+  };
+}
+
+if (typeof String.prototype.endsWith != 'function') {
+	String.prototype.endsWith = function(suffix) {
+		  return this.indexOf(suffix, this.length - suffix.length) !== -1;
+	};
+}
+
 
 /*! DBMNG v0.0.1 
  * Date: 2015-11-02
@@ -138,7 +151,28 @@ Dbmng.Form = Class.extend({
     else {
       this.theme = Dbmng.defaults.theme;
     }
-// var w1=new Dbmng.AbstractWidget({field:'id', aField:aForm.fields.id, value:obj.id, theme:theme_boot});
+    // var w1=new Dbmng.AbstractWidget({field:'id', aField:aForm.fields.id, value:obj.id, theme:theme_boot});
+    // for(var key in this.aForm.fields){
+    //   var aField=this.aForm.fields[key];
+    //
+    //   var wt = '';
+    //   if(aField.widget){
+    //     wt=aField.widget;
+    //   }
+    //
+    //   if( wt == 'select' ) {
+    //     var sortable = [];
+    //     for (var voc in aField.voc_val) {
+    //         sortable.push([voc, aField.voc_val[voc]]);
+    //     }
+    //
+    //     sortable.sort(function(a, b) {
+    //         return a[1] > b[1];
+    //     });
+    //     aField.voc_val = sortable;
+    //   }
+    // }
+    //console.log(this.aForm.fields);
 		this.createWidgets();
 
   },
@@ -244,7 +278,7 @@ geo
 		var fields={};
 
     this.createWidgets();
-    console.log(aData);
+    // console.log(aData);
 
 
     for(var key in this.aForm.fields){
@@ -729,6 +763,7 @@ Dbmng.Crud = Class.extend({
     this.form_ready = options.form_ready;
     this.table_ready = options.table_ready;
     this.prepare_cdata = options.prepare_cdata;
+    this.form_validation = options.form_validation;
     if(!options.aParam){
       options.aParam={};
     }
@@ -1067,8 +1102,8 @@ Dbmng.Crud = Class.extend({
           // MM aggiungere funzione per history
         });
 
-        var btns_l = "<div id='dbmng_buttons_row' class='row' style='margin-top: 20px;margin-bottom: 100px;'><div class='dbmng_form_button_message col-xs-12'></div><div id='dbmng_button_left' class='dbmng_form_button_left col-xs-4'></div><div id='dbmng_button_center' class='col-xs-4'></div><div id='dbmng_button_right' class='dbmng_form_button_right col-xs-4'></div></div>";
-        var btns_f = "<div id='dbmng_buttons_row' class='row' style='margin-top: 0px;margin-bottom: 0px;'><div class='dbmng_form_button_message col-xs-12'></div>   <div id='dbmng_button_left' class='dbmng_form_button_left col-xs-4'></div><div id='dbmng_button_center' class='col-xs-4'></div><div id='dbmng_button_right' class='dbmng_form_button_right col-xs-4'></div></div>";
+        var btns_l = "<div id='dbmng_buttons_row' class='row' style='margin-top: 20px;margin-bottom: 100px;'><div class='dbmng_form_button_message col-md-12'></div><div id='dbmng_button_left' class='dbmng_form_button_left col-md-4 col-xs-12 '></div><div id='dbmng_button_center' class='col-md-4 col-xs-12 '></div><div id='dbmng_button_right' class='dbmng_form_button_right col-md-4 col-xs-12 '></div></div>";
+        var btns_f = "<div id='dbmng_buttons_row' class='row' style='margin-top: 0px;margin-bottom: 0px;'><div class='dbmng_form_button_message col-md-12'></div>   <div id='dbmng_button_left' class='dbmng_form_button_left col-md-4 col-xs-12 '></div><div id='dbmng_button_center' class='col-md-4 col-xs-12 '></div><div id='dbmng_button_right' class='dbmng_form_button_right col-md-4 col-xs-12 '></div></div>";
         var position = 'last';
         if( self.aParam.ui.btn_insert.position ) {
           position = self.aParam.ui.btn_insert.position;
@@ -1090,7 +1125,7 @@ Dbmng.Crud = Class.extend({
       }
 
       if(typeof self.table_ready=='function'){
-        self.table_ready();
+        self.table_ready(self.form);
       }
     }
     else {
@@ -1204,40 +1239,50 @@ Dbmng.Crud = Class.extend({
 
     var button = self.theme.getButton(label_save, opt_save);
     jQuery(button).click(function(){
-
-
       var valid=self.form.isValid();
-      if(valid.ok===false){
-        jQuery(div_id).find(".dbmng_form_button_message").html(valid.message);
+
+      var validation = true;
+      if(typeof self.form_validation=='function'){
+        validation = self.form_validation();
       }
-      else if(type=='update'){
-        self.api.update({key:key,data:self.form.getValue(),success:function(data){
 
-          if(!data.ok){
+      if( validation.ok === false ) {
+        var msg=self.theme.alertMessage(validation.msg);
+        jQuery('#'+self.div_id).find(".dbmng_form_button_message").html(msg);
+      }
+      else {
+        if(valid.ok===false){
+          jQuery(div_id).find(".dbmng_form_button_message").html(valid.message);
+        }
+        else if(type=='update'){
+          self.api.update({key:key,data:self.form.getValue(),success:function(data){
 
-            var msg=self.theme.alertMessage(data.message);
-            jQuery(div_id).find(".dbmng_form_button_message").html(msg);
+            if(!data.ok){
 
-          }
-          else{
-            console.log(data);
+              var msg=self.theme.alertMessage(data.message);
+              jQuery(div_id).find(".dbmng_form_button_message").html(msg);
+
+            }
+            else{
+              console.log(data);
+              if(typeof self.crud_success=='function'){
+                self.crud_success('update', data);
+              }
+              jQuery(div_id).html('');
+              self.createTable({div_id:div_id});
+            }
+          }});
+        }
+        else{
+          self.api.insert({data:self.form.getValue(),success:function(data){
+            console.log(self);
             if(typeof self.crud_success=='function'){
-              self.crud_success('update', data);
+              self.crud_success('insert', data);
             }
             jQuery(div_id).html('');
             self.createTable({div_id:div_id});
-          }
-        }});
-      }
-      else{
-        self.api.insert({data:self.form.getValue(),success:function(data){
-          console.log(self);
-          if(typeof self.crud_success=='function'){
-            self.crud_success('insert', data);
-          }
-          jQuery(div_id).html('');
-          self.createTable({div_id:div_id});
-        }});
+          }});
+        }
       }
     });
 
@@ -1246,7 +1291,7 @@ Dbmng.Crud = Class.extend({
       jQuery(div_id).html('');
       self.createTable({div_id:div_id});
     });
-    jQuery(div_id).append("<div id='dbmng_buttons_row' class='row' style='margin-top: 20px;margin-bottom: 100px;'><div class='dbmng_form_button_message col-xs-12'></div><div class='dbmng_form_button_left col-xs-4'></div><div class='col-xs-4'></div><div class='dbmng_form_button_right col-xs-4'></div></div>");
+    jQuery(div_id).append("<div id='dbmng_buttons_row' class='row' style='margin-top: 20px;margin-bottom: 100px;'><div class='dbmng_form_button_message col-md-12'></div><div class='dbmng_form_button_left col-md-4 col-xs-12 '></div><div class='col-md-4 col-xs-12 '></div><div class='dbmng_form_button_right col-md-4 col-xs-12 '></div></div>");
     jQuery(div_id).find('.dbmng_form_button_left').append(button_cancel);
     jQuery(div_id).find('.dbmng_form_button_right').append(button);
   },
@@ -1363,6 +1408,9 @@ Dbmng.CrudForm = Class.extend({
     this.form_ready = options.form_ready;
     this.crud_success = options.crud_success;
 
+    // add form validation [MICHELE]
+    this.form_validation = options.form_validation;
+
     if( options.theme ) {
       this.theme = options.theme;
     }
@@ -1423,28 +1471,28 @@ Dbmng.CrudForm = Class.extend({
 
           self.aForm = data;
           self.ready = true;
-          console.log("aForm loaded");
-          console.log(self.aForm);
-          console.log(this.aForm);
+          // console.log("aForm loaded");
+          // console.log(self.aForm);
+          // console.log(this.aForm);
 
           self.form = new Dbmng.Form({aForm:self.aForm, aParam:self.aParam, theme:self.theme});
 
           self.pk=self.form.getPkField();
 
           if( typeof options.success=='function' ){
-            console.log("call success");
+            // console.log("call success");
             options.success(self);
           }
           else{
-            console.log(this.aForm);
+            // console.log(this.aForm);
           }
         },
         error: function(exc){
           if( typeof options.error=='function' ){
             options.error(exc);
           }
-          console.log(exc);
-          console.log(options);
+          // console.log(exc);
+          // console.log(options);
         }
       });
     }
@@ -1476,17 +1524,14 @@ Dbmng.CrudForm = Class.extend({
   generateForm: function( type, key, id, data ) {
     var self = this;
     jQuery('#'+self.div_id).html("");
-    console.log(data);
+    // console.log(data);
     if( typeof data !== 'undefined' ) {
       jQuery('#'+self.div_id).append(self.form.createForm(data.data[0],self.aParam.template_form));
     }
     else {
-      jQuery('#'+self.div_id).append(self.form.createForm());
+      jQuery('#'+self.div_id).append(self.form.createForm(null,self.aParam.template_form));
     }
 
-    if(typeof self.form_ready=='function'){
-      self.form_ready(type, this.form);
-    }
 
     // Copiata e modificata a partire da Crud.createForm !!!
     var label_save=self.aParam.ui.btn_save.label;
@@ -1502,33 +1547,47 @@ Dbmng.CrudForm = Class.extend({
     var button = self.theme.getButton(label_save, opt_save);
     jQuery(button).click(function(){
       var valid=self.form.isValid();
-      if(valid.ok===false){
-        jQuery('#'+self.div_id).find(".dbmng_form_button_message").html(valid.message);
+
+      var validation = true;
+      if(typeof self.form_validation=='function'){
+        validation = self.form_validation();
       }
-      else if(type=='update'){
-        self.api.update({key:key,data:self.form.getValue(),success:function(data){
-          if(!data.ok){
-            var msg=self.theme.alertMessage(data.message);
-            jQuery('#'+self.div_id).find(".dbmng_form_button_message").html(msg);
-          }
-          else{
-            if(typeof self.crud_success=='function'){
-              self.crud_success('update', data);
+
+      var msg;
+      if( validation.ok === false ) {
+        msg=self.theme.alertMessage(validation.msg);
+        jQuery('#'+self.div_id).find(".dbmng_form_button_message").html(msg);
+      }
+      else {
+        if(valid.ok===false){
+          jQuery('#'+self.div_id).find(".dbmng_form_button_message").html(valid.message);
+        }
+        else if(type=='update'){
+          self.api.update({key:key,data:self.form.getValue(),success:function(data){
+            if(!data.ok){
+              msg=self.theme.alertMessage(data.message);
+              jQuery('#'+self.div_id).find(".dbmng_form_button_message").html(msg);
             }
-            self.createForm(id);
-          }
-        }});
+            else{
+              if(typeof self.crud_success=='function'){
+                self.crud_success('update', data);
+              }
+              self.createForm(id);
+            }
+          }});
+        }
+        else if(type=='insert'){
+          self.api.insert({data:self.form.getValue(),success:function(data){
+            // console.log(data);
+            if(typeof self.crud_success=='function'){
+              self.crud_success('insert', data);
+            }
+            jQuery(self.div_id).html('');
+            self.createForm(data.inserted_id);
+          }});
+        }
       }
-      else if(type=='insert'){
-        self.api.insert({data:self.form.getValue(),success:function(data){
-          console.log(data);
-          if(typeof self.crud_success=='function'){
-            self.crud_success('insert', data);
-          }
-          jQuery(self.div_id).html('');
-          self.createForm(data.inserted_id);
-        }});
-      }
+
     });
 
     var button_cancel = self.theme.getButton(label_cancel, opt_cancel);
@@ -1542,6 +1601,10 @@ Dbmng.CrudForm = Class.extend({
     jQuery('#'+self.div_id).append("<div id='dbmng_buttons_row' class='row' style='margin-top: 20px;margin-bottom: 100px;'><div class='dbmng_form_button_message col-xs-12'></div><div class='dbmng_form_button_left col-xs-4'></div><div class='col-xs-4'></div><div class='dbmng_form_button_right col-xs-4'></div></div>");
     jQuery('#'+self.div_id).find('.dbmng_form_button_left').append(button_cancel);
     jQuery('#'+self.div_id).find('.dbmng_form_button_right').append(button);
+
+    if(typeof self.form_ready=='function'){
+      self.form_ready(type, this.form);
+    }
   }
 });
 
@@ -1788,7 +1851,7 @@ Dbmng.AbstractTheme = Class.extend({
 
   getSelect: function(aField) {
     var el=document.createElement('select');
-
+    // console.log(Object.prototype.toString.call(aField.voc_val));
     this.assignAttributes(el, aField);
     if(aField.voc_val) {
       var o=document.createElement('option');
@@ -1799,19 +1862,49 @@ Dbmng.AbstractTheme = Class.extend({
       }
 
       el.options.add(o);
-      for (var opt in aField.voc_val) {
-        o=document.createElement('option');
-        o.value = opt;
-        o.text=aField.voc_val[opt];
-        // console.log(aField);
-        // console.log(aField.label + "= out: aFval[" + aField.value+"] opt: ["+ opt+"]");
-        if( typeof aField.value !== 'undefined' ) {
-					// console.log(aField.label + "= in: aFval[" + aField.value+"] opt: ["+ opt+"]");
-          if( aField.value == opt ) {
-            o.selected = true;
+      if(Object.prototype.toString.call(aField.voc_val) === '[object Object]') {
+        for (var opt in aField.voc_val) {
+          o=document.createElement('option');
+          o.value = opt;
+          o.text=aField.voc_val[opt];
+          // console.log(aField);
+          // console.log(aField.label + "= out: aFval[" + aField.value+"] opt: ["+ opt+"]");
+          if( typeof aField.value !== 'undefined' ) {
+            // console.log(aField.label + "= in: aFval[" + aField.value+"] opt: ["+ opt+"]");
+            if( aField.value == opt ) {
+              o.selected = true;
+            }
           }
+          el.options.add(o);
         }
-        el.options.add(o);
+      }
+      else if(Object.prototype.toString.call(aField.voc_val) === '[object Array]') {
+        // console.log(aField.voc_val);
+        jQuery.each(aField.voc_val, function(k,v){
+          if(typeof v !== 'string') {
+            jQuery.each(v, function(key,text){
+              o=document.createElement('option');
+              o.value = key; // v[0];
+              o.text= text; // v[1];
+              if( typeof aField.value !== 'undefined' ) {
+                if( aField.value == key ) {
+                  o.selected = true;
+                }
+              }
+            });
+          }
+          else {
+            o=document.createElement('option');
+            o.value = opt;
+            o.text=aField.voc_val[opt];
+            if( typeof aField.value !== 'undefined' ) {
+              if( aField.value == opt ) {
+                o.selected = true;
+              }
+            }
+          }
+          el.options.add(o);
+        });
       }
     }
     return el;
@@ -2037,9 +2130,17 @@ Dbmng.AbstractTheme = Class.extend({
 			opt={};
 		}
 		var el = document.createElement('td');
-		if(opt.content){
+		if(typeof opt.content!=='undefined' && opt.content!==null){
       if(typeof opt.content ==='object'){
         el.appendChild(opt.content);
+      }
+      else if((""+opt.content).startsWith('<')){
+        try{
+          el.appendChild(jQuery(opt.content)[0]);
+        }
+        catch(e){
+          el.appendChild(document.createTextNode(opt.content));
+        }
       }
       else{
         el.appendChild(document.createTextNode(opt.content));
@@ -2206,7 +2307,7 @@ Dbmng.BootstrapTheme = Dbmng.AbstractTheme.extend({
     prg.wrap('<div class="col-xs-6" style="padding-top: 7px;"></div>');
     prg.find('.progress-bar')[0].style.cssText="";
 
-    console.log(el);
+    // console.log(el);
 
     return el;
   },
@@ -2337,13 +2438,13 @@ Dbmng.AbstractWidget = Class.extend({
   },
 
   onChange: function(event){
-    console.log('onChange');
+    //console.log('onChange');
     this.isValid();
 
   } ,
 
   onFocus: function(event){
-    console.log('focus');
+    //console.log('focus');
   } ,
   setValue: function(val){
     var ret=0;
@@ -2407,14 +2508,14 @@ Dbmng.AbstractWidget = Class.extend({
   isValid:function (){
     var validated = false;
     var nullable = 0;
-    
+
     if(typeof this.aField.nullable !== 'undefined'){
       nullable = parseInt(this.aField.nullable);
     }
 
     var ok=true;
     var message='';
-    
+
     if( this.toValidate(nullable) ) { //( nullable === 0 && this.aField.field_type != 'hidden' && this.aField.key != 1 ) {
       validated = true;
       if( this.getValue()===null || this.getValue()==='' ) {
@@ -2459,7 +2560,7 @@ Dbmng.AbstractWidget = Class.extend({
 
     return {'ok':ok, 'message':message};
   },
-  
+
   toValidate: function( nullable ) {
     return (nullable === 0 && this.aField.field_type != 'hidden' && this.aField.key != 1);
   }
@@ -2494,7 +2595,7 @@ Dbmng.AutocompleteWidget = Dbmng.AbstractWidget.extend({
     if( typeof Bloodhound !== 'undefined'){
       var provider = new Bloodhound({
         datumTokenizer: function (data) {
-            console.log('datumToken');
+            // console.log('datumToken');
             //console.log(data);
               return Bloodhound.tokenizers.whitespace('<b>'+data[1]+"</b>: "+data[3]);
         },
@@ -2516,7 +2617,7 @@ Dbmng.AutocompleteWidget = Dbmng.AbstractWidget.extend({
         if( data_val !== '' ) {
           provider.search(data_val,function(d){self.autocomplete_get(d,elv);},function(d){self.autocomplete_get(d,elv);});
         }
-        console.log(data_val);
+        // console.log(data_val);
       }
 
       var fkey = "key";
@@ -2550,7 +2651,10 @@ Dbmng.AutocompleteWidget = Dbmng.AbstractWidget.extend({
         });
 
       jQuery(elv).bind('typeahead:select', function(ev, suggestion){
-        console.log(self);
+        // console.log(self);
+        // console.log(suggestion);
+        // console.log(fkey);
+        // console.log(suggestion[fkey]);
         self.widget.value = suggestion[fkey];
       });
     }
@@ -2561,11 +2665,11 @@ Dbmng.AutocompleteWidget = Dbmng.AbstractWidget.extend({
   },
 
   autocomplete_get: function(val,elv){
-    console.log(val);
+    // console.log(val);
     if(val.length>0){
       var label= val[0][this.aField.autocomplete_fieldname];
       elv.value=label;
-      console.log(label);
+      // console.log(label);
     }
     // console.log(val[0][this.aField.autocomplete_fieldname]);
   }
@@ -2584,10 +2688,11 @@ Dbmng.AutocompleteWidget = Dbmng.AbstractWidget.extend({
 Dbmng.CheckboxWidget = Dbmng.AbstractWidget.extend({
   createWidget: function(){
     this.aField.value = this.getFieldValue();
+    var checked=false;
     if(this.aField.value==1){
-      this.aField.checked=true;
+      checked=true;
     }
-    return this.theme.getCheckbox(this.aField);
+    return this.theme.getCheckbox({'value':this.aField.value,'checked':checked});
   },
 
   getValue: function(){
@@ -2606,7 +2711,8 @@ Dbmng.CheckboxWidget = Dbmng.AbstractWidget.extend({
 		}
 		else{
 			return val;
-		}
+      // return '<input type="checkbox" value='+val+'/>';
+    }
   }
 });
 
@@ -2627,7 +2733,15 @@ Dbmng.DateWidget = Dbmng.AbstractWidget.extend({
       this.aField.field_type='hidden';
     }
     else{
-      this.aField.field_type='date';
+      if( this.aField.type == 'date' ) {
+        this.aField.field_type='date';
+      }
+      else if( this.aField.type == 'time' ) {
+        this.aField.field_type='time';
+      }
+      else if( this.aField.type == 'datetime-local' ) {
+        this.aField.field_type='datetime-local';
+      }
     }
     return this.theme.getInput(this.aField);
   },
@@ -2635,13 +2749,13 @@ Dbmng.DateWidget = Dbmng.AbstractWidget.extend({
 
     var self=this;
     var date_format_view='dd-mm-yy';
-    console.log(self);
+    // console.log(self);
     if(self.aField.date_format_view){
-      date_format_view=self.aField.date_format_view;      
+      date_format_view=self.aField.date_format_view;
     }
 
     var el = this._super(data_val);
-    if(typeof jQuery.datepicker !== 'undefined'){
+    if(typeof jQuery.datepicker !== 'undefined' ){
       var aVField = {};
       aVField.field = this.aField.field + '_view';
 
@@ -2712,7 +2826,7 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
 
   createField: function(data_val){
     var self=this;
-    console.log(self);
+    // console.log(self);
 
     var url='server/php/';
     if(self.aParam.url){
@@ -2760,15 +2874,13 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
       opt.icon  = btn_icon;
       opt.label_file = btn_label;
 
-      /*
-
-      */
-
       el.appendChild(this.theme.createFileUploadField(elv,btn_label, opt));
+
+      var info=jQuery(el).find('.dbmng_fileupload_container');
 
       var el_progress=jQuery(el).find('.progress');
 
-      var info=jQuery(el).find('.dbmng_fileupload_container');
+      // var info=jQuery(el).find('.dbmng_fileupload_container');
       if(typeof data_val !== 'undefined' && data_val!=='' && data_val !==null ){
         self.addFile(info, weburl_file, data_val);
       }
@@ -2821,13 +2933,15 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
           }
       });
     }
+    else {
+      jQuery(el).append(self.theme.alertMessage("Resources missing! Please load the following files: jquery-ui.js, jquery.iframe-transport and jquery.fileupload"));
+    }
 
     return el;
   },
 
   addFile:function(info, weburl_file, file){
     var self=this;
-
     var btn_icon="glyphicon glyphicon-remove";
     if( self.aField.remove_icon ) {
       btn_icon = self.aField.remove_icon;
@@ -2836,10 +2950,11 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
     if( self.aField.remove_title_icon ) {
       btn_title = self.aField.remove_title_icon;
     }
-    
+
     info.append("<a target='_NEW' class='dbmng_fileupload_filelink' href='"+weburl_file+file+"'>"+this.assignFileTypeIcon(file)+" "+file+"</a>&nbsp;");
     var del=this.theme.getDeleteButton(btn_title, btn_icon);
     info.append(del);
+    console.log("addFile");console.log(weburl_file);console.log(file);
 
     jQuery(del).click(function(){
       info.html("");
@@ -2988,7 +3103,6 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
       }
     }
     else if( out_type == 'checkbox' ) {
-      //console.log(options);
       el = document.createElement('div');
       var ul = document.createElement('ul');
       ul.id = "ul_"+self.aField.field;
@@ -3021,7 +3135,6 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
           else {
             jQuery(aRow).show();
           }
-          console.log("change:"+txt_search.target.value);
         };
         el.appendChild(s);
 
@@ -3029,27 +3142,55 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
 
       self.theme.addClass(ul, 'dbmng_checkbox_ul');
       //self.theme.assignAttributes(el, self.aField);
+      if( typeof self.aField.voc_val[0] == 'object' ) {
+        jQuery.each(self.aField.voc_val, function(k,v){
+          jQuery.each(v, function(index, el) {
+            fk = index;
+            var li = document.createElement('li');
 
-      for ( fk in self.aField.voc_val) {
-        var li = document.createElement('li');
+            var checked=false;
+            if( self.aField.value ) {
+              if( typeof self.aField.value[0] == 'number') {
+                fk = parseInt(index);
+              }
+              if( self.aField.value.indexOf(fk) > -1 ) {
+                checked=true;
+              }
+            }
+            var fvalue=el;
+            var opt_checkbox={'checked':checked, 'value':fk, 'label':fvalue, 'exclude_attribute':true};
+            li.appendChild(self.theme.getCheckbox(opt_checkbox));
 
-        var checked=false;
-        if( self.aField.value ) {
-          if( typeof self.aField.value[0] == 'number') {
-            fk = parseInt(fk);
+            var txt = document.createTextNode(fvalue);
+            li.appendChild(txt);
+            ul.appendChild(li);
+          });
+        });
+      }
+      else {
+        for ( fk in self.aField.voc_val) {
+          var li = document.createElement('li');
+
+          var checked=false;
+          if( self.aField.value ) {
+            if( typeof self.aField.value[0] == 'number') {
+              fk = parseInt(fk);
+            }
+            if( self.aField.value.indexOf(fk) > -1 ) {
+              checked=true;
+            }
           }
-          if( self.aField.value.indexOf(fk) > -1 ) {
-            checked=true;
-          }
+          var fvalue=self.aField.voc_val[fk];
+
+          var opt_checkbox={'checked':checked, 'value':fk, 'label':fvalue, 'exclude_attribute':true};
+
+          li.appendChild(this.theme.getCheckbox(opt_checkbox));
+
+          var txt = document.createTextNode(fvalue);
+          li.appendChild(txt);
+          ul.appendChild(li);
         }
-        var fvalue=self.aField.voc_val[fk];
-        var opt_checkbox={'checked':checked, 'value':fk, 'label':fvalue, 'exclude_attribute':true};
 
-        li.appendChild(this.theme.getCheckbox(opt_checkbox));
-
-        var txt = document.createTextNode(fvalue);
-        li.appendChild(txt);
-        ul.appendChild(li);
       }
       el.appendChild(ul);
     }
@@ -3072,7 +3213,20 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
         else{
           first=false;
         }
-        ret+="<span class='dbmng_select_nm_item'>"+self.aField.voc_val[v]+"</span>";
+        if( typeof self.aField.voc_val[0] == 'object' ) {
+          jQuery.each(self.aField.voc_val, function(j, obj){
+            if( typeof obj == 'object' ) {
+              jQuery.each(obj, function(key, value){
+                if( key == v ) {
+                  ret+="<span class='dbmng_select_nm_item'>"+value+"</span>";
+                }
+              });
+            }
+          });
+        }
+        else {
+          ret+="<span class='dbmng_select_nm_item'>"+self.aField.voc_val[v]+"</span>";
+        }
       });
       return jQuery("<div>"+ret+"</div>")[0];
     }
@@ -3124,7 +3278,7 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
 /////////////////////////////////////////////////////////////////////
 // AbstractWidget
 // 12 November 2015
-// 
+//
 //
 // Developed by :
 // Diego Guidotti
@@ -3136,10 +3290,10 @@ Dbmng.SelectWidget = Dbmng.AbstractWidget.extend({
     //var aField=this.aField;
     this.aField.value = this.getFieldValue();
     this.aField.field = this.field;
-    
+
     return this.theme.getSelect(this.aField);
   },
-  
+
   getValue: function(){
     var val;
     if( this.aField.type == 'int' ) {
@@ -3148,11 +3302,31 @@ Dbmng.SelectWidget = Dbmng.AbstractWidget.extend({
     else {
       val = jQuery(this.widget).val();
     }
-		console.log('getValue '+val);
     return val;
   },
   convert2html: function(val) {
-    return this.aField.voc_val[val];
+    var ret;
+    // console.log(this.aField);
+    if( Object.prototype.toString.call(this.aField.voc_val) == '[object Object]' ){
+      ret = this.aField.voc_val[val];
+    }
+    else if( Object.prototype.toString.call(this.aField.voc_val) == '[object Array]' ) {
+      // console.log(val);
+      jQuery.each(this.aField.voc_val, function(k,voc){
+        // console.log(voc);
+        if(typeof voc !== 'string') {
+          jQuery.each(voc, function(v,text){
+            if( v == val ){
+              ret = text;
+            }
+          });
+        }
+        else {
+          ret = voc;
+        }
+      });
+    }
+    return ret;
   }
 });
 
