@@ -158,6 +158,7 @@ Apache needs some modules (for rest and file upload)
 	$ sudo service apache2 restart
 
 Verify that the directive AllowOverride is present in the root of the web server:
+
 	$ <Directory "/var/www/html">
 	$	AllowOverride All
 	$ </Directory>
