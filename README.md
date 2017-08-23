@@ -157,12 +157,11 @@ Apache needs some modules (for rest and file upload)
 	$ sudo a2enmod headers
 	$ sudo service apache2 restart
 
-Create a file in apache2 conf-enabled with the following content:
-
-	$ <Directory /var/www/dbmng2/> 
-	$	FollowSymLinks 
-	$	AllowOverride All 
+Verify that the directive AllowOverride is present in the root of the web server:
+	$ <Directory "/var/www/html">
+	$	AllowOverride All
 	$ </Directory>
+
 
 Running the test
 
