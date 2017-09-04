@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DBMNG Test Suite</title>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  <!-- for autocomplete and file upload -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script>
+
+  <!-- for autocomplete -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+
+  <!-- for file upload -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.iframe-transport.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.fileupload.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/css/jquery.fileupload.min.css">
+
+  <script type="text/javascript" src="../dist/dbmng.js"></script>
+</head>
+<body>
+  <h1>Crud</h1>
+    <div id="test_crud"></div>
+
+  <script>
+
+    var aParam = {};
+    aParam.user_function = {upd:1, del:1, ins:1};
+    aParam.ui = {};
+    aParam.ui.btn_edit = {label:'Edit', icon:'fa fa-pencil'};
+    aParam.ui.btn_delete = {label:'Delete', icon:'fa fa-trash', confirm_message: 'Are you sure to delete the table?'};
+    aParam.ui.btn_insert = {label:'Insert new tables', class:'btn-success btn-block'};
+    aParam.ui.btn_save = {label:'Save table', class:'btn-success btn-block'};
+
+    var theme_boot=new Dbmng.BootstrapTheme();
+
+    var crud = new Dbmng.Crud({
+        aParam:aParam,
+        theme:theme_boot,
+        url: '/dbmng2/api/test_father', user:'test', password:'test',
+        offline: {jstorage: true},
+        success:function(self){
+          console.log("success");
+          console.log(self);
+          self.createTable({div_id:'#test_crud'});
+        },
+        error:function(a){
+          console.log(a);
+        },
+    });
+
+
+
+  </script>
+</body>
