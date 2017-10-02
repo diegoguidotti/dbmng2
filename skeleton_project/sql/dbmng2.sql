@@ -46,7 +46,7 @@ CREATE TABLE `dbmng_fields` (
   `skip_in_tbl` int(11) DEFAULT '0',
   `voc_sql` text,
   `param` text
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dump dei dati per la tabella `dbmng_fields`
@@ -113,7 +113,7 @@ CREATE TABLE `dbmng_tables` (
   `table_label` text,
   `table_alias` varchar(100) DEFAULT NULL,
   `param` text
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dump dei dati per la tabella `dbmng_tables`
@@ -136,7 +136,7 @@ CREATE TABLE `dbmng_users` (
   `mail` varchar(254) DEFAULT '' COMMENT 'User’s e-mail address.',
   `realname` varchar(254) DEFAULT 'Real name of the user',
   `realsurname` varchar(254) DEFAULT 'Real surname if the user',
-  `description` varchar(254) DEFAULT 'Description',
+  `description` varchar(254) DEFAULT 'Description'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores user data.';
 
 --
