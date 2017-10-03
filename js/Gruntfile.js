@@ -72,6 +72,7 @@ module.exports = function(grunt) {
         indent: 2,
         nonbsp: true,
         nonew: true,
+        reporterOutput: '' ,
         immed: true,
         latedef: true,
 					//unused:true,
