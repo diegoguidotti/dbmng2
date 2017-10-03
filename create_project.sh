@@ -4,7 +4,7 @@ clear
 function USAGE()
 {
   echo "Crea un nuovo progetto...."
-  
+
   echo ""
   echo "USAGE:"
   echo "------"
@@ -87,7 +87,9 @@ if [ $mysql_engine == 2 ]; then
 fi
 
 sed -i -- 's/aegest/'$project_name'/g' composer.json
+
 composer update
+rm -rf composer
 
 if [ $mysql_engine == 1 ]; then
   mysql -u $mysql_user -p$mysql_password -e "create database $mysql_database DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci";
@@ -95,7 +97,7 @@ if [ $mysql_engine == 1 ]; then
 fi
 
 if [ $mysql_engine == 2 ]; then
-  psql -U $mysql_user 
+  psql -U $mysql_user
 fi
 
 sed -i -- 's/xxx_user/'$mysql_user'/g' settings.php
