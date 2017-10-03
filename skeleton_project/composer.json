@@ -25,7 +25,12 @@
         "adoy/oauth2": "dev-master",
         "respect/rest": "0.6.*",
         "twbs/bootstrap": "3.3.*",
-        "components/jquery": "1.12.*"
+        "components/jquery": "1.12.*",
+        "components/font-awesome":"4.7.0",
+        "components/jqueryui":"1.12.1",
+        "blueimp/jquery-file-upload":"9.19.1",
+        "components/handlebars.js":"^4.0",
+        "twitter/typeahead.js":"0.11.1"
     },
     "require-dev": {
         "mockery/mockery": "~0.9",
