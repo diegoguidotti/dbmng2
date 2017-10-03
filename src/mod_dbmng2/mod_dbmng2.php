@@ -1,18 +1,6 @@
 <?php
 require_once 'settings.php';
 
-function dbmng2_rest_response()
-{
-  global $base_path;
-
-  $path = $base_path . DBMNG2_API_PATH;
-  $router = new \Respect\Rest\Router($path);
-
-  $app=dbmng2_get_app();
-  $h = new DbmngHelper($app);
-  $h->exeAllRest( $router );
-}
-
 function dbmng2_manager()
 {
   global $user;
@@ -25,9 +13,9 @@ function dbmng2_manager()
 
   $html.=('<link rel="stylesheet" type="text/css" href="vendor/blueimp/jquery-file-upload/css/jquery.fileupload.css">');
   $html.=('<link rel="stylesheet" type="text/css" href="vendor/components/font-awesome/css/font-awesome.css">');
-  $html .= "<script src='mod_dbmng2/mod_dbmng2.js'></script>";
+  $html .= "<script src='vendor/dbmng/dbmng/src/mod_dbmng2/mod_dbmng2.js'></script>";
 
-  $html.=('<link rel="stylesheet" type="text/css" href="mod_dbmng2/mod_dbmng2.css">');
+  $html.=('<link rel="stylesheet" type="text/css" href="vendor/dbmng/dbmng/src/mod_dbmng2/mod_dbmng2.css">');
 
   $html.=('<script src="vendor/twitter/typeahead.js/dist/typeahead.bundle.min.js"></script>');
   $html.=('<script src="vendor/components/handlebars.js/handlebars.js"></script>');

@@ -36,7 +36,7 @@ function dbmng2_show_tables() {
   aParam.custom_function = {action: 'dbmng2_show_fields', label: 'Show fields', icon: 'fa fa-th-list'};
 
   var theme_boot = new Dbmng.BootstrapTheme();
-  console.log(path+table);
+  var url;
   var crud = new Dbmng.Crud(
     {
       aParam:aParam, theme:theme_boot, url: path + table,
@@ -47,7 +47,7 @@ function dbmng2_show_tables() {
       },
       crud_success: function(method, data){
         if( method == 'insert' ) {
-          var url = base_path + dbmng2_api_path + "api/dbmng_tables/schema/fill";
+          url = base_path + dbmng2_api_path + "api/dbmng_tables/schema/fill";
           if( data.ok ) {
             jQuery.ajax({
               type: 'POST',
@@ -64,7 +64,7 @@ function dbmng2_show_tables() {
           }
         }
         else if( method == 'delete' ) {
-          var url = base_path + dbmng2_api_path + "api/dbmng_tables/schema/delete";
+          url = base_path + dbmng2_api_path + "api/dbmng_tables/schema/delete";
           jQuery.ajax({
             type: 'POST',
             url: url,
