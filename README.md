@@ -1,4 +1,4 @@
-DBMNG2
+DBMNG2.
 ===============
 
 
@@ -17,7 +17,7 @@ $app=new App($db);
 #define the form structure
 $aForm=array(  
 	'table_name' => 'test' ,
-		'primary_key'=> array('id'), 
+		'primary_key'=> array('id'),
 		'fields'     => array(
 				'id' => array('label'   => 'ID', 'type' => 'int', 'key' => 1 ) ,
 				'name' => array('label'   => 'Name', 'type' => 'varchar')
@@ -88,7 +88,7 @@ Edit the file Router.php (vendor/respect/rest/library/Respect/Rest/Router.php) r
                    return $keysa[$index]<$keysb[$index];
                 }
                 return $a->method>$b->method;
-                /* 
+                /*
 		// Previous code - do not work correct with PHP 7
                 $a = $a->pattern;
                 $b = $b->pattern;
@@ -131,8 +131,8 @@ Update the configuration file
 For the JS library you need to install grunt (nodejs required) and then with npm install load the nodel packages
 
 	$ apt-get install libfontconfig1 fontconfig libfontconfig1-dev libfreetype6-dev #dipendenze per phantomJS per il test
-	$ apt-get install nodejs-legacy 
-	$ sudo npm install -g grunt-cli 
+	$ apt-get install nodejs-legacy
+	$ sudo npm install -g grunt-cli
 	$ cd dbmng2/js/
 	$ npm install
 	$ grunt #run the grunt manager on the project
@@ -146,8 +146,8 @@ To test the api you should link the folder in the apache folder
 
 	$ ln -s ../dbmng2 /var/www/
 
-Verify that the follow link respond 
-	
+Verify that the follow link respond
+
 	$ link: http://localhost/dbmng2/api/test_base
 	$ {"0":{"id":"1","name":"Diego","sex":""},"1":{"id":"2","name":"Michele","sex":""},"test_get":1}
 
