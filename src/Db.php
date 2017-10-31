@@ -109,6 +109,37 @@ private $debug;
 			return $ret;
 		}
 
+    /////////////////////////////////////////////////////////////////////////////
+		// select_plus
+		// ======================
+		// Query the db using a PDO Prepared Statements query string and an array of parametres
+		/**
+		\param $sQuery  the query with parameteres placeholders
+		\param $aVars   associative array with placeholders and parameters. e.g. Array(':id'=>1, ':name'=>'Foo')
+		\param $fetch_style	style [default FETCH_ASSOC] reference -> http://php.net/manual/en/pdostatement.fetch.php
+    \param $aFloatField a list of numeric fields that will be casted to int or float/double
+		*/
+		public function select_plus($sQuery, $aVars, $fetch_style = \PDO::FETCH_ASSOC, $aFloatField = [] ){
+			$ret=array();
+
+      $ret = $this->select($sQuery, $aVars, $fetch_style = \PDO::FETCH_ASSOC);
+
+      if( count($aFloatField) > 0 )
+        {
+          for( $f = 0; $f < count($aFloatField); $f++ )
+            {
+              $fld = $aFloatField[$f];
+
+              for( $nR = 0; $nR < $ret['rowCount']; $nR++ )
+                {
+                  $ret['data'][$nR][$fld] = $ret['data'][$nR][$fld]+0;
+                }
+            }
+        }
+
+			return $ret;
+		}
+
     public function getConnection()
     {
       return $this->pdo;
