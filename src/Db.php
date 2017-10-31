@@ -132,7 +132,8 @@ private $debug;
 
               for( $nR = 0; $nR < $ret['rowCount']; $nR++ )
                 {
-                  $ret['data'][$nR][$fld] = $ret['data'][$nR][$fld]+0;
+                  if( ! is_null($ret['data'][$nR][$fld]) )
+                    $ret['data'][$nR][$fld] = $ret['data'][$nR][$fld]+0;
                 }
             }
         }
