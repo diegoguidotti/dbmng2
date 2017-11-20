@@ -135,10 +135,19 @@ Dbmng.CrudForm = Class.extend({
     jQuery('#'+self.div_id).html("");
     // console.log(data);
     if( typeof data !== 'undefined' ) {
+      console.log('generate form: update');
       jQuery('#'+self.div_id).append(self.form.createForm(data.data[0],self.aParam.template_form));
     }
     else {
-      jQuery('#'+self.div_id).append(self.form.createForm(null,self.aParam.template_form));
+      var aRecord = {};
+      console.log('generate form: insert');
+      if(this.aParam.search){
+        jQuery.each(this.aParam.search,function(k,v){
+          aRecord[k] = v;
+        });
+      }
+
+      jQuery('#'+self.div_id).append(self.form.createForm(aRecord,self.aParam.template_form));
     }
 
 
