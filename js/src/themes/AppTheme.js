@@ -11,6 +11,7 @@
 Dbmng.AppTheme = Dbmng.AbstractTheme.extend({
   getLabel: function(aField) {
     var el = this._super(aField);
+    this.addClass(el, 'label-form');
     jQuery(el).css('font-weight','bold');
     return el;
   },
