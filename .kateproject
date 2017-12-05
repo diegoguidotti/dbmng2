@@ -1,0 +1,4 @@
+{
+  "name": "dbmng2"
+, "files": [ { "filters": ["*.php", "*.module", "*.js", "*.css"], "recursive": 1 } ]
+}
