@@ -121,7 +121,11 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
                   if(file.error){
                     info.append(self.theme.alertMessage(file.error));
                   }
+                  else if (!file.completed){
+                    info.append(self.theme.alertMessage("Not Completed!!!!"));
+                  }
                   else{
+                    console.log(data);
                     self.addFile(info, weburl_file, file.name);
                     self.setValue(file.name);
                   }
@@ -170,6 +174,7 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
   },
 
   assignFileTypeIcon: function( file ) {
+    console.log(typeof file);
     var aFile = file.split('.');
     var file_type_icon = "";
     if( aFile[1] == 'pdf' ) {
