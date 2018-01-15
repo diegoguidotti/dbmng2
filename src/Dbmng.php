@@ -655,11 +655,29 @@ function uploadFile($field){
 			header($header . ': ' . $value);
 		}
 
+		// Workaround - fix file upload for php7.0
+		if( $files[0]->completed == true && $files[0]->error == 0 )
+			{
+				if( ! isset($files[0]->name) )
+					{
+						$files[0]->name = $_FILES['files']['name'][0];
+					}
+				if( ! isset($files[0]->path) )
+					{
+						$files[0]->path = $server_path."/".$_FILES['files']['name'][0];
+					}
+				if( ! isset($files[0]->type) )
+					{
+						$files[0]->type = $_FILES['files']['type'][0];
+					}
+			}
+
 		$ret['ok']=$ok;
 		$ret['files']=$files;
 		$ret['headers']=$headers;
-
-
+		$ret['FIL'] = $_FILES['files'];
+		$ret['SER'] = $_SERVER;
+		$ret['test'] = $server_path;
 	}
 	else{
 		$ret['ok']=$ok;
