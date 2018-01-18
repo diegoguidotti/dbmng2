@@ -183,20 +183,16 @@ class DbmngHelper {
 						// print_r($fields['data'][$nF]);
             if(isset($fields['data'][$nF]['voc_val']))
               {
-								$aFields[$fields['data'][$nF]['field_name']]['michele'] = "aaa";
                 ;//If already exists does not execute a query
               }
             else if( !isset($fields['data'][$nF]['voc_sql']) && strpos($fields['data'][$nF]['field_name'], "id_") !== false )
               {
-								$aFields[$fields['data'][$nF]['field_name']]['michele'] = "bbb";
-
                 // sql automatically generated throught standard coding tables definition
                 $sVoc = str_replace("id_", "", $fields['data'][$nF]['field_name']);
                 $sql  = "select * from $sVoc";
               }
             else
               {
-								$aFields[$fields['data'][$nF]['field_name']]['michele'] = "ccc";
                 // sql written in dbmng_fields
                 $sql  = $fields['data'][$nF]['voc_sql'];
               }
