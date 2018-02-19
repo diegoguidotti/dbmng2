@@ -65,9 +65,9 @@ CREATE TABLE dbmng_users_roles
    CONSTRAINT dbmng_users_roles_pk PRIMARY KEY (uid,rid)
 );
 
--- 
+--
 -- Insert in the tables default values
--- 
+--
 INSERT INTO dbmng_users (uid, name, pass, mail) VALUES (1, 'test', '098f6bcd4621d373cade4e832627b4f6', '');
 
 
@@ -131,3 +131,14 @@ SELECT pg_catalog.setval('dbmng_fields_id_field_seq', 5, true);
 SELECT pg_catalog.setval('dbmng_tables_id_table_seq', 30, true);
 SELECT pg_catalog.setval('dbmng_role_rid_seq', 4, true);
 SELECT pg_catalog.setval('dbmng_users_uid_seq', 2, true);
+
+
+CREATE TABLE dbmng_users_register
+(
+  mail character varying(254),
+  pass character varying(254),
+  token character varying(254,
+  time_ref timestamp without time zone DEFAULT now(),
+  used integer DEFAULT 0,
+  CONSTRAINT dbmng_users_register_mail UNIQUE (mail)
+);

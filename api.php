@@ -13,12 +13,14 @@
 
 	$db = DB::createDb($aSetting['DB']['DB_DSN'], $aSetting['DB']['DB_USER'], $aSetting['DB']['DB_PASSWD'] );
 	$db->setDebug(true);
-	$login=new Login($db, array('auth_type'=>'BASIC'));
+  $aSetting['auth_type']='BASIC')
+  $app = new Dbmng\App($db, $aSetting);
+	$login=new Login($app);
 
 
 	$l=$login->auth();
 
-	
+
 	$user=$l['user'];
 
 	$app=new App($db, array('user'=>$user, 'roles' => array(1=>'authenticated user')));
