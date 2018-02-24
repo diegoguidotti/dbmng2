@@ -76,13 +76,27 @@ class Login {
   }
 
 
+  //register or reset the password (if $opt['reset_password']==true)
   public function register($email,$password, $opt){
+
+    $register=true;
+    if(isset($opt['reset_password'])){
+      if($opt['reset_password']){
+        $register=false;
+      }
+    }
+
 
     if(!isset($opt['subject'])){
       $opt['subject']="Confirmation message";
     }
     if(!isset($opt['web_message'])){
-      $opt['web_message']="We have send you an email. Click on the email link to register the website";
+      if($register){
+        $opt['web_message']="We have send you an email. Click on the email link to register the website";
+      }
+      else{
+        $opt['web_message']="We have send you an email. Click on the email link to reset the password";
+      }
     }
 
 
@@ -93,38 +107,52 @@ class Login {
     if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
       $message="The email is not valid.";
     }
-    else if(strlen($password)<6){
+    else if($register && strlen($password)<6){
       $message="The password is too short.";
     }
     else{
 
-
       $exist=$this->db->select("select * from  dbmng_users WHERE name=:mail", Array(':mail'=>$email));
-      if(count($exist['data'])>0){
+      if($register && count($exist['data'])>0){
         $message="The userID already exists. If you do not remember the password please contact us.";
+      }
+      else if(!$register && count($exist['data'])==0){
+        $message="The user does not exists. You should <a href='?do_register'>register</a>.";
       }
       else{
         $ok=True;
         $token=Util::GUID();
-        $res=$this->db->select(" insert into dbmng_users_register (mail, pass, token) values (:mail, md5(:pass), :token) ", Array(':mail'=>$email,':pass'=>$password,':token'=>$token));
+        $op='register';
+        if(!$register){
+          $op='reset';
+        }
+        $res=$this->db->select(" insert into dbmng_users_register (mail, pass, token, op) values (:mail, md5(:pass), :token, :op) ", Array(':mail'=>$email,':pass'=>$password,':token'=>$token, ':op'=>$op));
 
-        $body_message="";
-        if(!isset($opt['body'])){
-          $body_message.="To activate your registration you're requested to click on the confirmation link.";
+        if($res['ok']){
+          $body_message="";
+          if(!isset($opt['body'])){
+            $body_message.="To activate your registration you're requested to click on the confirmation link.";
+          }
+          else{
+            $body_message.=$opt['body'];
+          }
+          $click_here="Click here to confirm";
+          if(isset($opt['click_here'])){
+            $click_here=$opt['click_here'];
+          }
+          $body_message.=" <a style='margin: 20px 50px;font-size: 20px;display: block;text-align: center;border: 1px solid black;padding: 30px;' href='".$this->aParam['WEBSITE']."?check_email=".$token."'>".$click_here."</a>";
+
+          $mail_message=Array('to'=>$email,'subject'=>$opt['subject'],'body'=>$body_message);
+
+          MailSender::send($mail_message,$this->aParam);
+          $message=$opt['web_message'];
         }
         else{
-          $body_message.=$opt['body'];
+          $ok=false;
+          $message=$res['message'];
         }
-        $click_here="Click here to confirm";
-        if(isset($opt['click_here'])){
-          $click_here=$opt['click_here'];
-        }
-        $body_message.=" <a href='".$this->aParam['WEBSITE']."?check_email=".$token."'>".$click_here."</a>";
 
-        $mail_message=Array('to'=>$email,'subject'=>$opt['subject'],'body'=>$body_message);
 
-        MailSender::send($mail_message,$this->aParam);
-        $message=$opt['web_message'];
       }
     }
 
@@ -134,28 +162,59 @@ class Login {
   public function check_email($token){
     $ok=false;
     $message='';
+    $register=true;
     $res=$this->db->select("select * from dbmng_users_register WHERE token=:token AND used=0", Array(':token'=>$token));
     if(count($res['data'])>0){
       $u=$res['data'][0];
-      $this->db->setDebug(true);
-      $a=Array(':name'=>$u['mail'],':pass'=>$u['pass'],':mail'=>$u['mail']);
+      if($u['op']=='reset'){
+        $register=false;
 
-      $ret=$this->db->insert("insert into dbmng_users (name, pass, mail) VALUES (:name, :pass, :mail)", $a,'dbmng_users_uid_seq');
-      if($ret['ok']){
-        $this->db->select("UPDATE dbmng_users_register set used=1 WHERE token=:token", Array(':token'=>$token));
-        //print_r( $ret['inserted_id']);
-        $message.="We have confirmed your email. You can now <b><a href='?do_login=true'>login the website</a></b>";
-        $ok=true;
+        if(isset($_REQUEST['new_password']) && strlen($_REQUEST['new_password'])>6){
+            $a=Array(':name'=>$u['mail'],':pass'=>$_REQUEST['new_password']);
+
+            $ret=$this->db->update("UPDATE dbmng_users set pass=md5(:pass) WHERE name=:name", $a);
+            if($ret['ok']){
+              $this->db->select("UPDATE dbmng_users_register set used=1 WHERE token=:token", Array(':token'=>$token));
+              //print_r( $ret['inserted_id']);
+              $message.="The password has been reset. You can now <b><a href='?do_login=true'>login the website</a></b>";
+              $ok=true;
+            }
+
+        }
+        else{
+
+
+          if(isset($_REQUEST['new_password'])){
+            $message.="<div class='alert alert-danger'>Please, choose a longer password!</div>";
+          }
+          $message.="<h1>reset the password</h1>";
+          $message.="<form action='?' method='POST'>";
+          $message.="<input type='hidden' name='check_email' value='".$token."'/>";
+          $message.="<input class='form-control' name='new_password' type='password' value=''/>";
+          $message.="<input class='form-control' type='submit' value='Reset the password'/>";
+          $message.="</form>";
+        }
+
       }
       else{
-        $message="There is a problem in creating the user. Probably the user already exists.";
+        $a=Array(':name'=>$u['mail'],':pass'=>$u['pass'],':mail'=>$u['mail']);
+
+        $ret=$this->db->insert("insert into dbmng_users (name, pass, mail) VALUES (:name, :pass, :mail)", $a,'dbmng_users_uid_seq');
+        if($ret['ok']){
+          $this->db->select("UPDATE dbmng_users_register set used=1 WHERE token=:token", Array(':token'=>$token));
+          //print_r( $ret['inserted_id']);
+          $message.="We have confirmed your email. You can now <b><a href='?do_login=true'>login the website</a></b>";
+          $ok=true;
+        }
+        else{
+          $message="There is a problem in creating the user. Probably the user already exists.";
+        }
       }
     }
     else{
       $message="The token is wrong or expired.";
     }
-    return Array('ok'=>$ok,'message'=>$message  );
-
+    return Array('ok'=>$ok,'message'=>$message, 'register'=>$register  );
 
 
   }
@@ -219,7 +278,7 @@ class Login {
                }
             else
               {
-                $ret=$this->returnEmptyUser(3,"The password provided is not correct.");
+                $ret=$this->returnEmptyUser(3,"The password provided is not correct. Click <a href='?do_reset_password=true'>here to reset the passowrd</a>" );
               }
           }
       }
