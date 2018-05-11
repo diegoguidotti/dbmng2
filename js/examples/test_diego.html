@@ -75,7 +75,7 @@
       primary_key: Array('id'),
       fields: {
         id: {label: 'ID', type: 'int', key: 0, nullable: false},
-        name: {label: 'Name', type: 'varchar', 'default': 'Paperino', nullable: false},
+        name: {label: '!!!!!!Name', type: 'varchar', 'default': 'Paperino'},
 
         month: {label: 'Mounth', widget:'select', type: 'int', voc_val: {1:'January', 2:'February'}},
         montha: {label: 'Mounth auto', widget:'select', type: 'int', url: 'http://localhost/registro/api?search_citta=%QUERY', autocomplete_fieldname:'citta', autocomplete_key:'cod_istat', not_found: 'Nessuna città trovata'},
@@ -124,8 +124,13 @@
 
     var form=new Dbmng.Form({aForm:aForm, aParam:aParam, theme:theme_boot});
 
-    var template="<div><h1>Pippo<div data-content='name'></div><table class='table' border='1'><tr><td data-content='passwd'></td><td data-content='month'></td><td data-content='data'></td></tr><tr style='height:300px'><td data-content='multiplec'></td><td data-content='multiple'></td></tr></table></div>";
+    var template="<div><h1>Pippo<div data-content='name'></div><table class='table' border='1'><tr><td data-content='passwd'></td><td data-content='month'></td><td data-content='data'></td></tr><tr style='height:300px'><td data-content='multiplec'></td><td data-content='multiple'></td></tr></table></div><button id='save_button' class='btn btn-danger'>Salva</button>";
     jQuery('#test_dbmng').append(form.createForm(obj, template));
+
+    jQuery('#save_button').click(function(){
+      debugger;
+    });
+
 
 
 		var aForm2 = { table_name: 'test',

@@ -58,37 +58,37 @@
     Dbmng.defaults.aParam.ui.btn_save = {label:'Save table', class:'btn-success btn-block'};
     Dbmng.defaults.aParam.ui.btn_cancel = {label:'Cancel', class:'btn-danger btn-block'};
     Dbmng.defaults.aParam.ui.table_class = 'table-condensed table-hover';
-    Dbmng.defaults.aParam.user_function = {upd:1, del:1, ins:1};    
-    
+    Dbmng.defaults.aParam.user_function = {upd:1, del:1, ins:1};
+
     var aParam = {};
 		var aForm2 = { table_name: 'test',
       primary_key: Array('id'),
       fields: {
-        id: {label: 'ID', type: 'int', key: 0, nullable: false},
-        name: {label: 'Name', type: 'varchar', 'default': 'Paperino', nullable: false}
+        id: {label: 'ID', type: 'int', key: 0, 'nullable': false},
+        name: {label: '!Name', type: 'varchar', 'default': 'Paperino', 'nullable': false}
 			}
     };
-    
+
     var theme_boot=new Dbmng.BootstrapTheme();
 		var form2=new Dbmng.Form({aForm:aForm2, aParam:aParam, theme:theme_boot});
-    
+
     var obj = {id:2, name:'Diego'};
     console.log(obj);
     jQuery('#test_bootstrap').append(form2.createForm(obj));
 
 		var api=new  Dbmng.Api({aForm:aForm2, url:'/dbmng2/api/test', user:'test', password:'test'});
-		
+
 		var fc = new Dbmng.CrudForm(
         {
-          aForm:aForm2, 
-          aParam:aParam, 
+          aForm:aForm2,
+          aParam:aParam,
           theme:theme_boot,
-          url:'/dbmng2/api/test', 
+          url:'/dbmng2/api/test',
           div_id:'test_form',
           success: function(self) {
             self.createForm();
           }
         });
-		
+
   </script>
 </body>

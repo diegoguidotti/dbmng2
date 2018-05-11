@@ -278,7 +278,7 @@ class Login {
                }
             else
               {
-                $ret=$this->returnEmptyUser(3,"The password provided is not correct. Click <a href='?do_reset_password=true'>here to reset the passowrd</a>" );
+                $ret=$this->returnEmptyUser(3,"The password provided is not correct." ); // Click <a href='?do_reset_password=true'>here to reset the password</a>
               }
           }
       }
