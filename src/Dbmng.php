@@ -231,8 +231,8 @@ private $prepare;
 					{
 						if(isset($aVars[$fld])){
 							$hasPk = true;
-							$sWhere .= "$fld = :$fld and ";
-							$aWhere = array_merge($aWhere, array(":".$fld => $aVars[$fld] ));
+							$sWhere .= "$fld = :$fld"."_where"." and ";
+							$aWhere = array_merge($aWhere, array(":".$fld."_where" => $aVars[$fld] ));
 						}
 					}
 			}
@@ -253,8 +253,8 @@ private $prepare;
 									foreach ( $this->aParam['filters'] as $fld => $fld_value )
 										{
 											//echo "|".$fld."|";
-											$sWhere .= $fld . " = :$fld and ";
-											$aWhere = array_merge($aWhere, array(":".$fld => $fld_value));
+											$sWhere .= $fld . " = :$fld"."_where"." and ";
+											$aWhere = array_merge($aWhere, array(":".$fld."_where" => $fld_value));
 										}
 								}
 					}
@@ -439,6 +439,7 @@ private $prepare;
 					else{
 						$result = $this->db->update($sql, $var);
 						$result['sql'] = $this->db->getSQL($sql, $var);
+						$result['var'] = $var;
 					}
 
 				if(  ( ($this->prepare  || $result['ok']) && $bSelectNM))

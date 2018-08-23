@@ -258,7 +258,10 @@ private $debug;
 
 							$ret0=array();
 							$ret0['ok']=$ok;
-							$ret0['sql']=$this->getSQL($a['sql'],$a['var']);
+              if( $this->debug )
+                {
+                  $ret['sql'] = $this->getSQL($a['sql'],$a['var']);
+                }
 							if($id>0){
 								$ret0['inserted_id']=$id;
 							}

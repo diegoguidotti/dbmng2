@@ -73,11 +73,11 @@ class DbmngHelper {
       }
 
     $aParam=$this->aParamDefault;
-    $router->any('/api/**', function() use ($aParam){ //use  ($aForms)
-
-        $input = array('ok' => false, 'msg' => 'Table definition not found', 'aParam'=>$aParam);
-        return json_encode($input);
-    });
+    // $router->any('/api/**', function() use ($aParam){ //use  ($aForms)
+    //
+    //     $input = array('ok' => false, 'msg' => 'Table definition not found', 'aParam'=>$aParam);
+    //     return json_encode($input);
+    // });
 
   }
   public function getFormArrayById($id_table)
