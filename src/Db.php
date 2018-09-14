@@ -79,7 +79,7 @@ private $debug;
 			try
 				{
 
-
+          $starttime = microtime(true);
 // 					echo "sQuery: $sQuery";
 // 					print_r($aVars);
 					$res0 = $this->pdo->prepare($sQuery);
@@ -92,6 +92,7 @@ private $debug;
 					$ret['rowCount'] = $res0->rowCount();
           if( $this->debug )
             {
+              $ret['duration']=round((microtime(true) - $starttime)*1000,3);
               $ret['sql'] = $this->getSQL($sQuery, $aVars);
             }
         }
