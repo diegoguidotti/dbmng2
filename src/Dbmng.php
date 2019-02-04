@@ -611,7 +611,7 @@ function uploadFile($field){
 			$server_path=$aField['server_path'];
 		}
 
-		$mime_types=Array('image/png', 'image/jpg', 'image/jpeg', 'image/gif', 'text/plain','application/pdf');
+		$mime_types=Array('image/png', 'image/jpg', 'image/jpeg', 'image/gif', 'text/plain','application/pdf','application/zip');
 		if(isset($aField['mime_types'])){
 			$mime_types=$aField['mime_types'];
 		}
