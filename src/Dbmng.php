@@ -115,6 +115,9 @@ private $prepare;
 		if(isset($this->aParam['tbl_order'])){
 			$sQuery.=" ORDER BY ".$this->aParam['tbl_order'];
 		}
+		if(isset($this->aParam['tbl_limit'])){
+			$sQuery.=" LIMIT ".$this->aParam['tbl_limit'];
+		}
 		$ret = $this->db->select($sQuery, $aWhere, $fetch_style);
 		if(isset($this->aParam['table_extension'])){
 
