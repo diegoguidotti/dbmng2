@@ -256,18 +256,22 @@ class Layout
 	function writeNav($nav){
 		$tit="";
 		$link="";
+    $css="";
 		if(isset($nav['title'])){
 			$tit=$nav['title'];
 		}
 		if(isset($nav['link'])){
 			$link=$nav['link'];
 		}
+    if(isset($nav['css'])){
+			$css=$nav['css'];
+		}
 
 		$cl="";
 		if(isset($nav['active'])){
 			$cl='active';
 		}
-		$html='<li class="'.$cl.'"><a href="'.$link.'">'.$tit.'</a></li>';
+		$html='<li class="'.$cl.' '.$css.'"><a href="'.$link.'">'.$tit.'</a></li>';
 		return $html;
 	}
 
