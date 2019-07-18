@@ -208,7 +208,20 @@ Dbmng.AbstractWidget = Class.extend({
       var regexp;
       var base_msg;
       if(typeof this.aField.validator=='object'){
-        regexp=eval(this.aField.validator.regexp);
+        var exp = this.aField.validator.regexp;
+        if( exp instanceof RegExp ) {
+          regexp = exp;
+        }
+        else if( typeof exp == 'string' ) {
+          if( exp.indexOf('/') == 0 ) {
+            exp = exp.substr(1,exp.length);
+          }
+          if( exp.slice(-1) == '/' ) {
+            exp = exp.substring(0,exp.length-1);
+          }
+          exp = new RegExp(exp, "");
+        }
+        regexp=exp; // eval(this.aField.validator.regexp);
         base_msg=this.aField.validator.message;
       }
       else if(this.aField.validator=='email'){
