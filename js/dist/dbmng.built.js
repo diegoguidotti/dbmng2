@@ -1359,7 +1359,7 @@ Dbmng.Crud = Class.extend({
       //change the field dimension using the td width
       jQuery(row_id+" td.dbmng_cell_inline").each(function(k,v){
         jQuery(v).width(listWidth[k]);
-        if(!self.theme instanceof Dbmng.BootstrapTheme){
+        if(!(self.theme instanceof Dbmng.BootstrapTheme)){
           jQuery(v).find('input').width(listWidth[k]);
           jQuery(v).find('select').width(listWidth[k]);
         }
@@ -1871,6 +1871,7 @@ Dbmng.AbstractTheme = Class.extend({
       }
 
       el.options.add(o);
+
       if(Object.prototype.toString.call(aField.voc_val) === '[object Object]') {
         for (var opt in aField.voc_val) {
           o=document.createElement('option');
@@ -2603,7 +2604,11 @@ Dbmng.AbstractWidget = Class.extend({
       validated = true;
       var regexp;
       var base_msg;
-      if(this.aField.validator=='email'){
+      if(typeof this.aField.validator=='object'){
+        regexp=eval(this.aField.validator.regexp);
+        base_msg=this.aField.validator.message;
+      }
+      else if(this.aField.validator=='email'){
         regexp=/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
         base_msg="You need to enter a valid email";
       }
@@ -2988,7 +2993,11 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
                   if(file.error){
                     info.append(self.theme.alertMessage(file.error));
                   }
+                  else if (!file.completed){
+                    info.append(self.theme.alertMessage("Not Completed!!!!"));
+                  }
                   else{
+                    
                     self.addFile(info, weburl_file, file.name);
                     self.setValue(file.name);
                   }
@@ -3037,6 +3046,7 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
   },
 
   assignFileTypeIcon: function( file ) {
+    
     var aFile = file.split('.');
     var file_type_icon = "";
     if( aFile[1] == 'pdf' ) {
