@@ -207,7 +207,11 @@ Dbmng.AbstractWidget = Class.extend({
       validated = true;
       var regexp;
       var base_msg;
-      if(this.aField.validator=='email'){
+      if(typeof this.aField.validator=='object'){
+        regexp=eval(this.aField.validator.regexp);
+        base_msg=this.aField.validator.message;
+      }
+      else if(this.aField.validator=='email'){
         regexp=/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
         base_msg="You need to enter a valid email";
       }

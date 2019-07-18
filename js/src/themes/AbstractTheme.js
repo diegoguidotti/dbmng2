@@ -158,6 +158,7 @@ Dbmng.AbstractTheme = Class.extend({
       }
 
       el.options.add(o);
+
       if(Object.prototype.toString.call(aField.voc_val) === '[object Object]') {
         for (var opt in aField.voc_val) {
           o=document.createElement('option');

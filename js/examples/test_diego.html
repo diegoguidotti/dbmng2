@@ -75,9 +75,9 @@
       primary_key: Array('id'),
       fields: {
         id: {label: 'ID', type: 'int', key: 0, nullable: false},
-        name: {label: '!!!!!!Name', type: 'varchar', 'default': 'Paperino'},
-
-        month: {label: 'Mounth', widget:'select', type: 'int', voc_val: {1:'January', 2:'February'}},
+        name: {label: 'Name', type: 'varchar', 'default': 'Paperino', 'validator': {'regexp': '/^[A-Z][0-9]{3}$/', 'message':'Usare 1 lettere e 3 numeri (es. A123)'}},
+        month: {label: 'Mounth', widget:'select', type: 'int', voc_val: {2:'February', 1:'January'}},
+        month2: {label: 'Mounth2', widget:'select', type: 'int', voc_val:  [{2:'February'},{1:'january'}]},
         montha: {label: 'Mounth auto', widget:'select', type: 'int', url: 'http://localhost/registro/api?search_citta=%QUERY', autocomplete_fieldname:'citta', autocomplete_key:'cod_istat', not_found: 'Nessuna città trovata'},
         passwd: {label: 'Password', type: 'varchar', widget:'password', classes: 'aaa bbb ccc'},
         check: {label: 'Check', type: 'int', widget:'checkbox'},
@@ -98,6 +98,8 @@
 
     var w2=new Dbmng.SelectWidget({field:'month', aField:aForm.fields.month, theme:theme_boot});
     jQuery('#test_widget_select').append(w2.createField(obj.month));
+    var w22=new Dbmng.SelectWidget({field:'month', aField:aForm.fields.month2, theme:theme_boot});
+    jQuery('#test_widget_select').append(w22.createField(obj.month));
 
     var w3=new Dbmng.AbstractWidget({field:'name', aField:aForm.fields.name, theme:theme_boot});
     jQuery('#test_widget_select').append(w3.createField(obj.name));
@@ -113,6 +115,7 @@
 
     var w7 = new Dbmng.AutocompleteWidget({field:'montha', aField:aForm.fields.montha, theme:theme_boot});
     jQuery('#test_widget_select').append(w7.createField());
+
 
     var w8 = new Dbmng.DateWidget({field:'data', aField:aForm.fields.data, theme:theme_boot});
     jQuery('#test_widget_select').append(w8.createField('2015-12-31'));
