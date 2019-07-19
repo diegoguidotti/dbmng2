@@ -170,12 +170,41 @@ function dbmng2_test() {
       console.log(self);
       self.createTable({div_id:'#'+div_id});
     },
-    error:function(){
-      jQuery('#'+div_id).html("Errore");
+    error:function(err){
+      console.log(err);
+      message = "<div class='error-message'>";
+      message += "<b>Error</b><br/>API:" +path + 'api/' + table + "<br/>" + err.statusText+ "<br/><br/>";
+      message += "Check the corrispondence from called API and the relative record in dbmng_tables";
+      message += "</div>";
+      // jQuery(".error-message").append(message);
+      jQuery('#'+div_id).html(js_set_message(message,'danger'));
     },
     crud_success: function(method, data){
       console.log(method, data);
     }
   });
   console.log(crud);
+}
+
+function js_set_message(message, type){
+  // Valori possibili per il parametro type
+  // "success" = verde
+  // "warning" = arancio
+  // "danger" = rosso
+  var type_messages='success';
+  if (typeof type!=='undefined') {
+    var aType = ['success', 'warning', 'danger'];
+
+    if( aType.indexOf(type) > -1 ) {
+      type_messages=type;
+    }
+  }
+
+  html = "<div class='alert alert-block alert-"+type_messages+" messages status gestraee-alert'>";
+    html +=   "<a class='close' data-dismiss='alert' href='#'>×</a>";
+    html +=   "<h4 class='element-invisible'>Status message</h4>";
+    html += message;
+  html += "</div>";
+
+  return html;
 }
