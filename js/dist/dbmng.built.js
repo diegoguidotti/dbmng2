@@ -852,6 +852,9 @@ Dbmng.Crud = Class.extend({
 					if(typeof options.error=='function'){
 						options.error(exc);
 					}
+          else {
+            alert("API ["+this.url+"schema"+search+"] not found");
+          }
 					
           
 
