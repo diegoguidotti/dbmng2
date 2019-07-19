@@ -3,6 +3,7 @@ composer.lock
 composer.phar
 phpunit.xml
 updateDBMNG2.sh
+js/dist/
 bin/
 vendor/
 js/node_modules/
