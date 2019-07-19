@@ -35,49 +35,55 @@ function dbmng2_show_tables() {
 
   var theme_boot = new Dbmng.BootstrapTheme();
   var url;
-  var crud = new Dbmng.Crud(
-    {
-      aParam:aParam, theme:theme_boot, url: path + 'api/' + table,
-      success:function(self){
-        console.log("success");
-        console.log(self);
-        self.createTable({div_id:'#'+div_id});
-      },
-      crud_success: function(method, data){
-        if( method == 'insert' ) {
-          url = base_path + dbmng2_api_path + "api/dbmng_tables/schema/fill";
-          if( data.ok ) {
-            jQuery.ajax({
-              type: 'POST',
-              url: url,
-              data: {id_table:data.inserted_id},
-              success: function(msg){
-                obj = JSON.parse(msg);
-                console.log(obj);
-                if( obj.ok ) {
-                  dbmng2_show_fields(obj.id_table);
-                }
-              }
-            });
-          }
-        }
-        else if( method == 'delete' ) {
-          url = base_path + dbmng2_api_path + "api/dbmng_tables/schema/delete";
+  var crud = new Dbmng.Crud({
+    aParam:aParam, theme:theme_boot, url: path + 'api/' + table,
+    success:function(self){
+      console.log("success");
+      console.log(self);
+      self.createTable({div_id:'#'+div_id});
+    },
+    error:function(err){
+      console.log(err);
+      message = "<div class='error-message'>";
+      message += "<b>Error</b><br/>API:" +path + 'api/' + table + "<br/>" + err.statusText+ "<br/><br/>";
+      message += "Check the corrispondence from called API and the relative record in dbmng_tables";
+      message += "</div>";
+      jQuery('#'+div_id).html(js_set_message(message,'danger'));
+    },
+    crud_success: function(method, data){
+      if( method == 'insert' ) {
+        url = base_path + dbmng2_api_path + "api/dbmng_tables/schema/fill";
+        if( data.ok ) {
           jQuery.ajax({
             type: 'POST',
             url: url,
-            data: {id_table:data.deleted_id},
+            data: {id_table:data.inserted_id},
             success: function(msg){
               obj = JSON.parse(msg);
+              console.log(obj);
               if( obj.ok ) {
-                console.log(obj);
+                dbmng2_show_fields(obj.id_table);
               }
             }
           });
         }
       }
+      else if( method == 'delete' ) {
+        url = base_path + dbmng2_api_path + "api/dbmng_tables/schema/delete";
+        jQuery.ajax({
+          type: 'POST',
+          url: url,
+          data: {id_table:data.deleted_id},
+          success: function(msg){
+            obj = JSON.parse(msg);
+            if( obj.ok ) {
+              console.log(obj);
+            }
+          }
+        });
+      }
     }
-  );
+  });
 }
 
 function dbmng2_show_fields(id_table) {
@@ -112,21 +118,26 @@ function dbmng2_show_fields(id_table) {
   aParam.search = {id_table:id_table};
 
   var theme_boot = new Dbmng.BootstrapTheme();
-  var crud = new Dbmng.Crud(
-    {
-      aParam:aParam, theme:theme_boot, url: path + 'api/' + field,
-      success:function(self){
-        console.log(self);
-        self.createTable({div_id:'#'+div_id});
-      }
-    }
-  );
+  var crud = new Dbmng.Crud({
+    aParam:aParam, theme:theme_boot, url: path + 'api/' + field,
+    success:function(self){
+      console.log(self);
+      self.createTable({div_id:'#'+div_id});
+    },
+    error:function(err){
+      console.log(err);
+      message = "<div class='error-message'>";
+      message += "<b>Error</b><br/>API:" +path + 'api/' + table + "<br/>" + err.statusText+ "<br/><br/>";
+      message += "Check the corrispondence from called API and the relative record in dbmng_tables";
+      message += "</div>";
+      jQuery('#'+div_id).html(js_set_message(message,'danger'));
+    },
+  });
 
   var api = new Dbmng.Api({url:path + 'api/' + table});
   api.select({
     search: "id_table="+id_table,
     success: function(data){
-
       jQuery(document).ajaxStop(function(){
         jQuery("#table_name").html("");
         jQuery('#dbmng2_table_edit').prepend("<div id='table_name'>Tablename: <strong>"+data.data[0].table_name+"</strong> [id="+id_table+"]</div>");
