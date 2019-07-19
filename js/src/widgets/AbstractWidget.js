@@ -213,7 +213,7 @@ Dbmng.AbstractWidget = Class.extend({
           regexp = exp;
         }
         else if( typeof exp == 'string' ) {
-          if( exp.indexOf('/') == 0 ) {
+          if( exp.indexOf('/') === 0 ) {
             exp = exp.substr(1,exp.length);
           }
           if( exp.slice(-1) == '/' ) {
@@ -234,7 +234,7 @@ Dbmng.AbstractWidget = Class.extend({
       }
       else if(this.aField.validator=='ip'){
         regexp=/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/;
-        base_msg="You need to enter a IP address";
+        base_msg="You need to enter a valid IP address";
       }
       var ok_r=regexp.test(this.getValue());
       if(!ok_r){
