@@ -170,6 +170,9 @@ function dbmng2_test() {
       console.log(self);
       self.createTable({div_id:'#'+div_id});
     },
+    error:function(){
+      jQuery('#'+div_id).html("Errore");
+    },
     crud_success: function(method, data){
       console.log(method, data);
     }
