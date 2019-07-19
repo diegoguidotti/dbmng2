@@ -892,6 +892,7 @@ Dbmng.Crud = Class.extend({
 
       var sel_opt={
 		    success:function(data){
+
           self.generateTable(opt, data);
 		    },
 		    error: function(error) {
@@ -1255,33 +1256,43 @@ Dbmng.Crud = Class.extend({
           jQuery(div_id).find(".dbmng_form_button_message").html(valid.message);
         }
         else if(type=='update'){
-          self.api.update({key:key,data:self.form.getValue(),success:function(data){
-
-            if(!data.ok){
-
-              var msg=self.theme.alertMessage(data.message);
-              jQuery(div_id).find(".dbmng_form_button_message").html(msg);
-
-            }
-            else{
-              console.log(data);
-              if(typeof self.crud_success=='function'){
-                self.crud_success('update', data);
+          self.api.update({
+            key:key,
+            data:self.form.getValue(),
+            success:function(data){
+              if(!data.ok){
+                var msg=self.theme.alertMessage(data.message);
+                jQuery(div_id).find(".dbmng_form_button_message").html(msg);
               }
-              jQuery(div_id).html('');
-              self.createTable({div_id:div_id});
+              else{
+                console.log(data);
+                if(typeof self.crud_success=='function'){
+                  self.crud_success('update', data);
+                }
+                jQuery(div_id).html('');
+                self.createTable({div_id:div_id});
+              }
             }
-          }});
+        });
         }
         else{
-          self.api.insert({data:self.form.getValue(),success:function(data){
-            console.log(self);
-            if(typeof self.crud_success=='function'){
-              self.crud_success('insert', data);
+          self.api.insert({
+            data:self.form.getValue(),
+            success:function(data){
+              console.log(self,data);
+              if( !data.ok ) {
+                var msg=self.theme.alertMessage(data.message);
+                jQuery(div_id).find(".dbmng_form_button_message").html(msg);
+              }
+              else {
+                if(typeof self.crud_success=='function'){
+                  self.crud_success('insert', data);
+                }
+                jQuery(div_id).html('');
+                self.createTable({div_id:div_id});
+              }
             }
-            jQuery(div_id).html('');
-            self.createTable({div_id:div_id});
-          }});
+          });
         }
       }
     });
@@ -2605,7 +2616,20 @@ Dbmng.AbstractWidget = Class.extend({
       var regexp;
       var base_msg;
       if(typeof this.aField.validator=='object'){
-        regexp=eval(this.aField.validator.regexp);
+        var exp = this.aField.validator.regexp;
+        if( exp instanceof RegExp ) {
+          regexp = exp;
+        }
+        else if( typeof exp == 'string' ) {
+          if( exp.indexOf('/') === 0 ) {
+            exp = exp.substr(1,exp.length);
+          }
+          if( exp.slice(-1) == '/' ) {
+            exp = exp.substring(0,exp.length-1);
+          }
+          exp = new RegExp(exp, "");
+        }
+        regexp=exp; // eval(this.aField.validator.regexp);
         base_msg=this.aField.validator.message;
       }
       else if(this.aField.validator=='email'){
@@ -2618,7 +2642,7 @@ Dbmng.AbstractWidget = Class.extend({
       }
       else if(this.aField.validator=='ip'){
         regexp=/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/;
-        base_msg="You need to enter a IP address";
+        base_msg="You need to enter a valid IP address";
       }
       var ok_r=regexp.test(this.getValue());
       if(!ok_r){
