@@ -110,7 +110,7 @@ Dbmng.Crud = Class.extend({
 						options.error(exc);
 					}
           else {
-            alert("API ["+this.url+"schema"+search+"] not found");
+            window.alert("API ["+this.url+"schema"+search+"] not found");
           }
 					console.log(exc);
           console.log(options);

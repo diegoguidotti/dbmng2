@@ -25,6 +25,7 @@
   <script type="text/javascript" src="../src/Class.js"></script>
   <script type="text/javascript" src="../src/Dbmng.js"></script>
   <script type="text/javascript" src="../src/Form.js"></script>
+  <script type="text/javascript" src="../src/FormInline.js"></script>
   <script type="text/javascript" src="../src/Api.js"></script>
   <script type="text/javascript" src="../src/Crud.js"></script>
   <script type="text/javascript" src="../src/Ie9.js"></script>
@@ -42,11 +43,15 @@
   <script type="text/javascript" src="../src/widgets/AutocompleteWidget.js"></script>
   <script type="text/javascript" src="../src/widgets/DateWidget.js"></script>
   <script type="text/javascript" src="../src/widgets/FileWidget.js"></script>
+  <script type="text/javascript" src="../src/Defaults.js"></script>
 </head>
 <body>
-  <h1>Base</h1>
-    <div id="test_base"></div>
+  <h1>Test</h1>
+    <div id="test_base">...</div>
 
+
+
+<!--
   <h1>Botstrap</h1>
     <div id="test_bootstrap"></div>
 
@@ -59,154 +64,236 @@
 
   <h1>DBMNG2</h1>
     <div id="test_dbmng2"></div>
-  <script>
 
-    var options={'value':'Ciao', 'label':'saluto'};
-
-    //Test per i temi puri
-    var theme=new Dbmng.AbstractTheme();
-    jQuery('#test_base').html(theme.getInput(options));
-
-    // Test for Bootstrap theme
-    var theme_boot=new Dbmng.BootstrapTheme();
-    jQuery('#test_bootstrap').html(theme_boot.getInput(options));
-
-    var aForm = { table_name: 'test',
-      primary_key: Array('id'),
-      fields: {
-        id: {label: 'ID', type: 'int', key: 0, nullable: false},
-        name: {label: 'Name', type: 'varchar', 'default': 'Paperino', 'validator': {'regexp': '/^[A-Z][0-9]{3}$/', 'message':'Usare 1 lettere e 3 numeri (es. A123)'}},
-        month: {label: 'Mounth', widget:'select', type: 'int', voc_val: {2:'February', 1:'January'}},
-        month2: {label: 'Mounth2', widget:'select', type: 'int', voc_val:  [{2:'February'},{1:'january'}]},
-        montha: {label: 'Mounth auto', widget:'select', type: 'int', url: 'http://localhost/registro/api?search_citta=%QUERY', autocomplete_fieldname:'citta', autocomplete_key:'cod_istat', not_found: 'Nessuna città trovata'},
-        passwd: {label: 'Password', type: 'varchar', widget:'password', classes: 'aaa bbb ccc'},
-        check: {label: 'Check', type: 'int', widget:'checkbox'},
-        multiple: {label: 'Multiple', type: 'int', widget:'select_nm', voc_val: {1:'January', 2:'February', 3:'March', 4:'April'}},
-        multiplec: {label: 'Multiple checkbox', type: 'int', widget:'select_nm', voc_val: {1:'January', 2:'February', 3:'March', 4:'April'}, out_type:'checkbox'},
-        data: {label: 'Data', type: 'date', widget:'date', date_format_view:'MM d, yy'},
-        file: {label: 'File', type: 'varchar', widget:'file', url:'/dbmng2/api/test/file/file', weburl_file:'/dbmng2/files/'}
-      }
-    };
-
-    // parameters in aParam array act globally and not punctual.
-    var aParam = { hide_label: false, html5_input: true };
-
-    var obj = {id:2, name:'Diego', multiple: ['1','3'], month:'1'};
-
-    var w1=new Dbmng.AbstractWidget({field:'id', aField:aForm.fields.id, theme:theme_boot});
-    jQuery('#test_widget_select').append(w1.createField(obj.id));
-
-    var w2=new Dbmng.SelectWidget({field:'month', aField:aForm.fields.month, theme:theme_boot});
-    jQuery('#test_widget_select').append(w2.createField(obj.month));
-    var w22=new Dbmng.SelectWidget({field:'month', aField:aForm.fields.month2, theme:theme_boot});
-    jQuery('#test_widget_select').append(w22.createField(obj.month));
-
-    var w3=new Dbmng.AbstractWidget({field:'name', aField:aForm.fields.name, theme:theme_boot});
-    jQuery('#test_widget_select').append(w3.createField(obj.name));
-
-    var w4=new Dbmng.PasswordWidget({field:'passwd', aField:aForm.fields.passwd, theme:theme_boot});
-    jQuery('#test_widget_select').append(w4.createField());
-
-    var w5=new Dbmng.SelectNMWidget({field:'multiple', aField:aForm.fields.multiple, theme:theme_boot});
-    jQuery('#test_widget_select').append(w5.createField());
-
-    var w6=new Dbmng.SelectNMWidget({field:'multiplec', aField:aForm.fields.multiplec, theme:theme_boot});
-    jQuery('#test_widget_select').append(w6.createField());
-
-    var w7 = new Dbmng.AutocompleteWidget({field:'montha', aField:aForm.fields.montha, theme:theme_boot});
-    jQuery('#test_widget_select').append(w7.createField());
+-->
 
 
-    var w8 = new Dbmng.DateWidget({field:'data', aField:aForm.fields.data, theme:theme_boot});
-    jQuery('#test_widget_select').append(w8.createField('2015-12-31'));
-
-    var w9 = new Dbmng.FileWidget({field:'file', aField:aForm.fields.file, theme:theme_boot});
-    jQuery('#test_widget_select').append(w9.createField('mappa-1.png'));
-
-    //jQuery('#test_widget_select').hide();
-
-    var form=new Dbmng.Form({aForm:aForm, aParam:aParam, theme:theme_boot});
-
-    var template="<div><h1>Pippo<div data-content='name'></div><table class='table' border='1'><tr><td data-content='passwd'></td><td data-content='month'></td><td data-content='data'></td></tr><tr style='height:300px'><td data-content='multiplec'></td><td data-content='multiple'></td></tr></table></div><button id='save_button' class='btn btn-danger'>Salva</button>";
-    jQuery('#test_dbmng').append(form.createForm(obj, template));
-
-    jQuery('#save_button').click(function(){
-      debugger;
-    });
+<script>
 
 
+    var test='dual_form';//'single_form';
 
-		var aForm2 = { table_name: 'test',
-      primary_key: Array('id'),
-      fields: {
-        id: {label: 'ID', type: 'int', key: 0, nullable: false},
-        name: {label: 'Name', type: 'varchar', 'default': 'Paperino', nullable: false}
-			}
-    };
-		var form2=new Dbmng.Form({aForm:aForm2, aParam:aParam, theme:theme_boot});
-    jQuery('#test_dbmng2').append(form2.createForm(obj));
+    if(test=='single_form'){
 
-		var api=new  Dbmng.Api({aForm:aForm2, url:'/dbmng2/api/test', user:'test', password:'test'});
+      //Dato di input (viene dall'API)
+      var input_data={'id':3, 'name': 'Diego'}
+
+      //Struttura del form
+      var aForm = { table_name: 'test',
+        primary_key: Array('id'),
+        fields: {
+           id: {label: 'ID', type: 'int', key: 0, nullable: false},
+          name: {label: 'Name', type: 'varchar'},
+          }
+       };
+       var form=new Dbmng.Form({aForm:aForm});
+       jQuery('#test_base').append(form.createForm(input_data));
+
+       jQuery('#test_base').append("<button>Salva</button>").click(function(){
+         var output=form.getValue();
+         console.log(output);
+         //salva nell'api
+       })
+    }
+    else if (test=='dual_form'){
+
+      //Dato di input (viene dall'API)
+      var input_data={
+        azienda: {'id_azienda':3, 'nome_azienda': 'Diego'},
+        centri: [
+          {'id_centro': 32, 'nome_centro': 'C1'},
+          {'id_centro': 33, 'nome_centro': 'C2'}
+        ]
+      };
+
+      //Struttura del form
+      var aFormPadre = { table_name: 'aziende',
+        primary_key: Array('id_azienda'),
+        fields: {
+           id_azienda: {label: 'ID', type: 'int', key: 0, nullable: false},
+           nome_azienda: {label: 'Nome Azienda', type: 'varchar'}
+          }
+       };
+
+       //Struttura del form
+       var aFormFiglio = { table_name: 'centri_aziendali',
+         primary_key: Array('id_centro'),
+         fields: {
+            id_centro: {label: 'ID', type: 'int', key: 0, nullable: false},
+            nome_centro: {label: 'nome centro', type: 'varchar'}
+           }
+        };
+
+      jQuery("#test_base").append("<h3>Dati aziendali</h3>");
+
+       var form_padre=new Dbmng.Form({aForm:aFormPadre});
+       jQuery('#test_base').append(form_padre.createForm(input_data.azienda));
+
+       jQuery("#test_base").append("<h3>Elenco dei centri</h3>");
+
+       var form_figlio = new Dbmng.FormInline({aForm:aFormFiglio, aParam:{'hide_label': true, 'do_insert': true, 'do_delete': true}});
+       jQuery('#test_base').append(form_figlio.createForm(input_data.centri));
+
+       jQuery('#test_base').append("<p/></p/><button>Salva</button>").click(function(){
+         var azienda=form_padre.getValue();
+
+         var centri=form_figlio.getValue();
+
+         output={'azienda': azienda, 'centri': centri};
+         console.log(output);
+         //salva nell'api
+       })
+
+    }
+    else {
+
+      var options={'value':'Ciao', 'label':'saluto'};
+
+      //Test per i temi puri
+      var theme=new Dbmng.AbstractTheme();
+      jQuery('#test_base').html(theme.getInput(options));
+
+      // Test for Bootstrap theme
+      var theme_boot=new Dbmng.BootstrapTheme();
+      jQuery('#test_bootstrap').html(theme_boot.getInput(options));
+
+      var aForm = { table_name: 'test',
+        primary_key: Array('id'),
+        fields: {
+          id: {label: 'ID', type: 'int', key: 0, nullable: false},
+          name: {label: 'Name', type: 'varchar', 'default': 'Paperino', 'validator': {'regexp': '/^[A-Z][0-9]{3}$/', 'message':'Usare 1 lettere e 3 numeri (es. A123)'}},
+          month: {label: 'Mounth', widget:'select', type: 'int', voc_val: {2:'February', 1:'January'}},
+          month2: {label: 'Mounth2', widget:'select', type: 'int', voc_val:  [{2:'February'},{1:'january'}]},
+          montha: {label: 'Mounth auto', widget:'select', type: 'int', url: 'http://localhost/registro/api?search_citta=%QUERY', autocomplete_fieldname:'citta', autocomplete_key:'cod_istat', not_found: 'Nessuna città trovata'},
+          passwd: {label: 'Password', type: 'varchar', widget:'password', classes: 'aaa bbb ccc'},
+          check: {label: 'Check', type: 'int', widget:'checkbox'},
+          multiple: {label: 'Multiple', type: 'int', widget:'select_nm', voc_val: {1:'January', 2:'February', 3:'March', 4:'April'}},
+          multiplec: {label: 'Multiple checkbox', type: 'int', widget:'select_nm', voc_val: {1:'January', 2:'February', 3:'March', 4:'April'}, out_type:'checkbox'},
+          data: {label: 'Data', type: 'date', widget:'date', date_format_view:'MM d, yy'},
+          file: {label: 'File', type: 'varchar', widget:'file', url:'/dbmng2/api/test/file/file', weburl_file:'/dbmng2/files/'}
+        }
+      };
+
+      // parameters in aParam array act globally and not punctual.
+      var aParam = { hide_label: false, html5_input: true };
+
+      var obj = {id:2, name:'Diego', multiple: ['1','3'], month:'1'};
+
+      var w1=new Dbmng.AbstractWidget({field:'id', aField:aForm.fields.id, theme:theme_boot});
+      jQuery('#test_widget_select').append(w1.createField(obj.id));
+
+      var w2=new Dbmng.SelectWidget({field:'month', aField:aForm.fields.month, theme:theme_boot});
+      jQuery('#test_widget_select').append(w2.createField(obj.month));
+      var w22=new Dbmng.SelectWidget({field:'month', aField:aForm.fields.month2, theme:theme_boot});
+      jQuery('#test_widget_select').append(w22.createField(obj.month));
+
+      var w3=new Dbmng.AbstractWidget({field:'name', aField:aForm.fields.name, theme:theme_boot});
+      jQuery('#test_widget_select').append(w3.createField(obj.name));
+
+      var w4=new Dbmng.PasswordWidget({field:'passwd', aField:aForm.fields.passwd, theme:theme_boot});
+      jQuery('#test_widget_select').append(w4.createField());
+
+      var w5=new Dbmng.SelectNMWidget({field:'multiple', aField:aForm.fields.multiple, theme:theme_boot});
+      jQuery('#test_widget_select').append(w5.createField());
+
+      var w6=new Dbmng.SelectNMWidget({field:'multiplec', aField:aForm.fields.multiplec, theme:theme_boot});
+      jQuery('#test_widget_select').append(w6.createField());
+
+      var w7 = new Dbmng.AutocompleteWidget({field:'montha', aField:aForm.fields.montha, theme:theme_boot});
+      jQuery('#test_widget_select').append(w7.createField());
+
+
+      var w8 = new Dbmng.DateWidget({field:'data', aField:aForm.fields.data, theme:theme_boot});
+      jQuery('#test_widget_select').append(w8.createField('2015-12-31'));
+
+      var w9 = new Dbmng.FileWidget({field:'file', aField:aForm.fields.file, theme:theme_boot});
+      jQuery('#test_widget_select').append(w9.createField('mappa-1.png'));
+
+      //jQuery('#test_widget_select').hide();
+
+      var form=new Dbmng.Form({aForm:aForm, aParam:aParam, theme:theme_boot});
+
+      var template="<div><h1>Pippo<div data-content='name'></div><table class='table' border='1'><tr><td data-content='passwd'></td><td data-content='month'></td><td data-content='data'></td></tr><tr style='height:300px'><td data-content='multiplec'></td><td data-content='multiple'></td></tr></table></div><button id='save_button' class='btn btn-danger'>Salva</button>";
+      jQuery('#test_dbmng').append(form.createForm(obj, template));
+
+      jQuery('#save_button').click(function(){
+        debugger;
+      });
 
 
 
-		function updateRecord(){
-			value=form2.getValue();
-			alert(value.id);
-			api.update({
-				key:value.id,
-				data:value,
-				success:function(data){
-					console.log(data);
-					showRecord();
-				}
-			});
-		}
+  		var aForm2 = { table_name: 'test',
+        primary_key: Array('id'),
+        fields: {
+          id: {label: 'ID', type: 'int', key: 0, nullable: false},
+          name: {label: 'Name', type: 'varchar', 'default': 'Paperino', nullable: false}
+  			}
+      };
+  		var form2=new Dbmng.Form({aForm:aForm2, aParam:aParam, theme:theme_boot});
+      jQuery('#test_dbmng2').append(form2.createForm(obj));
+
+  		var api=new  Dbmng.Api({aForm:aForm2, url:'/dbmng2/api/test', user:'test', password:'test'});
 
 
-		function showRecord(){
 
-			api.select({
-				success:function(data){
-					alert(JSON.stringify(data));
-				}
-			});
+  		function updateRecord(){
+  			value=form2.getValue();
+  			alert(value.id);
+  			api.update({
+  				key:value.id,
+  				data:value,
+  				success:function(data){
+  					console.log(data);
+  					showRecord();
+  				}
+  			});
+  		}
 
-		}
 
-/*
-    api.select({success: function(data){
-				console.log("Select Before");
-				console.log(data.data[0]);
-				api.update({key:1,data:{'id':1,'name':'Test name:'+new Date()},success:function(data){
-					console.log("Updates");
-					console.log(data);
-			    api.select({success: function(data){
-						console.log("Select After");
-						console.log(data.data[0]);
+  		function showRecord(){
 
-					}});
+  			api.select({
+  				success:function(data){
+  					alert(JSON.stringify(data));
+  				}
+  			});
 
-				}});
-		}});
-*/
+  		}
 
-/*
-   var theme_boot=new Dbmng.BootstrapTheme();
-   var w1=new Dbmng.AbstractWidget();
-   jQuery('#test_widget').append(w1.createWidget(
-      {theme:theme, aField:aForm.fields.id}
-    ));
+  /*
+      api.select({success: function(data){
+  				console.log("Select Before");
+  				console.log(data.data[0]);
+  				api.update({key:1,data:{'id':1,'name':'Test name:'+new Date()},success:function(data){
+  					console.log("Updates");
+  					console.log(data);
+  			    api.select({success: function(data){
+  						console.log("Select After");
+  						console.log(data.data[0]);
 
-   var w2=new Dbmng.NumericWidget();
-    jQuery('#test_widget').append(w2.createWidget(
-      {theme:theme, aField:aForm.fields.name}
-    ));
+  					}});
+
+  				}});
+  		}});
   */
-//     var opt2 = {label: 'Months:', value:2, voc_val: {1:'January', 2:'February'}};
-//     var w3 = new Dbmng.AbstractTheme();
-//     jQuery('#test_widget_select').append(w3.getLabel( opt2 ));
-//     jQuery('#test_widget_select').append(w3.getSelect( opt2 ));
+
+  /*
+     var theme_boot=new Dbmng.BootstrapTheme();
+     var w1=new Dbmng.AbstractWidget();
+     jQuery('#test_widget').append(w1.createWidget(
+        {theme:theme, aField:aForm.fields.id}
+      ));
+
+     var w2=new Dbmng.NumericWidget();
+      jQuery('#test_widget').append(w2.createWidget(
+        {theme:theme, aField:aForm.fields.name}
+      ));
+    */
+  //     var opt2 = {label: 'Months:', value:2, voc_val: {1:'January', 2:'February'}};
+  //     var w3 = new Dbmng.AbstractTheme();
+  //     jQuery('#test_widget_select').append(w3.getLabel( opt2 ));
+  //     jQuery('#test_widget_select').append(w3.getSelect( opt2 ));
+}
 
 
   </script>

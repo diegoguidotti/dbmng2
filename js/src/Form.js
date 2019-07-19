@@ -16,7 +16,6 @@ Dbmng.Form = Class.extend({
       options.aParam={};
     }
     this.aParam = jQuery.extend(true, {}, Dbmng.defaults.aParam,options.aParam);
-
     if( options.theme ) {
       this.theme = options.theme;
     }

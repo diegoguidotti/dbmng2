@@ -54,6 +54,10 @@ Dbmng.FormInline = Class.extend({
 		return val;
 	},
 	createForm: function(aData) {
+    var self=this;
+
+    var div = document.createElement('div');
+    self.main_node=div;
 
 		//create an empty table
 		var tab=this.theme.getTable({data:[],header:[], aParam:this.aParam});
@@ -70,10 +74,12 @@ Dbmng.FormInline = Class.extend({
       }
 		}
 
+    jQuery.each(aData, function(i,val){
+		//for(var i=0; i<.length; i++){
 
-		for(var i=0; i<aData.length; i++){
-			var form=new Dbmng.Form({"aForm":this.aForm, "aParam":this.aParam, "theme":this.theme});
-			this.forms.push(form);
+      var current_record=i;
+			var form=new Dbmng.Form({"aForm":self.aForm, "aParam":self.aParam, "theme":self.theme});
+			self.forms.push(form);
 			var fields=form.getFields(aData[i]);
 
 			var r=jQuery("<tr></tr>").appendTo(jQuery(tab).find('tbody'));
@@ -90,23 +96,64 @@ Dbmng.FormInline = Class.extend({
           }
 					wdg.pk_value=form.getPkValue();
           wdg.form=form;
-					if(this.onChange){
-						wdg.onChange=this.onChange;
+					if(self.onChange){
+						wdg.onChange=self.onChange;
 					}
 					else{
 					}
 
-          if(this.onChangeRow){
-						wdg.onFocus=this.onChangeRow;
+          if(self.onChangeRow){
+						wdg.onFocus=self.onChangeRow;
           }
 
 				}
 
+        if(self.aParam.do_delete){
+          var col=jQuery('<td></td>').appendTo(r);
+          var button_delete=jQuery('<button data-record="'+current_record+'">Del</button>')[0];
+          col[0].appendChild(button_delete);
+
+          jQuery(button_delete).click(function(){
+            var records=self.getValue();
+            var record=jQuery(this).attr('data-record');
+            records.splice(record,1);
+            //self.main_node.removeChild(self.main_node.childNodes[0]);
+            self.main_node.innerHTML = '';
+            self.main_node.appendChild(self.createForm(records));
+          });
+
+          // button_delete.addEventListener("click",function(){
+          //   console.log(aData[current_record]);
+          //   // records=self.getValue();
+          //   // records.push({});
+          //   // console.log(records);
+          //   // //self.main_node.removeChild(self.main_node.childNodes[0]);
+          //   // self.main_node.innerHTML = '';
+          //   // self.main_node.appendChild(self.createForm(records));
+          // });
+
+        }
+
         if(this.addEachRow){
           this.addEachRow(r,aData[i]);
         }
-		}
+  });
+    div.appendChild(tab);
+    if(self.aParam.do_insert===true){
+      var button = self.theme.getButton("Insert");
+      div.appendChild(button);
+
+      button.addEventListener("click",function(){
+        var records=self.getValue();
+        records.push({});
+        //self.main_node.removeChild(self.main_node.childNodes[0]);
+        self.main_node.innerHTML = '';
+        self.main_node.appendChild(self.createForm(records));
+      });
+    }
+
+
 		//console.log(this.forms);
-		return tab;
+		return div;
 	}
 });
