@@ -192,6 +192,14 @@ function dbmng2_test() {
     },
     crud_success: function(method, data){
       console.log(method, data);
+    },
+    crud_delete: function(_method, data){
+      var message = "";
+      if( data.message.indexOf("Foreign") > -1 ) {
+        message = "Non puoi eliminare il record in quanto presente un record in altra tabella collegata a questa";
+      }
+      var msg=crud.theme.alertMessage(message);
+      jQuery('#'+div_id).find(".dbmng_form_button_message").html(msg);
     }
   });
   console.log(crud);

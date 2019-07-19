@@ -760,6 +760,7 @@ Dbmng.Crud = Class.extend({
 		//the ready variable can be used to check if it is ready the Crud to create the table)
     this.ready=true;
     this.crud_success = options.crud_success;
+    this.crud_delete = options.crud_delete;
     this.form_ready = options.form_ready;
     this.table_ready = options.table_ready;
     this.prepare_cdata = options.prepare_cdata;
@@ -1146,12 +1147,31 @@ Dbmng.Crud = Class.extend({
   },
   deleteRecord: function (div_id, key){
     var self=this;
-    this.api.delete({key:key, success:function(data){
-      if(typeof self.crud_success=='function'){
-        self.crud_success('delete', data);
+    this.api.delete({
+      key:key,
+      success:function(data){
+        
+        if( data.ok ) {
+          if(typeof self.crud_success=='function'){
+            self.crud_success('delete', data);
+          }
+          self.createTable({div_id:div_id});
+        }
+        else {
+          if(typeof self.crud_delete=='function'){
+            self.crud_delete('delete', data);
+          }
+          else {
+            var msg=self.theme.alertMessage(data.message);
+            jQuery(div_id).find(".dbmng_form_button_message").html(msg);
+          }
+        }
+      },
+      error: function(){
+        var msg=self.theme.alertMessage('Connection error');
+        jQuery(div_id).find(".dbmng_form_button_message").html(msg);
       }
-      self.createTable({div_id:div_id});
-    }});
+    });
   },
   createInsertForm: function (div_id){
 
