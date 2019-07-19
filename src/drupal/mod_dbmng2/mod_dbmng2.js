@@ -34,6 +34,7 @@ function dbmng2_show_tables() {
   aParam.custom_function = {action: 'dbmng2_show_fields', label: 'Show fields', icon: 'fa fa-th-list'};
 
   var theme_boot = new Dbmng.BootstrapTheme();
+  var url;
   var crud = new Dbmng.Crud(
     {
       aParam:aParam, theme:theme_boot, url: path + 'api/' + table,
@@ -44,7 +45,7 @@ function dbmng2_show_tables() {
       },
       crud_success: function(method, data){
         if( method == 'insert' ) {
-          var url = base_path + dbmng2_api_path + "api/dbmng_tables/schema/fill";
+          url = base_path + dbmng2_api_path + "api/dbmng_tables/schema/fill";
           if( data.ok ) {
             jQuery.ajax({
               type: 'POST',
@@ -61,7 +62,7 @@ function dbmng2_show_tables() {
           }
         }
         else if( method == 'delete' ) {
-          var url = base_path + dbmng2_api_path + "api/dbmng_tables/schema/delete";
+          url = base_path + dbmng2_api_path + "api/dbmng_tables/schema/delete";
           jQuery.ajax({
             type: 'POST',
             url: url,
@@ -139,4 +140,39 @@ function dbmng2_show_fields(id_table) {
     }
   });
 
+}
+
+// funzione implementata per effettuare test sulla libreria dbmng2
+function dbmng2_test() {
+  console.log("Test...");
+  var div_id = 'dbmng2_table_list';
+  var path   = base_path + dbmng2_api_path; // + '/rest/';
+  var table  = 'tabella_test';
+  var aParam = {};
+  aParam.ui = {};
+  aParam.ui.btn_edit = {label:'Modifica', icon:'fa fa-pencil'};
+  aParam.ui.btn_edit_inline = {label:'Modifica in linea', icon:'fa fa-pencil-square-o'};
+  aParam.ui.btn_delete = {label:'Elimina', icon:'fa fa-trash', confirm_message: 'Sei sicuro di voler eliminare il record?'};
+  aParam.ui.btn_insert = {label:'Inserisci nuovo record', class:'btn-success btn-block'};
+  aParam.ui.btn_save = {label:'Salva record', class:'btn-success btn-block'};
+  aParam.ui.btn_cancel = {label:'Cencella', class:'btn-danger btn-block'};
+  aParam.ui.table_class = 'table-condensed table-hover';
+  aParam.user_function = {upd:1, del:1, ins:1};
+
+  jQuery('#dbmng2_table_edit').hide();
+  jQuery('#dbmng2_table_list').show();
+
+  var theme_boot = new Dbmng.BootstrapTheme();
+  var crud = new Dbmng.Crud({
+    aParam:aParam, theme:theme_boot, url: path + 'api/' + table,
+    success:function(self){
+      console.log("success");
+      console.log(self);
+      self.createTable({div_id:'#'+div_id});
+    },
+    crud_success: function(method, data){
+      console.log(method, data);
+    }
+  });
+  console.log(crud);
 }

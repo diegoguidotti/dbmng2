@@ -26,7 +26,7 @@ function mod_dbmng2_menu() {
   $items = array();
 
   /**
-  * Questo menu serve per la visualizzazione delle informazioni 
+  * Questo menu serve per la visualizzazione delle informazioni
   */
   $items['dbmng2'] = array(
     'title' => 'Database Management',
@@ -35,8 +35,15 @@ function mod_dbmng2_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
 
+  $items['dbmng2_test'] = array(
+    'title' => 'Database Management',
+    'page callback' => 'dbmng2_test',
+    'access arguments' => array('dbmng manager'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
   /**
-  * Questo entry menu serve a sviluppare le API proprie dell'applicazione 
+  * Questo entry menu serve a sviluppare le API proprie dell'applicazione
   */
   $items[DBMNG2_API_PATH.'/ajax'] = array(
     'page callback' => 'dbmng2_ajax_response',
