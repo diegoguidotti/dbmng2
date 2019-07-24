@@ -53,6 +53,19 @@ Dbmng.FormInline = Class.extend({
 		}
 		return val;
 	},
+  isValid: function(){
+    var self=this;
+    var val=true;
+    var messages=[];
+    for(var i=0; i<this.forms.length; i++){
+      var v=this.forms[i].isValid();
+        if(!v.ok){
+          val=false;
+          messages.push({"message": v.message, "record": i});
+        }
+    }
+    return {"ok": val, "messages": messages};
+  },
 	createForm: function(aData) {
     var self=this;
 
@@ -140,7 +153,7 @@ Dbmng.FormInline = Class.extend({
   });
     div.appendChild(tab);
     if(self.aParam.do_insert===true){
-      var button = self.theme.getButton("Insert");
+      var button = self.theme.getButton("Insert",{'class':'insert_button'});
       div.appendChild(button);
 
       button.addEventListener("click",function(){

@@ -120,7 +120,7 @@
          primary_key: Array('id_centro'),
          fields: {
             id_centro: {label: 'ID', type: 'int', key: 0, nullable: false},
-            nome_centro: {label: 'nome centro', type: 'varchar'}
+            nome_centro: {label: 'nome centro', type: 'varchar', nullable: 0}
            }
         };
 
@@ -138,10 +138,17 @@
          var azienda=form_padre.getValue();
 
          var centri=form_figlio.getValue();
+         var valid=form_figlio.isValid()
+         if(valid['ok']){
+           output={'azienda': azienda, 'centri': centri};
+           console.log(output);
+           //salva nell'api
+         }
+         else{
+           console.log(valid);
+           console.log("non va bene");
+         }
 
-         output={'azienda': azienda, 'centri': centri};
-         console.log(output);
-         //salva nell'api
        })
 
     }
