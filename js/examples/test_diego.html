@@ -51,6 +51,7 @@
 
 
 
+
 <!--
   <h1>Botstrap</h1>
     <div id="test_bootstrap"></div>
@@ -63,15 +64,15 @@
     <div id="test_dbmng"></div>
 
   <h1>DBMNG2</h1>
-    <div id="test_dbmng2"></div>
+    <div id="test_dbmng2"></div> -->
 
--->
+
 
 
 <script>
 
 
-    var test='dual_form';//'single_form';
+    var test='single_form';//'single_form';
 
     if(test=='single_form'){
 
@@ -84,7 +85,9 @@
         fields: {
            id: {label: 'ID', type: 'int', key: 0, nullable: false},
           name: {label: 'Name', type: 'varchar'},
-          }
+          name2: {label: 'Name2', type: 'varchar'}
+        },
+        template:"<div style='border:1px solid red'><div data-content='id'></div><h3>aaaTitolo</h3><div data-content='name'></div><div data-content='name2'></div></div>"
        };
        var form=new Dbmng.Form({aForm:aForm});
        jQuery('#test_base').append(form.createForm(input_data));
@@ -220,7 +223,7 @@
 
       var form=new Dbmng.Form({aForm:aForm, aParam:aParam, theme:theme_boot});
 
-      var template="<div><h1>Pippo<div data-content='name'></div><table class='table' border='1'><tr><td data-content='passwd'></td><td data-content='month'></td><td data-content='data'></td></tr><tr style='height:300px'><td data-content='multiplec'></td><td data-content='multiple'></td></tr></table></div><button id='save_button' class='btn btn-danger'>Salva</button>";
+      var template="<div><h1>Pippo</h1><div data-content='name'></div><table class='table' border='1'><tr><td data-content='passwd'></td><td data-content='month'></td><td data-content='data'></td></tr><tr style='height:300px'><td data-content='multiplec'></td><td data-content='multiple'></td></tr></table></div><button id='save_button' class='btn btn-danger'>Salva</button>";
       jQuery('#test_dbmng').append(form.createForm(obj, template));
 
       jQuery('#save_button').click(function(){
