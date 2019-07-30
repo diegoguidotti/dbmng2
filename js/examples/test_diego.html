@@ -80,17 +80,34 @@
       var input_data={'id':3, 'name': 'Diego'}
 
       //Struttura del form
+      var template=`<div><h3>Titolo</h3>
+        <div data-content='id'></div>
+        <div style='border: 1px solid red; margin:10px; padding:10px;'>
+          <div data-content='name'></div>
+          <div data-content='cognome'></div>
+          <div data-content='telefono'></div>
+        </div>
+        <div style='border: 1px solid blue; margin:10px; padding:10px;'>
+          <div data-content='name2'></div>
+          <div data-content='cognome2'></div>
+          <div data-content='telefono2'></div>
+        </div>
+      </div>`;
       var aForm = { table_name: 'test',
         primary_key: Array('id'),
         fields: {
            id: {label: 'ID', type: 'int', key: 0, nullable: false},
-          name: {label: 'Name', type: 'varchar'},
-          name2: {label: 'Name2', type: 'varchar'}
+           name: {label: 'Name', type: 'varchar'},
+           cognome: {label: 'Cognome', type: 'varchar'},
+           telefono: {label: 'Telefono', type: 'varchar'},
+           name2: {label: 'Name 2', type: 'varchar'},
+           cognome2: {label: 'Cognome 2', type: 'varchar'},
+           telefono2: {label: 'Telefono 2', type: 'varchar'},
         },
-        template:"<div style='border:1px solid red'><div data-content='id'></div><h3>aaaTitolo</h3><div data-content='name'></div><div data-content='name2'></div></div>"
+        template:template
        };
        var form=new Dbmng.Form({aForm:aForm});
-       jQuery('#test_base').append(form.createForm(input_data));
+       jQuery('#test_base').append(form.createForm(input_data,aForm.template));
 
        jQuery('#test_base').append("<button>Salva</button>").click(function(){
          var output=form.getValue();
