@@ -59,39 +59,45 @@ Dbmng.Form = Class.extend({
 
       var widget_opt={field:key, aField:aField, theme:this.theme, aParam:this.aParam};
       var w;
-
-      if( wt == 'select' ) {
-        w = new Dbmng.SelectWidget(widget_opt);
-      }
-      else if( wt == 'select_nm' ) {
-        w = new Dbmng.SelectNMWidget(widget_opt);
-      }
-      else if( wt == 'password' ) {
-        w = new Dbmng.PasswordWidget(widget_opt);
-      }
-      else if( wt == 'hidden' ) {
-        w = new Dbmng.HiddenWidget(widget_opt);
-      }
-      else if( wt == 'checkbox' ) {
-        w = new Dbmng.CheckboxWidget(widget_opt);
-      }
-      else if( wt == 'numeric' ) {
-        w = new Dbmng.NumericWidget(widget_opt);
-      }
-      else if( wt == 'autocomplete' ) {
-        w = new Dbmng.AutocompleteWidget(widget_opt);
-      }
-      else if( wt == 'date' ) {
-        w = new Dbmng.DateWidget(widget_opt);
-      }
-      else if( wt == 'textarea' ) {
-        w = new Dbmng.TextareaWidget(widget_opt);
-      }
-      else if( wt == 'file' ) {
-        w = new Dbmng.FileWidget(widget_opt);
-      }
-      else{
+      if( typeof aField.external_widget == 'undefined' ){
+        if( wt == 'select' ) {
+          w = new Dbmng.SelectWidget(widget_opt);
+        }
+        else if( wt == 'select_nm' ) {
+          w = new Dbmng.SelectNMWidget(widget_opt);
+        }
+        else if( wt == 'password' ) {
+          w = new Dbmng.PasswordWidget(widget_opt);
+        }
+        else if( wt == 'hidden' ) {
+          w = new Dbmng.HiddenWidget(widget_opt);
+        }
+        else if( wt == 'checkbox' ) {
+          w = new Dbmng.CheckboxWidget(widget_opt);
+        }
+        else if( wt == 'numeric' ) {
+          w = new Dbmng.NumericWidget(widget_opt);
+        }
+        else if( wt == 'autocomplete' ) {
+          w = new Dbmng.AutocompleteWidget(widget_opt);
+        }
+        else if( wt == 'date' ) {
+          w = new Dbmng.DateWidget(widget_opt);
+        }
+        else if( wt == 'textarea' ) {
+          w = new Dbmng.TextareaWidget(widget_opt);
+        }
+        else if( wt == 'file' ) {
+          w = new Dbmng.FileWidget(widget_opt);
+        }
+        else{
           w = new Dbmng.AbstractWidget(widget_opt);
+        }
+      }
+      else {
+        if( typeof aField.external_widget == 'function' ){
+          w= new aField.external_widget(widget_opt);
+        }
       }
       /* missing widget
       datetime
