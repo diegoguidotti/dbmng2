@@ -522,12 +522,11 @@ Dbmng.Crud = Class.extend({
       var valid=self.form.isValid();
 
       var aData = self.form.getValue();
-      console.log(aData);
+      // console.log(aData);
       var validation = true;
       if(typeof self.form_validation=='function'){
-        validation = self.form_validation(aData);
+        validation = self.form_validation();
       }
-      console.log(aData);
       if( validation.ok === false ) {
         var msg=self.theme.alertMessage(validation.msg);
         jQuery('#'+self.div_id).find(".dbmng_form_button_message").html(msg);

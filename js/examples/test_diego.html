@@ -20,8 +20,6 @@
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.fileupload.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/css/jquery.fileupload.min.css">
 
-
-
   <script type="text/javascript" src="../src/Class.js"></script>
   <script type="text/javascript" src="../src/Dbmng.js"></script>
   <script type="text/javascript" src="../src/Form.js"></script>
@@ -48,33 +46,48 @@
 <body>
   <h1>Test</h1>
     <div id="test_base">...</div>
-
-
-
-
-<!--
-  <h1>Botstrap</h1>
-    <div id="test_bootstrap"></div>
-
-  <h1>test widgets</h1>
-    <div id="test_widget"></div>
-    <form><div id="test_widget_select"></div></form>
-
-  <h1>DBMNG</h1>
-    <div id="test_dbmng"></div>
-
-  <h1>DBMNG2</h1>
-    <div id="test_dbmng2"></div> -->
-
-
-
+      <!--
+        <h1>Botstrap</h1>
+          <div id="test_bootstrap"></div>
+        <h1>test widgets</h1>
+          <div id="test_widget"></div>
+          <form><div id="test_widget_select"></div></form>
+        <h1>DBMNG</h1>
+          <div id="test_dbmng"></div>
+        <h1>DBMNG2</h1>
+          <div id="test_dbmng2"></div>
+      -->
 
 <script>
 
+    var test='single_field';//'single_form';
 
-    var test='single_form';//'single_form';
+    if(test=='single_field'){
+      var DiegoWidget=Dbmng.SelectWidget.extend({
+        getValue: function(){
+          var val = '';
+          if( jQuery(this.widget).val() !== '' ) {
+              val = jQuery(this.widget).val()+"|!!!!!";
+          }
+          else{
+            val="NIENTE";
+          }
+          return val;
+        },
+      });
+      var w6=new DiegoWidget({
+        field:'aaa',
+        aField:{label: 'Cognome 2', type: 'int', widget:'select', voc_val:{1:1, 2:2}}
+      });
+      jQuery('#test_base').append(w6.createField());
 
-    if(test=='single_form'){
+
+        jQuery('#test_base').append("<button id='get_val'>aaa</button>");
+        jQuery("#get_val").click(function(){
+          console.log(w6.getValue());
+        });
+    }
+    else if(test=='single_form'){
 
       //Dato di input (viene dall'API)
       var input_data={'id':3, 'name': 'Diego'}
@@ -93,6 +106,10 @@
           <div data-content='telefono2'></div>
         </div>
       </div>`;
+
+
+
+
       var aForm = { table_name: 'test',
         primary_key: Array('id'),
         fields: {
@@ -101,8 +118,8 @@
            cognome: {label: 'Cognome', type: 'varchar'},
            telefono: {label: 'Telefono', type: 'varchar'},
            name2: {label: 'Name 2', type: 'varchar'},
-           cognome2: {label: 'Cognome 2', type: 'varchar'},
-           telefono2: {label: 'Telefono 2', type: 'varchar'},
+           cognome2: {label: 'Cognome 2', type: 'int', widget:'select', voc_val:{1:1, 2:2}},
+           telefono2: {label: 'Data', type: 'date', widget: 'select', voc_val:{'2018-01-01': '1 gennaio', '2018-01-02': '2 gennaio'}}
         },
         template:template
        };
