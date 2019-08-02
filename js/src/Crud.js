@@ -521,11 +521,13 @@ Dbmng.Crud = Class.extend({
     jQuery(button).click(function(){
       var valid=self.form.isValid();
 
+      var aData = self.form.getValue();
+      console.log(aData);
       var validation = true;
       if(typeof self.form_validation=='function'){
-        validation = self.form_validation();
+        validation = self.form_validation(aData);
       }
-
+      console.log(aData);
       if( validation.ok === false ) {
         var msg=self.theme.alertMessage(validation.msg);
         jQuery('#'+self.div_id).find(".dbmng_form_button_message").html(msg);
@@ -537,7 +539,7 @@ Dbmng.Crud = Class.extend({
         else if(type=='update'){
           self.api.update({
             key:key,
-            data:self.form.getValue(),
+            data:aData, // self.form.getValue(),
             success:function(data){
               if(!data.ok){
                 var msg=self.theme.alertMessage(data.message);
@@ -556,7 +558,7 @@ Dbmng.Crud = Class.extend({
         }
         else{
           self.api.insert({
-            data:self.form.getValue(),
+            data:aData, // self.form.getValue(),
             success:function(data){
               console.log(self,data);
               if( !data.ok ) {
