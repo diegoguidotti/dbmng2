@@ -144,7 +144,6 @@ Dbmng.Form = Class.extend({
       options.aParam={};
     }
     this.aParam = jQuery.extend(true, {}, Dbmng.defaults.aParam,options.aParam);
-
     if( options.theme ) {
       this.theme = options.theme;
     }
@@ -188,39 +187,45 @@ Dbmng.Form = Class.extend({
 
       var widget_opt={field:key, aField:aField, theme:this.theme, aParam:this.aParam};
       var w;
-
-      if( wt == 'select' ) {
-        w = new Dbmng.SelectWidget(widget_opt);
-      }
-      else if( wt == 'select_nm' ) {
-        w = new Dbmng.SelectNMWidget(widget_opt);
-      }
-      else if( wt == 'password' ) {
-        w = new Dbmng.PasswordWidget(widget_opt);
-      }
-      else if( wt == 'hidden' ) {
-        w = new Dbmng.HiddenWidget(widget_opt);
-      }
-      else if( wt == 'checkbox' ) {
-        w = new Dbmng.CheckboxWidget(widget_opt);
-      }
-      else if( wt == 'numeric' ) {
-        w = new Dbmng.NumericWidget(widget_opt);
-      }
-      else if( wt == 'autocomplete' ) {
-        w = new Dbmng.AutocompleteWidget(widget_opt);
-      }
-      else if( wt == 'date' ) {
-        w = new Dbmng.DateWidget(widget_opt);
-      }
-      else if( wt == 'textarea' ) {
-        w = new Dbmng.TextareaWidget(widget_opt);
-      }
-      else if( wt == 'file' ) {
-        w = new Dbmng.FileWidget(widget_opt);
-      }
-      else{
+      if( typeof aField.external_widget == 'undefined' ){
+        if( wt == 'select' ) {
+          w = new Dbmng.SelectWidget(widget_opt);
+        }
+        else if( wt == 'select_nm' ) {
+          w = new Dbmng.SelectNMWidget(widget_opt);
+        }
+        else if( wt == 'password' ) {
+          w = new Dbmng.PasswordWidget(widget_opt);
+        }
+        else if( wt == 'hidden' ) {
+          w = new Dbmng.HiddenWidget(widget_opt);
+        }
+        else if( wt == 'checkbox' ) {
+          w = new Dbmng.CheckboxWidget(widget_opt);
+        }
+        else if( wt == 'numeric' ) {
+          w = new Dbmng.NumericWidget(widget_opt);
+        }
+        else if( wt == 'autocomplete' ) {
+          w = new Dbmng.AutocompleteWidget(widget_opt);
+        }
+        else if( wt == 'date' ) {
+          w = new Dbmng.DateWidget(widget_opt);
+        }
+        else if( wt == 'textarea' ) {
+          w = new Dbmng.TextareaWidget(widget_opt);
+        }
+        else if( wt == 'file' ) {
+          w = new Dbmng.FileWidget(widget_opt);
+        }
+        else{
           w = new Dbmng.AbstractWidget(widget_opt);
+        }
+      }
+      else {
+        if( typeof aField.external_widget == 'function' ){
+          w= new aField.external_widget(widget_opt);
+        }
       }
       /* missing widget
       datetime
@@ -535,7 +540,24 @@ Dbmng.FormInline = Class.extend({
 		}
 		return val;
 	},
+  isValid: function(){
+    var self=this;
+    var val=true;
+    var messages=[];
+    for(var i=0; i<this.forms.length; i++){
+      var v=this.forms[i].isValid();
+        if(!v.ok){
+          val=false;
+          messages.push({"message": v.message, "record": i});
+        }
+    }
+    return {"ok": val, "messages": messages};
+  },
 	createForm: function(aData) {
+    var self=this;
+
+    var div = document.createElement('div');
+    self.main_node=div;
 
 		//create an empty table
 		var tab=this.theme.getTable({data:[],header:[], aParam:this.aParam});
@@ -552,10 +574,12 @@ Dbmng.FormInline = Class.extend({
       }
 		}
 
+    jQuery.each(aData, function(i,val){
+		//for(var i=0; i<.length; i++){
 
-		for(var i=0; i<aData.length; i++){
-			var form=new Dbmng.Form({"aForm":this.aForm, "aParam":this.aParam, "theme":this.theme});
-			this.forms.push(form);
+      var current_record=i;
+			var form=new Dbmng.Form({"aForm":self.aForm, "aParam":self.aParam, "theme":self.theme});
+			self.forms.push(form);
 			var fields=form.getFields(aData[i]);
 
 			var r=jQuery("<tr></tr>").appendTo(jQuery(tab).find('tbody'));
@@ -572,24 +596,65 @@ Dbmng.FormInline = Class.extend({
           }
 					wdg.pk_value=form.getPkValue();
           wdg.form=form;
-					if(this.onChange){
-						wdg.onChange=this.onChange;
+					if(self.onChange){
+						wdg.onChange=self.onChange;
 					}
 					else{
 					}
 
-          if(this.onChangeRow){
-						wdg.onFocus=this.onChangeRow;
+          if(self.onChangeRow){
+						wdg.onFocus=self.onChangeRow;
           }
 
 				}
 
+        if(self.aParam.do_delete){
+          var col=jQuery('<td></td>').appendTo(r);
+          var button_delete=jQuery('<button data-record="'+current_record+'">Del</button>')[0];
+          col[0].appendChild(button_delete);
+
+          jQuery(button_delete).click(function(){
+            var records=self.getValue();
+            var record=jQuery(this).attr('data-record');
+            records.splice(record,1);
+            //self.main_node.removeChild(self.main_node.childNodes[0]);
+            self.main_node.innerHTML = '';
+            self.main_node.appendChild(self.createForm(records));
+          });
+
+          // button_delete.addEventListener("click",function(){
+          //   
+          //   // records=self.getValue();
+          //   // records.push({});
+          //   // 
+          //   // //self.main_node.removeChild(self.main_node.childNodes[0]);
+          //   // self.main_node.innerHTML = '';
+          //   // self.main_node.appendChild(self.createForm(records));
+          // });
+
+        }
+
         if(this.addEachRow){
           this.addEachRow(r,aData[i]);
         }
-		}
+  });
+    div.appendChild(tab);
+    if(self.aParam.do_insert===true){
+      var button = self.theme.getButton("Insert",{'class':'insert_button'});
+      div.appendChild(button);
+
+      button.addEventListener("click",function(){
+        var records=self.getValue();
+        records.push({});
+        //self.main_node.removeChild(self.main_node.childNodes[0]);
+        self.main_node.innerHTML = '';
+        self.main_node.appendChild(self.createForm(records));
+      });
+    }
+
+
 		//
-		return tab;
+		return div;
 	}
 });
 
@@ -854,7 +919,7 @@ Dbmng.Crud = Class.extend({
 						options.error(exc);
 					}
           else {
-            alert("API ["+this.url+"schema"+search+"] not found");
+            window.alert("API ["+this.url+"schema"+search+"] not found");
           }
 					
           
@@ -1265,11 +1330,12 @@ Dbmng.Crud = Class.extend({
     jQuery(button).click(function(){
       var valid=self.form.isValid();
 
+      var aData = self.form.getValue();
+      // 
       var validation = true;
       if(typeof self.form_validation=='function'){
         validation = self.form_validation();
       }
-
       if( validation.ok === false ) {
         var msg=self.theme.alertMessage(validation.msg);
         jQuery('#'+self.div_id).find(".dbmng_form_button_message").html(msg);
@@ -1281,7 +1347,7 @@ Dbmng.Crud = Class.extend({
         else if(type=='update'){
           self.api.update({
             key:key,
-            data:self.form.getValue(),
+            data:aData, // self.form.getValue(),
             success:function(data){
               if(!data.ok){
                 var msg=self.theme.alertMessage(data.message);
@@ -1300,7 +1366,7 @@ Dbmng.Crud = Class.extend({
         }
         else{
           self.api.insert({
-            data:self.form.getValue(),
+            data:aData, // self.form.getValue(),
             success:function(data){
               
               if( !data.ok ) {
@@ -3434,6 +3500,9 @@ Dbmng.SelectWidget = Dbmng.AbstractWidget.extend({
       else {
         val = jQuery(this.widget).val();
       }
+    }
+    else{
+      val=null;
     }
     return val;
   },
