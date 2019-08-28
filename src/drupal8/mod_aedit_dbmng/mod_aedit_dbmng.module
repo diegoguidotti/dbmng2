@@ -1,0 +1,10 @@
+<?php
+// DBMNG
+include_once ("sites/all/libraries/dbmng2/src/Db.php");
+include_once ("sites/all/libraries/dbmng2/src/Dbmng.php");
+include_once ("sites/all/libraries/dbmng2/src/Api.php");
+include_once ("sites/all/libraries/dbmng2/src/App.php");
+include_once ("sites/all/libraries/dbmng2/src/Login.php");
+include_once ("sites/all/libraries/dbmng2/src/DbmngHelper.php");
+
+require_once ("sites/all/libraries/dbmng2/vendor/autoload.php");

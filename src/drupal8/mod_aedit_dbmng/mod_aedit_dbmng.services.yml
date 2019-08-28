@@ -1,0 +1,5 @@
+services:
+  mod_aedit_dbmng.path_processor:
+    class: Drupal\mod_aedit_dbmng\PathProcessor\AeditDBMNGPathProcessor
+    tags:
+      - { name: path_processor_inbound, priority: 250 }

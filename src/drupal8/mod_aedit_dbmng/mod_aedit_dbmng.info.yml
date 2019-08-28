@@ -1,0 +1,5 @@
+name: dbmng module
+type: module
+description: Modulo vuoto utilizzato come template per generare i moduli specifici dei progetti
+package: AEDIT
+core: 8.x

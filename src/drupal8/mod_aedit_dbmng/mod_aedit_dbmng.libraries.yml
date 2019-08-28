@@ -1,0 +1,15 @@
+mod_aedit_dbmng:
+  header: true
+  version: 1.x
+  css:
+    theme:
+      css/mod_aedit_dbmng.css: {}
+  js:
+    js/mod_aedit_dbmng.js: {preprocess: false}
+  dependencies:
+    - core/jquery
+    - core/drupal.ajax
+    - core/drupal
+    - core/drupalSettings
+    - core/jquery.once
+    - core/drupal.form

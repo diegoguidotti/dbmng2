@@ -1,0 +1,7 @@
+mod_aedit_dbmng_ajax:
+    title: 'dbmng AJAX Access'
+    description: 'Allow a generic access to the ajax function of the modul'
+
+mod_aedit_dbmng_content:
+    title: 'dbmng Content'
+    description: 'Allow a generic access to the content of the modul'

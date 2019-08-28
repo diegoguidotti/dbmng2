@@ -1,0 +1,20 @@
+mod_aedit_dbmng.api:
+  path: '/api_mod_aedit_dbmng/{token}'
+  defaults:
+    _controller: '\Drupal\mod_aedit_dbmng\Controller\AeditDBMNGApiController::api'
+  requirements:
+    _permission: 'mod_aedit_dbmng_ajax'
+    token: '.+'
+
+mod_aedit_dbmng.content:
+  path: '/dbmng2'
+  defaults:
+    _controller: '\Drupal\mod_aedit_dbmng\Controller\AeditDBMNGController::content'
+    _title: 'Manage DBMNG'
+  requirements:
+    _permission: 'mod_aedit_dbmng_content'
+
+
+# da aggiungere di default a tutti i file di questo tipo
+# route_callbacks:
+#   - '\Drupal\mod_aedit_dbmng\Routing\AeditDBMNGRoutes::routes'
