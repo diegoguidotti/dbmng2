@@ -16,12 +16,17 @@ Dbmng.Crud = Class.extend({
 		//the ready variable can be used to check if it is ready the Crud to create the table)
     this.ready=true;
     this.crud_success = options.crud_success;
-    this.crud_delete = options.crud_delete;
     this.form_ready = options.form_ready;
     this.table_ready = options.table_ready;
     this.table_success = options.table_success;
     this.prepare_cdata = options.prepare_cdata;
     this.form_validation = options.form_validation;
+
+    // function/method used to personalize the error message to the user
+    this.crud_delete = options.crud_delete;
+    this.crud_insert = options.crud_insert;
+    this.crud_update = options.crud_update;
+
     if(!options.aParam){
       options.aParam={};
     }
@@ -546,8 +551,14 @@ Dbmng.Crud = Class.extend({
             data:aData, // self.form.getValue(),
             success:function(data){
               if(!data.ok){
-                var msg=self.theme.alertMessage(data.message);
-                jQuery(div_id).find(".dbmng_form_button_message").html(msg);
+                if(typeof self.crud_update=='function'){
+                  self.crud_update('update', data);
+                }
+                else {
+                  var msg=self.theme.alertMessage(data.message);
+                  jQuery(div_id).find(".dbmng_form_button_message").html(msg);
+                  window.scrollTo(0,document.body.scrollHeight);
+                }
               }
               else{
                 console.log(data);
@@ -566,8 +577,14 @@ Dbmng.Crud = Class.extend({
             success:function(data){
               console.log(self,data);
               if( !data.ok ) {
-                var msg=self.theme.alertMessage(data.message);
-                jQuery(div_id).find(".dbmng_form_button_message").html(msg);
+                if(typeof self.crud_insert=='function'){
+                  self.crud_insert('insert', data);
+                }
+                else {
+                  var msg=self.theme.alertMessage(data.message);
+                  jQuery(div_id).find(".dbmng_form_button_message").html(msg);
+                  window.scrollTo(0,document.body.scrollHeight);
+                }
               }
               else {
                 if(typeof self.crud_success=='function'){
