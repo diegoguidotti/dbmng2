@@ -19,6 +19,7 @@ Dbmng.Crud = Class.extend({
     this.crud_delete = options.crud_delete;
     this.form_ready = options.form_ready;
     this.table_ready = options.table_ready;
+    this.table_success = options.table_success;
     this.prepare_cdata = options.prepare_cdata;
     this.form_validation = options.form_validation;
     if(!options.aParam){
@@ -352,6 +353,9 @@ Dbmng.Crud = Class.extend({
         }
       }});
       jQuery(div_id).html(html);
+      if( typeof self.table_success == 'function' ){
+        self.table_success(aData);
+      }
 
       if( self.aParam.user_function.ins ) {
         var label_insert=self.aParam.ui.btn_insert.label;
@@ -420,6 +424,7 @@ Dbmng.Crud = Class.extend({
           else {
             var msg=self.theme.alertMessage(data.message);
             jQuery(div_id).find(".dbmng_form_button_message").html(msg);
+            window.scrollTo(0,document.body.scrollHeight);
           }
         }
       },
