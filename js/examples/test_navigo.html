@@ -67,6 +67,9 @@
       '/test/:act': function(param) {
         render(param);
       },
+      '/test/:act/sub/:id_sub': function(param) {
+        render(param);
+      },
       '/': function () {
         console.log("HOME");
         render({});
@@ -95,6 +98,10 @@
       }
     }
 
+    function run_sub(id_sub){
+      router.navigate("/test/dbmng/sub/"+id_sub);
+    }
+
     function render(param) {
       var content = "";
       if( param.act == 'uno' ) {
@@ -106,30 +113,41 @@
         jQuery('#test_navigo').html(content);
       }
       else if( param.act == 'dbmng' ) {
-        var aParam = {};
-        aParam.ui = {};
-        aParam.ui.btn_edit = {label:'Modifica', icon:'fa fa-pencil'};
-        aParam.ui.btn_edit_inline = {label:'Modifica inline', icon:'fa fa-pencil-square-o'};
-        aParam.ui.btn_delete = {label:'Elimina', icon:'fa fa-trash', confirm_message: 'Sei sicuro di voler eliminare il punto?'};
-        aParam.ui.btn_insert = {label:'Inserisci nuovo punto', class:'btn-success btn-block'};
-        aParam.ui.btn_save = {label:'Salva punto', class:'btn-success btn-block'};
-        aParam.ui.btn_cancel = {label:'Cancella', class:'btn-danger btn-block'};
-        aParam.ui.table_class = 'table-condensed table-hover';
-        aParam.user_function = {upd:1, del:1, ins:1};
-        aParam.router = router;
 
-        var theme_boot = new Dbmng.BootstrapTheme();
+        if( param.id_sub == undefined ) {
+          var aParam = {};
+          aParam.ui = {};
+          aParam.ui.btn_edit = {label:'Modifica', icon:'fa fa-pencil'};
+          aParam.ui.btn_edit_inline = {label:'Modifica inline', icon:'fa fa-pencil-square-o'};
+          aParam.ui.btn_delete = {label:'Elimina', icon:'fa fa-trash', confirm_message: 'Sei sicuro di voler eliminare il punto?'};
+          aParam.ui.btn_insert = {label:'Inserisci nuovo punto', class:'btn-success btn-block'};
+          aParam.ui.btn_save = {label:'Salva punto', class:'btn-success btn-block'};
+          aParam.ui.btn_cancel = {label:'Cancella', class:'btn-danger btn-block'};
+          aParam.ui.table_class = 'table-condensed table-hover';
+          aParam.user_function = {upd:1, del:1, ins:1};
+          aParam.router = router;
+          aParam.custom_function = {action: 'run_sub', label: 'Guarda', icon: 'fa fa-eye', class:'btn-primary'};
 
-        var path = "http://localhost/aedita17/api/aedita/";
-        var table = 'agro.crop';
-    		new Dbmng.CrudNavigo({
-          aParam: aParam,
-          theme: theme_boot,
-          url: path + 'api/'+ table,
-          success: function(self) {
-            self.createTable({div_id:'#test_navigo'});
-          }
-        });
+          var theme_boot = new Dbmng.BootstrapTheme();
+
+          // var path = "http://localhost/aedita17/api/aedita/";
+          // var table = 'agro.crop';
+
+          var path = "http://localhost/agrestic/api_agrestic/";
+          var table = 'agrestic.point';
+      		new Dbmng.CrudNavigo({
+            aParam: aParam,
+            theme: theme_boot,
+            url: path + 'api/'+ table,
+            success: function(self) {
+              self.createTable({div_id:'#test_navigo'});
+            }
+          });
+        }
+        else {
+          jQuery('#test_navigo').html("Qui ci va il render del CRUD [ID="+param.id_sub+"]");
+          console.log(param);
+        }
       }
 
 
