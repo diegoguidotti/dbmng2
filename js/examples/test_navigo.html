@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DBMNG Test Suite</title>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  <!-- for autocomplete and file upload -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script>
+
+  <!-- for autocomplete -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+
+  <!-- for file upload -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.iframe-transport.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.fileupload.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/css/jquery.fileupload.min.css">
+
+  <!-- for navigo -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/navigo@7.1.2/lib/navigo.min.js"></script>
+
+  <script type="text/javascript" src="../src/Class.js"></script>
+  <script type="text/javascript" src="../src/Dbmng.js"></script>
+  <script type="text/javascript" src="../src/Form.js"></script>
+  <script type="text/javascript" src="../src/Api.js"></script>
+  <script type="text/javascript" src="../src/Crud.js"></script>
+  <script type="text/javascript" src="../src/CrudNavigo.js"></script>
+  <script type="text/javascript" src="../src/CrudForm.js"></script>
+  <script type="text/javascript" src="../src/Ie9.js"></script>
+  <script type="text/javascript" src="../src/Utilities.js"></script>
+  <script type="text/javascript" src="../src/themes/AbstractTheme.js"></script>
+  <script type="text/javascript" src="../src/themes/BootstrapTheme.js"></script>
+  <script type="text/javascript" src="../src/widgets/AbstractWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/SelectWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/NumericWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/TextareaWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/PasswordWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/CheckboxWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/SelectNMWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/HiddenWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/AutocompleteWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/DateWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/FileWidget.js"></script>
+</head>
+<body>
+  <h1>Test Navigo</h1>
+    <div id="main-menu">
+      <ul>
+        <li><a onclick="navigator('uno')">Pagina uno</a></li>
+        <li><a onclick="navigator('due')">Pagina due</a></li>
+        <li><a onclick="navigator('dbmng')">Pagina dbmng</a></li>
+      </ul>
+    </div>
+    <div id="test_navigo" style="margin:10px; padding:10px; border:1px solid #ccc;"></div>
+
+  <script>
+    var root = 'view';
+    var useHash = true; // Defaults to: false
+    var hash = '#'; // Defaults to: '#'
+    var router = new Navigo(root, useHash, hash);
+
+    router.on({
+      'test/:act': function(param) {
+        render(param);
+      },
+      '*': function (param) {
+        console.log("HOME");
+        render(param);
+      },
+    }).resolve();
+
+    function navigator(act){
+      console.log(act);
+      if( act == 'uno' ) {
+        location.hash="test/uno";
+      }
+      else if( act == 'due' ) {
+        location.hash="test/due";
+      }
+      else if( act == 'dbmng' ) {
+        location.hash="test/dbmng";
+      }
+      else {
+        console.log("Azione non definita");
+      }
+    }
+
+    function render(param) {
+      var content = "";
+      if( param.act == 'uno' ) {
+        content = "Pagina Uno";
+        jQuery('#test_navigo').html(content);
+      }
+      else if( param.act == 'due' ) {
+        content = "Pagina Due";
+        jQuery('#test_navigo').html(content);
+      }
+      else if( param.act == 'dbmng' ) {
+        var aParam = {};
+        aParam.ui = {};
+        aParam.ui.btn_edit = {label:'Modifica', icon:'fa fa-pencil'};
+        aParam.ui.btn_edit_inline = {label:'Modifica inline', icon:'fa fa-pencil-square-o'};
+        aParam.ui.btn_delete = {label:'Elimina', icon:'fa fa-trash', confirm_message: 'Sei sicuro di voler eliminare il punto?'};
+        aParam.ui.btn_insert = {label:'Inserisci nuovo punto', class:'btn-success btn-block'};
+        aParam.ui.btn_save = {label:'Salva punto', class:'btn-success btn-block'};
+        aParam.ui.btn_cancel = {label:'Cancella', class:'btn-danger btn-block'};
+        aParam.ui.table_class = 'table-condensed table-hover';
+        aParam.user_function = {upd:1, del:1, ins:1};
+        aParam.navigo = (typeof Navigo == 'function');
+
+        var theme_boot = new Dbmng.BootstrapTheme();
+
+        var path = "http://localhost/agrestic/api_agrestic/";
+        var table = 'agrestic.point';
+    		new Dbmng.CrudNavigo({
+          aParam: aParam,
+          theme: theme_boot,
+          url: path + 'api/'+ table,
+          success: function(self) {
+            self.createTable({div_id:'#test_navigo'});
+          }
+        });
+      }
+
+
+    }
+  </script>
+</body>
