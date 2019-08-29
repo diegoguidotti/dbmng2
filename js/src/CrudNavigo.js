@@ -31,11 +31,8 @@ Dbmng.CrudNavigo = Class.extend({
       options.aParam={};
     }
 
-    this.navigo = false;
-    if( typeof options.aParam.navigo != 'undefined' ) {
-      this.navigo = options.aParam.navigo;
-    }
-    console.log(this.navigo);
+
+    console.log(this.router);
     console.log(Dbmng.defaults.aParam);
     console.log(options.aParam);
 
@@ -158,6 +155,8 @@ Dbmng.CrudNavigo = Class.extend({
       div_id = '#' + div_id;
     }
 
+
+
 		if(this.ready){
 		  var self=this;
 
@@ -205,6 +204,25 @@ Dbmng.CrudNavigo = Class.extend({
       div_id = '#' + div_id;
     }
     var self=this;
+
+    //Si aggiunge il router prma di generare la tabella
+    if( typeof self.aParam.router != 'undefined' ) {
+      this.router =self.aParam.router;
+
+      var router_update='/dbmng/'+self.aForm.table_name+'/update/:id';
+
+      var array={};
+      array[router_update]=function(param) {
+        console.log("update _ "+param.id);
+        self.createForm(self.update.div_id, param.id, self.update.aData);
+      };
+      router.on(array).resolve();
+
+
+      // jQuery(self.opt.div_id).parent().append("<a href='#/test/dbmng2/b'>bbb</a>");
+
+      console.log("ROUTER");
+    }
 
     //console.log(data);
     if( data.ok ) {
@@ -263,8 +281,13 @@ Dbmng.CrudNavigo = Class.extend({
               }
 
               button_edit.addEventListener("click",function(){
-                self.createForm(div_id, opt.rawData[self.pk], aData);
-                // MM aggiungere funzione per history
+
+                router.navigate("/dbmng/"+self.aForm.table_name+"/update/"+opt.rawData[self.pk]);
+
+                self.update={};
+                self.update.div_id=div_id;
+                self.update.aData=aData;
+                // self.createForm(div_id, opt.rawData[self.pk], aData);
               });
               jQuery(cell).append(button_edit);
             }

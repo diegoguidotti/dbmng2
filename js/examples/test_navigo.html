@@ -58,31 +58,37 @@
     <div id="test_navigo" style="margin:10px; padding:10px; border:1px solid #ccc;"></div>
 
   <script>
-    var root = 'view';
+    var root = '';
     var useHash = true; // Defaults to: false
     var hash = '#'; // Defaults to: '#'
     var router = new Navigo(root, useHash, hash);
 
     router.on({
-      'test/:act': function(param) {
+      '/test/:act': function(param) {
         render(param);
       },
-      '*': function (param) {
+      '/': function () {
         console.log("HOME");
-        render(param);
+        render({});
       },
     }).resolve();
+
+    router.notFound(function (query) {
+      console.log("HOME");
+      render({});
+    });
+
 
     function navigator(act){
       console.log(act);
       if( act == 'uno' ) {
-        location.hash="test/uno";
+        router.navigate("/test/uno");
       }
       else if( act == 'due' ) {
-        location.hash="test/due";
+        router.navigate("/test/due");
       }
       else if( act == 'dbmng' ) {
-        location.hash="test/dbmng";
+        router.navigate("/test/dbmng");
       }
       else {
         console.log("Azione non definita");
@@ -110,12 +116,12 @@
         aParam.ui.btn_cancel = {label:'Cancella', class:'btn-danger btn-block'};
         aParam.ui.table_class = 'table-condensed table-hover';
         aParam.user_function = {upd:1, del:1, ins:1};
-        aParam.navigo = (typeof Navigo == 'function');
+        aParam.router = router;
 
         var theme_boot = new Dbmng.BootstrapTheme();
 
-        var path = "http://localhost/agrestic/api_agrestic/";
-        var table = 'agrestic.point';
+        var path = "http://localhost/aedita17/api/aedita/";
+        var table = 'agro.crop';
     		new Dbmng.CrudNavigo({
           aParam: aParam,
           theme: theme_boot,
