@@ -15,6 +15,3 @@ Dbmng.defaults.aParam = {
     inline:0, upd:1, del:1, ins:1
   }
 };
-
-
-// console.log(Dbmng.defaults.aParam );
