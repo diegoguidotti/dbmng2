@@ -171,12 +171,16 @@ Dbmng.Table = Class.extend({
                 }
 
                 if( v.action ) {
-                  if( typeof v.action == 'string' ) {
+                  if( typeof v.action == 'string' ||  typeof v.action == 'function' ) {
                       button_custom.addEventListener("click",function(){
-                        var fnstring = v.action;
-                        var fnparams = [opt.rawData[self.pk],opt.rawData, opt.data, self.aParam];
-
-                        exeExternalFunction(fnstring, fnparams);
+                        if(typeof v.action == 'string'){
+                          var fnstring = v.action;
+                          var fnparams = [opt.rawData[self.pk],opt.rawData, opt.data, self.aParam];
+                          exeExternalFunction(fnstring, fnparams);
+                        }
+                        else{
+                          v.action(opt.rawData[self.pk],opt.rawData, opt.data, self.aParam);
+                        }
                       });
                     jQuery(cell).append(button_custom);
                   }
