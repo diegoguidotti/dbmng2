@@ -42,6 +42,7 @@
   <script type="text/javascript" src="../src/widgets/AutocompleteWidget.js"></script>
   <script type="text/javascript" src="../src/widgets/DateWidget.js"></script>
   <script type="text/javascript" src="../src/widgets/FileWidget.js"></script>
+  <script type="text/javascript" src="../src/Defaults.js"></script>
 </head>
 <body>
   <h1>Table</h1>
@@ -50,15 +51,6 @@
   <script>
 
     var aParam = {};
-    aParam.ui = {};
-    aParam.ui.btn_edit = {label:'Modifica', icon:'fa fa-pencil'};
-    aParam.ui.btn_edit_inline = {label:'Modifica inline', icon:'fa fa-pencil-square-o'};
-    aParam.ui.btn_delete = {label:'Elimina', icon:'fa fa-trash', confirm_message: 'Sei sicuro di voler eliminare il punto?'};
-    aParam.ui.btn_insert = {label:'Inserisci nuovo punto', class:'btn-success btn-block'};
-    aParam.ui.btn_save = {label:'Salva punto', class:'btn-success btn-block'};
-    aParam.ui.btn_cancel = {label:'Cancella', class:'btn-danger btn-block'};
-    aParam.ui.table_class = 'table-condensed table-hover';
-    aParam.user_function = {upd:0, del:0, ins:1};
     aParam.custom_function = {action: 'custum_example', label: 'Guarda', icon: 'fa fa-eye'};
 
     var theme_boot=new Dbmng.BootstrapTheme();

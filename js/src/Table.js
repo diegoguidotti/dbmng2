@@ -13,6 +13,9 @@ Dbmng.Table = Class.extend({
   init: function( options ) {
     var self=this;
 
+    if(!options.aParam){
+      options.aParam={};
+    }
     this.aParam = options.aParam;
 
     if( options.theme ) {
@@ -21,6 +24,7 @@ Dbmng.Table = Class.extend({
     else {
       this.theme = Dbmng.defaults.theme;
     }
+    console.log(Dbmng.defaults.aParam);
 
     if(options.aForm){
 			this.aForm  = options.aForm;
@@ -50,7 +54,7 @@ Dbmng.Table = Class.extend({
           header.push(widget.getTextLabel());
         }
       }
-      if( opt.add_calc_fields != undefined ) {
+      if( opt.add_calc_fields ) {
         header.push(opt.add_calc_fields.label);
       }
       if( this.hasFunctions() ) {
@@ -82,11 +86,11 @@ Dbmng.Table = Class.extend({
         }
       }
 
-      if( opt.add_calc_fields != undefined ) {
+      if( opt.add_calc_fields ) {
         jQuery.each(opt.add_calc_fields.data, function(k,v){
           jQuery.each(aData, function(kk,vv){
             if( v.id_point == vv.id_point ) {
-              cData[kk]['cnt'] = v.cnt;
+              cData[kk].cnt = v.cnt;
             }
           });
         });
@@ -102,7 +106,7 @@ Dbmng.Table = Class.extend({
           if( self.hasFunctions() ) {
             var cell=self.theme.getTableCell();
 
-            if( self.aParam.user_function.upd  ) {
+            if( self.aParam.user_function && self.aParam.user_function.upd  ) {
               var label_edit=self.aParam.ui.btn_edit.label;
               var opt_edit=self.aParam.ui.btn_edit;
 
@@ -117,7 +121,7 @@ Dbmng.Table = Class.extend({
               jQuery(cell).append(button_edit);
             }
 
-            if( self.aParam.user_function.inline ) {
+            if( self.aParam.user_function && self.aParam.user_function.inline ) {
               var label_editi=self.aParam.ui.btn_edit_inline.label;
               var opt_editi=self.aParam.ui.btn_edit_inline;
               var button_editi=self.theme.getButton(label_editi,opt_editi);
@@ -130,7 +134,7 @@ Dbmng.Table = Class.extend({
               jQuery(cell).append(button_editi);
             }
 
-            if( self.aParam.user_function.del ) {
+            if( self.aParam.user_function && self.aParam.user_function.del ) {
               var label_delete=self.aParam.ui.btn_delete.label;
               var opt_delete=self.aParam.ui.btn_delete;
 
@@ -191,7 +195,7 @@ Dbmng.Table = Class.extend({
         self.table_success(aData);
       }
 
-      if( self.aParam.user_function.ins ) {
+      if( self.aParam.user_function && self.aParam.user_function.ins ) {
         var label_insert=self.aParam.ui.btn_insert.label;
         var opt_insert=self.aParam.ui.btn_insert;
 
@@ -232,16 +236,16 @@ Dbmng.Table = Class.extend({
   hasFunctions: function() {
     var ret = false;
 
-    if( this.aParam.user_function.upd && this.aParam.user_function.upd == 1 )
+    if( this.aParam.user_function && this.aParam.user_function.upd && this.aParam.user_function.upd == 1 )
       ret = true;
 
-    if( this.aParam.user_function.inline && this.aParam.user_function.inline == 1 )
+    if( this.aParam.user_function && this.aParam.user_function.inline && this.aParam.user_function.inline == 1 )
       ret = true;
 
-    if( this.aParam.user_function.del && this.aParam.user_function.del == 1 )
+    if( this.aParam.user_function && this.aParam.user_function.del && this.aParam.user_function.del == 1 )
       ret = true;
 
-    if( this.aParam.user_function.ins && this.aParam.user_function.ins == 1 )
+    if( this.aParam.user_function && this.aParam.user_function.ins && this.aParam.user_function.ins == 1 )
       ret = true;
 
     if( this.aParam.custom_function )
@@ -251,7 +255,7 @@ Dbmng.Table = Class.extend({
   },
 
   isAllowed: function (data, method){
-    if(typeof this.aParam.user_function.custom_user_function=='function'){
+    if(this.aParam.user_function && typeof this.aParam.user_function.custom_user_function=='function'){
       return this.aParam.user_function.custom_user_function(data, method);
     }
     else{

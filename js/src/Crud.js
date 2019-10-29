@@ -211,7 +211,7 @@ Dbmng.Crud = Class.extend({
           header.push(widget.getTextLabel());
         }
       }
-      if( opt.add_calc_fields != undefined ) {
+      if( opt.add_calc_fields ) {
         header.push(opt.add_calc_fields.label);
       }
       // header.push("Calc.");
@@ -244,11 +244,11 @@ Dbmng.Crud = Class.extend({
         }
       }
 
-      if( opt.add_calc_fields != undefined ) {
+      if( opt.add_calc_fields ) {
         jQuery.each(opt.add_calc_fields.data, function(k,v){
           jQuery.each(aData, function(kk,vv){
             if( v.id_point == vv.id_point ) {
-              cData[kk]['cnt'] = v.cnt;
+              cData[kk].cnt = v.cnt;
             }
           });
         });

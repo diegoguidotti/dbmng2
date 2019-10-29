@@ -17,4 +17,4 @@ Dbmng.defaults.aParam = {
 };
 
 
-console.log(Dbmng.defaults.aParam );
+// console.log(Dbmng.defaults.aParam );
