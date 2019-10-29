@@ -38,6 +38,7 @@ Dbmng.Table = Class.extend({
   },
 
   generateTable: function(opt, data){
+    console.log(opt,data);
     var div_id = opt.div_id;
     if( div_id.substring(0, 1) != '#') {
       div_id = '#' + div_id;
@@ -171,12 +172,12 @@ Dbmng.Table = Class.extend({
 
                 if( v.action ) {
                   if( typeof v.action == 'string' ) {
-                    button_custom.addEventListener("click",function(){
-                      var fnstring = v.action;
-                      var fnparams = [opt.rawData[self.pk],opt.rawData, opt.data];
+                      button_custom.addEventListener("click",function(){
+                        var fnstring = v.action;
+                        var fnparams = [opt.rawData[self.pk],opt.rawData, opt.data, self.aParam];
 
-                      exeExternalFunction(fnstring, fnparams);
-                    });
+                        exeExternalFunction(fnstring, fnparams);
+                      });
                     jQuery(cell).append(button_custom);
                   }
                 }
