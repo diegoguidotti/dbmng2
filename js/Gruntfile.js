@@ -21,6 +21,7 @@ module.exports = function(grunt) {
 
             'src/Dbmng.js',
             'src/Form.js',
+            'src/Table.js',
             'src/FormInline.js',
             'src/Api.js',
             'src/Crud.js',

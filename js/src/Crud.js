@@ -158,7 +158,7 @@ Dbmng.Crud = Class.extend({
 
       var sel_opt={
 		    success:function(data){
-
+          console.log(data);
           self.generateTable(opt, data);
 		    },
 		    error: function(error) {
@@ -211,11 +211,16 @@ Dbmng.Crud = Class.extend({
           header.push(widget.getTextLabel());
         }
       }
+      if( opt.add_calc_fields != undefined ) {
+        header.push(opt.add_calc_fields.label);
+      }
+      // header.push("Calc.");
       if( this.hasFunctions() ) {
         header.push("Func.");
       }
 
       var cData = self.form.convert2html(aData);
+      console.log(aData,cData);
       if(typeof self.prepare_cdata=='function'){
         var pData = [];
 
@@ -239,6 +244,17 @@ Dbmng.Crud = Class.extend({
         }
       }
 
+      if( opt.add_calc_fields != undefined ) {
+        jQuery.each(opt.add_calc_fields.data, function(k,v){
+          jQuery.each(aData, function(kk,vv){
+            if( v.id_point == vv.id_point ) {
+              cData[kk]['cnt'] = v.cnt;
+            }
+          });
+        });
+
+      }
+      console.log(cData);
       var html=self.theme.getTable({data:cData, rawData:aData, header:header, aParam:self.aParam, options:{
         assignClass:true,
         setIDRow:function(aData){

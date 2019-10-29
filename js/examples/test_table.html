@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DBMNG Test Suite</title>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  <!-- for autocomplete and file upload -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script>
+
+  <!-- for autocomplete -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+
+  <!-- for file upload -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.iframe-transport.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.fileupload.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/css/jquery.fileupload.min.css">
+
+  <script type="text/javascript" src="../src/Class.js"></script>
+  <script type="text/javascript" src="../src/Dbmng.js"></script>
+  <script type="text/javascript" src="../src/Form.js"></script>
+  <script type="text/javascript" src="../src/Api.js"></script>
+  <script type="text/javascript" src="../src/Crud.js"></script>
+  <script type="text/javascript" src="../src/Table.js"></script>
+  <script type="text/javascript" src="../src/CrudForm.js"></script>
+  <script type="text/javascript" src="../src/Ie9.js"></script>
+  <script type="text/javascript" src="../src/Utilities.js"></script>
+  <script type="text/javascript" src="../src/themes/AbstractTheme.js"></script>
+  <script type="text/javascript" src="../src/themes/BootstrapTheme.js"></script>
+  <script type="text/javascript" src="../src/widgets/AbstractWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/SelectWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/NumericWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/TextareaWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/PasswordWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/CheckboxWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/SelectNMWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/HiddenWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/AutocompleteWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/DateWidget.js"></script>
+  <script type="text/javascript" src="../src/widgets/FileWidget.js"></script>
+</head>
+<body>
+  <h1>Table</h1>
+    <div id="table"></div>
+
+  <script>
+
+    var aParam = {};
+    aParam.ui = {};
+    aParam.ui.btn_edit = {label:'Modifica', icon:'fa fa-pencil'};
+    aParam.ui.btn_edit_inline = {label:'Modifica inline', icon:'fa fa-pencil-square-o'};
+    aParam.ui.btn_delete = {label:'Elimina', icon:'fa fa-trash', confirm_message: 'Sei sicuro di voler eliminare il punto?'};
+    aParam.ui.btn_insert = {label:'Inserisci nuovo punto', class:'btn-success btn-block'};
+    aParam.ui.btn_save = {label:'Salva punto', class:'btn-success btn-block'};
+    aParam.ui.btn_cancel = {label:'Cancella', class:'btn-danger btn-block'};
+    aParam.ui.table_class = 'table-condensed table-hover';
+    aParam.user_function = {upd:0, del:0, ins:1};
+    aParam.custom_function = {action: 'custum_example', label: 'Guarda', icon: 'fa fa-eye'};
+
+    var theme_boot=new Dbmng.BootstrapTheme();
+
+    var aForm = { table_name: 'contatti',
+      primary_key: ['id_contatti'],
+      fields: {
+        id_contatti: {label: 'ID', type: 'int', key: 1, 'nullable': false},
+        nome: {label: 'Nome', type: 'varchar'},
+        cognome: {label: 'Cognome', type: 'varchar'},
+        sesso: {label: 'Sesso', type: 'int', widget: 'select', voc_val:[{1: 'Maschio'}, {2: 'Femmina'}]}
+			}
+    };
+
+    var aData = {ok: true,
+      data:[
+        {id_contatti:1, nome: "Michele", cognome:"Mammini", sesso:1},
+        {id_contatti:2, nome: "Diego", cognome:"Guidotti", sesso:1},
+        {id_contatti:3, nome: "Klean", cognome:"Hoxha", sesso:1},
+        {id_contatti:4, nome: "Susanna", cognome:"Marchi", sesso:2},
+      ]
+    };
+
+    var table = new Dbmng.Table({
+      theme:theme_boot,
+      aForm: aForm,
+      aParam: aParam
+    });
+
+    table.generateTable({'div_id': '#table'}, aData);
+
+  </script>
+</body>
