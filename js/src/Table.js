@@ -13,15 +13,6 @@ Dbmng.Table = Class.extend({
   init: function( options ) {
     var self=this;
 
-    // Hook alle funzioni definite in Crud che dovevano essere utilizzate in table.
-    // In generale sono le funzioni che possono essere definite durante l'inizializzazione della classe Table.
-    //this.table_ready = options.table_ready;
-    //this.table_success = options.table_success;
-    // this.createForm = options.createForm;
-    // this.createFormInline = options.createFormInline;
-    // this.deleteRecord = options.deleteRecord;
-    // this.createInsertForm = options.createInsertForm;
-
     this.prepare_cdata = options.prepare_cdata;
 
     if(!options.aParam){
@@ -132,7 +123,7 @@ Dbmng.Table = Class.extend({
                 var label_custom = v.label;
                 var opt_custom = v;
                 var button_custom=(self.theme.getButton(label_custom,opt_custom));
-                //TODO fare un test con l'isAllowed
+
                 if(typeof v.isAllowed=='function'){
                   if(! v.isAllowed(opt.rawData)){
                     button_custom.disabled=true;
