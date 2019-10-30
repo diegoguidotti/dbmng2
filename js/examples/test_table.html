@@ -84,7 +84,6 @@
 
     table.generateTable({'div_id': '#table'}, aData);
 
-
     var aParam = {};
     aParam.user_function = {upd:1, del:1, ins:1, inline:1 };
     aParam.ui = {};
@@ -103,8 +102,7 @@
       return ok;
     };
 
-    //TODO, risolvere customfunction
-    aParam.customFunction={action: 'custum_example', label: 'Guarda', icon: 'fa fa-eye'};
+    aParam.custom_function={action: 'custum_example', label: 'Guarda', icon: 'fa fa-eye'};
 
 
     var theme_boot=new Dbmng.BootstrapTheme();
