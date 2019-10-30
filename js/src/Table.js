@@ -13,6 +13,16 @@ Dbmng.Table = Class.extend({
   init: function( options ) {
     var self=this;
 
+    // Hook alle funzioni definite in Crud che devono essere utilizzate in table.
+    // In generale sono le funzioni che possono essere definite durante l'inizializzazione della classe Table.
+    this.table_ready = options.table_ready;
+    this.table_success = options.table_success;
+    this.prepare_cdata = options.prepare_cdata;
+    this.createForm = options.createForm;
+    this.createFormInline = options.createFormInline;
+    this.deleteRecord = options.deleteRecord;
+    this.createInsertForm = options.createInsertForm;
+
     if(!options.aParam){
       options.aParam={};
     }
@@ -45,7 +55,7 @@ Dbmng.Table = Class.extend({
     }
     var self=this;
 
-    console.log(this.form);
+    console.log(self);
     if( data.ok ) {
       var aData=data.data;
       var header=[];
@@ -95,7 +105,6 @@ Dbmng.Table = Class.extend({
             }
           });
         });
-
       }
 
       var html=self.theme.getTable({data:cData, rawData:aData, header:header, aParam:self.aParam, options:{

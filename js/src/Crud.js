@@ -194,229 +194,246 @@ Dbmng.Crud = Class.extend({
 
 		}
   },
-  generateTable: function( opt, data){
-    var div_id=opt.div_id;
-    if( div_id.substring(0, 1) != '#') {
-      div_id = '#' + div_id;
-    }
+  generateTable: function(opt, data){
     var self=this;
+    var table = new Dbmng.Table({
+      theme:self.theme,
+      aForm: self.aForm,
+      aParam: self.aParam,
+      table_ready: self.table_ready,
+      table_success: self.table_success,
+      prepare_cdata: self.prepare_cdata,
+      createForm: self.createForm,
+      createFormInline: self.createFormInline,
+      deleteRecord: self.deleteRecord,
+      createInsertForm: self.createInsertForm,
+    });
 
-    //console.log(data);
-    if( data.ok ) {
-      var aData=data.data;
-      var header=[];
-      for(var key in self.aForm.fields){
-        var widget=self.form.getWidget(key);
-        if( widget.isVisible() && !widget.skipInTable()){
-          header.push(widget.getTextLabel());
-        }
-      }
-      if( opt.add_calc_fields ) {
-        header.push(opt.add_calc_fields.label);
-      }
-      // header.push("Calc.");
-      if( this.hasFunctions() ) {
-        header.push("Func.");
-      }
+    table.generateTable(opt, data);
 
-      var cData = self.form.convert2html(aData);
-      console.log(aData,cData);
-      if(typeof self.prepare_cdata=='function'){
-        var pData = [];
 
-        jQuery.each(aData, function(k,v){
-          pData.push([v,cData[k]]);
-        });
-
-        // console.log(pData);
-
-        var pcData = self.prepare_cdata(pData);
-
-        if( pcData !== null ) {
-          var aRData = [];
-          var aCData = [];
-          jQuery.each(pcData, function(k,v) {
-            aRData.push(v[0]);
-            aCData.push(v[1]);
-          });
-          aData = aRData;
-          cData = aCData;
-        }
-      }
-
-      if( opt.add_calc_fields ) {
-        jQuery.each(opt.add_calc_fields.data, function(k,v){
-          jQuery.each(aData, function(kk,vv){
-            if( v.id_point == vv.id_point ) {
-              cData[kk].cnt = v.cnt;
-            }
-          });
-        });
-
-      }
-      console.log(cData);
-      var html=self.theme.getTable({data:cData, rawData:aData, header:header, aParam:self.aParam, options:{
-        assignClass:true,
-        setIDRow:function(aData){
-          return "dbmng_row_id_"+aData[self.pk];
-        },
-        addColumn:function(opt){
-          if( self.hasFunctions() ) {
-            var cell=self.theme.getTableCell();
-
-            if( self.aParam.user_function.upd  ) {
-              var label_edit=self.aParam.ui.btn_edit.label;
-              var opt_edit=self.aParam.ui.btn_edit;
-
-              var button_edit=(self.theme.getButton(label_edit,opt_edit));
-              if(!self.isAllowed(opt.rawData,'update')){
-                button_edit.disabled=true;
-              }
-
-              button_edit.addEventListener("click",function(){
-                self.createForm(div_id, opt.rawData[self.pk], aData);
-                // MM aggiungere funzione per history
-              });
-              jQuery(cell).append(button_edit);
-            }
-
-            if( self.aParam.user_function.inline ) {
-              var label_editi=self.aParam.ui.btn_edit_inline.label;
-              var opt_editi=self.aParam.ui.btn_edit_inline;
-              var button_editi=self.theme.getButton(label_editi,opt_editi);
-              if(!self.isAllowed(opt.rawData,'update')){
-                button_editi.disabled=true;
-              }
-              button_editi.addEventListener("click",function(){
-                self.createFormInline(div_id, opt.rawData[self.pk], aData, true);
-                // MM aggiungere funzione per history
-              });
-              jQuery(cell).append(button_editi);
-            }
-
-            if( self.aParam.user_function.del ) {
-              var label_delete=self.aParam.ui.btn_delete.label;
-              var opt_delete=self.aParam.ui.btn_delete;
-
-              var button_delete=(self.theme.getButton(label_delete,opt_delete));
-              if(!self.isAllowed(opt.rawData,'delete')){
-                button_delete.disabled=true;
-              }
-              button_delete.addEventListener("click",function(){
-                var confirm_message = "Are you sure?";
-                if( self.aParam.ui.btn_delete.confirm_message ) {
-                  confirm_message = self.aParam.ui.btn_delete.confirm_message;
-                }
-                if( window.confirm(confirm_message) ) {
-                  self.deleteRecord(div_id, opt.rawData[self.pk]);
-                }
-                // MM aggiungere funzione per history
-
-              });
-              jQuery(cell).append(button_delete);
-            }
-
-            if( self.aParam.custom_function ) {
-
-              var aCF = self.aParam.custom_function;
-              if( ! jQuery.isArray(self.aParam.custom_function) ) {
-                aCF = [self.aParam.custom_function];
-              }
-
-              jQuery.each(aCF, function(k,v) {
-                var label_custom = v.label;
-                var opt_custom = v;
-                //console.log(opt_custom);
-                var button_custom=(self.theme.getButton(label_custom,opt_custom));
-                if(!self.isAllowed(opt.rawData,v.action)){
-                  button_custom.disabled=true;
-                }
-
-                if( v.action ) {
-                  if( typeof v.action == 'string' ) {
-                    button_custom.addEventListener("click",function(){
-                      var fnstring = v.action;
-                      var fnparams = [opt.rawData[self.pk],opt.rawData, opt.data];
-
-                      exeExternalFunction(fnstring, fnparams);
-                      // MM aggiungere funzione per history
-                    });
-                    jQuery(cell).append(button_custom);
-                  }
-                }
-              });
-  //             var label_custom = self.aParam.custom_function.label;
-  //             var opt_custom = self.aParam.custom_function;
-  //             //console.log(opt_custom);
-  //             var button_custom=(self.theme.getButton(label_custom,opt_custom));
-  //             if(!self.isAllowed(opt.rawData,self.aParam.custom_function.action)){
-  //               button_custom.disabled=true;
+  //   var div_id=opt.div_id;
+  //   if( div_id.substring(0, 1) != '#') {
+  //     div_id = '#' + div_id;
+  //   }
+  //   var self=this;
+  //
+  //   //console.log(data);
+  //   if( data.ok ) {
+  //     var aData=data.data;
+  //     var header=[];
+  //     for(var key in self.aForm.fields){
+  //       var widget=self.form.getWidget(key);
+  //       if( widget.isVisible() && !widget.skipInTable()){
+  //         header.push(widget.getTextLabel());
+  //       }
+  //     }
+  //     if( opt.add_calc_fields ) {
+  //       header.push(opt.add_calc_fields.label);
+  //     }
+  //     // header.push("Calc.");
+  //     if( this.hasFunctions() ) {
+  //       header.push("Func.");
+  //     }
+  //
+  //     var cData = self.form.convert2html(aData);
+  //     console.log(aData,cData);
+  //     if(typeof self.prepare_cdata=='function'){
+  //       var pData = [];
+  //
+  //       jQuery.each(aData, function(k,v){
+  //         pData.push([v,cData[k]]);
+  //       });
+  //
+  //       // console.log(pData);
+  //
+  //       var pcData = self.prepare_cdata(pData);
+  //
+  //       if( pcData !== null ) {
+  //         var aRData = [];
+  //         var aCData = [];
+  //         jQuery.each(pcData, function(k,v) {
+  //           aRData.push(v[0]);
+  //           aCData.push(v[1]);
+  //         });
+  //         aData = aRData;
+  //         cData = aCData;
+  //       }
+  //     }
+  //
+  //     if( opt.add_calc_fields ) {
+  //       jQuery.each(opt.add_calc_fields.data, function(k,v){
+  //         jQuery.each(aData, function(kk,vv){
+  //           if( v.id_point == vv.id_point ) {
+  //             cData[kk].cnt = v.cnt;
+  //           }
+  //         });
+  //       });
+  //
+  //     }
+  //     console.log(cData);
+  //     var html=self.theme.getTable({data:cData, rawData:aData, header:header, aParam:self.aParam, options:{
+  //       assignClass:true,
+  //       setIDRow:function(aData){
+  //         return "dbmng_row_id_"+aData[self.pk];
+  //       },
+  //       addColumn:function(opt){
+  //         if( self.hasFunctions() ) {
+  //           var cell=self.theme.getTableCell();
+  //
+  //           if( self.aParam.user_function.upd  ) {
+  //             var label_edit=self.aParam.ui.btn_edit.label;
+  //             var opt_edit=self.aParam.ui.btn_edit;
+  //
+  //             var button_edit=(self.theme.getButton(label_edit,opt_edit));
+  //             if(!self.isAllowed(opt.rawData,'update')){
+  //               button_edit.disabled=true;
   //             }
   //
-  //             if( self.aParam.custom_function.action ) {
-  //               if( typeof self.aParam.custom_function.action == 'string' ) {
-  //                 button_custom.addEventListener("click",function(){
-  //                   var fnstring = self.aParam.custom_function.action;
-  //                   var fnparams = [opt.rawData[self.pk],opt.rawData];
+  //             button_edit.addEventListener("click",function(){
+  //               self.createForm(div_id, opt.rawData[self.pk], aData);
+  //               // MM aggiungere funzione per history
+  //             });
+  //             jQuery(cell).append(button_edit);
+  //           }
   //
-  //                   exeExternalFunction(fnstring, fnparams);
-  //                 });
-  //                 jQuery(cell).append(button_custom);
+  //           if( self.aParam.user_function.inline ) {
+  //             var label_editi=self.aParam.ui.btn_edit_inline.label;
+  //             var opt_editi=self.aParam.ui.btn_edit_inline;
+  //             var button_editi=self.theme.getButton(label_editi,opt_editi);
+  //             if(!self.isAllowed(opt.rawData,'update')){
+  //               button_editi.disabled=true;
+  //             }
+  //             button_editi.addEventListener("click",function(){
+  //               self.createFormInline(div_id, opt.rawData[self.pk], aData, true);
+  //               // MM aggiungere funzione per history
+  //             });
+  //             jQuery(cell).append(button_editi);
+  //           }
+  //
+  //           if( self.aParam.user_function.del ) {
+  //             var label_delete=self.aParam.ui.btn_delete.label;
+  //             var opt_delete=self.aParam.ui.btn_delete;
+  //
+  //             var button_delete=(self.theme.getButton(label_delete,opt_delete));
+  //             if(!self.isAllowed(opt.rawData,'delete')){
+  //               button_delete.disabled=true;
+  //             }
+  //             button_delete.addEventListener("click",function(){
+  //               var confirm_message = "Are you sure?";
+  //               if( self.aParam.ui.btn_delete.confirm_message ) {
+  //                 confirm_message = self.aParam.ui.btn_delete.confirm_message;
   //               }
+  //               if( window.confirm(confirm_message) ) {
+  //                 self.deleteRecord(div_id, opt.rawData[self.pk]);
+  //               }
+  //               // MM aggiungere funzione per history
+  //
+  //             });
+  //             jQuery(cell).append(button_delete);
+  //           }
+  //
+  //           if( self.aParam.custom_function ) {
+  //
+  //             var aCF = self.aParam.custom_function;
+  //             if( ! jQuery.isArray(self.aParam.custom_function) ) {
+  //               aCF = [self.aParam.custom_function];
   //             }
-            }
-
-            return cell;
-          }
-          else {
-            return null;
-          }
-        }
-      }});
-      jQuery(div_id).html(html);
-      if( typeof self.table_success == 'function' ){
-        self.table_success(aData);
-      }
-
-      if( self.aParam.user_function.ins ) {
-        var label_insert=self.aParam.ui.btn_insert.label;
-        var opt_insert=self.aParam.ui.btn_insert;
-
-        var button_insert=jQuery(self.theme.getButton(label_insert,opt_insert));
-        button_insert.click(function(){
-          self.createInsertForm(div_id);
-          // MM aggiungere funzione per history
-        });
-
-        var btns_l = "<div id='dbmng_buttons_row' class='row' style='margin-top: 20px;margin-bottom: 100px;'><div class='dbmng_form_button_message col-md-12'></div><div id='dbmng_button_left' class='dbmng_form_button_left col-md-4 col-xs-12 '></div><div id='dbmng_button_center' class='col-md-4 col-xs-12 '></div><div id='dbmng_button_right' class='dbmng_form_button_right col-md-4 col-xs-12 '></div></div>";
-        var btns_f = "<div id='dbmng_buttons_row' class='row' style='margin-top: 0px;margin-bottom: 0px;'><div class='dbmng_form_button_message col-md-12'></div>   <div id='dbmng_button_left' class='dbmng_form_button_left col-md-4 col-xs-12 '></div><div id='dbmng_button_center' class='col-md-4 col-xs-12 '></div><div id='dbmng_button_right' class='dbmng_form_button_right col-md-4 col-xs-12 '></div></div>";
-        var position = 'last';
-        if( self.aParam.ui.btn_insert.position ) {
-          position = self.aParam.ui.btn_insert.position;
-        }
-
-        if( position == 'first' ) {
-          jQuery(div_id).prepend(btns_f);
-        }
-        else if ( position == 'both' ) {
-          jQuery(div_id).append(btns_l);
-          jQuery(div_id).prepend(btns_f);
-        }
-        else {
-          jQuery(div_id).append(btns_l);
-        }
-        jQuery(div_id).find('.dbmng_form_button_left').append(button_insert);
-
-        // jQuery(div_id).append(button_insert);
-      }
-
-      if(typeof self.table_ready=='function'){
-        self.table_ready(self.form);
-      }
-    }
-    else {
-      jQuery(div_id).html(self.theme.alertMessage(data.message));
-    }
+  //
+  //             jQuery.each(aCF, function(k,v) {
+  //               var label_custom = v.label;
+  //               var opt_custom = v;
+  //               //console.log(opt_custom);
+  //               var button_custom=(self.theme.getButton(label_custom,opt_custom));
+  //               if(!self.isAllowed(opt.rawData,v.action)){
+  //                 button_custom.disabled=true;
+  //               }
+  //
+  //               if( v.action ) {
+  //                 if( typeof v.action == 'string' ) {
+  //                   button_custom.addEventListener("click",function(){
+  //                     var fnstring = v.action;
+  //                     var fnparams = [opt.rawData[self.pk],opt.rawData, opt.data];
+  //
+  //                     exeExternalFunction(fnstring, fnparams);
+  //                     // MM aggiungere funzione per history
+  //                   });
+  //                   jQuery(cell).append(button_custom);
+  //                 }
+  //               }
+  //             });
+  // //             var label_custom = self.aParam.custom_function.label;
+  // //             var opt_custom = self.aParam.custom_function;
+  // //             //console.log(opt_custom);
+  // //             var button_custom=(self.theme.getButton(label_custom,opt_custom));
+  // //             if(!self.isAllowed(opt.rawData,self.aParam.custom_function.action)){
+  // //               button_custom.disabled=true;
+  // //             }
+  // //
+  // //             if( self.aParam.custom_function.action ) {
+  // //               if( typeof self.aParam.custom_function.action == 'string' ) {
+  // //                 button_custom.addEventListener("click",function(){
+  // //                   var fnstring = self.aParam.custom_function.action;
+  // //                   var fnparams = [opt.rawData[self.pk],opt.rawData];
+  // //
+  // //                   exeExternalFunction(fnstring, fnparams);
+  // //                 });
+  // //                 jQuery(cell).append(button_custom);
+  // //               }
+  // //             }
+  //           }
+  //
+  //           return cell;
+  //         }
+  //         else {
+  //           return null;
+  //         }
+  //       }
+  //     }});
+  //     jQuery(div_id).html(html);
+  //     if( typeof self.table_success == 'function' ){
+  //       self.table_success(aData);
+  //     }
+  //
+  //     if( self.aParam.user_function.ins ) {
+  //       var label_insert=self.aParam.ui.btn_insert.label;
+  //       var opt_insert=self.aParam.ui.btn_insert;
+  //
+  //       var button_insert=jQuery(self.theme.getButton(label_insert,opt_insert));
+  //       button_insert.click(function(){
+  //         self.createInsertForm(div_id);
+  //         // MM aggiungere funzione per history
+  //       });
+  //
+  //       var btns_l = "<div id='dbmng_buttons_row' class='row' style='margin-top: 20px;margin-bottom: 100px;'><div class='dbmng_form_button_message col-md-12'></div><div id='dbmng_button_left' class='dbmng_form_button_left col-md-4 col-xs-12 '></div><div id='dbmng_button_center' class='col-md-4 col-xs-12 '></div><div id='dbmng_button_right' class='dbmng_form_button_right col-md-4 col-xs-12 '></div></div>";
+  //       var btns_f = "<div id='dbmng_buttons_row' class='row' style='margin-top: 0px;margin-bottom: 0px;'><div class='dbmng_form_button_message col-md-12'></div>   <div id='dbmng_button_left' class='dbmng_form_button_left col-md-4 col-xs-12 '></div><div id='dbmng_button_center' class='col-md-4 col-xs-12 '></div><div id='dbmng_button_right' class='dbmng_form_button_right col-md-4 col-xs-12 '></div></div>";
+  //       var position = 'last';
+  //       if( self.aParam.ui.btn_insert.position ) {
+  //         position = self.aParam.ui.btn_insert.position;
+  //       }
+  //
+  //       if( position == 'first' ) {
+  //         jQuery(div_id).prepend(btns_f);
+  //       }
+  //       else if ( position == 'both' ) {
+  //         jQuery(div_id).append(btns_l);
+  //         jQuery(div_id).prepend(btns_f);
+  //       }
+  //       else {
+  //         jQuery(div_id).append(btns_l);
+  //       }
+  //       jQuery(div_id).find('.dbmng_form_button_left').append(button_insert);
+  //
+  //       // jQuery(div_id).append(button_insert);
+  //     }
+  //
+  //     if(typeof self.table_ready=='function'){
+  //       self.table_ready(self.form);
+  //     }
+  //   }
+  //   else {
+  //     jQuery(div_id).html(self.theme.alertMessage(data.message));
+  //   }
   },
   isAllowed: function (data, method){
     if(typeof this.aParam.user_function.custom_user_function=='function'){
@@ -516,7 +533,7 @@ Dbmng.Crud = Class.extend({
 
     var aRecord;
     if(type==='update'){
-       aRecord = this.getARecord(key,aData);
+       aRecord = self.getARecord(key,aData);
      }
     else{
       aRecord = {};
