@@ -134,7 +134,7 @@ Dbmng.Table = Class.extend({
                 var button_custom=(self.theme.getButton(label_custom,opt_custom));
                 //TODO fare un test con l'isAllowed
                 if(typeof v.isAllowed=='function'){
-                  if(! v.isAllowed(opt.rawData,v.action)){
+                  if(! v.isAllowed(opt.rawData,v.method)){
                     button_custom.disabled=true;
                   }
                 }

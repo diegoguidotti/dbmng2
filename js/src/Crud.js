@@ -195,28 +195,48 @@ Dbmng.Crud = Class.extend({
 		}
   },
   generateTable: function(opt, data){
+    var div_id = opt.div_id;
+    if( div_id.substring(0, 1) != '#') {
+      div_id = '#' + div_id;
+    }
+
     var self=this;
 
-    var custom_function=[];
+    // var custom_function=[];
 
-
+    // debugger
     if( self.aParam.user_function && self.aParam.user_function.upd  ) {
 
-      var update_function = self.aParam.ui.btn_edit.icon;
+      var update_function = self.aParam.ui.btn_edit;
 
-      update_function.action=function(primary_key, rawData, data){
+      update_function.method = 'update';
+      update_function.action = function(primary_key, rawData, data){
         self.createForm(div_id, primary_key, data);
         //version originale
         //self.createForm(div_id, opt.rawData[self.pk], aData);
       };
 
-      if(self.aParam.ui.btn_edit.label){
-        update_function.label=self.aParam.ui.btn_edit.label;
-      }
+      // if(self.aParam.ui.btn_edit.label){
+      //   update_function.label=self.aParam.ui.btn_edit.label;
+      // }
 
       update_function.isAllowed = function(rawData){
         self.isAllowed(rawData,'update');
       };
+      // custom_function.push(update_function);
+      var custom_function=[];
+      if( self.aParam.custom_function ) {
+        if( !Array.isArray(self.aParam.custom_function) ){
+          custom_function =self.aParam.custom_function;
+          self.aParam.custom_function=[];
+          self.aParam.custom_function.push(custom_function);
+        }
+      }
+      else {
+        self.aParam.custom_function=[];
+      }
+      self.aParam.custom_function.push(update_function);
+
     }
 
     //INIZIO paste Risolvere dopo aver risolto l'edit
@@ -254,7 +274,7 @@ Dbmng.Crud = Class.extend({
     // }
 
     //FINE past
-    self.aParam.custom_function.append(custom_function);
+    // self.aParam.custom_function.push(update_function);
 
 
     var table = new Dbmng.Table({
@@ -272,7 +292,7 @@ Dbmng.Crud = Class.extend({
 
     table.generateTable(opt, data);
 
-
+    var aData = data.data;
     //Dopo aver generato la tabella aggiungo le funzioni di hook e il pulsante di inserisci
     if( typeof self.table_success == 'function' ){
       self.table_success(aData);
@@ -538,6 +558,7 @@ Dbmng.Crud = Class.extend({
   //   }
   },
   isAllowed: function (data, method){
+
     if(typeof this.aParam.user_function.custom_user_function=='function'){
       return this.aParam.user_function.custom_user_function(data, method);
     }
