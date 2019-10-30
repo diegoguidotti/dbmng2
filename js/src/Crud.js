@@ -196,20 +196,122 @@ Dbmng.Crud = Class.extend({
   },
   generateTable: function(opt, data){
     var self=this;
+
+    var custom_function=[];
+
+
+    if( self.aParam.user_function && self.aParam.user_function.upd  ) {
+
+      var update_function = self.aParam.ui.btn_edit.icon;
+
+      update_function.action=function(primary_key, rawData, data){
+        self.createForm(div_id, primary_key, data);
+        //version originale
+        //self.createForm(div_id, opt.rawData[self.pk], aData);
+      };
+
+      if(self.aParam.ui.btn_edit.label){
+        update_function.label=self.aParam.ui.btn_edit.label;
+      }
+
+      update_function.isAllowed = function(rawData){
+        self.isAllowed(rawData,'update');
+      };
+    }
+
+    //INIZIO paste Risolvere dopo aver risolto l'edit
+    // if( self.aParam.user_function && self.aParam.user_function.inline ) {
+    //   var label_editi=self.aParam.ui.btn_edit_inline.label;
+    //   var opt_editi=self.aParam.ui.btn_edit_inline;
+    //   var button_editi=self.theme.getButton(label_editi,opt_editi);
+    //   if(!self.isAllowed(opt.rawData,'update')){
+    //     button_editi.disabled=true;
+    //   }
+    //   button_editi.addEventListener("click",function(){
+    //     self.createFormInline(div_id, opt.rawData[self.pk], aData, true);
+    //   });
+    //   jQuery(cell).append(button_editi);
+    // }
+    //
+    // if( self.aParam.user_function && self.aParam.user_function.del ) {
+    //   var label_delete=self.aParam.ui.btn_delete.label;
+    //   var opt_delete=self.aParam.ui.btn_delete;
+    //
+    //   var button_delete=(self.theme.getButton(label_delete,opt_delete));
+    //   if(!self.isAllowed(opt.rawData,'delete')){
+    //     button_delete.disabled=true;
+    //   }
+    //   button_delete.addEventListener("click",function(){
+    //     var confirm_message = "Are you sure?";
+    //     if( self.aParam.ui.btn_delete.confirm_message ) {
+    //       confirm_message = self.aParam.ui.btn_delete.confirm_message;
+    //     }
+    //     if( window.confirm(confirm_message) ) {
+    //       self.deleteRecord(div_id, opt.rawData[self.pk]);
+    //     }
+    //   });
+    //   jQuery(cell).append(button_delete);
+    // }
+
+    //FINE past
+    self.aParam.custom_function.append(custom_function);
+
+
     var table = new Dbmng.Table({
       theme:self.theme,
       aForm: self.aForm,
       aParam: self.aParam,
-      table_ready: self.table_ready,
-      table_success: self.table_success,
-      prepare_cdata: self.prepare_cdata,
-      createForm: self.createForm,
-      createFormInline: self.createFormInline,
-      deleteRecord: self.deleteRecord,
-      createInsertForm: self.createInsertForm,
+      prepare_cdata: self.prepare_cdata
+      // ,table_ready: self.table_ready,
+      // table_success: self.table_success,
+      // createForm: self.createForm,
+      // createFormInline: self.createFormInline,
+      // deleteRecord: self.deleteRecord,
+      // createInsertForm: self.createInsertForm,
     });
 
     table.generateTable(opt, data);
+
+
+    //Dopo aver generato la tabella aggiungo le funzioni di hook e il pulsante di inserisci
+    if( typeof self.table_success == 'function' ){
+      self.table_success(aData);
+    }
+
+    //TODO: verificare che fa l'inserimento in mnaiera corretta
+    if( self.aParam.user_function && self.aParam.user_function.ins ) {
+      var label_insert=self.aParam.ui.btn_insert.label;
+      var opt_insert=self.aParam.ui.btn_insert;
+
+      var button_insert=jQuery(self.theme.getButton(label_insert,opt_insert));
+      button_insert.click(function(){
+        self.createInsertForm(div_id);
+      });
+
+      var btns_l = "<div id='dbmng_buttons_row' class='row' style='margin-top: 20px;margin-bottom: 100px;'><div class='dbmng_form_button_message col-md-12'></div><div id='dbmng_button_left' class='dbmng_form_button_left col-md-4 col-xs-12 '></div><div id='dbmng_button_center' class='col-md-4 col-xs-12 '></div><div id='dbmng_button_right' class='dbmng_form_button_right col-md-4 col-xs-12 '></div></div>";
+      var btns_f = "<div id='dbmng_buttons_row' class='row' style='margin-top: 0px;margin-bottom: 0px;'><div class='dbmng_form_button_message col-md-12'></div>   <div id='dbmng_button_left' class='dbmng_form_button_left col-md-4 col-xs-12 '></div><div id='dbmng_button_center' class='col-md-4 col-xs-12 '></div><div id='dbmng_button_right' class='dbmng_form_button_right col-md-4 col-xs-12 '></div></div>";
+      var position = 'last';
+      if( self.aParam.ui.btn_insert.position ) {
+        position = self.aParam.ui.btn_insert.position;
+      }
+
+      if( position == 'first' ) {
+        jQuery(div_id).prepend(btns_f);
+      }
+      else if ( position == 'both' ) {
+        jQuery(div_id).append(btns_l);
+        jQuery(div_id).prepend(btns_f);
+      }
+      else {
+        jQuery(div_id).append(btns_l);
+      }
+      jQuery(div_id).find('.dbmng_form_button_left').append(button_insert);
+    }
+
+    if(typeof self.table_ready=='function'){
+      self.table_ready(self.form);
+    }
+
 
 
   //   var div_id=opt.div_id;
