@@ -134,7 +134,7 @@ Dbmng.Table = Class.extend({
                 var button_custom=(self.theme.getButton(label_custom,opt_custom));
                 //TODO fare un test con l'isAllowed
                 if(typeof v.isAllowed=='function'){
-                  if(! v.isAllowed(opt.rawData,v.method)){
+                  if(! v.isAllowed(opt.rawData)){
                     button_custom.disabled=true;
                   }
                 }
@@ -146,11 +146,11 @@ Dbmng.Table = Class.extend({
                       button_custom.addEventListener("click",function(){
                         if(typeof v.action == 'string'){
                           var fnstring = v.action;
-                          var fnparams = [opt.rawData[self.pk],opt.rawData, opt.data, self.aParam];
+                          var fnparams = [opt.rawData[self.pk],opt.rawData, opt.data, aData];
                           exeExternalFunction(fnstring, fnparams);
                         }
                         else{
-                          v.action(opt.rawData[self.pk],opt.rawData, opt.data, self.aParam);
+                          v.action(opt.rawData[self.pk],opt.rawData, opt.data, aData);
                         }
                       });
                     jQuery(cell).append(button_custom);

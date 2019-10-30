@@ -202,79 +202,75 @@ Dbmng.Crud = Class.extend({
 
     var self=this;
 
-    // var custom_function=[];
+    //verifico se ho delle custom_funcrtion chiamate da fuori
+    var custom_function=[];
+    if( self.aParam.custom_function ) {
+      //se esiste e non è un aray ma un oggetto creo un arrai con l'oggetto
+      if( !Array.isArray(self.aParam.custom_function) ){
+        custom_function =self.aParam.custom_function;
+        self.aParam.custom_function=[];
+        self.aParam.custom_function.push(custom_function);
+      }
+    }
+    else { //se non esiste si crea
+      self.aParam.custom_function=[];
+    }
 
-    // debugger
-    if( self.aParam.user_function && self.aParam.user_function.upd  ) {
+    if( self.aParam.user_function && self.aParam.user_function.upd && ! self.aParam.user_function.added_upd ) {
 
       var update_function = self.aParam.ui.btn_edit;
 
-      update_function.method = 'update';
-      update_function.action = function(primary_key, rawData, data){
-        self.createForm(div_id, primary_key, data);
-        //version originale
-        //self.createForm(div_id, opt.rawData[self.pk], aData);
+      update_function.action = function(primary_key, rawData, cData, aData){
+        self.createForm(div_id, primary_key, aData);
       };
-
-      // if(self.aParam.ui.btn_edit.label){
-      //   update_function.label=self.aParam.ui.btn_edit.label;
-      // }
 
       update_function.isAllowed = function(rawData){
-        self.isAllowed(rawData,'update');
+        return self.isAllowed(rawData,'update');
       };
-      // custom_function.push(update_function);
-      var custom_function=[];
-      if( self.aParam.custom_function ) {
-        if( !Array.isArray(self.aParam.custom_function) ){
-          custom_function =self.aParam.custom_function;
-          self.aParam.custom_function=[];
-          self.aParam.custom_function.push(custom_function);
-        }
-      }
-      else {
-        self.aParam.custom_function=[];
-      }
-      self.aParam.custom_function.push(update_function);
 
+      self.aParam.custom_function.push(update_function);
+      self.aParam.user_function.added_upd=true;
     }
 
-    //INIZIO paste Risolvere dopo aver risolto l'edit
-    // if( self.aParam.user_function && self.aParam.user_function.inline ) {
-    //   var label_editi=self.aParam.ui.btn_edit_inline.label;
-    //   var opt_editi=self.aParam.ui.btn_edit_inline;
-    //   var button_editi=self.theme.getButton(label_editi,opt_editi);
-    //   if(!self.isAllowed(opt.rawData,'update')){
-    //     button_editi.disabled=true;
-    //   }
-    //   button_editi.addEventListener("click",function(){
-    //     self.createFormInline(div_id, opt.rawData[self.pk], aData, true);
-    //   });
-    //   jQuery(cell).append(button_editi);
-    // }
-    //
-    // if( self.aParam.user_function && self.aParam.user_function.del ) {
-    //   var label_delete=self.aParam.ui.btn_delete.label;
-    //   var opt_delete=self.aParam.ui.btn_delete;
-    //
-    //   var button_delete=(self.theme.getButton(label_delete,opt_delete));
-    //   if(!self.isAllowed(opt.rawData,'delete')){
-    //     button_delete.disabled=true;
-    //   }
-    //   button_delete.addEventListener("click",function(){
-    //     var confirm_message = "Are you sure?";
-    //     if( self.aParam.ui.btn_delete.confirm_message ) {
-    //       confirm_message = self.aParam.ui.btn_delete.confirm_message;
-    //     }
-    //     if( window.confirm(confirm_message) ) {
-    //       self.deleteRecord(div_id, opt.rawData[self.pk]);
-    //     }
-    //   });
-    //   jQuery(cell).append(button_delete);
-    // }
+    if( self.aParam.user_function && self.aParam.user_function.inline && ! self.aParam.user_function.added_inline ) {
 
-    //FINE past
-    // self.aParam.custom_function.push(update_function);
+      var inline_function = self.aParam.ui.btn_edit_inline;
+
+      inline_function.action = function(primary_key, rawData, cData, aData){
+        self.createFormInline(div_id, primary_key, aData, true);
+      };
+
+      inline_function.isAllowed = function(rawData){
+        return self.isAllowed(rawData,'update');
+      };
+      self.aParam.custom_function.push(inline_function);
+      self.aParam.user_function.added_inline=true;
+    }
+
+
+
+    if( self.aParam.user_function && self.aParam.user_function.del && ! self.aParam.user_function.added_delete ) {
+
+      var delete_function = self.aParam.ui.btn_delete;
+
+      delete_function.action = function(primary_key, rawData, cData, aData){
+        var confirm_message = "Are you sure?";
+        if( self.aParam.ui.btn_delete.confirm_message ) {
+          confirm_message = self.aParam.ui.btn_delete.confirm_message;
+        }
+        if( window.confirm(confirm_message) ) {
+          self.deleteRecord(div_id, primary_key);
+        }
+      };
+
+      delete_function.isAllowed = function(rawData){
+        return self.isAllowed(rawData,'delete');
+      };
+      self.aParam.custom_function.push(delete_function);
+      self.aParam.user_function.added_delete=true;
+    }
+
+
 
 
     var table = new Dbmng.Table({

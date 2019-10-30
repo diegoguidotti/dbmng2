@@ -48,6 +48,8 @@
   <h1>Table</h1>
     <div id="table"></div>
 
+    <h1>CRUD</h1>
+      <div id="crud"></div>
   <script>
 
     var aParam = {};
@@ -81,6 +83,50 @@
     });
 
     table.generateTable({'div_id': '#table'}, aData);
+
+
+    var aParam = {};
+    aParam.user_function = {upd:1, del:1, ins:1, inline:1 };
+    aParam.ui = {};
+    aParam.ui.btn_edit = {label:'Edit', icon:'fa fa-pencil'};
+    aParam.ui.btn_delete = {label:'Delete', icon:'fa fa-trash', confirm_message: 'Are you sure to delete the table?'};
+    aParam.ui.btn_insert = {label:'Insert new tables', class:'btn-success btn-block'};
+    aParam.ui.btn_save = {label:'Save table', class:'btn-success btn-block'};
+
+    aParam.ui.btn_edit_inline = {label:'Edit', icon:'fa fa-bug'};
+
+    aParam.user_function.custom_user_function=function(data, method){
+      var ok=true;
+      if(data.id_org%2==0 && method=='delete'){
+        ok=false;
+      }
+      return ok;
+    };
+
+    //TODO, risolvere customfunction
+    aParam.customFunction={action: 'custum_example', label: 'Guarda', icon: 'fa fa-eye'};
+
+
+    var theme_boot=new Dbmng.BootstrapTheme();
+
+    var crud = new Dbmng.Crud({
+        aParam:aParam,
+        theme:theme_boot,
+        url: '/sheep/api_mod_aedit_dbmng/api/sheep.org/', user:'test', password:'test',
+        offline: {jstorage: true},
+        success:function(self){
+          console.log("success");
+          console.log(self);
+          self.createTable({div_id:'#crud'});
+        },
+        error:function(a){
+          console.log(a);
+        },
+    });
+
+
+
+
 
   </script>
 </body>
