@@ -109,6 +109,27 @@
 
     var theme_boot=new Dbmng.BootstrapTheme();
 
+
+    var table_data=[{'id_org':1, 'extra': 'Peppino'}, {'id_org':1, 'extra': 'Peppino2'}, {'id_org':2, 'extra': 'Ppluto'}];
+
+    ExtraWidget=Dbmng.AbstractWidget.extend({
+      convert2html: function(val, data) {
+
+        var txt="<div>";
+        txt+="aaa"+data.id_org+" "+data.name;;
+        jQuery.each(table_data, function(k,v){
+          if(v.id_org==data.id_org){
+            txt+=v.extra;
+          }
+        });
+        txt+="</div>"
+        return txt;
+
+
+
+      }
+    });
+
     var crud = new Dbmng.Crud({
         aParam:aParam,
         theme:theme_boot,
@@ -117,6 +138,10 @@
         success:function(self){
           console.log("success");
           console.log(self);
+
+          self.aForm.fields['xxx']={'label': 'extra', 'external_widget':ExtraWidget};
+
+
           self.createTable({div_id:'#crud'});
         },
         error:function(a){

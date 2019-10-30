@@ -141,7 +141,7 @@ geo
       var ret = {};
       for(var key in this.aForm.fields){
         if(this.widgets[key].isVisible() && !this.widgets[key].skipInTable()){
-          ret[key]=this.widgets[key].convert2html(aData[i][key]);
+          ret[key]=this.widgets[key].convert2html(aData[i][key], aData[i]);
         }
 //         if( !this.widgets[key].skipInTable() ){
 //           ret[key]=this.widgets[key].convert2html(aData[i][key]);
