@@ -59,9 +59,7 @@ Dbmng.Table = Class.extend({
           header.push(widget.getTextLabel());
         }
       }
-      if( opt.add_calc_fields ) {
-        header.push(opt.add_calc_fields.label);
-      }
+
       if( this.hasFunctions() ) {
         header.push("Func.");
       }
@@ -91,16 +89,6 @@ Dbmng.Table = Class.extend({
         }
       }
 
-      if( opt.add_calc_fields ) {
-        jQuery.each(opt.add_calc_fields.data, function(k,v){
-          jQuery.each(aData, function(kk,vv){
-            if( v.id_point == vv.id_point ) {
-              cData[kk].cnt = v.cnt;
-            }
-          });
-        });
-      }
-
       var html=self.theme.getTable({data:cData, rawData:aData, header:header, aParam:self.aParam, options:{
         assignClass:true,
         setIDRow:function(aData){
@@ -119,6 +107,12 @@ Dbmng.Table = Class.extend({
                 aCF = [self.aParam.custom_function];
               }
 
+              aCF = aCF.sort(function(a,b){
+                  if(a.order < b.order) return -1;
+                  if(a.order > b.order) return 1;
+                  return 0;
+              });
+              
               jQuery.each(aCF, function(k,v) {
                 var label_custom = v.label;
                 var opt_custom = v;

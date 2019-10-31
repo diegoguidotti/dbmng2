@@ -92,7 +92,7 @@
     aParam.ui.btn_insert = {label:'Insert new tables', class:'btn-success btn-block'};
     aParam.ui.btn_save = {label:'Save table', class:'btn-success btn-block'};
 
-    aParam.ui.btn_edit_inline = {label:'Edit', icon:'fa fa-bug'};
+    aParam.ui.btn_edit_inline = {label:'Inline', icon:'fa fa-bug'};
 
     aParam.user_function.custom_user_function=function(data, method){
       var ok=true;
@@ -102,7 +102,7 @@
       return ok;
     };
 
-    aParam.custom_function={action: 'custum_example', label: 'Guarda', icon: 'fa fa-eye'};
+    aParam.custom_function=[{action: 'custum_example', label: 'Guarda', icon: 'fa fa-eye', order:20},{action: 'custum_example', label: 'Guarda2', icon: 'fa fa-lock', order:30}];
 
 
     var theme_boot=new Dbmng.BootstrapTheme();
@@ -137,8 +137,7 @@
           console.log("success");
           console.log(self);
 
-          self.aForm.fields['xxx']={'label': 'extra', 'external_widget':ExtraWidget};
-
+          self.aForm.fields['xxx']={label: 'extra', external_widget:ExtraWidget, skip_in_form:true};
 
           self.createTable({div_id:'#crud'});
         },

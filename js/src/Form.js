@@ -157,19 +157,25 @@ geo
     this.createWidgets();
     // console.log(aData);
 
-
+    console.log(this.aForm.fields);
     for(var key in this.aForm.fields){
       //var aField=this.aForm.fields[key];
 
-      var field;
+        var field;
 
-			if(aData){
-			 field = this.widgets[key].createField(aData[key]);
-			}
-			else{
-			 	field = this.widgets[key].createField();
-			}
-			fields[key]=(field);
+        if(aData){
+          field = this.widgets[key].createField(aData[key]);
+        }
+        else{
+          field = this.widgets[key].createField();
+        }
+
+      if( this.aForm.fields[key].skip_in_form == undefined ){
+        fields[key]=(field);
+      }
+      else if( ! this.aForm.fields[key].skip_in_form ){
+        fields[key]=(field);
+      }
     }
 		return fields;
 	},
@@ -188,9 +194,8 @@ geo
   },
 
   createForm: function(aData, template) {
-
+    console.log(aData);
     var fields=this.getFields(aData);
-
     var normal=true;
     var form;
     if(typeof template!=='undefined'){

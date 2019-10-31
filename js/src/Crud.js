@@ -202,14 +202,27 @@ Dbmng.Crud = Class.extend({
 
     var self=this;
 
-    //verifico se ho delle custom_funcrtion chiamate da fuori
+    //verifico se ho delle custom_function chiamate da fuori
     var custom_function=[];
     if( self.aParam.custom_function ) {
       //se esiste e non è un aray ma un oggetto creo un arrai con l'oggetto
       if( !Array.isArray(self.aParam.custom_function) ){
         custom_function =self.aParam.custom_function;
+
+        // aggiungo la proprietà order = 10
+        if( ! custom_function.order )
+          custom_function.order = 10;
+
         self.aParam.custom_function=[];
         self.aParam.custom_function.push(custom_function);
+      }
+      else {
+        // nel caso di più custom_function assegno un order a multipli di 10
+        jQuery.each(self.aParam.custom_function, function(k,v){
+          if( ! v.order ) {
+            v.order = (k+1)*10;
+          }
+        });
       }
     }
     else { //se non esiste si crea
@@ -228,6 +241,9 @@ Dbmng.Crud = Class.extend({
         return self.isAllowed(rawData,'update');
       };
 
+      // l'edit ha sempre ordine 1 (il primo bottone che viene mostrato per ogni riga)
+      update_function.order = 1;
+
       self.aParam.custom_function.push(update_function);
       self.aParam.user_function.added_upd=true;
     }
@@ -243,6 +259,10 @@ Dbmng.Crud = Class.extend({
       inline_function.isAllowed = function(rawData){
         return self.isAllowed(rawData,'update');
       };
+
+      // l'edit inline ha sempre ordine 2
+      inline_function.order = 2;
+
       self.aParam.custom_function.push(inline_function);
       self.aParam.user_function.added_inline=true;
     }
@@ -266,6 +286,10 @@ Dbmng.Crud = Class.extend({
       delete_function.isAllowed = function(rawData){
         return self.isAllowed(rawData,'delete');
       };
+
+      // l'eliminazione di un record ha sempre ordine 100 (ultimo bottone)
+      delete_function.order = 100;
+
       self.aParam.custom_function.push(delete_function);
       self.aParam.user_function.added_delete=true;
     }
@@ -346,9 +370,6 @@ Dbmng.Crud = Class.extend({
   //         header.push(widget.getTextLabel());
   //       }
   //     }
-  //     if( opt.add_calc_fields ) {
-  //       header.push(opt.add_calc_fields.label);
-  //     }
   //     // header.push("Calc.");
   //     if( this.hasFunctions() ) {
   //       header.push("Func.");
@@ -379,16 +400,6 @@ Dbmng.Crud = Class.extend({
   //       }
   //     }
   //
-  //     if( opt.add_calc_fields ) {
-  //       jQuery.each(opt.add_calc_fields.data, function(k,v){
-  //         jQuery.each(aData, function(kk,vv){
-  //           if( v.id_point == vv.id_point ) {
-  //             cData[kk].cnt = v.cnt;
-  //           }
-  //         });
-  //       });
-  //
-  //     }
   //     console.log(cData);
   //     var html=self.theme.getTable({data:cData, rawData:aData, header:header, aParam:self.aParam, options:{
   //       assignClass:true,
