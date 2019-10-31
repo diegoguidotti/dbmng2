@@ -170,7 +170,7 @@ geo
           field = this.widgets[key].createField();
         }
 
-      if( this.aForm.fields[key].skip_in_form == undefined ){
+      if( this.aForm.fields[key].skip_in_form === undefined ){
         fields[key]=(field);
       }
       else if( ! this.aForm.fields[key].skip_in_form ){
