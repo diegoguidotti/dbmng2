@@ -52,10 +52,19 @@ Dbmng.AbstractWidget = Class.extend({
 
     this.aField.field = this.field;
     var el = this.theme.getFieldContainer(this.aField);
+    var internalNode=el;
+    if(internalNode.firstChild){
+      internalNode=internalNode.firstChild;
+    }
+    if(internalNode.firstChild){
+      internalNode=internalNode.firstChild;
+    }
 
     var label=this.getLabel();
+
+
     if(label!==null){
-      el.appendChild(label);
+      internalNode.appendChild(label);
     }
 
     if( typeof data_val != 'undefined' ) {
@@ -73,7 +82,7 @@ Dbmng.AbstractWidget = Class.extend({
       self.onFocus(evt);
     };
 
-    el.appendChild(widget);
+    internalNode.appendChild(widget);
     return el;
   },
 

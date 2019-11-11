@@ -207,8 +207,14 @@ geo
 
     if(normal){
       form = this.theme.getForm();
+
   		for(var key in fields){
-        form.appendChild(fields[key]);
+        if(form.firstChild){
+          form.firstChild.appendChild(fields[key]);          
+        }
+        else{
+          form.appendChild(fields[key]);
+        }
   		}
     }
     else{
