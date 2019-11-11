@@ -699,7 +699,7 @@ Dbmng.Crud = Class.extend({
 
       // se ho un external_widget non lo devo inserire nell'api di insert/update
       jQuery.each(self.aForm.fields, function(k,v){
-        if( v.skip_in_form != undefined && v.skip_in_form ) {
+        if( v.skip_in_form !== undefined && v.skip_in_form ) {
           delete aData[k];
         }
       });
