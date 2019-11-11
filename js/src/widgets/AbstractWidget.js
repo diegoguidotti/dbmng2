@@ -257,6 +257,6 @@ Dbmng.AbstractWidget = Class.extend({
   },
 
   toValidate: function( nullable ) {
-    return (nullable === 0 && this.aField.field_type != 'hidden' && this.aField.key != 1);
+    return (nullable === 0 && this.aField.field_type != 'hidden' && this.aField.key != 1 && (this.aField.skip_in_form === undefined));
   }
 });

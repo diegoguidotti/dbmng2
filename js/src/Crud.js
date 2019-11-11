@@ -695,7 +695,15 @@ Dbmng.Crud = Class.extend({
       var valid=self.form.isValid();
 
       var aData = self.form.getValue();
-      // console.log(aData);
+      console.log(aData, self.aForm);
+
+      // se ho un external_widget non lo devo inserire nell'api di insert/update
+      jQuery.each(self.aForm.fields, function(k,v){
+        if( v.skip_in_form != undefined && v.skip_in_form ) {
+          delete aData[k];
+        }
+      });
+
       var validation = true;
       if(typeof self.form_validation=='function'){
         validation = self.form_validation();
@@ -739,6 +747,7 @@ Dbmng.Crud = Class.extend({
             data:aData, // self.form.getValue(),
             success:function(data){
               console.log(self,data);
+              console.log(self.form.getValue());
               if( !data.ok ) {
                 if(typeof self.crud_insert=='function'){
                   self.crud_insert('insert', data);
