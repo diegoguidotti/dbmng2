@@ -46,7 +46,9 @@ CREATE TABLE IF NOT EXISTS dbmng_tables (
   id_table_type int(11) DEFAULT '1',
   table_name char(50) DEFAULT NULL,
   table_desc text,
-  table_label text
+  table_label text,
+  table_alias varchar(100) DEFAULT NULL,
+  param text
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------

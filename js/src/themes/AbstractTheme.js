@@ -207,6 +207,89 @@ Dbmng.AbstractTheme = Class.extend({
     return el;
   },
 
+  getRadio: function(aField) {
+    var el=document.createElement('div');
+    var fieldname = aField.field;
+
+    // creo il contenitore
+    var radiodiv = document.createElement('div');
+
+    // this.assignAttributes(el, aField);
+    if(aField.voc_val) {
+      var o;
+      if(Object.prototype.toString.call(aField.voc_val) === '[object Object]') {
+        for (var opt in aField.voc_val) {
+
+          // creo l'input di tipo radio
+          o=document.createElement('input');
+          o.type = 'radio';
+          o.name = fieldname;
+          o.id = fieldname+'_'+opt;
+          o.value = opt;
+
+          // creo la label
+          var lb = document.createElement('label');
+          lb.setAttribute('for', fieldname+'_'+opt);
+          var wrapper= document.createElement('div');
+          wrapper.innerHTML= "<span>"+aField.voc_val[opt]+"</span>";
+          var txt = wrapper.firstChild;
+          lb.appendChild(txt);
+
+          radiodiv.appendChild(o);
+          radiodiv.appendChild(lb);
+
+          el.appendChild(radiodiv);
+        }
+      }
+      else if(Object.prototype.toString.call(aField.voc_val) === '[object Array]') {
+        console.log(aField);
+        jQuery.each(aField.voc_val, function(k,v){
+          if(typeof v !== 'string') {
+            jQuery.each(v, function(key,text){
+
+              // creo l'input di tipo radio
+              o=document.createElement('input');
+              o.type = 'radio';
+              o.name = fieldname;
+              o.id = fieldname+'_'+key;
+              o.value = key; // v[0];
+
+              // creo la label
+              var lb = document.createElement('label');
+              lb.setAttribute('for', fieldname+'_'+key);
+              var wrapper= document.createElement('div');
+              wrapper.innerHTML= "<span>"+text+"</span>";
+              var txt = wrapper.firstChild;
+              lb.appendChild(txt);
+
+
+              radiodiv.appendChild(o);
+              radiodiv.appendChild(lb);
+
+              if( typeof aField.value !== 'undefined' ) {
+                if( aField.value == key ) {
+                  o.selected = true;
+                }
+              }
+            });
+          }
+          else {
+            o=document.createElement('option');
+            o.value = opt;
+            o.text=aField.voc_val[opt];
+            if( typeof aField.value !== 'undefined' ) {
+              if( aField.value == opt ) {
+                o.selected = true;
+              }
+            }
+          }
+          el.appendChild(radiodiv);
+        });
+      }
+    }
+    return el;
+  },
+
   getSelectNM: function(aField) {
     //console.log(aField);
     var out_type = "select";

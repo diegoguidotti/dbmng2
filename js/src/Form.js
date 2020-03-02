@@ -63,6 +63,9 @@ Dbmng.Form = Class.extend({
         if( wt == 'select' ) {
           w = new Dbmng.SelectWidget(widget_opt);
         }
+        else if( wt == 'radio' ) {
+          w = new Dbmng.RadioWidget(widget_opt);
+        }
         else if( wt == 'select_nm' ) {
           w = new Dbmng.SelectNMWidget(widget_opt);
         }
@@ -210,7 +213,7 @@ geo
 
   		for(var key in fields){
         if(form.firstChild){
-          form.firstChild.appendChild(fields[key]);          
+          form.firstChild.appendChild(fields[key]);
         }
         else{
           form.appendChild(fields[key]);

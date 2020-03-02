@@ -26,12 +26,12 @@ class AeditDBMNGController extends ControllerBase {
     $user = array('uid'=> $user8->id(), 'mail'=>$user8->getEmail(), 'name'=>$user8->getAccountName(), 'roles'=>$user8->getRoles());
     $html = "";
 
-    // aggiunge i js esterni al modulo
-    $html .= "<script src='sites/all/libraries/dbmng2/js/dist/dbmng.js'></script>";
-    $html .= "<script src='sites/all/libraries/navigo/navigo.js'></script>";
+    // // aggiunge i js esterni al modulo
+    // $html .= "<script src='sites/all/libraries/dbmng2/js/dist/dbmng.js'></script>";
+    // $html .= "<script src='sites/all/libraries/navigo/navigo.js'></script>";
 
 		$html .= "<div id='dbmng2_table_list'></div>";
-    $html .= "<div id='dbmng2_table_edit'></div>"; 
+    $html .= "<div id='dbmng2_table_edit'></div>";
 
     // chiamata di default
     $html .= "<script>jQuery(document).ready(function(){aedit_dbmng_manager()})</script>";
