@@ -235,6 +235,12 @@ Dbmng.AbstractTheme = Class.extend({
           var txt = wrapper.firstChild;
           lb.appendChild(txt);
 
+          if( typeof aField.value !== 'undefined' ) {
+            if( aField.value == opt ) {
+              o.checked = true;
+            }
+          }
+
           radiodiv.appendChild(o);
           radiodiv.appendChild(lb);
 
@@ -262,18 +268,18 @@ Dbmng.AbstractTheme = Class.extend({
               var txt = wrapper.firstChild;
               lb.appendChild(txt);
 
+              if( typeof aField.value !== 'undefined' ) {
+                if( aField.value == key ) {
+                  o.checked = true;
+                }
+              }
 
               radiodiv.appendChild(o);
               radiodiv.appendChild(lb);
-
-              if( typeof aField.value !== 'undefined' ) {
-                if( aField.value == key ) {
-                  o.selected = true;
-                }
-              }
             });
           }
           else {
+            // TODO : A cosa serve questo else??
             o=document.createElement('option');
             o.value = opt;
             o.text=aField.voc_val[opt];

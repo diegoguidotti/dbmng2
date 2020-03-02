@@ -46,8 +46,8 @@
 <body>
   <h1>Form</h1>
     <div id="test_bootstrap"></div>
-  <h1>Crud Form</h1>
-    <div id="test_form"></div>
+  <!-- <h1>Crud Form</h1>
+    <div id="test_form"></div> -->
 
   <script>
     Dbmng.defaults.aParam = {};
@@ -66,7 +66,7 @@
       primary_key: Array('id'),
       fields: {
         id: {label: 'ID', type: 'int', key: 0, 'nullable': false},
-        sesso: {label: 'Sesso', type: 'int', widget: 'select', voc_val:[{1: 'Maschio'}, {2: 'Femmina'}]},
+        sesso: {label: 'Sesso', type: 'int', widget: 'select', voc_val:[{1: 'Maschio'}, {2: 'Femmina'}], },
         radiosesso: {label: 'Sesso radio btn', type: 'int', widget: 'radio', voc_val:[{1: 'Maschio'}, {2: 'Femmina'}]}
 			}
     };
@@ -74,23 +74,23 @@
     var theme_boot=new Dbmng.BootstrapTheme();
 		var form2=new Dbmng.Form({aForm:aForm2, aParam:aParam, theme:theme_boot});
 
-    var obj = {id:2, name:'Diego'};
+    var obj = {id:2, sesso:1, radiosesso:1};
     console.log(obj);
     jQuery('#test_bootstrap').append(form2.createForm(obj));
 
 		var api=new  Dbmng.Api({aForm:aForm2, url:'/dbmng2/api/test', user:'test', password:'test'});
 
-		var fc = new Dbmng.CrudForm(
-        {
-          aForm:aForm2,
-          aParam:aParam,
-          theme:theme_boot,
-          url:'/dbmng2/api/test',
-          div_id:'test_form',
-          success: function(self) {
-            self.createForm();
-          }
-        });
+		// var fc = new Dbmng.CrudForm(
+    //     {
+    //       aForm:aForm2,
+    //       aParam:aParam,
+    //       theme:theme_boot,
+    //       url:'/dbmng2/api/test',
+    //       div_id:'test_form',
+    //       success: function(self) {
+    //         self.createForm();
+    //       }
+    //     });
 
   </script>
 </body>
