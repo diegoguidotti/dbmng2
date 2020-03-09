@@ -60,9 +60,29 @@
 
 <script>
 
-    var test='single_form';//'single_form';
+    var test='single_form'; //'autocomplete_field';//'single_form';
 
-    if(test=='single_field'){
+    if(test=='autocomplete_field'){
+
+      var aFieldAuto={label: 'Mounth auto', widget:'select', type: 'int',
+           url: 'http://192.168.113.115/fitosan/api/ruopviv/search_comune?query=%QUERY',
+           autocomplete_fieldname:'nome_comune', autocomplete_key:'cod_istat', not_found: 'Nessun comune trovato'
+      };
+
+      var w7 = new Dbmng.AutocompleteWidget({field:'montha', aField:aFieldAuto, theme:theme_boot});
+
+
+      jQuery('#test_base').append(w7.createField('000121'));
+
+
+        jQuery('#test_base').append("<button id='get_val'>aaa</button>");
+        jQuery("#get_val").click(function(){
+          console.log(w6.getValue());
+        });
+    }
+    else if(test=='single_field'){
+
+
       var DiegoWidget=Dbmng.SelectWidget.extend({
         getValue: function(){
           var val = '';
@@ -132,7 +152,8 @@
            name2: {label: 'Name 2', type: 'varchar'},
            cognome2: {label: 'Cognome 2', type: 'int', widget:'select', voc_val:{1:1, 2:2}},
            telefono2: {label: 'Data', type: 'date', widget: 'select', voc_val:{'2018-01-01': '1 gennaio', '2018-01-02': '2 gennaio'}},
-           external: {label: 'Extra', type: 'int', widget:'myselect', voc_val:{1:1, 2:2}, external_widget:DiegoWidget}
+           external: {label: 'Extra', type: 'int', widget:'myselect', voc_val:{1:1, 2:2}, external_widget:DiegoWidget},
+           external_bis: {label: 'Extra12', type: 'int', widget:'select', voc_val:["pippo", "pluto","paperino"]}
         },
         template:template
        };
