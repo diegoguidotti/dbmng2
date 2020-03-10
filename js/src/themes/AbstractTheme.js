@@ -147,7 +147,6 @@ Dbmng.AbstractTheme = Class.extend({
 
   getSelect: function(aField) {
     var el=document.createElement('select');
-    // console.log(Object.prototype.toString.call(aField.voc_val));
     this.assignAttributes(el, aField);
     if(aField.voc_val) {
       var o=document.createElement('option');
@@ -159,50 +158,78 @@ Dbmng.AbstractTheme = Class.extend({
 
       el.options.add(o);
 
-      if(Object.prototype.toString.call(aField.voc_val) === '[object Object]') {
-        for (var opt in aField.voc_val) {
-          o=document.createElement('option');
-          o.value = opt;
-          o.text=aField.voc_val[opt];
-          // console.log(aField);
-          // console.log(aField.label + "= out: aFval[" + aField.value+"] opt: ["+ opt+"]");
-          if( typeof aField.value !== 'undefined' ) {
-            // console.log(aField.label + "= in: aFval[" + aField.value+"] opt: ["+ opt+"]");
-            if( aField.value == opt ) {
-              o.selected = true;
-            }
-          }
-          el.options.add(o);
-        }
-      }
-      else if(Object.prototype.toString.call(aField.voc_val) === '[object Array]') {
-        // console.log(aField.voc_val);
-        jQuery.each(aField.voc_val, function(k,v){
-          if(typeof v !== 'string') {
-            jQuery.each(v, function(key,text){
-              o=document.createElement('option');
-              o.value = key; // v[0];
-              o.text= text; // v[1];
-              if( typeof aField.value !== 'undefined' ) {
-                if( aField.value == key ) {
-                  o.selected = true;
-                }
-              }
-            });
-          }
-          else {
+      // if(Object.prototype.toString.call(aField.voc_val) === '[object Object]') {
+      //   for (var opt in aField.voc_val) {
+      //     o=document.createElement('option');
+      //     o.value = opt;
+      //     o.text=aField.voc_val[opt];
+      //     // console.log(aField);
+      //     // console.log(aField.label + "= out: aFval[" + aField.value+"] opt: ["+ opt+"]");
+      //     if( typeof aField.value !== 'undefined' ) {
+      //       // console.log(aField.label + "= in: aFval[" + aField.value+"] opt: ["+ opt+"]");
+      //       if( aField.value == opt ) {
+      //         o.selected = true;
+      //       }
+      //     }
+      //     el.options.add(o);
+      //   }
+      // }
+      // else if(Object.prototype.toString.call(aField.voc_val) === '[object Array]') {
+      //   // console.log(aField.voc_val);
+      //   jQuery.each(aField.voc_val, function(k,v){
+      //     if(typeof v !== 'string') {
+      //       jQuery.each(v, function(key,text){
+      //         o=document.createElement('option');
+      //         o.value = key; // v[0];
+      //         o.text= text; // v[1];
+      //         if( typeof aField.value !== 'undefined' ) {
+      //           if( aField.value == key ) {
+      //             o.selected = true;
+      //           }
+      //         }
+      //       });
+      //     }
+      //     else {
+      //       o=document.createElement('option');
+      //       o.value = opt;
+      //       o.text=aField.voc_val[opt];
+      //       if( typeof aField.value !== 'undefined' ) {
+      //         if( aField.value == opt ) {
+      //           o.selected = true;
+      //         }
+      //       }
+      //     }
+      //     el.options.add(o);
+      //   });
+      // }
+
+
+
+      jQuery.each(aField.voc_val, function(k,v){
+        if(typeof v !== 'string') {
+          jQuery.each(v, function(key,text){
             o=document.createElement('option');
-            o.value = opt;
-            o.text=aField.voc_val[opt];
+            o.value = key; // v[0];
+            o.text= text; // v[1];
             if( typeof aField.value !== 'undefined' ) {
-              if( aField.value == opt ) {
+              if( aField.value == key ) {
                 o.selected = true;
               }
             }
-          }
-          el.options.add(o);
-        });
-      }
+          });
+        }
+        // else {
+        //   o=document.createElement('option');
+        //   o.value = opt;
+        //   o.text=aField.voc_val[opt];
+        //   if( typeof aField.value !== 'undefined' ) {
+        //     if( aField.value == opt ) {
+        //       o.selected = true;
+        //     }
+        //   }
+        // }
+        el.options.add(o);
+      });
     }
     return el;
   },
@@ -217,81 +244,129 @@ Dbmng.AbstractTheme = Class.extend({
     // this.assignAttributes(el, aField);
     if(aField.voc_val) {
       var o;
-      if(Object.prototype.toString.call(aField.voc_val) === '[object Object]') {
-        for (var opt in aField.voc_val) {
+      // if(Object.prototype.toString.call(aField.voc_val) === '[object Object]') {
+      //   for (var opt in aField.voc_val) {
+      //
+      //     // creo l'input di tipo radio
+      //     o=document.createElement('input');
+      //     o.type = 'radio';
+      //     o.name = fieldname;
+      //     o.id = fieldname+'_'+opt;
+      //     o.value = opt;
+      //
+      //     // creo la label
+      //     var lb = document.createElement('label');
+      //     lb.setAttribute('for', fieldname+'_'+opt);
+      //     var wrapper= document.createElement('div');
+      //     wrapper.innerHTML= "<span>"+aField.voc_val[opt]+"</span>";
+      //     var txt = wrapper.firstChild;
+      //     lb.appendChild(txt);
+      //
+      //     if( typeof aField.value !== 'undefined' ) {
+      //       if( aField.value == opt ) {
+      //         o.checked = true;
+      //       }
+      //     }
+      //
+      //     radiodiv.appendChild(o);
+      //     radiodiv.appendChild(lb);
+      //
+      //     el.appendChild(radiodiv);
+      //   }
+      // }
+      // else if(Object.prototype.toString.call(aField.voc_val) === '[object Array]') {
+      //   console.log(aField);
+      //   jQuery.each(aField.voc_val, function(k,v){
+      //     if(typeof v !== 'string') {
+      //       jQuery.each(v, function(key,text){
+      //
+      //         // creo l'input di tipo radio
+      //         o=document.createElement('input');
+      //         o.type = 'radio';
+      //         o.name = fieldname;
+      //         o.id = fieldname+'_'+key;
+      //         o.value = key; // v[0];
+      //
+      //         // creo la label
+      //         var lb = document.createElement('label');
+      //         lb.setAttribute('for', fieldname+'_'+key);
+      //         var wrapper= document.createElement('div');
+      //         wrapper.innerHTML= "<span>"+text+"</span>";
+      //         var txt = wrapper.firstChild;
+      //         lb.appendChild(txt);
+      //
+      //         if( typeof aField.value !== 'undefined' ) {
+      //           if( aField.value == key ) {
+      //             o.checked = true;
+      //           }
+      //         }
+      //
+      //         radiodiv.appendChild(o);
+      //         radiodiv.appendChild(lb);
+      //       });
+      //     }
+      //     else {
+      //       // TODO : A cosa serve questo else??
+      //       o=document.createElement('option');
+      //       o.value = opt;
+      //       o.text=aField.voc_val[opt];
+      //       if( typeof aField.value !== 'undefined' ) {
+      //         if( aField.value == opt ) {
+      //           o.selected = true;
+      //         }
+      //       }
+      //     }
+      //     el.appendChild(radiodiv);
+      //   });
+      // }
+      //
 
-          // creo l'input di tipo radio
-          o=document.createElement('input');
-          o.type = 'radio';
-          o.name = fieldname;
-          o.id = fieldname+'_'+opt;
-          o.value = opt;
 
-          // creo la label
-          var lb = document.createElement('label');
-          lb.setAttribute('for', fieldname+'_'+opt);
-          var wrapper= document.createElement('div');
-          wrapper.innerHTML= "<span>"+aField.voc_val[opt]+"</span>";
-          var txt = wrapper.firstChild;
-          lb.appendChild(txt);
+      // NUOVO
+      console.log(aField);
+      jQuery.each(aField.voc_val, function(k,v){
+        if(typeof v !== 'string') {
+          jQuery.each(v, function(key,text){
 
-          if( typeof aField.value !== 'undefined' ) {
-            if( aField.value == opt ) {
-              o.checked = true;
-            }
-          }
+            // creo l'input di tipo radio
+            o=document.createElement('input');
+            o.type = 'radio';
+            o.name = fieldname;
+            o.id = fieldname+'_'+key;
+            o.value = key; // v[0];
 
-          radiodiv.appendChild(o);
-          radiodiv.appendChild(lb);
+            // creo la label
+            var lb = document.createElement('label');
+            lb.setAttribute('for', fieldname+'_'+key);
+            var wrapper= document.createElement('div');
+            wrapper.innerHTML= "<span>"+text+"</span>";
+            var txt = wrapper.firstChild;
+            lb.appendChild(txt);
 
-          el.appendChild(radiodiv);
-        }
-      }
-      else if(Object.prototype.toString.call(aField.voc_val) === '[object Array]') {
-        console.log(aField);
-        jQuery.each(aField.voc_val, function(k,v){
-          if(typeof v !== 'string') {
-            jQuery.each(v, function(key,text){
-
-              // creo l'input di tipo radio
-              o=document.createElement('input');
-              o.type = 'radio';
-              o.name = fieldname;
-              o.id = fieldname+'_'+key;
-              o.value = key; // v[0];
-
-              // creo la label
-              var lb = document.createElement('label');
-              lb.setAttribute('for', fieldname+'_'+key);
-              var wrapper= document.createElement('div');
-              wrapper.innerHTML= "<span>"+text+"</span>";
-              var txt = wrapper.firstChild;
-              lb.appendChild(txt);
-
-              if( typeof aField.value !== 'undefined' ) {
-                if( aField.value == key ) {
-                  o.checked = true;
-                }
-              }
-
-              radiodiv.appendChild(o);
-              radiodiv.appendChild(lb);
-            });
-          }
-          else {
-            // TODO : A cosa serve questo else??
-            o=document.createElement('option');
-            o.value = opt;
-            o.text=aField.voc_val[opt];
             if( typeof aField.value !== 'undefined' ) {
-              if( aField.value == opt ) {
-                o.selected = true;
+              if( aField.value == key ) {
+                o.checked = true;
               }
             }
-          }
-          el.appendChild(radiodiv);
-        });
-      }
+
+            radiodiv.appendChild(o);
+            radiodiv.appendChild(lb);
+          });
+        }
+        // else {
+        //   // TODO : A cosa serve questo else??
+        //   o=document.createElement('option');
+        //   o.value = opt;
+        //   o.text=aField.voc_val[opt];
+        //   if( typeof aField.value !== 'undefined' ) {
+        //     if( aField.value == opt ) {
+        //       o.selected = true;
+        //     }
+        //   }
+        // }
+        el.appendChild(radiodiv);
+      });
+
     }
     return el;
   },

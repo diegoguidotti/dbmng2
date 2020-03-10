@@ -223,6 +223,28 @@
        })
 
     }
+    else if( test == 'check_select' ) {
+      var aForm = { table_name: 'test',
+        primary_key: Array('id'),
+        fields: {
+           id: {label: 'ID', type: 'int', key: 0, nullable: false},
+           sel1: {label: 'Select 1', type: 'int', widget:'select', voc_val:{1:1, 2:2}},
+           // sel2: {label: 'Select 2', type: 'date', widget: 'select', voc_val:{'2018-01-01': '1 gennaio', '2018-01-02': '2 gennaio'}},
+           sel2: {label: 'Select 2', type: 'int', widget: 'select', voc_val:[{'1': 'Pippo'}, {'2': 'Pluto'}, {'3': 'Paperino'} ]},
+           sel3: {label: 'Select 3', type: 'int', widget:'select', voc_val:["pippo", "pluto","paperino"]}
+        },
+        template:template
+       };
+       var form=new Dbmng.Form({aForm:aForm});
+         input_data={sel2:3, sel1:2, sel3:1};
+       jQuery('#test_base').append(form.createForm(input_data,aForm.template));
+
+       jQuery('#test_base').append("<button>Salva</button>").click(function(){
+         var output=form.getValue();
+         console.log(output);
+       });
+
+    }
     else {
 
       var options={'value':'Ciao', 'label':'saluto'};

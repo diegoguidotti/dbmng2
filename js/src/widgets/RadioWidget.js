@@ -35,26 +35,40 @@ Dbmng.RadioWidget = Dbmng.AbstractWidget.extend({
   },
   convert2html: function(val) {
     var ret;
-    // console.log(this.aField);
-    if( Object.prototype.toString.call(this.aField.voc_val) == '[object Object]' ){
-      ret = this.aField.voc_val[val];
-    }
-    else if( Object.prototype.toString.call(this.aField.voc_val) == '[object Array]' ) {
-      // console.log(val);
-      jQuery.each(this.aField.voc_val, function(k,voc){
-        // console.log(voc);
-        if(typeof voc !== 'string') {
-          jQuery.each(voc, function(v,text){
-            if( v == val ){
-              ret = text;
-            }
-          });
-        }
-        else {
-          ret = voc;
-        }
-      });
-    }
+    // // console.log(this.aField);
+    // if( Object.prototype.toString.call(this.aField.voc_val) == '[object Object]' ){
+    //   ret = this.aField.voc_val[val];
+    // }
+    // else if( Object.prototype.toString.call(this.aField.voc_val) == '[object Array]' ) {
+    //   // console.log(val);
+    //   jQuery.each(this.aField.voc_val, function(k,voc){
+    //     // console.log(voc);
+    //     if(typeof voc !== 'string') {
+    //       jQuery.each(voc, function(v,text){
+    //         if( v == val ){
+    //           ret = text;
+    //         }
+    //       });
+    //     }
+    //     else {
+    //       ret = voc;
+    //     }
+    //   });
+    // }
+
+    jQuery.each(this.aField.voc_val, function(k,voc){
+      // console.log(voc);
+      if(typeof voc !== 'string') {
+        jQuery.each(voc, function(v,text){
+          if( v == val ){
+            ret = text;
+          }
+        });
+      }
+      else {
+        ret = voc;
+      }
+    });
     return ret;
   }
 });

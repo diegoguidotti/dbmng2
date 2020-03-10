@@ -17,13 +17,40 @@ Dbmng.AbstractWidget = Class.extend({
 
 
 
-
     if( options.field ) {
       this.field = options.field;
     }
     if( options.aField ) {
       this.aField = options.aField;
     }
+
+    // to fix the bug if the select is an array of string
+    // i.e.
+    // input  : array ['foo', 'bar']
+    // output : [{0:'foo'}, {1:'bar'}]
+    if( typeof this.aField.voc_val !== undefined ){
+      var aVoc = [];
+      if( Object.prototype.toString.call(this.aField.voc_val) == '[object Array]' ) {
+        if(Object.prototype.toString.call(this.aField.voc_val[0]) == '[object String]'){
+          jQuery.each(this.aField.voc_val, function(k,v){
+            var item = {};
+            item[k]=v;
+            aVoc.push(item);
+          });
+          this.aField.voc_val = aVoc;
+
+        }
+      }
+      else if( Object.prototype.toString.call(this.aField.voc_val) == '[object Object]' ) {
+        jQuery.each(this.aField.voc_val, function(k,v){
+          var item = {};
+          item[k]=v;
+          aVoc.push(item);
+        });
+        this.aField.voc_val = aVoc;
+      }
+    }
+
 
     if( options.theme ) {
       this.theme = options.theme;
