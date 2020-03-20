@@ -234,8 +234,14 @@ private $prepare;
 					{
 						if(isset($aVars[$fld])){
 							$hasPk = true;
-							$sWhere .= "$fld = :$fld"."_where"." and ";
+							if( strpos($aVars[$fld], '%') === false ){
+								$sWhere .= "$fld = :$fld"."_where"." and ";
+							}
+							else {
+								$sWhere .= "lower($fld::varchar) like lower(:$fld"."_where)"." and ";
+							}
 							$aWhere = array_merge($aWhere, array(":".$fld."_where" => $aVars[$fld] ));
+							// print_r($aVars[$fld]);
 						}
 					}
 			}
