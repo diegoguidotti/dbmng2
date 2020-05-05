@@ -28,10 +28,11 @@ class Login {
   public function __construct($app)
   {
     $this->db=$app->getDb();
-    $this->aParam=$app->getParam();
+		$this->aParam=$app->getParam();
+
     $this->emptyUser=array('uid'=>0, 'mail'=>null, 'name'=>null, 'roles'=>array(1=>'anonymous user'), 'message'=>'Enter login');
-    if(isset($aParam['auth_type']))
-      $this->aut_type=$aParam['auth_type'];
+    if(isset($this->aParam['auth_type']))
+      $this->aut_type=$this->aParam['auth_type'];
     else
       $this->aut_type='POST';
   }
@@ -51,6 +52,7 @@ class Login {
     else{
       $provided_user=null;
       $provided_password=null;
+
       if($this->aut_type=='BASIC')
         {
           if(!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']))
@@ -62,9 +64,9 @@ class Login {
       else
         {
           $pref='dbmng_';
-          if(isset($aParam['auth_var_prefix']))
+          if(isset($this->aParam['auth_var_prefix']))
             {
-              $pref=$aParam['auth_var_prefix'];
+              $pref=$this->aParam['auth_var_prefix'];
             }
           $provided_user=Util::get_val($_REQUEST,$pref.'user_id');
           $provided_password=Util::get_val($_REQUEST,$pref.'password');
