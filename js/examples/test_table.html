@@ -23,8 +23,10 @@
   <script type="text/javascript" src="../src/Class.js"></script>
   <script type="text/javascript" src="../src/Dbmng.js"></script>
   <script type="text/javascript" src="../src/Form.js"></script>
+  <script type="text/javascript" src="../src/FormInline.js"></script>
   <script type="text/javascript" src="../src/Api.js"></script>
   <script type="text/javascript" src="../src/Crud.js"></script>
+  <script type="text/javascript" src="../src/CrudInline.js"></script>
   <script type="text/javascript" src="../src/Table.js"></script>
   <script type="text/javascript" src="../src/CrudForm.js"></script>
   <script type="text/javascript" src="../src/Ie9.js"></script>
@@ -49,7 +51,10 @@
     <div id="table"></div>
 
     <h1>CRUD</h1>
-      <div id="crud"></div>
+      <div id="crud_inline"></div>
+
+
+      <button id="get_data_inline">Salva</button>
   <script>
 
     var aParam = {};
@@ -128,6 +133,65 @@
       }
     });
 
+
+
+
+
+    var aForm_inline = { table_name: 'survey',
+      primary_key: ['id_survey'],
+      fields: {
+        id_survey: {label: 'ID', type: 'int', key: 1, 'nullable': false},
+
+        id_field: {label: 'IDField', type: 'varchar', widget: 'select', 'voc_val':[{1: 'AAA'}, {2: 'BBB'}]},
+
+
+        date: {label: 'Data', type: 'date'},
+
+        // vanno messi a mano in base a survey_var
+        u: {label: 'U', type: 'int'},
+        l1v: {label: 'L1v', type: 'int'},
+        sesso: {label: 'Sesso', type: 'int', widget: 'select', voc_val:[{1: 'Maschio'}, {2: 'Femmina'}]}
+      }
+    };
+
+    //data selezionata
+    var date_selected='2020-01-01';
+
+    //tutte le aziende per la coltura prese da API
+    var fields=[{"id_field":1, "name": "AAA"},{"id_field":2, "name": "BBB"}];
+
+    //dati già inseriti
+    var entered_data=[{"id_survey":21, "id_field":2, date:'2020-01-01', 'u':12, 'l1v':33}];
+
+    var dati_inline=[];
+
+    jQuery.each(fields, function(k,f){
+
+      //Trova se esiste per lid_field già dei dati
+      var existing_data=entered_data.filter(function(v){return v.id_field==f.id_field});
+      if(existing_data.length>0){
+        dati_inline.push(existing_data[0]);
+      }
+      else{
+        dati_inline.push({id_field: f.id_field, date: date_selected});
+      }
+    });
+
+
+
+    var form_inline = new Dbmng.FormInline({
+      aForm: aForm_inline,
+      aParam:{'hide_label': true, 'do_insert': true, 'do_delete': true}
+    });
+    jQuery('#crud_inline').append(form_inline.createForm(dati_inline));
+
+
+    jQuery('#get_data_inline').click(function(){
+      console.log(form_inline.getValue());
+    });
+
+
+    /*
     var crud = new Dbmng.Crud({
         aParam:aParam,
         theme:theme_boot,
@@ -145,6 +209,7 @@
           console.log(a);
         },
     });
+    */
 
 
 
