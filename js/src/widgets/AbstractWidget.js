@@ -97,11 +97,20 @@ Dbmng.AbstractWidget = Class.extend({
     if( typeof data_val != 'undefined' ) {
       this.value = data_val;
     }
-    var widget=this.createWidget();
+    var widget_complex=this.createWidget();
+
+
+    //a volte il widget è solo una parte del widget complex
+    //se esiste un oggetto di classe real_widget usa questo come widget
+    var widget=widget_complex;
+    var get_val=jQuery(widget_complex).find(".real_widget");
+     if(get_val.length>0){
+         widget=(get_val[0]);
+     }
+
     this.widget=widget;
 
     widget.onchange=function( evt ) {
-
       self.onChange(evt);
     };
 
@@ -109,7 +118,7 @@ Dbmng.AbstractWidget = Class.extend({
       self.onFocus(evt);
     };
 
-    internalNode.appendChild(widget);
+    internalNode.appendChild(widget_complex);
     return el;
   },
 
@@ -172,7 +181,9 @@ Dbmng.AbstractWidget = Class.extend({
   },
   getValue: function(){
     if(this.widget){
-      return this.widget.value;
+
+      var value=this.widget.value;
+      return value;
     }
     else{
       console.log("the widget it has not been created");

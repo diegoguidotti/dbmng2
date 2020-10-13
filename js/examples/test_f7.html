@@ -134,9 +134,7 @@
             input.placeholder = aField.placeholder;
           }
           input.type = "text";
-          // if (aField.type) {
-          //   input.type=aField.type;
-          // }
+          input.className= "real_widget";
 
           //if in the option there is a field_type value it will be override the previous one (if the widget is hidden and the type is int it should be hidden)
           if(aField.field_type){
@@ -175,6 +173,7 @@
           if(aField.checked) {
             input.checked = true;
           }
+          input.className= "real_widget";
 
           //console.log(aField);
           if( aField.placeholder ) {
@@ -203,6 +202,7 @@
             }
 
             select.options.add(o);
+            select.className= "real_widget";
 
             if(Object.prototype.toString.call(aField.voc_val) === '[object Object]') {
               for (var opt in aField.voc_val) {
@@ -267,6 +267,8 @@
 
 
             var select = document.createElement('select');
+            select.className= "real_widget";
+
             select.multiple = true;
             el.appendChild(select);
 
@@ -309,6 +311,8 @@
               var aCB = {type: 'int', widget:'checkbox', theme:this}; // , theme:theme_boot ??
               o = new Dbmng.CheckboxWidget({field:aField.field, aField:aCB});
               o.createField(opt);
+
+              o.widget.className= "real_widget";
 
               li.appendChild(o.widget);
 
@@ -367,11 +371,20 @@
       });
 
       //Dalla classe si crea l'oggetto
-      var theme = new theme_f7_class();
-      // var theme = new Dbmng.BootstrapTheme();
+      // var theme = new theme_f7_class();
+      var theme = new Dbmng.BootstrapTheme();
 
       var form=new Dbmng.Form({aForm:aForm, aParam:{}, theme:theme});
-      jQuery('#test_base').append(form.createForm({}));
+      jQuery('#test_base').append("<button id='extract_value'>Value</button>");
+      jQuery('#test_base').append(form.createForm({"id": "test1", name:"AAA", "month": 2, "check": 1, "data": "2020-10-10", "multiple": [0,1], "multiplec":[1,2]}));
+
+
+      jQuery("#extract_value").click(function(){
+
+        console.log(form.getValue());
+      });
+
+
 
 
 

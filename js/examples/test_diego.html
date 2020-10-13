@@ -202,9 +202,6 @@
 
        jQuery("#test_base").append("<h3>Elenco dei centri</h3>");
 
-       var form_figlio = new Dbmng.FormInline({aForm:aFormFiglio, aParam:{'hide_label': true, 'do_insert': true, 'do_delete': true}});
-       jQuery('#test_base').append(form_figlio.createForm(input_data.centri));
-
        jQuery('#test_base').append("<p/></p/><button>Salva</button>").click(function(){
          var azienda=form_padre.getValue();
 
