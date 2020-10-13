@@ -38,13 +38,29 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
         el.options.add(o);
         for ( fk in self.aField.voc_val) {
           o = document.createElement('option');
-          o.value = fk;
-          o.text = self.aField.voc_val[fk];
+
+          var text_label="";
+          var foreign_key="";
+          if( typeof self.aField.voc_val[0] == 'object' ) {
+            var object=self.aField.voc_val[fk];
+            for (var k in object) {
+              foreign_key=k;
+              text_label=object[k];
+              break;
+            }
+          }
+          else{
+              foreign_key=fk;
+              text_label=self.aField.voc_val[fk];
+          }
+
+          o.value = foreign_key;
+          o.text = text_label;
           if( self.aField.value ) {
             if( typeof self.aField.value[0] == 'number') {
-              fk = parseInt(fk);
+              foreign_key = parseInt(foreign_key);
             }
-            if( self.aField.value.indexOf(fk) > -1 ) {
+            if( self.aField.value.indexOf(foreign_key) > -1 ) {
               o.selected = true;
             }
           }

@@ -67,10 +67,20 @@
           id: {label: 'ID', type: 'int', key: 0, nullable: false},
           name: {label: 'Name', type: 'varchar', 'default': 'Paperino', 'validator': {'regexp': '/^[A-Z][0-9]{3}$/', 'message':'Usare 1 lettere e 3 numeri (es. A123)'}},
           passwd: {label: 'Password', type: 'varchar', widget:'password', classes: 'aaa bbb ccc'},
-          month: {label: 'Mounth', widget:'select', type: 'int', voc_val: {2:'February', 1:'January'}},
+
+          // [0:"no", 1:"si"] =>  ["no", "si"]
+          // ["no":"no", "si":"si"] =/>  ["no", "si"]
+
+          month: {label: 'Mounth1', widget:'select', type: 'varchar', voc_val: {"j":'January', "f":'February'}},
+          month2: {label: 'Mounth2', widget:'select', type: 'int', voc_val: [{1: 1},{2: 2}]},
+          month3: {label: 'Mounth3', widget:'select', type: 'int', voc_val: ["no","si"]},
+
           check: {label: 'Check', type: 'int', widget:'checkbox'},
-          multiple: {label: 'Multiple', type: 'int', widget:'select_nm', voc_val: {1:'January', 2:'February', 3:'March', 4:'April'}},
-          multiplec: {label: 'Multiple checkbox', type: 'int', widget:'select_nm', voc_val: {1:'January', 2:'February', 3:'March', 4:'April'}, out_type:'checkbox'},
+          multiple:  {label: 'Multiple1', type: 'varchar', widget:'select_nm', voc_val: {"j":'January', "f":'February'}},
+          multiple2: {label: 'Multiple2', type: 'varchar', widget:'select_nm', voc_val: [{"l1": "label1"},{"l2": "label2"},{"l3": "label3"}]},
+
+          multiplec: {label: 'Multiple checkbox1', type: 'int', widget:'select_nm', voc_val: {1:'January', 2:'February', 3:'March', 4:'April'}, out_type:'checkbox'},
+          multiplec2: {label: 'Multiple checkbox2', type: 'int', widget:'select_nm', voc_val: [{123: "label1"},{456: "label2"},{789: "label3"}], out_type:'checkbox'},
           data: {label: 'Data', type: 'date', widget:'date', date_format_view:'MM d, yy'}
         }
       };
@@ -371,12 +381,17 @@
       });
 
       //Dalla classe si crea l'oggetto
-      // var theme = new theme_f7_class();
-      var theme = new Dbmng.BootstrapTheme();
+      var theme = new theme_f7_class();
+      // var theme = new Dbmng.BootstrapTheme();
 
       var form=new Dbmng.Form({aForm:aForm, aParam:{}, theme:theme});
       jQuery('#test_base').append("<button id='extract_value'>Value</button>");
-      jQuery('#test_base').append(form.createForm({"id": "test1", name:"AAA", "month": 2, "check": 1, "data": "2020-10-10", "multiple": [0,1], "multiplec":[1,2]}));
+      jQuery('#test_base').append(form.createForm({
+          "id": "test1", "name":"AAA", "passwd": "this is a password",
+          "month": "j","month2": 2,"month3": 1,
+          "check": 1, "data": "2020-10-10",
+          "multiple": ["j","f"],"multiple2": ["l2","l3"], "multiplec":[1,2], "multiplec2": [123]
+        }));
 
 
       jQuery("#extract_value").click(function(){
