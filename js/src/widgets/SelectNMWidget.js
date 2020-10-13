@@ -22,6 +22,7 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
     }
 
     if( out_type == 'select' ) {
+
       el = document.createElement('select');
       el.multiple = true;
 
