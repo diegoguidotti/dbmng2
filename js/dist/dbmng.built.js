@@ -269,7 +269,7 @@ geo
       var ret = {};
       for(var key in this.aForm.fields){
         if(this.widgets[key].isVisible() && !this.widgets[key].skipInTable()){
-          ret[key]=this.widgets[key].convert2html(aData[i][key]);
+          ret[key]=this.widgets[key].convert2html(aData[i][key], aData[i]);
         }
 //         if( !this.widgets[key].skipInTable() ){
 //           ret[key]=this.widgets[key].convert2html(aData[i][key]);
@@ -285,19 +285,25 @@ geo
     this.createWidgets();
     // 
 
-
+    
     for(var key in this.aForm.fields){
       //var aField=this.aForm.fields[key];
 
-      var field;
+        var field;
 
-			if(aData){
-			 field = this.widgets[key].createField(aData[key]);
-			}
-			else{
-			 	field = this.widgets[key].createField();
-			}
-			fields[key]=(field);
+        if(aData){
+          field = this.widgets[key].createField(aData[key]);
+        }
+        else{
+          field = this.widgets[key].createField();
+        }
+
+      if( this.aForm.fields[key].skip_in_form === undefined ){
+        fields[key]=(field);
+      }
+      else if( ! this.aForm.fields[key].skip_in_form ){
+        fields[key]=(field);
+      }
     }
 		return fields;
 	},
@@ -316,9 +322,8 @@ geo
   },
 
   createForm: function(aData, template) {
-
+    
     var fields=this.getFields(aData);
-
     var normal=true;
     var form;
     if(typeof template!=='undefined'){
@@ -330,8 +335,14 @@ geo
 
     if(normal){
       form = this.theme.getForm();
+
   		for(var key in fields){
-        form.appendChild(fields[key]);
+        if(form.firstChild){
+          form.firstChild.appendChild(fields[key]);          
+        }
+        else{
+          form.appendChild(fields[key]);
+        }
   		}
     }
     else{
@@ -484,6 +495,205 @@ geo
 //   };
 //
 // }
+
+/////////////////////////////////////////////////////////////////////
+// Table
+// 28 October 2019
+//
+//
+// Developed by :
+// Diego Guidotti
+// Michele Mammini
+/////////////////////////////////////////////////////////////////////
+
+Dbmng.Table = Class.extend({
+  //class constructor
+  init: function( options ) {
+    var self=this;
+
+    this.prepare_cdata = options.prepare_cdata;
+
+    if(!options.aParam){
+      options.aParam={};
+    }
+    this.aParam = options.aParam;
+
+    if( options.theme ) {
+      this.theme = options.theme;
+    }
+    else {
+      this.theme = Dbmng.defaults.theme;
+    }
+    
+
+    if(options.aForm){
+			this.aForm  = options.aForm;
+		  this.form=new Dbmng.Form({aForm:this.aForm, aParam:this.aParam, theme:this.theme});
+		  this.pk=this.form.getPkField();
+
+      if( typeof options.success=='function'){
+        options.success(this);
+      }
+		}
+  },
+
+  generateTable: function(opt, data){
+
+    //Prende il DIV
+    var div_id = opt.div_id;
+    if( div_id.substring(0, 1) != '#') {
+      div_id = '#' + div_id;
+    }
+    var self=this;
+
+    
+    //prepara i dati
+    if( data.ok ) {
+      var aData=data.data;
+      var header=[];
+      for(var key in self.aForm.fields){
+        var widget=self.form.getWidget(key);
+        if( widget.isVisible() && !widget.skipInTable()){
+          header.push(widget.getTextLabel());
+        }
+      }
+
+      if( this.hasFunctions() ) {
+        header.push("Func.");
+      }
+
+      var cData = self.form.convert2html(aData);
+      
+      if(typeof self.prepare_cdata=='function'){
+        var pData = [];
+
+        jQuery.each(aData, function(k,v){
+          pData.push([v,cData[k]]);
+        });
+
+        // 
+
+        var pcData = self.prepare_cdata(pData);
+
+        if( pcData !== null ) {
+          var aRData = [];
+          var aCData = [];
+          jQuery.each(pcData, function(k,v) {
+            aRData.push(v[0]);
+            aCData.push(v[1]);
+          });
+          aData = aRData;
+          cData = aCData;
+        }
+      }
+
+      var html=self.theme.getTable({data:cData, rawData:aData, header:header, aParam:self.aParam, options:{
+        assignClass:true,
+        setIDRow:function(aData){
+          return "dbmng_row_id_"+aData[self.pk];
+        },
+        addColumn:function(opt){
+          if( self.hasFunctions() ) {
+            var cell=self.theme.getTableCell();
+
+
+
+            if( self.aParam.custom_function ) {
+
+              var aCF = self.aParam.custom_function;
+              if( ! jQuery.isArray(self.aParam.custom_function) ) {
+                aCF = [self.aParam.custom_function];
+              }
+
+              aCF = aCF.sort(function(a,b){
+                  if(a.order < b.order) return -1;
+                  if(a.order > b.order) return 1;
+                  return 0;
+              });
+              
+              jQuery.each(aCF, function(k,v) {
+                var label_custom = v.label;
+                var opt_custom = v;
+                var button_custom=(self.theme.getButton(label_custom,opt_custom));
+
+                if(typeof v.isAllowed=='function'){
+                  if(! v.isAllowed(opt.rawData)){
+                    button_custom.disabled=true;
+                  }
+                }
+                // if(!self.isAllowed(opt.rawData,v.action)){
+                // }
+
+                if( v.action ) {
+                  if( typeof v.action == 'string' ||  typeof v.action == 'function' ) {
+                      button_custom.addEventListener("click",function(){
+                        if(typeof v.action == 'string'){
+                          var fnstring = v.action;
+                          var fnparams = [opt.rawData[self.pk],opt.rawData, opt.data, aData];
+                          exeExternalFunction(fnstring, fnparams);
+                        }
+                        else{
+                          v.action(opt.rawData[self.pk],opt.rawData, opt.data, aData);
+                        }
+                      });
+                    jQuery(cell).append(button_custom);
+                  }
+                }
+              });
+            }
+
+            return cell;
+          }
+          else {
+            return null;
+          }
+        }
+      }});
+      jQuery(div_id).html(html);
+      //Ho generato la tabella
+
+
+
+
+
+      //
+    }
+    else {
+      jQuery(div_id).html(self.theme.alertMessage(data.message));
+    }
+  },
+
+  hasFunctions: function() {
+    var ret = false;
+
+    // if( this.aParam.user_function && this.aParam.user_function.upd && this.aParam.user_function.upd == 1 )
+    //   ret = true;
+    //
+    // if( this.aParam.user_function && this.aParam.user_function.inline && this.aParam.user_function.inline == 1 )
+    //   ret = true;
+    //
+    // if( this.aParam.user_function && this.aParam.user_function.del && this.aParam.user_function.del == 1 )
+    //   ret = true;
+    //
+    // if( this.aParam.user_function && this.aParam.user_function.ins && this.aParam.user_function.ins == 1 )
+    //   ret = true;
+
+    if( this.aParam.custom_function ){
+      ret = true;
+    }
+
+    return ret;
+  },
+
+  // isAllowed: function (data, method){
+  //   if(this.aParam.user_function && typeof this.aParam.user_function.custom_user_function=='function'){
+  //     return this.aParam.user_function.custom_user_function(data, method);
+  //   }
+  //   else{
+  //     return true;
+  //   }
+  // },
+});
 
 /////////////////////////////////////////////////////////////////////
 // FormInline
@@ -825,11 +1035,17 @@ Dbmng.Crud = Class.extend({
 		//the ready variable can be used to check if it is ready the Crud to create the table)
     this.ready=true;
     this.crud_success = options.crud_success;
-    this.crud_delete = options.crud_delete;
     this.form_ready = options.form_ready;
     this.table_ready = options.table_ready;
+    this.table_success = options.table_success;
     this.prepare_cdata = options.prepare_cdata;
     this.form_validation = options.form_validation;
+
+    // function/method used to personalize the error message to the user
+    this.crud_delete = options.crud_delete;
+    this.crud_insert = options.crud_insert;
+    this.crud_update = options.crud_update;
+
     if(!options.aParam){
       options.aParam={};
     }
@@ -961,7 +1177,7 @@ Dbmng.Crud = Class.extend({
 
       var sel_opt={
 		    success:function(data){
-
+          
           self.generateTable(opt, data);
 		    },
 		    error: function(error) {
@@ -997,212 +1213,378 @@ Dbmng.Crud = Class.extend({
 
 		}
   },
-  generateTable: function( opt, data){
-    var div_id=opt.div_id;
+  generateTable: function(opt, data){
+    var div_id = opt.div_id;
     if( div_id.substring(0, 1) != '#') {
       div_id = '#' + div_id;
     }
+
     var self=this;
 
-    //
-    if( data.ok ) {
-      var aData=data.data;
-      var header=[];
-      for(var key in self.aForm.fields){
-        var widget=self.form.getWidget(key);
-        if( widget.isVisible() && !widget.skipInTable()){
-          header.push(widget.getTextLabel());
-        }
-      }
-      if( this.hasFunctions() ) {
-        header.push("Func.");
-      }
+    //verifico se ho delle custom_function chiamate da fuori
+    var custom_function=[];
+    if( self.aParam.custom_function ) {
+      //se esiste e non è un aray ma un oggetto creo un arrai con l'oggetto
+      if( !Array.isArray(self.aParam.custom_function) ){
+        custom_function =self.aParam.custom_function;
 
-      var cData = self.form.convert2html(aData);
-      if(typeof self.prepare_cdata=='function'){
-        var pData = [];
+        // aggiungo la proprietà order = 10
+        if( ! custom_function.order )
+          custom_function.order = 10;
 
-        jQuery.each(aData, function(k,v){
-          pData.push([v,cData[k]]);
+        self.aParam.custom_function=[];
+        self.aParam.custom_function.push(custom_function);
+      }
+      else {
+        // nel caso di più custom_function assegno un order a multipli di 10
+        jQuery.each(self.aParam.custom_function, function(k,v){
+          if( ! v.order ) {
+            v.order = (k+1)*10;
+          }
         });
+      }
+    }
+    else { //se non esiste si crea
+      self.aParam.custom_function=[];
+    }
 
-        // 
+    if( self.aParam.user_function && self.aParam.user_function.upd && ! self.aParam.user_function.added_upd ) {
 
-        var pcData = self.prepare_cdata(pData);
+      var update_function = self.aParam.ui.btn_edit;
 
-        if( pcData !== null ) {
-          var aRData = [];
-          var aCData = [];
-          jQuery.each(pcData, function(k,v) {
-            aRData.push(v[0]);
-            aCData.push(v[1]);
-          });
-          aData = aRData;
-          cData = aCData;
+      update_function.action = function(primary_key, rawData, cData, aData){
+        self.createForm(div_id, primary_key, aData);
+      };
+
+      update_function.isAllowed = function(rawData){
+        return self.isAllowed(rawData,'update');
+      };
+
+      // l'edit ha sempre ordine 1 (il primo bottone che viene mostrato per ogni riga)
+      update_function.order = 1;
+
+      self.aParam.custom_function.push(update_function);
+      self.aParam.user_function.added_upd=true;
+    }
+
+    if( self.aParam.user_function && self.aParam.user_function.inline && ! self.aParam.user_function.added_inline ) {
+
+      var inline_function = self.aParam.ui.btn_edit_inline;
+
+      inline_function.action = function(primary_key, rawData, cData, aData){
+        self.createFormInline(div_id, primary_key, aData, true);
+      };
+
+      inline_function.isAllowed = function(rawData){
+        return self.isAllowed(rawData,'update');
+      };
+
+      // l'edit inline ha sempre ordine 2
+      inline_function.order = 2;
+
+      self.aParam.custom_function.push(inline_function);
+      self.aParam.user_function.added_inline=true;
+    }
+
+
+
+    if( self.aParam.user_function && self.aParam.user_function.del && ! self.aParam.user_function.added_delete ) {
+
+      var delete_function = self.aParam.ui.btn_delete;
+
+      delete_function.action = function(primary_key, rawData, cData, aData){
+        var confirm_message = "Are you sure?";
+        if( self.aParam.ui.btn_delete.confirm_message ) {
+          confirm_message = self.aParam.ui.btn_delete.confirm_message;
         }
+        if( window.confirm(confirm_message) ) {
+          self.deleteRecord(div_id, primary_key);
+        }
+      };
+
+      delete_function.isAllowed = function(rawData){
+        return self.isAllowed(rawData,'delete');
+      };
+
+      // l'eliminazione di un record ha sempre ordine 100 (ultimo bottone)
+      delete_function.order = 100;
+
+      self.aParam.custom_function.push(delete_function);
+      self.aParam.user_function.added_delete=true;
+    }
+
+
+
+
+    var table = new Dbmng.Table({
+      theme:self.theme,
+      aForm: self.aForm,
+      aParam: self.aParam,
+      prepare_cdata: self.prepare_cdata
+      // ,table_ready: self.table_ready,
+      // table_success: self.table_success,
+      // createForm: self.createForm,
+      // createFormInline: self.createFormInline,
+      // deleteRecord: self.deleteRecord,
+      // createInsertForm: self.createInsertForm,
+    });
+
+    table.generateTable(opt, data);
+
+    var aData = data.data;
+    //Dopo aver generato la tabella aggiungo le funzioni di hook e il pulsante di inserisci
+    if( typeof self.table_success == 'function' ){
+      self.table_success(aData);
+    }
+
+    //TODO: verificare che fa l'inserimento in mnaiera corretta
+    if( self.aParam.user_function && self.aParam.user_function.ins ) {
+      var label_insert=self.aParam.ui.btn_insert.label;
+      var opt_insert=self.aParam.ui.btn_insert;
+
+      var button_insert=jQuery(self.theme.getButton(label_insert,opt_insert));
+      button_insert.click(function(){
+        self.createInsertForm(div_id);
+      });
+
+      var btns_l = "<div id='dbmng_buttons_row' class='row' style='margin-top: 20px;margin-bottom: 100px;'><div class='dbmng_form_button_message col-md-12'></div><div id='dbmng_button_left' class='dbmng_form_button_left col-md-4 col-xs-12 '></div><div id='dbmng_button_center' class='col-md-4 col-xs-12 '></div><div id='dbmng_button_right' class='dbmng_form_button_right col-md-4 col-xs-12 '></div></div>";
+      var btns_f = "<div id='dbmng_buttons_row' class='row' style='margin-top: 0px;margin-bottom: 0px;'><div class='dbmng_form_button_message col-md-12'></div>   <div id='dbmng_button_left' class='dbmng_form_button_left col-md-4 col-xs-12 '></div><div id='dbmng_button_center' class='col-md-4 col-xs-12 '></div><div id='dbmng_button_right' class='dbmng_form_button_right col-md-4 col-xs-12 '></div></div>";
+      var position = 'last';
+      if( self.aParam.ui.btn_insert.position ) {
+        position = self.aParam.ui.btn_insert.position;
       }
 
-      var html=self.theme.getTable({data:cData, rawData:aData, header:header, aParam:self.aParam, options:{
-        assignClass:true,
-        setIDRow:function(aData){
-          return "dbmng_row_id_"+aData[self.pk];
-        },
-        addColumn:function(opt){
-          if( self.hasFunctions() ) {
-            var cell=self.theme.getTableCell();
+      if( position == 'first' ) {
+        jQuery(div_id).prepend(btns_f);
+      }
+      else if ( position == 'both' ) {
+        jQuery(div_id).append(btns_l);
+        jQuery(div_id).prepend(btns_f);
+      }
+      else {
+        jQuery(div_id).append(btns_l);
+      }
+      jQuery(div_id).find('.dbmng_form_button_left').append(button_insert);
+    }
 
-            if( self.aParam.user_function.upd  ) {
-              var label_edit=self.aParam.ui.btn_edit.label;
-              var opt_edit=self.aParam.ui.btn_edit;
+    if(typeof self.table_ready=='function'){
+      self.table_ready(self.form);
+    }
 
-              var button_edit=(self.theme.getButton(label_edit,opt_edit));
-              if(!self.isAllowed(opt.rawData,'update')){
-                button_edit.disabled=true;
-              }
 
-              button_edit.addEventListener("click",function(){
-                self.createForm(div_id, opt.rawData[self.pk], aData);
-                // MM aggiungere funzione per history
-              });
-              jQuery(cell).append(button_edit);
-            }
 
-            if( self.aParam.user_function.inline ) {
-              var label_editi=self.aParam.ui.btn_edit_inline.label;
-              var opt_editi=self.aParam.ui.btn_edit_inline;
-              var button_editi=self.theme.getButton(label_editi,opt_editi);
-              if(!self.isAllowed(opt.rawData,'update')){
-                button_editi.disabled=true;
-              }
-              button_editi.addEventListener("click",function(){
-                self.createFormInline(div_id, opt.rawData[self.pk], aData, true);
-                // MM aggiungere funzione per history
-              });
-              jQuery(cell).append(button_editi);
-            }
-
-            if( self.aParam.user_function.del ) {
-              var label_delete=self.aParam.ui.btn_delete.label;
-              var opt_delete=self.aParam.ui.btn_delete;
-
-              var button_delete=(self.theme.getButton(label_delete,opt_delete));
-              if(!self.isAllowed(opt.rawData,'delete')){
-                button_delete.disabled=true;
-              }
-              button_delete.addEventListener("click",function(){
-                var confirm_message = "Are you sure?";
-                if( self.aParam.ui.btn_delete.confirm_message ) {
-                  confirm_message = self.aParam.ui.btn_delete.confirm_message;
-                }
-                if( window.confirm(confirm_message) ) {
-                  self.deleteRecord(div_id, opt.rawData[self.pk]);
-                }
-                // MM aggiungere funzione per history
-
-              });
-              jQuery(cell).append(button_delete);
-            }
-
-            if( self.aParam.custom_function ) {
-
-              var aCF = self.aParam.custom_function;
-              if( ! jQuery.isArray(self.aParam.custom_function) ) {
-                aCF = [self.aParam.custom_function];
-              }
-
-              jQuery.each(aCF, function(k,v) {
-                var label_custom = v.label;
-                var opt_custom = v;
-                //
-                var button_custom=(self.theme.getButton(label_custom,opt_custom));
-                if(!self.isAllowed(opt.rawData,v.action)){
-                  button_custom.disabled=true;
-                }
-
-                if( v.action ) {
-                  if( typeof v.action == 'string' ) {
-                    button_custom.addEventListener("click",function(){
-                      var fnstring = v.action;
-                      var fnparams = [opt.rawData[self.pk],opt.rawData, opt.data];
-
-                      exeExternalFunction(fnstring, fnparams);
-                      // MM aggiungere funzione per history
-                    });
-                    jQuery(cell).append(button_custom);
-                  }
-                }
-              });
-  //             var label_custom = self.aParam.custom_function.label;
-  //             var opt_custom = self.aParam.custom_function;
-  //             //
-  //             var button_custom=(self.theme.getButton(label_custom,opt_custom));
-  //             if(!self.isAllowed(opt.rawData,self.aParam.custom_function.action)){
-  //               button_custom.disabled=true;
+  //   var div_id=opt.div_id;
+  //   if( div_id.substring(0, 1) != '#') {
+  //     div_id = '#' + div_id;
+  //   }
+  //   var self=this;
+  //
+  //   //
+  //   if( data.ok ) {
+  //     var aData=data.data;
+  //     var header=[];
+  //     for(var key in self.aForm.fields){
+  //       var widget=self.form.getWidget(key);
+  //       if( widget.isVisible() && !widget.skipInTable()){
+  //         header.push(widget.getTextLabel());
+  //       }
+  //     }
+  //     // header.push("Calc.");
+  //     if( this.hasFunctions() ) {
+  //       header.push("Func.");
+  //     }
+  //
+  //     var cData = self.form.convert2html(aData);
+  //     
+  //     if(typeof self.prepare_cdata=='function'){
+  //       var pData = [];
+  //
+  //       jQuery.each(aData, function(k,v){
+  //         pData.push([v,cData[k]]);
+  //       });
+  //
+  //       // 
+  //
+  //       var pcData = self.prepare_cdata(pData);
+  //
+  //       if( pcData !== null ) {
+  //         var aRData = [];
+  //         var aCData = [];
+  //         jQuery.each(pcData, function(k,v) {
+  //           aRData.push(v[0]);
+  //           aCData.push(v[1]);
+  //         });
+  //         aData = aRData;
+  //         cData = aCData;
+  //       }
+  //     }
+  //
+  //     
+  //     var html=self.theme.getTable({data:cData, rawData:aData, header:header, aParam:self.aParam, options:{
+  //       assignClass:true,
+  //       setIDRow:function(aData){
+  //         return "dbmng_row_id_"+aData[self.pk];
+  //       },
+  //       addColumn:function(opt){
+  //         if( self.hasFunctions() ) {
+  //           var cell=self.theme.getTableCell();
+  //
+  //           if( self.aParam.user_function.upd  ) {
+  //             var label_edit=self.aParam.ui.btn_edit.label;
+  //             var opt_edit=self.aParam.ui.btn_edit;
+  //
+  //             var button_edit=(self.theme.getButton(label_edit,opt_edit));
+  //             if(!self.isAllowed(opt.rawData,'update')){
+  //               button_edit.disabled=true;
   //             }
   //
-  //             if( self.aParam.custom_function.action ) {
-  //               if( typeof self.aParam.custom_function.action == 'string' ) {
-  //                 button_custom.addEventListener("click",function(){
-  //                   var fnstring = self.aParam.custom_function.action;
-  //                   var fnparams = [opt.rawData[self.pk],opt.rawData];
+  //             button_edit.addEventListener("click",function(){
+  //               self.createForm(div_id, opt.rawData[self.pk], aData);
+  //               // MM aggiungere funzione per history
+  //             });
+  //             jQuery(cell).append(button_edit);
+  //           }
   //
-  //                   exeExternalFunction(fnstring, fnparams);
-  //                 });
-  //                 jQuery(cell).append(button_custom);
+  //           if( self.aParam.user_function.inline ) {
+  //             var label_editi=self.aParam.ui.btn_edit_inline.label;
+  //             var opt_editi=self.aParam.ui.btn_edit_inline;
+  //             var button_editi=self.theme.getButton(label_editi,opt_editi);
+  //             if(!self.isAllowed(opt.rawData,'update')){
+  //               button_editi.disabled=true;
+  //             }
+  //             button_editi.addEventListener("click",function(){
+  //               self.createFormInline(div_id, opt.rawData[self.pk], aData, true);
+  //               // MM aggiungere funzione per history
+  //             });
+  //             jQuery(cell).append(button_editi);
+  //           }
+  //
+  //           if( self.aParam.user_function.del ) {
+  //             var label_delete=self.aParam.ui.btn_delete.label;
+  //             var opt_delete=self.aParam.ui.btn_delete;
+  //
+  //             var button_delete=(self.theme.getButton(label_delete,opt_delete));
+  //             if(!self.isAllowed(opt.rawData,'delete')){
+  //               button_delete.disabled=true;
+  //             }
+  //             button_delete.addEventListener("click",function(){
+  //               var confirm_message = "Are you sure?";
+  //               if( self.aParam.ui.btn_delete.confirm_message ) {
+  //                 confirm_message = self.aParam.ui.btn_delete.confirm_message;
   //               }
+  //               if( window.confirm(confirm_message) ) {
+  //                 self.deleteRecord(div_id, opt.rawData[self.pk]);
+  //               }
+  //               // MM aggiungere funzione per history
+  //
+  //             });
+  //             jQuery(cell).append(button_delete);
+  //           }
+  //
+  //           if( self.aParam.custom_function ) {
+  //
+  //             var aCF = self.aParam.custom_function;
+  //             if( ! jQuery.isArray(self.aParam.custom_function) ) {
+  //               aCF = [self.aParam.custom_function];
   //             }
-            }
-
-            return cell;
-          }
-          else {
-            return null;
-          }
-        }
-      }});
-      jQuery(div_id).html(html);
-
-      if( self.aParam.user_function.ins ) {
-        var label_insert=self.aParam.ui.btn_insert.label;
-        var opt_insert=self.aParam.ui.btn_insert;
-
-        var button_insert=jQuery(self.theme.getButton(label_insert,opt_insert));
-        button_insert.click(function(){
-          self.createInsertForm(div_id);
-          // MM aggiungere funzione per history
-        });
-
-        var btns_l = "<div id='dbmng_buttons_row' class='row' style='margin-top: 20px;margin-bottom: 100px;'><div class='dbmng_form_button_message col-md-12'></div><div id='dbmng_button_left' class='dbmng_form_button_left col-md-4 col-xs-12 '></div><div id='dbmng_button_center' class='col-md-4 col-xs-12 '></div><div id='dbmng_button_right' class='dbmng_form_button_right col-md-4 col-xs-12 '></div></div>";
-        var btns_f = "<div id='dbmng_buttons_row' class='row' style='margin-top: 0px;margin-bottom: 0px;'><div class='dbmng_form_button_message col-md-12'></div>   <div id='dbmng_button_left' class='dbmng_form_button_left col-md-4 col-xs-12 '></div><div id='dbmng_button_center' class='col-md-4 col-xs-12 '></div><div id='dbmng_button_right' class='dbmng_form_button_right col-md-4 col-xs-12 '></div></div>";
-        var position = 'last';
-        if( self.aParam.ui.btn_insert.position ) {
-          position = self.aParam.ui.btn_insert.position;
-        }
-
-        if( position == 'first' ) {
-          jQuery(div_id).prepend(btns_f);
-        }
-        else if ( position == 'both' ) {
-          jQuery(div_id).append(btns_l);
-          jQuery(div_id).prepend(btns_f);
-        }
-        else {
-          jQuery(div_id).append(btns_l);
-        }
-        jQuery(div_id).find('.dbmng_form_button_left').append(button_insert);
-
-        // jQuery(div_id).append(button_insert);
-      }
-
-      if(typeof self.table_ready=='function'){
-        self.table_ready(self.form);
-      }
-    }
-    else {
-      jQuery(div_id).html(self.theme.alertMessage(data.message));
-    }
+  //
+  //             jQuery.each(aCF, function(k,v) {
+  //               var label_custom = v.label;
+  //               var opt_custom = v;
+  //               //
+  //               var button_custom=(self.theme.getButton(label_custom,opt_custom));
+  //               if(!self.isAllowed(opt.rawData,v.action)){
+  //                 button_custom.disabled=true;
+  //               }
+  //
+  //               if( v.action ) {
+  //                 if( typeof v.action == 'string' ) {
+  //                   button_custom.addEventListener("click",function(){
+  //                     var fnstring = v.action;
+  //                     var fnparams = [opt.rawData[self.pk],opt.rawData, opt.data];
+  //
+  //                     exeExternalFunction(fnstring, fnparams);
+  //                     // MM aggiungere funzione per history
+  //                   });
+  //                   jQuery(cell).append(button_custom);
+  //                 }
+  //               }
+  //             });
+  // //             var label_custom = self.aParam.custom_function.label;
+  // //             var opt_custom = self.aParam.custom_function;
+  // //             //
+  // //             var button_custom=(self.theme.getButton(label_custom,opt_custom));
+  // //             if(!self.isAllowed(opt.rawData,self.aParam.custom_function.action)){
+  // //               button_custom.disabled=true;
+  // //             }
+  // //
+  // //             if( self.aParam.custom_function.action ) {
+  // //               if( typeof self.aParam.custom_function.action == 'string' ) {
+  // //                 button_custom.addEventListener("click",function(){
+  // //                   var fnstring = self.aParam.custom_function.action;
+  // //                   var fnparams = [opt.rawData[self.pk],opt.rawData];
+  // //
+  // //                   exeExternalFunction(fnstring, fnparams);
+  // //                 });
+  // //                 jQuery(cell).append(button_custom);
+  // //               }
+  // //             }
+  //           }
+  //
+  //           return cell;
+  //         }
+  //         else {
+  //           return null;
+  //         }
+  //       }
+  //     }});
+  //     jQuery(div_id).html(html);
+  //     if( typeof self.table_success == 'function' ){
+  //       self.table_success(aData);
+  //     }
+  //
+  //     if( self.aParam.user_function.ins ) {
+  //       var label_insert=self.aParam.ui.btn_insert.label;
+  //       var opt_insert=self.aParam.ui.btn_insert;
+  //
+  //       var button_insert=jQuery(self.theme.getButton(label_insert,opt_insert));
+  //       button_insert.click(function(){
+  //         self.createInsertForm(div_id);
+  //         // MM aggiungere funzione per history
+  //       });
+  //
+  //       var btns_l = "<div id='dbmng_buttons_row' class='row' style='margin-top: 20px;margin-bottom: 100px;'><div class='dbmng_form_button_message col-md-12'></div><div id='dbmng_button_left' class='dbmng_form_button_left col-md-4 col-xs-12 '></div><div id='dbmng_button_center' class='col-md-4 col-xs-12 '></div><div id='dbmng_button_right' class='dbmng_form_button_right col-md-4 col-xs-12 '></div></div>";
+  //       var btns_f = "<div id='dbmng_buttons_row' class='row' style='margin-top: 0px;margin-bottom: 0px;'><div class='dbmng_form_button_message col-md-12'></div>   <div id='dbmng_button_left' class='dbmng_form_button_left col-md-4 col-xs-12 '></div><div id='dbmng_button_center' class='col-md-4 col-xs-12 '></div><div id='dbmng_button_right' class='dbmng_form_button_right col-md-4 col-xs-12 '></div></div>";
+  //       var position = 'last';
+  //       if( self.aParam.ui.btn_insert.position ) {
+  //         position = self.aParam.ui.btn_insert.position;
+  //       }
+  //
+  //       if( position == 'first' ) {
+  //         jQuery(div_id).prepend(btns_f);
+  //       }
+  //       else if ( position == 'both' ) {
+  //         jQuery(div_id).append(btns_l);
+  //         jQuery(div_id).prepend(btns_f);
+  //       }
+  //       else {
+  //         jQuery(div_id).append(btns_l);
+  //       }
+  //       jQuery(div_id).find('.dbmng_form_button_left').append(button_insert);
+  //
+  //       // jQuery(div_id).append(button_insert);
+  //     }
+  //
+  //     if(typeof self.table_ready=='function'){
+  //       self.table_ready(self.form);
+  //     }
+  //   }
+  //   else {
+  //     jQuery(div_id).html(self.theme.alertMessage(data.message));
+  //   }
   },
   isAllowed: function (data, method){
+
     if(typeof this.aParam.user_function.custom_user_function=='function'){
       return this.aParam.user_function.custom_user_function(data, method);
     }
@@ -1229,6 +1611,7 @@ Dbmng.Crud = Class.extend({
           else {
             var msg=self.theme.alertMessage(data.message);
             jQuery(div_id).find(".dbmng_form_button_message").html(msg);
+            window.scrollTo(0,document.body.scrollHeight);
           }
         }
       },
@@ -1299,7 +1682,7 @@ Dbmng.Crud = Class.extend({
 
     var aRecord;
     if(type==='update'){
-       aRecord = this.getARecord(key,aData);
+       aRecord = self.getARecord(key,aData);
      }
     else{
       aRecord = {};
@@ -1331,7 +1714,15 @@ Dbmng.Crud = Class.extend({
       var valid=self.form.isValid();
 
       var aData = self.form.getValue();
-      // 
+      
+
+      // se ho un external_widget non lo devo inserire nell'api di insert/update
+      jQuery.each(self.aForm.fields, function(k,v){
+        if( v.skip_in_form !== undefined && v.skip_in_form ) {
+          delete aData[k];
+        }
+      });
+
       var validation = true;
       if(typeof self.form_validation=='function'){
         validation = self.form_validation();
@@ -1350,8 +1741,14 @@ Dbmng.Crud = Class.extend({
             data:aData, // self.form.getValue(),
             success:function(data){
               if(!data.ok){
-                var msg=self.theme.alertMessage(data.message);
-                jQuery(div_id).find(".dbmng_form_button_message").html(msg);
+                if(typeof self.crud_update=='function'){
+                  self.crud_update('update', data);
+                }
+                else {
+                  var msg=self.theme.alertMessage(data.message);
+                  jQuery(div_id).find(".dbmng_form_button_message").html(msg);
+                  window.scrollTo(0,document.body.scrollHeight);
+                }
               }
               else{
                 
@@ -1369,9 +1766,16 @@ Dbmng.Crud = Class.extend({
             data:aData, // self.form.getValue(),
             success:function(data){
               
+              
               if( !data.ok ) {
-                var msg=self.theme.alertMessage(data.message);
-                jQuery(div_id).find(".dbmng_form_button_message").html(msg);
+                if(typeof self.crud_insert=='function'){
+                  self.crud_insert('insert', data);
+                }
+                else {
+                  var msg=self.theme.alertMessage(data.message);
+                  jQuery(div_id).find(".dbmng_form_button_message").html(msg);
+                  window.scrollTo(0,document.body.scrollHeight);
+                }
               }
               else {
                 if(typeof self.crud_success=='function'){
@@ -2496,6 +2900,305 @@ Dbmng.BootstrapTheme = Dbmng.AbstractTheme.extend({
 });
 
 /////////////////////////////////////////////////////////////////////
+// Framework7Theme
+// 05 February 2020
+//
+//
+// Developed by :
+// Diego Guidotti
+// Michele Mammini
+// Klean Hoxha
+/////////////////////////////////////////////////////////////////////
+
+Dbmng.Framework7Theme = Dbmng.AbstractTheme.extend({
+  getForm: function(opt) {
+    var el = document.createElement('form');
+    this.addClass(el, "list");
+
+    var ul = document.createElement('ul');
+    el.appendChild(ul);
+
+    return el;
+  },
+  getFieldContainer: function(aField) {
+    // 
+    var el = document.createElement('li');
+
+    var div1=document.createElement('div');
+    div1.className="item-content item-input";
+    el.appendChild(div1);
+
+    var div2=document.createElement('div');
+    div2.className="item-inner";
+    div1.appendChild(div2);
+
+
+    // el.className = 'dbmng_form_row';
+    // el.className = el.className + ' dbmng_form_field_' + aField.field;
+
+    return el;
+  },
+  getLabel: function(aField) {
+    var el=document.createElement('div');
+    el.className='item-title item-label';
+
+    // if set assign the label long in form mode
+    var label = aField.label;
+    if( aField.label_long ) {
+      label = aField.label_long;
+    }
+    el.innerHTML= label;
+
+    return el;
+  },
+  getInput: function(aField) {
+    var el= document.createElement('div');
+    el.className='item-input-wrap';
+
+
+    var input=document.createElement('input');
+    el.appendChild(input);
+    this.assignAttributes(input, aField);
+
+    if(typeof aField.value !== 'undefined' ) {
+      input.value=aField.value;
+    }
+    if( aField.placeholder ) {
+      input.placeholder = aField.placeholder;
+    }
+    input.type = "text";
+    // if (aField.type) {
+    //   input.type=aField.type;
+    // }
+
+    //if in the option there is a field_type value it will be override the previous one (if the widget is hidden and the type is int it should be hidden)
+    if(aField.field_type){
+      input.type = aField.field_type;
+    }
+
+    return el;
+  },
+  getCheckbox: function(aField) {
+    // var el=document.createElement('input');
+
+    var el= document.createElement('div');
+    el.className='item-after';
+
+    var label=document.createElement('label');
+    label.className='toggle toggle-init color-green';
+    el.appendChild(label);
+
+    var input=document.createElement('input');
+    label.appendChild(input);
+
+    var i=document.createElement('i');
+    i.className='toggle-icon';
+    label.appendChild(i);
+
+
+    if(! aField.exclude_attribute) {
+      this.assignAttributes(input, aField);
+    }
+
+    input.type = "checkbox";
+    if(typeof aField.value !== 'undefined' ) {
+      input.value=aField.value;
+    }
+
+    if(aField.checked) {
+      input.checked = true;
+    }
+
+    //
+    if( aField.placeholder ) {
+      input.placeholder = aField.label;
+    }
+
+    return el;
+  },
+  getSelect: function(aField) {
+    var el= document.createElement('div');
+    el.className='item-input-wrap input-dropdown-wrap';
+
+
+    var select=document.createElement('select');
+    el.appendChild(select);
+
+    // var el=document.createElement('select');
+    // 
+    this.assignAttributes(select, aField);
+    if(aField.voc_val) {
+      var o=document.createElement('option');
+
+      if( aField.placeholder ) {
+        o.text=aField.label;
+        o.disabled = 'disabled';
+      }
+
+      select.options.add(o);
+
+      if(Object.prototype.toString.call(aField.voc_val) === '[object Object]') {
+        for (var opt in aField.voc_val) {
+          o=document.createElement('option');
+          o.value = opt;
+          o.text=aField.voc_val[opt];
+          // 
+          // 
+          if( typeof aField.value !== 'undefined' ) {
+            // 
+            if( aField.value == opt ) {
+              o.selected = true;
+            }
+          }
+          select.options.add(o);
+        }
+      }
+      else if(Object.prototype.toString.call(aField.voc_val) === '[object Array]') {
+        // 
+        jQuery.each(aField.voc_val, function(k,v){
+          if(typeof v !== 'string') {
+            jQuery.each(v, function(key,text){
+              o=document.createElement('option');
+              o.value = key; // v[0];
+              o.text= text; // v[1];
+              if( typeof aField.value !== 'undefined' ) {
+                if( aField.value == key ) {
+                  o.selected = true;
+                }
+              }
+            });
+          }
+          else {
+            o=document.createElement('option');
+            o.value = opt;
+            o.text=aField.voc_val[opt];
+            if( typeof aField.value !== 'undefined' ) {
+              if( aField.value == opt ) {
+                o.selected = true;
+              }
+            }
+          }
+          select.options.add(o);
+        });
+      }
+    }
+    return el;
+  },
+  getSelectNM: function(aField) {
+    //
+    var out_type = "select";
+    var el, o, opt;
+    if( aField.out_type == 'checkbox' ) {
+      out_type = "checkbox";
+    }
+    if( out_type == 'select' ) {
+
+      el = document.createElement('a');
+      el.className='item-link smart-select smart-select-init';
+      el['data-open-in']='popover';
+
+
+      var select = document.createElement('select');
+      select.multiple = true;
+      el.appendChild(select);
+
+      this.assignAttributes(select, aField);
+
+      if(aField.voc_val) {
+        o = document.createElement('option');
+
+        if( aField.placeholder ) {
+          o.text = aField.label;
+          o.disabled = 'disabled';
+        }
+
+        select.options.add(o);
+        for (opt in aField.voc_val) {
+          o = document.createElement('option');
+          o.value = opt;
+          o.text = aField.voc_val[opt];
+          if( aField.value ) {
+            if( typeof aField.value[0] == 'number') {
+              opt = parseInt(opt);
+            }
+            if( aField.value.indexOf(opt) > -1 ) {
+              o.selected = true;
+            }
+          }
+          select.options.add(o);
+        }
+      }
+    }
+    else if( out_type == 'checkbox' ) {
+      //
+      el = document.createElement('ul');
+      this.addClass(el, 'dbmng_checkbox_ul');
+      this.assignAttributes(el, aField);
+
+      for (opt in aField.voc_val) {
+        var li = document.createElement('li');
+
+        var aCB = {type: 'int', widget:'checkbox', theme:this}; // , theme:theme_boot ??
+        o = new Dbmng.CheckboxWidget({field:aField.field, aField:aCB});
+        o.createField(opt);
+
+        li.appendChild(o.widget);
+
+        var txt = document.createTextNode(aField.voc_val[opt]);
+        li.appendChild(txt);
+        el.appendChild(li);
+      }
+    }
+    return el;
+  },
+
+
+  assignAttributes: function(el, aField) {
+    
+    
+
+    // this._super(el, aField);
+    // this.addClass(el, 'form-control');
+  },
+  alertMessage: function(text) {
+    var el = this._super(text);
+    this.addClass(el, 'alert alert-block alert-danger');
+    return el;
+  },
+  getTable: function(opt) {
+    var div = this._super(opt);
+    this.addClass(div.firstChild, 'data-table card');
+    return div;
+  },
+  getButton: function(text, opt) {
+    var el = this._super(text, opt);
+    this.addClass(el, 'button button-raised');
+    return el;
+  },
+  createFileUploadField: function(elv, label, opt){
+    var el = this._super(elv, label, opt);
+    var btn=jQuery(el).find('.fileinput-button');
+    btn.css('width','');
+    btn.addClass('col-50');
+
+    var prg=jQuery(el).find('.progress');
+    prg.css('width','');
+    prg[0].style.cssText="";
+    prg.wrap('<div class="col-50" style="padding-top: 7px;"></div>');
+    prg.find('.progress-bar')[0].style.cssText="";
+
+    return el;
+  },
+  getDeleteButton: function(label,btn_icon){
+
+    var icn = document.createElement('i');
+    this.addClass(icn,btn_icon);
+    this.addTitle(icn, label);
+    return icn;
+  }
+});
+
+/////////////////////////////////////////////////////////////////////
 // AbstractWidget
 // 12 November 2015
 //
@@ -2549,10 +3252,19 @@ Dbmng.AbstractWidget = Class.extend({
 
     this.aField.field = this.field;
     var el = this.theme.getFieldContainer(this.aField);
+    var internalNode=el;
+    if(internalNode.firstChild){
+      internalNode=internalNode.firstChild;
+    }
+    if(internalNode.firstChild){
+      internalNode=internalNode.firstChild;
+    }
 
     var label=this.getLabel();
+
+
     if(label!==null){
-      el.appendChild(label);
+      internalNode.appendChild(label);
     }
 
     if( typeof data_val != 'undefined' ) {
@@ -2570,7 +3282,7 @@ Dbmng.AbstractWidget = Class.extend({
       self.onFocus(evt);
     };
 
-    el.appendChild(widget);
+    internalNode.appendChild(widget);
     return el;
   },
 
@@ -2633,7 +3345,17 @@ Dbmng.AbstractWidget = Class.extend({
   },
   getValue: function(){
     if(this.widget){
-      return this.widget.value;
+
+      var value=this.widget.value;
+
+      var get_val=jQuery(this.widget).find(".get_val");
+
+      if(get_val.length>0){
+          value=(get_val[0]).value;
+      }
+
+
+      return value;
     }
     else{
       
@@ -2754,7 +3476,7 @@ Dbmng.AbstractWidget = Class.extend({
   },
 
   toValidate: function( nullable ) {
-    return (nullable === 0 && this.aField.field_type != 'hidden' && this.aField.key != 1);
+    return (nullable === 0 && this.aField.field_type != 'hidden' && this.aField.key != 1 && (this.aField.skip_in_form === undefined));
   }
 });
 
@@ -3573,9 +4295,6 @@ Dbmng.defaults.aParam = {
     inline:0, upd:1, del:1, ins:1
   }
 };
-
-
-
 
   window.Dbmng = Dbmng;
 })(); 
