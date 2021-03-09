@@ -28,7 +28,7 @@ Dbmng.AbstractWidget = Class.extend({
     // i.e.
     // input  : array ['foo', 'bar']
     // output : [{0:'foo'}, {1:'bar'}]
-    if( typeof this.aField.voc_val !== undefined ){
+    if( typeof this.aField.voc_val !== "undefined" ){
       var aVoc = [];
       if( Object.prototype.toString.call(this.aField.voc_val) == '[object Array]' ) {
         if(Object.prototype.toString.call(this.aField.voc_val[0]) == '[object String]'){

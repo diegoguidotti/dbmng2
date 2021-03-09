@@ -3395,7 +3395,7 @@ Dbmng.AbstractWidget = Class.extend({
     // i.e.
     // input  : array ['foo', 'bar']
     // output : [{0:'foo'}, {1:'bar'}]
-    if( typeof this.aField.voc_val !== undefined ){
+    if( typeof this.aField.voc_val !== "undefined" ){
       var aVoc = [];
       if( Object.prototype.toString.call(this.aField.voc_val) == '[object Array]' ) {
         if(Object.prototype.toString.call(this.aField.voc_val[0]) == '[object String]'){
@@ -3464,11 +3464,20 @@ Dbmng.AbstractWidget = Class.extend({
     if( typeof data_val != 'undefined' ) {
       this.value = data_val;
     }
-    var widget=this.createWidget();
+    var widget_complex=this.createWidget();
+
+
+    //a volte il widget è solo una parte del widget complex
+    //se esiste un oggetto di classe real_widget usa questo come widget
+    var widget=widget_complex;
+    var get_val=jQuery(widget_complex).find(".real_widget");
+     if(get_val.length>0){
+         widget=(get_val[0]);
+     }
+
     this.widget=widget;
 
     widget.onchange=function( evt ) {
-
       self.onChange(evt);
     };
 
@@ -3476,7 +3485,7 @@ Dbmng.AbstractWidget = Class.extend({
       self.onFocus(evt);
     };
 
-    internalNode.appendChild(widget);
+    internalNode.appendChild(widget_complex);
     return el;
   },
 
@@ -3541,14 +3550,6 @@ Dbmng.AbstractWidget = Class.extend({
     if(this.widget){
 
       var value=this.widget.value;
-
-      var get_val=jQuery(this.widget).find(".get_val");
-
-      if(get_val.length>0){
-          value=(get_val[0]).value;
-      }
-
-
       return value;
     }
     else{
@@ -4260,6 +4261,7 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
     }
 
     if( out_type == 'select' ) {
+
       el = document.createElement('select');
       el.multiple = true;
 
@@ -4276,13 +4278,29 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
         el.options.add(o);
         for ( fk in self.aField.voc_val) {
           o = document.createElement('option');
-          o.value = fk;
-          o.text = self.aField.voc_val[fk];
+
+          var text_label="";
+          var foreign_key="";
+          if( typeof self.aField.voc_val[0] == 'object' ) {
+            var object=self.aField.voc_val[fk];
+            for (var k in object) {
+              foreign_key=k;
+              text_label=object[k];
+              break;
+            }
+          }
+          else{
+              foreign_key=fk;
+              text_label=self.aField.voc_val[fk];
+          }
+
+          o.value = foreign_key;
+          o.text = text_label;
           if( self.aField.value ) {
             if( typeof self.aField.value[0] == 'number') {
-              fk = parseInt(fk);
+              foreign_key = parseInt(foreign_key);
             }
-            if( self.aField.value.indexOf(fk) > -1 ) {
+            if( self.aField.value.indexOf(foreign_key) > -1 ) {
               o.selected = true;
             }
           }

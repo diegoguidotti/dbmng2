@@ -21,8 +21,8 @@ var aForm={
 
 //create the form object, create the form html and append it to the width
 var form = new Dbmng.Form({aForm:aForm});
-var form_html=form.createForm():
-document.getElementByID('test_dbmng').append(form_html)
+var form_html=form.createForm();
+document.getElementByID('test_dbmng').append(form_html);
 
 //Edit the form and get the value
 var ret=form.getValue();
