@@ -44,6 +44,6 @@ var aForm={
   }
 };
 var form = new Dbmng.Form({aForm:aForm});
-document.getElementByID('test_dbmng').appendform.createForm())
+document.getElementByID('test_dbmng').appendform.createForm();
 var ret=form.getValue();
 console.log(ret);
