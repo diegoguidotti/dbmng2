@@ -21,14 +21,12 @@ private $debug;
 		/**
 		\param $pdo  a valid PDO object
 		*/
-    public function __construct($pdo)
-    {
+    public function __construct($pdo) {
       $this->pdo=$pdo;
       $this->debug = false;
     }
 
-    public function setDebug($debug)
-    {
+    public function setDebug($debug) {
       $this->debug=$debug;
     }
 
@@ -43,24 +41,20 @@ private $debug;
 		\param $password  db password
 		*/
 		public static function createDb($dsn, $user, $password) {
+        try {
+					$pdo = new \PDO($dsn, $user, $password);
+					$pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
+					$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
-        try
-        {
-						$pdo = new \PDO($dsn, $user, $password);
-						$pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
-						$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+					if( strpos($dsn,'mysql') !== false )
+						$pdo->exec("set names utf8");
 
-						if( strpos($dsn,'mysql') !== false )
-							$pdo->exec("set names utf8");
-
-						$instance = new self($pdo);
-			    	return $instance;
-
+					$instance = new self($pdo);
+		    	return $instance;
         }
-				catch (\PDOException $e)
-        {
-            //echo "error " . $e->getMessage();
-						return null;
+				catch (\PDOException $e) {
+          //echo "error " . $e->getMessage();
+					return null;
         }
 		}
 
@@ -76,37 +70,33 @@ private $debug;
 		*/
 		public function select($sQuery, $aVars, $fetch_style = \PDO::FETCH_ASSOC ){
 			$ret=array();
-			try
-				{
-
-          $starttime = microtime(true);
-// 					echo "sQuery: $sQuery";
-// 					print_r($aVars);
-					$res0 = $this->pdo->prepare($sQuery);
-// 					print_r($res0);
-					$res0->execute($aVars);
-					$records=$res0->fetchAll($fetch_style);
-					$ret['ok']=true;
-					$ret['data']=$records;
-					$ret['colCount'] = $res0->columnCount();
-					$ret['rowCount'] = $res0->rowCount();
-          if( $this->debug )
-            {
-              $ret['duration']=round((microtime(true) - $starttime)*1000,3);
-              $ret['sql'] = $this->getSQL($sQuery, $aVars);
-            }
+			try {
+        $starttime = microtime(true);
+				// echo "sQuery: $sQuery";
+				// print_r($aVars);
+				$res0 = $this->pdo->prepare($sQuery);
+				// print_r($res0);
+				$res0->execute($aVars);
+				$records=$res0->fetchAll($fetch_style);
+				$ret['ok']=true;
+				$ret['data']=$records;
+				$ret['colCount'] = $res0->columnCount();
+				$ret['rowCount'] = $res0->rowCount();
+        if( $this->debug ) {
+          $ret['duration']=round((microtime(true) - $starttime)*1000,3);
+          $ret['sql'] = $this->getSQL($sQuery, $aVars);
         }
-//       catch(Exception $e) {
-//         var_dump($e->getTrace());
-//         $ret['ok']=false;
-//       }
-				catch (\PDOException $e)
-        {
-						$ret['ok']=false;
-						$ret['message']=$e->getMessage();
-						$ret['sql'] = $sQuery;
-            $ret['vars'] = $aVars;
-        }
+      }
+      // catch(Exception $e) {
+      //   var_dump($e->getTrace());
+      //   $ret['ok']=false;
+      // }
+			catch (\PDOException $e) {
+				$ret['ok']=false;
+				$ret['message']=$e->getMessage();
+				$ret['sql'] = $sQuery;
+        $ret['vars'] = $aVars;
+      }
 			return $ret;
 		}
 
@@ -125,30 +115,25 @@ private $debug;
 
       $ret = $this->select($sQuery, $aVars, $fetch_style = \PDO::FETCH_ASSOC);
 
-      if( count($aFloatField) > 0 )
-        {
-          for( $f = 0; $f < count($aFloatField); $f++ )
-            {
-              $fld = $aFloatField[$f];
+      if( count($aFloatField) > 0 ) {
+        for( $f = 0; $f < count($aFloatField); $f++ ) {
+          $fld = $aFloatField[$f];
 
-              for( $nR = 0; $nR < $ret['rowCount']; $nR++ )
-                {
-                  if( ! is_null($ret['data'][$nR][$fld]) )
-                    $ret['data'][$nR][$fld] = $ret['data'][$nR][$fld]+0;
-                }
-            }
+          for( $nR = 0; $nR < $ret['rowCount']; $nR++ ) {
+            if( ! is_null($ret['data'][$nR][$fld]) )
+              $ret['data'][$nR][$fld] = $ret['data'][$nR][$fld]+0;
+          }
         }
+      }
 
 			return $ret;
 		}
 
-    public function getConnection()
-    {
+    public function getConnection(){
       return $this->pdo;
     }
 
-    public function getDbType()
-    {
+    public function getDbType() {
       return $this->pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
     }
 		/////////////////////////////////////////////////////////////////////////////
@@ -161,31 +146,28 @@ private $debug;
 		*/
 		public function insert($sQuery, $aVars, $sequence = ''){
 			$ret=array();
-			try
-				{
-					$dbh = $this->pdo;
+			try {
+				$dbh = $this->pdo;
 
-					$res0 = $dbh->prepare($sQuery);
+				$res0 = $dbh->prepare($sQuery);
 
-					$dbh->beginTransaction();
-						$res0->execute($aVars);
+				$dbh->beginTransaction();
+					$res0->execute($aVars);
 
-						$id = $dbh->lastInsertId($sequence);
-					$dbh->commit();
+					$id = $dbh->lastInsertId($sequence);
+				$dbh->commit();
 
-					$ret['ok']=true;
-					$ret['inserted_id'] = $id;
-          if( $this->debug )
-            {
-              $ret['sql'] = $this->getSQL($sQuery, $aVars);
-            }
+				$ret['ok']=true;
+				$ret['inserted_id'] = $id;
+        if( $this->debug ) {
+          $ret['sql'] = $this->getSQL($sQuery, $aVars);
         }
-				catch (\PDOException $e)
-        {
-          $dbh->rollBack();
-					$ret['ok']=false;
-					$ret['message']=$e->getMessage();
-        }
+      }
+			catch (\PDOException $e) {
+        $dbh->rollBack();
+				$ret['ok']=false;
+				$ret['message']=$e->getMessage();
+      }
 			return $ret;
 		}
 
@@ -199,32 +181,29 @@ private $debug;
 		*/
 		public function execute($sQuery, $aVars){
 			$ret=array();
-			try
-				{
-					$dbh = $this->pdo;
+			try{
+				$dbh = $this->pdo;
 
-					$res0 = $dbh->prepare($sQuery);
+				$res0 = $dbh->prepare($sQuery);
 
-					$dbh->beginTransaction();
-						$res0->execute($aVars);
-					$dbh->commit();
+				$dbh->beginTransaction();
+					$res0->execute($aVars);
+				$dbh->commit();
 
-					$ret['ok']=true;
-          if( $this->debug )
-            {
-              $ret['sql'] = $this->getSQL($sQuery, $aVars);
-            }
+				$ret['ok']=true;
+        if( $this->debug ){
+          $ret['sql'] = $this->getSQL($sQuery, $aVars);
         }
-				catch (\PDOException $e)
-        {
-          $dbh->rollBack();
-					$ret['ok']=false;
-					$ret['message']=$e->getMessage();
-					$ret['sql']=$this->getSQL($sQuery, $aVars);
-					//fwrite(STDERR, print_r($e));
-					//$ret['sql']=$e->getMessage();
+      }
+			catch (\PDOException $e) {
+        $dbh->rollBack();
+				$ret['ok']=false;
+				$ret['message']=$e->getMessage();
+				$ret['sql']=$this->getSQL($sQuery, $aVars);
+				//fwrite(STDERR, print_r($e));
+				//$ret['sql']=$e->getMessage();
 
-        }
+      }
 			return $ret;
 		}
 
@@ -237,59 +216,57 @@ private $debug;
 		*/
 		public function transactions($aQuery){
 			$ret=array();
-			try
-				{
+			try {
 					$dbh = $this->pdo;
 					$ret=array();
 					$dbh->beginTransaction();
           //echo " | Begin";
 					$all_ok=true;
 
-					foreach( $aQuery as $a )
-						{
-							//echo "MM: " . $this->getSQL($a['sql'],$a['var']);
+					foreach( $aQuery as $a ) {
+						//echo "MM: " . $this->getSQL($a['sql'],$a['var']);
 
-							$prep0 = $dbh->prepare($a['sql']);
-							$ok= $prep0->execute($a['var']);
+						$prep0 = $dbh->prepare($a['sql']);
+						$ok= $prep0->execute($a['var']);
 
-							$id = 1; //$dbh->lastInsertId();
+						$id = 1; //$dbh->lastInsertId();
 
-							if(!$ok){
-								$all_ok=false;
-							}
-
-							$ret0=array();
-							$ret0['ok']=$ok;
-              if( $this->debug )
-                {
-                  $ret['sql'] = $this->getSQL($a['sql'],$a['var']);
-                }
-							if($id>0){
-								$ret0['inserted_id']=$id;
-							}
-/*
-							if(strpos($a['sql'],"insert")===false){
-								;
-							}
-							else{
-									$ret0['inserted_id']=$id;
-							}
-*/
-							$ret[]=$ret0;
+						if(!$ok){
+							$all_ok=false;
 						}
-            if($all_ok){
-              //echo " Commit";
-			        $dbh->commit();
-            }
-            else{
-              //echo " Rollback";
-              $dbh->rollBack();
+
+						$ret0=array();
+						$ret0['ok']=$ok;
+            if( $this->debug ) {
+              $ret['sql'] = $this->getSQL($a['sql'],$a['var']);
             }
 
-						$ret['ok']=$all_ok;
+						if($id>0){
+							$ret0['inserted_id']=$id;
+						}
+
+						// if(strpos($a['sql'],"insert")===false){
+						// 	;
+						// }
+						// else{
+						// 		$ret0['inserted_id']=$id;
+						// }
+
+						$ret[]=$ret0;
+					}
+
+          if($all_ok) {
+            //echo " Commit";
+		        $dbh->commit();
+          }
+          else {
+            //echo " Rollback";
+            $dbh->rollBack();
+          }
+
+					$ret['ok']=$all_ok;
         }
-				catch (\PDOException $e)
-        {
+				catch (\PDOException $e) {
 					$ret['ok']=false;
 					$ret['message']=$e->getMessage();
           //echo " Rollback Exc (".$e->getMessage().")";
@@ -329,14 +306,12 @@ private $debug;
 
 		public function getSQL($sQuery, $aVars){
 			$sql = $sQuery;
-			if (sizeof($aVars) > 0)
-				{
-					foreach ($aVars as $key => $value)
-						{
-							$re = '/('.$key.')\b/';
-							$sql = preg_replace($re, $this->pdo->quote($value), $sql);
-						}
+			if (sizeof($aVars) > 0) {
+				foreach ($aVars as $key => $value) {
+					$re = '/('.$key.')\b/';
+					$sql = preg_replace($re, $this->pdo->quote($value), $sql);
 				}
+			}
 			return $sql;
 		}
 }
