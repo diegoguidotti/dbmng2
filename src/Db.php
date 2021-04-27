@@ -182,6 +182,7 @@ private $debug;
         }
 				catch (\PDOException $e)
         {
+          $dbh->rollBack();
 					$ret['ok']=false;
 					$ret['message']=$e->getMessage();
         }
@@ -216,6 +217,7 @@ private $debug;
         }
 				catch (\PDOException $e)
         {
+          $dbh->rollBack();
 					$ret['ok']=false;
 					$ret['message']=$e->getMessage();
 					$ret['sql']=$this->getSQL($sQuery, $aVars);
