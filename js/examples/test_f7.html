@@ -384,7 +384,14 @@
       var theme = new theme_f7_class();
       // var theme = new Dbmng.BootstrapTheme();
 
+      console.log("pre",aForm.fields.month.voc_val);
+
+
       var form=new Dbmng.Form({aForm:aForm, aParam:{}, theme:theme});
+
+      console.log("post",aForm.fields.month.voc_val);
+
+
       jQuery('#test_base').append("<button id='extract_value'>Value</button>");
       jQuery('#test_base').append(form.createForm({
           "id": "test1", "name":"AAA", "passwd": "this is a password",
