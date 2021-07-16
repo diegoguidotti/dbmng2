@@ -84,6 +84,7 @@ Dbmng.BootstrapItaliaTheme = Dbmng.AbstractTheme.extend({
 
 
     var input=document.createElement('input');
+    input.className='real_widget';
     fc.appendChild(input);
 
     var label=document.createElement('label');
