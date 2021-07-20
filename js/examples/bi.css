@@ -1,0 +1,12 @@
+
+.bootstrap-select-wrapper select{
+  margin-bottom: 24px;
+  border: none;
+  border-bottom: 1px solid #435a70;
+}
+
+.aepy-select{
+  border: none;
+  box-shadow:none;
+  border-bottom: 1px solid #435a70;
+}
