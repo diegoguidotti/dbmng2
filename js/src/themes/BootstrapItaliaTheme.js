@@ -76,6 +76,8 @@ Dbmng.BootstrapItaliaTheme = Dbmng.AbstractTheme.extend({
   },
   getCheckbox: function(aField) {
 
+    
+
     var el=document.createElement('div');
 
     var fc=document.createElement('div');

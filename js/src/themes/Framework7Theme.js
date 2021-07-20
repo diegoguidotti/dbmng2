@@ -80,6 +80,7 @@ Dbmng.Framework7Theme = Dbmng.AbstractTheme.extend({
   getCheckbox: function(aField) {
     // var el=document.createElement('input');
 
+
     var el= document.createElement('div');
     el.className='item-after';
 
