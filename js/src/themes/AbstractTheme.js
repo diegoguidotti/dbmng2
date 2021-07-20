@@ -714,6 +714,18 @@ Dbmng.AbstractTheme = Class.extend({
   getDeleteButton: function(label){
     var el = this.getButton("X",{type:'span'});
     return el;
+  },
+  setErrorState: function(element, ok, message){
+    var par=jQuery(jQuery(element.widget).parents('.dbmng_form_row')[0]);
+    par.find('span.error_message').remove();
+
+    if(ok){
+      par.removeClass('alert-danger').addClass('alert-success');
+    }
+    else{
+      par.append('<span class="error_message">'+message+'</span>');
+      par.removeClass('alert-success').addClass('alert-danger');
+    }  
   }
 
 

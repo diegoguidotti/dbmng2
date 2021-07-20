@@ -155,6 +155,21 @@ Dbmng.BootstrapItaliaTheme = Dbmng.AbstractTheme.extend({
     }
     return el;
   },
+  setErrorState: function(element, ok, message){
+
+    var par=jQuery(element.widget);
+
+    par.parent().find(".invalid-feedback").remove();
+    
+    if(ok){
+      par.removeClass('is-invalid').addClass('is-valid');
+    }
+    else{
+      par.parent().append('<div class="invalid-feedback">'+message+'</div>');
+      par.removeClass('is-valid').addClass('is-invalid');
+    }  
+
+  }
   // assignAttributes: function(el, aField) {
   //   this._super(el, aField);
   //   this.addClass(el, 'form-control');

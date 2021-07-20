@@ -209,15 +209,18 @@ geo
     }
 
     if(normal){
+
+      //get an empty form
       form = this.theme.getForm();
 
+      //the form can be single or with a children; use the children if exists
+      var appendTo=form;
+      if(form.firstChild){
+        appendTo=form.firstChild;
+      }
+
   		for(var key in fields){
-        if(form.firstChild){
-          form.firstChild.appendChild(fields[key]);
-        }
-        else{
-          form.appendChild(fields[key]);
-        }
+        appendTo.appendChild(fields[key]);
   		}
     }
     else{

@@ -67,7 +67,7 @@
       var aForm = { table_name: 'test',
         primary_key: Array('id'),
         fields: {
-          id: {label: 'ID', type: 'int', key: 0, nullable: false},
+          id: {label: 'ID', type: 'int', key: 0, nullable: 1},
           name: {label: 'Name', type: 'varchar', 'default': 'Paperino', 'validator': {'regexp': '/^[A-Z][0-9]{3}$/', 'message':'Usare 1 lettere e 3 numeri (es. A123)'}},
           passwd: {label: 'Password', type: 'varchar', widget:'password', classes: 'aaa bbb ccc'},
 
@@ -91,7 +91,7 @@
       var theme = new Dbmng.BootstrapItaliaTheme();
 
       var form=new Dbmng.Form({aForm:aForm, aParam:{}, theme:theme});
-      jQuery('#test_base').append("<button id='extract_value'>Value</button>");
+      
       jQuery('#test_base').append(form.createForm({
           "id": "test1", "name":"AAA", "passwd": "this is a password",
           "month": "j","month2": 2,"month3": 1,
@@ -99,10 +99,16 @@
           "multiple": ["j"],"multiple2": ["l2","l3"], "multiplec":"[1,2]", "multiplec2": [123]
         }));
 
+      jQuery('#test_base').append("<button id='extract_value'>Value</button>");
+
 
       jQuery("#extract_value").click(function(){
 
-        console.log(form.getValue());
+        valid=(form.isValid());
+        if(valid.ok){
+          console.log(form.getValue());
+        }
+
       });
 
   });

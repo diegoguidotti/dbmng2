@@ -215,16 +215,12 @@ Dbmng.AbstractWidget = Class.extend({
 
   setErrorState: function(ok, message){
 
-    var par=jQuery(jQuery(this.widget).parents('.dbmng_form_row')[0]);
-    par.find('span.error_message').remove();
+    //validate the fields and write the error messages if present
+    this.theme.setErrorState(this, ok, message);
 
-    if(ok){
-      par.removeClass('alert-danger').addClass('alert-success');
-    }
-    else{
-      par.append('<span class="error_message">'+message+'</span>');
-      par.removeClass('alert-success').addClass('alert-danger');
-    }
+
+   
+
   },
   isValidCustom:function (){
     return {ok:true};
