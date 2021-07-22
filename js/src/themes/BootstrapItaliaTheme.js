@@ -52,8 +52,11 @@ Dbmng.BootstrapItaliaTheme = Dbmng.AbstractTheme.extend({
     var el=document.createElement('input');
     el.className='form-control';
 
-    if (aField.widget=='varchar' || aField.widget=='text') {
+    if (aField.type=='varchar' || aField.type=='text') {
       el.setAttribute('type', 'text');
+    }
+    else if(aField.type=='date') {
+      el.setAttribute('type', 'date');
     }
 
     if(typeof aField.value !== 'undefined' ) {
@@ -76,7 +79,7 @@ Dbmng.BootstrapItaliaTheme = Dbmng.AbstractTheme.extend({
   },
   getCheckbox: function(aField) {
 
-    
+
 
     var el=document.createElement('div');
 
@@ -162,14 +165,14 @@ Dbmng.BootstrapItaliaTheme = Dbmng.AbstractTheme.extend({
     var par=jQuery(element.widget);
 
     par.parent().find(".invalid-feedback").remove();
-    
+
     if(ok){
       par.removeClass('is-invalid').addClass('is-valid');
     }
     else{
       par.parent().append('<div class="invalid-feedback">'+message+'</div>');
       par.removeClass('is-valid').addClass('is-invalid');
-    }  
+    }
 
   }
   // assignAttributes: function(el, aField) {
