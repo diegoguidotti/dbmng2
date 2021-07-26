@@ -174,7 +174,22 @@ Dbmng.BootstrapItaliaTheme = Dbmng.AbstractTheme.extend({
       par.removeClass('is-valid').addClass('is-invalid');
     }
 
-  }
+  },
+  createFileUploadField: function(elv, label, opt){
+    var el = this._super(elv, label, opt);
+    var btn=jQuery(el).find('.fileinput-button');
+    btn.css('width','');
+    btn.addClass('col-xs-6');
+    // this.addClass(btn,'col-xs-6');
+
+    var prg=jQuery(el).find('.progress');
+    prg.css('width','');
+    prg[0].style.cssText="";
+    prg.wrap('<div class="col-xs-6" style="padding-top: 7px;"></div>');
+    prg.find('.progress-bar')[0].style.cssText="";
+
+    return el;
+  },
   // assignAttributes: function(el, aField) {
   //   this._super(el, aField);
   //   this.addClass(el, 'form-control');
@@ -195,23 +210,7 @@ Dbmng.BootstrapItaliaTheme = Dbmng.AbstractTheme.extend({
   //   this.addClass(el, 'btn btn-default');
   //   return el;
   // },
-  // createFileUploadField: function(elv, label, opt){
-  //   var el = this._super(elv, label, opt);
-  //   var btn=jQuery(el).find('.fileinput-button');
-  //   btn.css('width','');
-  //   btn.addClass('col-xs-6');
-  //   //this.addClass(btn,'col-xs-6');
-  //
-  //   var prg=jQuery(el).find('.progress');
-  //   prg.css('width','');
-  //   prg[0].style.cssText="";
-  //   prg.wrap('<div class="col-xs-6" style="padding-top: 7px;"></div>');
-  //   prg.find('.progress-bar')[0].style.cssText="";
-  //
-  //   // console.log(el);
-  //
-  //   return el;
-  // },
+
   // getDeleteButton: function(label,btn_icon){
   //
   //   var icn = document.createElement('i');

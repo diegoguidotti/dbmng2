@@ -67,6 +67,7 @@
       var aForm = { table_name: 'test',
         primary_key: Array('id'),
         fields: {
+          file: {label: 'File', type: 'varchar', widget:'file', url:'/dbmng2/api/test/file/file', weburl_file:'/dbmng2/files/'},
           id: {label: 'ID', type: 'int', key: 0, nullable: 1},
           name: {label: 'Name', type: 'varchar', 'default': 'Paperino', 'validator': {'regexp': '/^[A-Z][0-9]{3}$/', 'message':'Usare 1 lettere e 3 numeri (es. A123)'}},
           passwd: {label: 'Password', type: 'varchar', widget:'password', classes: 'aaa bbb ccc'},
@@ -91,7 +92,7 @@
       var theme = new Dbmng.BootstrapItaliaTheme();
 
       var form=new Dbmng.Form({aForm:aForm, aParam:{}, theme:theme});
-      
+
       jQuery('#test_base').append(form.createForm({
           "id": "test1", "name":"AAA", "passwd": "this is a password",
           "month": "j","month2": 2,"month3": 1,
