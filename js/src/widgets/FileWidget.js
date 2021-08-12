@@ -32,6 +32,8 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
   },
 
   createField: function(data_val){
+
+
     var self=this;
     // console.log(self);
 
