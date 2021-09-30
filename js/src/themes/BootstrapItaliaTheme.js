@@ -132,6 +132,14 @@ Dbmng.BootstrapItaliaTheme = Dbmng.AbstractTheme.extend({
     var el=document.createElement('select');
     el.className='form-control aepy-select';
     this.assignAttributes(el, aField);
+
+    if (aField.searchable) {
+      el.setAttribute('data-live-search', aField.searchable);
+    }
+    if (aField.searchable_placeholder) {
+      el.setAttribute('data-live-search-placeholder', aField.searchable_placeholder);
+    }
+
     if(aField.voc_val) {
       var o=document.createElement('option');
 
