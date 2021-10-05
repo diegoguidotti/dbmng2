@@ -129,8 +129,15 @@ Dbmng.BootstrapItaliaTheme = Dbmng.AbstractTheme.extend({
   },
 
   getSelect: function(aField) {
+    var div=document.createElement('div');
+    if (aField.addButton) {
+      div.className='input-group';
+    }
+
+    // debugger
+    // el.parent
     var el=document.createElement('select');
-    el.className='form-control aepy-select';
+    el.className='form-control aepy-select real_widget';
     this.assignAttributes(el, aField);
 
     if (aField.searchable) {
@@ -166,7 +173,28 @@ Dbmng.BootstrapItaliaTheme = Dbmng.AbstractTheme.extend({
         el.options.add(o);
       });
     }
-    return el;
+
+    div.appendChild(el);
+
+    if (aField.addButton) {
+      var addButtonDiv=document.createElement('div');
+      addButtonDiv.className='input-group-append';
+
+      var button=`<button style="background-color:#06c;" class="${aField.addButtonClass} btn btn-primary btn-icon">
+                    <svg class="icon icon-white">
+                    <use xlink:href="/bootstrap-italia/dist/svg/sprite.svg#it-plus"></use>
+                    </svg>
+                  </button>`;
+
+      var addButton=jQuery(button)[0];
+
+      addButtonDiv.appendChild(addButton);
+
+      div.appendChild(addButtonDiv);
+
+    }
+
+    return div;
   },
   setErrorState: function(element, ok, message){
 
