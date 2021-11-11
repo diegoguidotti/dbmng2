@@ -127,9 +127,18 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
                     info.append(self.theme.alertMessage("Not Completed!!!!"));
                   }
                   else{
-                    console.log(data);
-                    self.addFile(info, weburl_file, file.name);
-                    self.setValue(file.name);
+                    var url=weburl_file;
+                    if (file.relative_folder) {
+                      url=file.relative_folder;
+                    }
+
+                    self.addFile(info, url, file.name);
+
+                    var fileValue=file.name;
+                    if (file.relative_path) {
+                      fileValue=file.relative_path;
+                    }
+                    self.setValue(fileValue);
                   }
                 });
               }
