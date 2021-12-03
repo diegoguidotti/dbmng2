@@ -24,12 +24,16 @@ private $debug;
     public function __construct($pdo) {
       $this->pdo=$pdo;
       $this->debug = false;
+      $this->safe = false;
     }
 
     public function setDebug($debug) {
       $this->debug=$debug;
     }
 
+    public function setSafe($safe) {
+      $this->safe=$safe;
+    }
 
 		/////////////////////////////////////////////////////////////////////////////
 		// createDb
@@ -92,10 +96,16 @@ private $debug;
       //   $ret['ok']=false;
       // }
 			catch (\PDOException $e) {
-				$ret['ok']=false;
-				$ret['message']=$e->getMessage();
-				$ret['sql'] = $sQuery;
-        $ret['vars'] = $aVars;
+        $ret['ok']=false;
+        if( $this->safe ){
+          $ret['message']="There is an error in sql select";
+
+        }
+        else {
+          $ret['message']=$e->getMessage();
+          $ret['sql'] = $sQuery;
+          $ret['vars'] = $aVars;
+        }
       }
 			return $ret;
 		}
@@ -166,7 +176,12 @@ private $debug;
 			catch (\PDOException $e) {
         $dbh->rollBack();
 				$ret['ok']=false;
-				$ret['message']=$e->getMessage();
+        if( $this->safe ){
+          $ret['message']="There is an error in sql insert";
+        }
+        else {
+          $ret['message']=$e->getMessage();
+        }
       }
 			return $ret;
 		}
@@ -198,8 +213,13 @@ private $debug;
 			catch (\PDOException $e) {
         $dbh->rollBack();
 				$ret['ok']=false;
-				$ret['message']=$e->getMessage();
-				$ret['sql']=$this->getSQL($sQuery, $aVars);
+        if( $this->safe ){
+          $ret['message']="There is an error in sql";
+        }
+        else {
+          $ret['message']=$e->getMessage();
+          $ret['sql']=$this->getSQL($sQuery, $aVars);
+        }
 				//fwrite(STDERR, print_r($e));
 				//$ret['sql']=$e->getMessage();
 
@@ -217,65 +237,70 @@ private $debug;
 		public function transactions($aQuery){
 			$ret=array();
 			try {
-					$dbh = $this->pdo;
-					$ret=array();
-					$dbh->beginTransaction();
-          //echo " | Begin";
-					$all_ok=true;
+				$dbh = $this->pdo;
+				$ret=array();
+				$dbh->beginTransaction();
+        //echo " | Begin";
+				$all_ok=true;
 
-					foreach( $aQuery as $a ) {
-						//echo "MM: " . $this->getSQL($a['sql'],$a['var']);
+				foreach( $aQuery as $a ) {
+					//echo "MM: " . $this->getSQL($a['sql'],$a['var']);
 
-						$prep0 = $dbh->prepare($a['sql']);
-						$ok= $prep0->execute($a['var']);
+					$prep0 = $dbh->prepare($a['sql']);
+					$ok= $prep0->execute($a['var']);
 
-						$id = 1; //$dbh->lastInsertId();
+					$id = 1; //$dbh->lastInsertId();
 
-						if(!$ok){
-							$all_ok=false;
-						}
-
-						$ret0=array();
-						$ret0['ok']=$ok;
-            if( $this->debug ) {
-              $ret['sql'] = $this->getSQL($a['sql'],$a['var']);
-            }
-
-						if($id>0){
-							$ret0['inserted_id']=$id;
-						}
-
-						// if(strpos($a['sql'],"insert")===false){
-						// 	;
-						// }
-						// else{
-						// 		$ret0['inserted_id']=$id;
-						// }
-
-						$ret[]=$ret0;
+					if(!$ok){
+						$all_ok=false;
 					}
 
-          if($all_ok) {
-            //echo " Commit";
-		        $dbh->commit();
-          }
-          else {
-            //echo " Rollback";
-            $dbh->rollBack();
+					$ret0=array();
+					$ret0['ok']=$ok;
+          if( $this->debug ) {
+            $ret['sql'] = $this->getSQL($a['sql'],$a['var']);
           }
 
-					$ret['ok']=$all_ok;
+					if($id>0){
+						$ret0['inserted_id']=$id;
+					}
+
+					// if(strpos($a['sql'],"insert")===false){
+					// 	;
+					// }
+					// else{
+					// 		$ret0['inserted_id']=$id;
+					// }
+
+					$ret[]=$ret0;
+				}
+
+        if($all_ok) {
+          //echo " Commit";
+	        $dbh->commit();
         }
-				catch (\PDOException $e) {
-					$ret['ok']=false;
-					$ret['message']=$e->getMessage();
-          //echo " Rollback Exc (".$e->getMessage().")";
+        else {
+          //echo " Rollback";
           $dbh->rollBack();
-					//$ret['sql']=$this->getSQL($aQuery, $aVars);
-					//fwrite(STDERR, print_r($e));
-					//$ret['sql']=$e->getMessage();
-
         }
+
+				$ret['ok']=$all_ok;
+      }
+			catch (\PDOException $e) {
+				$ret['ok']=false;
+        if( $this->safe ){
+          $ret['message']="There is an error in sql transaction";
+        }
+        else {
+          $ret['message']=$e->getMessage();
+        }
+        //echo " Rollback Exc (".$e->getMessage().")";
+        $dbh->rollBack();
+				//$ret['sql']=$this->getSQL($aQuery, $aVars);
+				//fwrite(STDERR, print_r($e));
+				//$ret['sql']=$e->getMessage();
+
+      }
         //echo " End |";
 			return $ret;
 		}
