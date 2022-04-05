@@ -123,7 +123,12 @@ Dbmng.FormInline = Class.extend({
 
         if(self.aParam.do_delete){
           var col=jQuery('<td></td>').appendTo(r);
-          var button_delete=jQuery('<button data-record="'+current_record+'">Del</button>')[0];
+          var del_label='Del';
+          if (self.aParam.del_label) {
+            del_label=self.aParam.del_label;
+          }
+          // debugger
+          var button_delete=jQuery('<button data-record="'+current_record+'">'+del_label+'</button>')[0];
           col[0].appendChild(button_delete);
 
           jQuery(button_delete).click(function(){

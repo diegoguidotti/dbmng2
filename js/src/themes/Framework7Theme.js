@@ -24,7 +24,9 @@ Dbmng.Framework7Theme = Dbmng.AbstractTheme.extend({
     var el = document.createElement('li');
 
     var div1=document.createElement('div');
-    div1.className="item-content item-input";
+    //TODO diego updated
+    div1.className="item-content item-input ";
+    div1.className = div1.className + ' dbmng_form_field_' + aField.field;
     el.appendChild(div1);
 
     var div2=document.createElement('div');
