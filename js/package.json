@@ -26,13 +26,13 @@
       "nonew": true,
       "immed": true,
       "latedef": true,
-      "unused":true,
+      "unused": true,
       "globals": {
         "jQuery": true
       }
     }
-  }
-  ,"repository": {
+  },
+  "repository": {
     "type": "git",
     "url": "https://github.com/diegoguidotti/dbmng2.git"
   },
@@ -46,19 +46,19 @@
   },
   "devDependencies": {
     "grunt": "~0.4.5",
-    "grunt-contrib-jshint": "~0.10.0",
-    "grunt-contrib-nodeunit": "~0.4.1",
-    "grunt-contrib-uglify": "~0.5.0",
     "grunt-concat-sourcemap": "0.4.3",
     "grunt-contrib-concat": "0.3.0",
+    "grunt-contrib-jshint": "~0.10.0",
+    "grunt-contrib-nodeunit": "~0.4.1",
+    "grunt-contrib-qunit": "1.2.0",
+    "grunt-contrib-uglify": "^5.2.1",
     "grunt-contrib-watch": "1.0.0",
     "grunt-remove-logging": "~0.2.0",
-    "grunt-contrib-qunit": "1.2.0",
     "qunitjs": "^1.17.1"
   },
   "scripts": {
     "build": "npm install && grunt",
     "start": "grunt watch",
-    "test":  "grunt"
+    "test": "grunt"
   }
 }
