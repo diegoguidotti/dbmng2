@@ -173,7 +173,12 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
       btn_title = self.aField.remove_title_icon;
     }
 
-    info.append("<a target='_NEW' class='dbmng_fileupload_filelink' href='"+weburl_file+file+"'>"+this.assignFileTypeIcon(file)+" "+file+"</a>&nbsp;");
+    if( self.aField.hide_link ){
+      info.append(this.assignFileTypeIcon(file)+" "+file+" ");
+    }
+    else{
+      info.append("<a target='_NEW' class='dbmng_fileupload_filelink' href='"+weburl_file+file+"'>"+this.assignFileTypeIcon(file)+" "+file+"</a>&nbsp;");
+    }
     var del=this.theme.getDeleteButton(btn_title, btn_icon);
     info.append(del);
     console.log("addFile");console.log(weburl_file);console.log(file);
