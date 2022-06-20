@@ -180,11 +180,18 @@ Dbmng.BootstrapItaliaTheme = Dbmng.AbstractTheme.extend({
       var addButtonDiv=document.createElement('div');
       addButtonDiv.className='input-group-append';
 
-      var button=`<button style="background-color:#06c;" class="${aField.addButtonClass} btn btn-primary btn-icon">
-                    <svg class="icon icon-white">
-                    <use xlink:href="/bootstrap-italia/dist/svg/sprite.svg#it-plus"></use>
-                    </svg>
-                  </button>`;
+      // backtick non riconosciuto da grunt
+      // var button=`<button style="background-color:#06c;" class="${aField.addButtonClass} btn btn-primary btn-icon">
+      //               <svg class="icon icon-white">
+      //               <use xlink:href="/bootstrap-italia/dist/svg/sprite.svg#it-plus"></use>
+      //               </svg>
+      //             </button>`;
+
+      var button='<button style="background-color:#06c;" class="'+aField.addButtonClass+' btn btn-primary btn-icon">' +
+                    '<svg class="icon icon-white">' +
+                    '<use xlink:href="/bootstrap-italia/dist/svg/sprite.svg#it-plus"></use>' +
+                    '</svg>' +
+                  '</button>';
 
       var addButton=jQuery(button)[0];
 
