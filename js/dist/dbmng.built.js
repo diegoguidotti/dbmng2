@@ -3034,60 +3034,60 @@ Dbmng.AppTheme = Dbmng.AbstractTheme.extend({
 /////////////////////////////////////////////////////////////////////
 
 Dbmng.BootstrapItaliaTheme = Dbmng.AbstractTheme.extend({
-  getFieldContainer: function(aField) {
+  getFieldContainer: function (aField) {
     var el = document.createElement('div');
     el.className = 'dbmng_form_row';
-    if (aField.widget!=='checkbox' && aField.widget!=='select') {
+    if (aField.widget !== 'checkbox' && aField.widget !== 'select') {
       el.className = 'form-group dbmng_bi_field';
     }
-    if (aField.widget=='select') {
+    if (aField.widget == 'select' || aField.widget == 'select_nm') {
       el.className = 'bootstrap-select-wrapper';
     }
     el.className = el.className + ' dbmng_form_field_' + aField.field;
 
     return el;
   },
-  getLabel: function(aField) {
-    var el=document.createDocumentFragment();
+  getLabel: function (aField) {
+    var el = document.createDocumentFragment();
 
-    if (aField.widget!=='checkbox') {
-      el=document.createElement('label');
-      el.className='active';
+    if (aField.widget !== 'checkbox') {
+      el = document.createElement('label');
+      el.className = 'active';
       el.setAttribute('for', 'dbmng_' + aField.field);
 
       // if set assign the label long in form mode
       var label = aField.label;
-      if( aField.label_long ) {
+      if (aField.label_long) {
         label = aField.label_long;
       }
-      el.innerHTML=label;
+      el.innerHTML = label;
 
-      if( parseInt(aField.nullable) === 0  ) {
+      if (parseInt(aField.nullable) === 0) {
         var sp = document.createElement('span');
-        sp.className='dbmng_required';
+        sp.className = 'dbmng_required';
 
-        var star=document.createTextNode('*');
+        var star = document.createTextNode('*');
         sp.appendChild(star);
       }
     }
 
     return el;
   },
-  getInput: function(aField) {
-    var el=document.createElement('input');
-    el.className='form-control';
+  getInput: function (aField) {
+    var el = document.createElement('input');
+    el.className = 'form-control';
 
-    if (aField.type=='varchar' || aField.type=='text') {
+    if (aField.type == 'varchar' || aField.type == 'text') {
       el.setAttribute('type', 'text');
     }
-    else if(aField.type=='date') {
+    else if (aField.type == 'date') {
       el.setAttribute('type', 'date');
     }
 
-    if(typeof aField.value !== 'undefined' ) {
-      el.value=aField.value;
+    if (typeof aField.value !== 'undefined') {
+      el.value = aField.value;
     }
-    if( aField.placeholder ) {
+    if (aField.placeholder) {
       el.placeholder = aField.placeholder;
     }
 
@@ -3096,73 +3096,73 @@ Dbmng.BootstrapItaliaTheme = Dbmng.AbstractTheme.extend({
     }
 
     //if in the option there is a field_type value it will be override the previous one (if the widget is hidden and the type is int it should be hidden)
-    if(aField.field_type){
+    if (aField.field_type) {
       el.type = aField.field_type;
     }
 
     return el;
   },
-  getCheckbox: function(aField) {
+  getCheckbox: function (aField) {
 
 
 
-    var el=document.createElement('div');
+    var el = document.createElement('div');
 
-    var fc=document.createElement('div');
-    fc.className='form-check';
+    var fc = document.createElement('div');
+    fc.className = 'form-check';
     el.appendChild(fc);
 
 
-    var input=document.createElement('input');
-    input.className='real_widget';
+    var input = document.createElement('input');
+    input.className = 'real_widget';
     fc.appendChild(input);
 
-    var label=document.createElement('label');
+    var label = document.createElement('label');
     fc.appendChild(label);
     // this.assignAttributes(input, aField);
     var label_text = aField.label;
-    if( aField.label_long ) {
+    if (aField.label_long) {
       label_text = aField.label_long;
     }
 
-    label.innerHTML= label_text;
+    label.innerHTML = label_text;
 
     input.setAttribute('id', 'dbmng_' + aField.field);
     label.setAttribute('for', 'dbmng_' + aField.field);
 
 
-    if(! aField.exclude_attribute) {
+    if (!aField.exclude_attribute) {
       this.assignAttributes(input, aField);
     }
     //
 
     input.type = "checkbox";
-    if(typeof aField.value !== 'undefined' ) {
-      input.value=aField.value;
+    if (typeof aField.value !== 'undefined') {
+      input.value = aField.value;
     }
 
-    if(aField.checked) {
+    if (aField.checked) {
       input.checked = true;
     }
 
     //
-    if( aField.placeholder ) {
+    if (aField.placeholder) {
       input.placeholder = aField.label;
     }
 
     return el;
   },
 
-  getSelect: function(aField) {
-    var div=document.createElement('div');
+  getSelect: function (aField) {
+    var div = document.createElement('div');
     if (aField.addButton) {
-      div.className='input-group';
+      div.className = 'input-group';
     }
 
     // debugger
     // el.parent
-    var el=document.createElement('select');
-    el.className='form-control aepy-select real_widget';
+    var el = document.createElement('select');
+    el.className = 'form-control aepy-select real_widget';
     this.assignAttributes(el, aField);
 
     if (aField.searchable) {
@@ -3172,24 +3172,24 @@ Dbmng.BootstrapItaliaTheme = Dbmng.AbstractTheme.extend({
       el.setAttribute('data-live-search-placeholder', aField.searchable_placeholder);
     }
 
-    if(aField.voc_val) {
-      var o=document.createElement('option');
+    if (aField.voc_val) {
+      var o = document.createElement('option');
 
-      if( aField.placeholder ) {
-        o.text=aField.label;
+      if (aField.placeholder) {
+        o.text = aField.label;
         o.disabled = 'disabled';
       }
 
       el.options.add(o);
 
-      jQuery.each(aField.voc_val, function(k,v){
-        if(typeof v !== 'string') {
-          jQuery.each(v, function(key,text){
-            o=document.createElement('option');
+      jQuery.each(aField.voc_val, function (k, v) {
+        if (typeof v !== 'string') {
+          jQuery.each(v, function (key, text) {
+            o = document.createElement('option');
             o.value = key; // v[0];
-            o.text= text; // v[1];
-            if( typeof aField.value !== 'undefined' ) {
-              if( aField.value == key ) {
+            o.text = text; // v[1];
+            if (typeof aField.value !== 'undefined') {
+              if (aField.value == key) {
                 o.selected = true;
               }
             }
@@ -3202,8 +3202,8 @@ Dbmng.BootstrapItaliaTheme = Dbmng.AbstractTheme.extend({
     div.appendChild(el);
 
     if (aField.addButton) {
-      var addButtonDiv=document.createElement('div');
-      addButtonDiv.className='input-group-append';
+      var addButtonDiv = document.createElement('div');
+      addButtonDiv.className = 'input-group-append';
 
       // backtick non riconosciuto da grunt
       // var button=`<button style="background-color:#06c;" class="${aField.addButtonClass} btn btn-primary btn-icon">
@@ -3212,13 +3212,13 @@ Dbmng.BootstrapItaliaTheme = Dbmng.AbstractTheme.extend({
       //               </svg>
       //             </button>`;
 
-      var button='<button style="background-color:#06c;" class="'+aField.addButtonClass+' btn btn-primary btn-icon">' +
-                    '<svg class="icon icon-white">' +
-                    '<use xlink:href="/bootstrap-italia/dist/svg/sprite.svg#it-plus"></use>' +
-                    '</svg>' +
-                  '</button>';
+      var button = '<button style="background-color:#06c;" class="' + aField.addButtonClass + ' btn btn-primary btn-icon">' +
+        '<svg class="icon icon-white">' +
+        '<use xlink:href="/bootstrap-italia/dist/svg/sprite.svg#it-plus"></use>' +
+        '</svg>' +
+        '</button>';
 
-      var addButton=jQuery(button)[0];
+      var addButton = jQuery(button)[0];
 
       addButtonDiv.appendChild(addButton);
 
@@ -3228,33 +3228,33 @@ Dbmng.BootstrapItaliaTheme = Dbmng.AbstractTheme.extend({
 
     return div;
   },
-  setErrorState: function(element, ok, message){
+  setErrorState: function (element, ok, message) {
 
-    var par=jQuery(element.widget);
+    var par = jQuery(element.widget);
 
     par.parent().find(".invalid-feedback").remove();
 
-    if(ok){
+    if (ok) {
       par.removeClass('is-invalid').addClass('is-valid');
     }
-    else{
-      par.parent().append('<div class="invalid-feedback">'+message+'</div>');
+    else {
+      par.parent().append('<div class="invalid-feedback">' + message + '</div>');
       par.removeClass('is-valid').addClass('is-invalid');
     }
 
   },
-  createFileUploadField: function(elv, label, opt){
+  createFileUploadField: function (elv, label, opt) {
     var el = this._super(elv, label, opt);
-    var btn=jQuery(el).find('.fileinput-button');
-    btn.css('width','');
+    var btn = jQuery(el).find('.fileinput-button');
+    btn.css('width', '');
     btn.addClass('col-xs-6');
     // this.addClass(btn,'col-xs-6');
 
-    var prg=jQuery(el).find('.progress');
-    prg.css('width','');
-    prg[0].style.cssText="";
+    var prg = jQuery(el).find('.progress');
+    prg.css('width', '');
+    prg[0].style.cssText = "";
     prg.wrap('<div class="col-xs-6" style="padding-top: 7px;"></div>');
-    prg.find('.progress-bar')[0].style.cssText="";
+    prg.find('.progress-bar')[0].style.cssText = "";
 
     return el;
   },
@@ -4199,13 +4199,13 @@ Dbmng.DateWidget = Dbmng.AbstractWidget.extend({
 /////////////////////////////////////////////////////////////////////
 
 Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
-  createWidget: function(){
+  createWidget: function () {
     this.aField.value = this.getFieldValue();
-    if(typeof jQuery().fileupload !== 'undefined'){
-      this.aField.field_type='hidden';
+    if (typeof jQuery().fileupload !== 'undefined') {
+      this.aField.field_type = 'hidden';
     }
-    else{
-      this.aField.field_type='file';
+    else {
+      this.aField.field_type = 'file';
     }
     return this.theme.getInput(this.aField);
     /*
@@ -4221,128 +4221,174 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
     */
   },
 
-  createField: function(data_val){
+
+  getValue: function () {
+
+    var standard_value = this._super();
+
+    var self = this;
+
+    if (self.aField.multiple) {
+      return self.files;
+    }
+    else {
+      return standard_value;
+    }
+  },
+
+  createField: function (data_val) {
 
 
-    var self=this;
+    var self = this;
     // 
 
-    var url='server/php/';
-    if(self.aParam.url){
-      url=self.aParam.url+"file/"+self.field+"/";
+    var url = 'server/php/';
+    if (self.aParam.url) {
+      url = self.aParam.url + "file/" + self.field + "/";
     }
-    if(self.aField.url){
-      url=self.aField.url;
+    if (self.aField.url) {
+      url = self.aField.url;
     }
-    var weburl_file=url+"files/";
-    if(self.aField.weburl_file){
-      weburl_file=self.aField.weburl_file;
+    var weburl_file = url + "files/";
+    if (self.aField.weburl_file) {
+      weburl_file = self.aField.weburl_file;
     }
 
     var el = this._super(data_val);
 
-    if(typeof jQuery().fileupload !== 'undefined'){
+    if (typeof jQuery().fileupload !== 'undefined') {
 
       var aVField = {};
       aVField.field = this.aField.field + '_file';
 
       var elv = this.theme.getInput(aVField);
-      elv.type='file';
-      elv.name="files[]";
+      elv.type = 'file';
+      elv.name = "files[]";
 
-      var opt={};
-      var btn_class="btn btn-success";
-      var btn_icon="glyphicon glyphicon-plus";
-      var btn_label="Select file...";
-      var uploading_text="Uploading...";
+      if (self.aField.multiple) {
+        elv.multiple = "multiple";
+      }
 
-      if( self.aField.class ) {
+      var opt = {};
+      var btn_class = "btn btn-success";
+      var btn_icon = "glyphicon glyphicon-plus";
+      var btn_label = "Select file...";
+      var uploading_text = "Uploading...";
+
+      if (self.aField.class) {
         btn_class = self.aField.class;
       }
-      if( self.aField.add_icon ) {
+      if (self.aField.add_icon) {
         btn_icon = self.aField.add_icon;
       }
-      if( self.aField.label_file ) {
+      if (self.aField.label_file) {
         btn_label = self.aField.label_file;
       }
-      if( self.aField.uploading_text ) {
+      if (self.aField.uploading_text) {
         uploading_text = self.aField.uploading_text;
       }
 
       opt.class = btn_class;
-      opt.icon  = btn_icon;
+      opt.icon = btn_icon;
       opt.label_file = btn_label;
 
-      el.appendChild(this.theme.createFileUploadField(elv,btn_label, opt));
+      el.appendChild(this.theme.createFileUploadField(elv, btn_label, opt));
 
-      var info=jQuery(el).find('.dbmng_fileupload_container');
+      var info = jQuery(el).find('.dbmng_fileupload_container');
 
-      var el_progress=jQuery(el).find('.progress');
+      var el_progress = jQuery(el).find('.progress');
 
       // var info=jQuery(el).find('.dbmng_fileupload_container');
-      if(typeof data_val !== 'undefined' && data_val!=='' && data_val !==null ){
-        self.addFile(info, weburl_file, data_val);
+      if (typeof data_val !== 'undefined' && data_val !== '' && data_val !== null) {
+        if (self.aField.multiple) {
+          self.files = data_val;
+
+          jQuery.each(data_val, function (k, i) {
+            self.addFile(info, weburl_file, i);
+          });
+        }
+        else {
+          self.addFile(info, weburl_file, data_val);
+        }
       }
 
       jQuery(elv).fileupload({
-          url: url,
-          dataType: 'json',
-          add: function (e, data) {
-            
-            info.html(uploading_text);
-            data.submit();
-          },
-          progressall: function (e, data) {
-              var progress = parseInt(data.loaded / data.total * 100, 10);
-              
-              jQuery(el_progress).find(".progress-bar").css(
-                  'width',
-                  progress + '%'
-              );
-          },
-          fail:function (e, data) {
-            
-            info.html(self.theme.alertMessage("Error"));
-          },
-          done: function (e, data) {
-            
-            if(data.result.files){
-              if(data.result.files.length>0){
-                info.html("");
-                jQuery.each(data.result.files, function (index, file) {
-                  if(file.error){
-                    info.append(self.theme.alertMessage(file.error));
+        url: url,
+        dataType: 'json',
+        add: function (e, data) {
+          
+          info.append(uploading_text);
+          data.submit();
+        },
+        progressall: function (e, data) {
+          var progress = parseInt(data.loaded / data.total * 100, 10);
+          
+          jQuery(el_progress).find(".progress-bar").css(
+            'width',
+            progress + '%'
+          );
+        },
+        fail: function (e, data) {
+          
+          info.append(self.theme.alertMessage("Error"));
+        },
+        done: function (e, data) {
+          
+          if (data.result.files) {
+            if (data.result.files.length > 0) {
+              // info.html("");
+              jQuery.each(data.result.files, function (index, file) {
+                if (file.error) {
+                  info.append(self.theme.alertMessage(file.error));
+                }
+                else if (!file.completed) {
+                  info.append(self.theme.alertMessage("Not Completed!!!!"));
+                }
+                else {
+                  var url = weburl_file;
+                  if (file.relative_folder) {
+                    url = file.relative_folder;
                   }
-                  else if (!file.completed){
-                    info.append(self.theme.alertMessage("Not Completed!!!!"));
-                  }
-                  else{
-                    var url=weburl_file;
-                    if (file.relative_folder) {
-                      url=file.relative_folder;
+
+                  self.addFile(info, url, file.name);
+
+                  var fileValue = "";
+                  if (self.aField.multiple) {
+
+
+                    if (!self.files) {
+                      self.files = [];
                     }
 
-                    self.addFile(info, url, file.name);
-
-                    var fileValue=file.name;
+                    fileValue = file.name;
                     if (file.relative_path) {
-                      fileValue=file.relative_path;
+                      fileValue = file.relative_path;
+                    }
+
+                    self.files.push(fileValue);
+
+                  }
+                  else {
+                    fileValue = file.name;
+                    if (file.relative_path) {
+                      fileValue = file.relative_path;
                     }
                     self.setValue(fileValue);
                   }
-                });
-              }
-              else{
-                  info.html("");
-                  jQuery.each(data.messages, function(k,v){
-                    info.append(self.theme.alertMessage(v));
-                  });
-              }
+                }
+              });
             }
-            else{
-              info.append(self.theme.alertMessage(data.result.message));
+            else {
+              info.html("");
+              jQuery.each(data.messages, function (k, v) {
+                info.append(self.theme.alertMessage(v));
+              });
             }
           }
+          else {
+            info.append(self.theme.alertMessage(data.result.message));
+          }
+        }
       });
     }
     else {
@@ -4352,38 +4398,59 @@ Dbmng.FileWidget = Dbmng.AbstractWidget.extend({
     return el;
   },
 
-  addFile:function(info, weburl_file, file){
-    var self=this;
-    var btn_icon="glyphicon glyphicon-remove";
-    if( self.aField.remove_icon ) {
+  addFile: function (info, weburl_file, file) {
+    var self = this;
+    var btn_icon = "glyphicon glyphicon-remove";
+    if (self.aField.remove_icon) {
       btn_icon = self.aField.remove_icon;
     }
     var btn_title = "Delete";
-    if( self.aField.remove_title_icon ) {
+    if (self.aField.remove_title_icon) {
       btn_title = self.aField.remove_title_icon;
     }
+    var guid = (parseInt(Math.random() * 32001212121)).toString(16);
 
-    if( self.aField.hide_link ){
-      info.append(this.assignFileTypeIcon(file)+" "+file+" ");
-    }
-    else{
-      info.append("<a target='_NEW' class='dbmng_fileupload_filelink' href='"+weburl_file+file+"'>"+this.assignFileTypeIcon(file)+" "+file+"</a>&nbsp;");
-    }
-    var del=this.theme.getDeleteButton(btn_title, btn_icon);
-    info.append(del);
-    
+    var file_link = "";
 
-    jQuery(del).click(function(){
-      info.html("");
-      self.setValue("");
+    if (self.aField.hide_link) {
+      file_link = ("" + this.assignFileTypeIcon(file) + " " + file);
+    }
+    else {
+      file_link = ("<a target='_NEW'  class='dbmng_fileupload_filelink' href='" + weburl_file + file + "'>" + this.assignFileTypeIcon(file) + " " + file + "</a>&nbsp;");
+    }
+    var del = this.theme.getDeleteButton(btn_title, btn_icon);
+    info.append("<br/><span id='" + guid + "'>" + file_link + "&nbsp</span>");
+
+    info.find("#" + guid).append(del);
+
+    jQuery(del).click(function () {
+      jQuery("#" + guid).html("");
+      // info.html("");
+      if (self.aField.multiple) {
+        
+        
+
+
+        var index = self.files.indexOf(file);
+        if (index > -1) { // only splice array when item is found
+          self.files.splice(index, 1); // 2nd parameter means remove one item only
+        }
+        else {
+          
+        }
+
+      }
+      else {
+        self.setValue("");
+      }
     });
   },
 
-  assignFileTypeIcon: function( file ) {
+  assignFileTypeIcon: function (file) {
     
     var aFile = file.split('.');
     var file_type_icon = "";
-    if( aFile[1] == 'pdf' ) {
+    if (aFile[1] == 'pdf') {
       file_type_icon = '<i class="fa fa-file-pdf-o"></i>';
     }
     return file_type_icon;
@@ -4552,59 +4619,59 @@ Dbmng.RadioWidget = Dbmng.AbstractWidget.extend({
 /////////////////////////////////////////////////////////////////////
 
 Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
-  createWidget: function(){
-    var self=this;
+  createWidget: function () {
+    var self = this;
 
     this.aField.value = this.getFieldValue();
     this.aField.field = this.field;
     var el, fk;
 
     var out_type = "select";
-    if( self.aField.out_type == 'checkbox' ) {
+    if (self.aField.out_type == 'checkbox') {
       out_type = "checkbox";
     }
 
-    if( out_type == 'select' ) {
+    if (out_type == 'select') {
 
       el = document.createElement('select');
       el.multiple = true;
 
       self.theme.assignAttributes(el, self.aField);
 
-      if(self.aField.voc_val) {
+      if (self.aField.voc_val) {
         var o = document.createElement('option');
 
-        if( self.aField.placeholder ) {
+        if (self.aField.placeholder) {
           o.text = self.aField.label;
           o.disabled = 'disabled';
         }
 
         el.options.add(o);
-        for ( fk in self.aField.voc_val) {
+        for (fk in self.aField.voc_val) {
           o = document.createElement('option');
 
-          var text_label="";
-          var foreign_key="";
-          if( typeof self.aField.voc_val[0] == 'object' ) {
-            var object=self.aField.voc_val[fk];
+          var text_label = "";
+          var foreign_key = "";
+          if (typeof self.aField.voc_val[0] == 'object') {
+            var object = self.aField.voc_val[fk];
             for (var k in object) {
-              foreign_key=k;
-              text_label=object[k];
+              foreign_key = k;
+              text_label = object[k];
               break;
             }
           }
-          else{
-              foreign_key=fk;
-              text_label=self.aField.voc_val[fk];
+          else {
+            foreign_key = fk;
+            text_label = self.aField.voc_val[fk];
           }
 
           o.value = foreign_key;
           o.text = text_label;
-          if( self.aField.value ) {
-            if( typeof self.aField.value[0] == 'number') {
+          if (self.aField.value) {
+            if (typeof self.aField.value[0] == 'number') {
               foreign_key = parseInt(foreign_key);
             }
-            if( self.aField.value.indexOf(foreign_key) > -1 ) {
+            if (self.aField.value.indexOf(foreign_key) > -1) {
               o.selected = true;
             }
           }
@@ -4612,15 +4679,15 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
         }
       }
     }
-    else if( out_type == 'checkbox' ) {
+    else if (out_type == 'checkbox') {
       el = document.createElement('div');
       var ul = document.createElement('ul');
-      ul.id = "ul_"+self.aField.field;
+      ul.id = "ul_" + self.aField.field;
 
       var search_nm = false;
-      if( typeof self.aField.search_nm !== 'undefined' ) {
+      if (typeof self.aField.search_nm !== 'undefined') {
         var placeholder = "";
-        if( typeof self.aField.search_nm_placeholder !== 'undefined' ) {
+        if (typeof self.aField.search_nm_placeholder !== 'undefined') {
           placeholder = self.aField.search_nm_placeholder;
         }
         var s = document.createElement('input');
@@ -4628,13 +4695,13 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
         self.theme.assignAttributes(s, self.aField);
         s.placeholder = placeholder;
 
-        s.onkeyup = function(txt_search){
-          var aRow = jQuery('#ul_'+self.aField.field+' li');
+        s.onkeyup = function (txt_search) {
+          var aRow = jQuery('#ul_' + self.aField.field + ' li');
           var txt = txt_search.target.value.toLowerCase();
-          if( txt.length > 1){
-            jQuery.each(aRow, function(k,row){
+          if (txt.length > 1) {
+            jQuery.each(aRow, function (k, row) {
               var rowText = jQuery(row).text().toLowerCase();
-              if( rowText.search(txt) > -1 ) {
+              if (rowText.search(txt) > -1) {
                 jQuery(row).show();
               }
               else {
@@ -4652,23 +4719,23 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
 
       self.theme.addClass(ul, 'dbmng_checkbox_ul');
       //self.theme.assignAttributes(el, self.aField);
-      if( typeof self.aField.voc_val[0] == 'object' ) {
-        jQuery.each(self.aField.voc_val, function(k,v){
-          jQuery.each(v, function(index, el) {
+      if (typeof self.aField.voc_val[0] == 'object') {
+        jQuery.each(self.aField.voc_val, function (k, v) {
+          jQuery.each(v, function (index, el) {
             fk = index;
             var li = document.createElement('li');
 
-            var checked=false;
-            if( self.aField.value ) {
-              if( typeof self.aField.value[0] == 'number') {
+            var checked = false;
+            if (self.aField.value) {
+              if (typeof self.aField.value[0] == 'number') {
                 fk = parseInt(index);
               }
-              if( self.aField.value.indexOf(fk) > -1 ) {
-                checked=true;
+              if (self.aField.value.indexOf(fk) > -1) {
+                checked = true;
               }
             }
-            var fvalue=el;
-            var opt_checkbox={'checked':checked, 'value':fk, 'label':fvalue, 'exclude_attribute':true};
+            var fvalue = el;
+            var opt_checkbox = { 'checked': checked, 'value': fk, 'label': fvalue, 'exclude_attribute': true };
             li.appendChild(self.theme.getCheckbox(opt_checkbox));
 
             var txt = document.createTextNode(fvalue);
@@ -4678,21 +4745,21 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
         });
       }
       else {
-        for ( fk in self.aField.voc_val) {
+        for (fk in self.aField.voc_val) {
           var li = document.createElement('li');
 
-          var checked=false;
-          if( self.aField.value ) {
-            if( typeof self.aField.value[0] == 'number') {
+          var checked = false;
+          if (self.aField.value) {
+            if (typeof self.aField.value[0] == 'number') {
               fk = parseInt(fk);
             }
-            if( self.aField.value.indexOf(fk) > -1 ) {
-              checked=true;
+            if (self.aField.value.indexOf(fk) > -1) {
+              checked = true;
             }
           }
-          var fvalue=self.aField.voc_val[fk];
+          var fvalue = self.aField.voc_val[fk];
 
-          var opt_checkbox={'checked':checked, 'value':fk, 'label':fvalue, 'exclude_attribute':true};
+          var opt_checkbox = { 'checked': checked, 'value': fk, 'label': fvalue, 'exclude_attribute': true };
 
           li.appendChild(this.theme.getCheckbox(opt_checkbox));
 
@@ -4707,56 +4774,55 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
 
 
 
-    // return this.theme.getSelectNM(this.aField);
     return el;
   },
-  convert2html: function(val) {
-    var self=this;
-    var sep="<span class='dbmng_select_nm_sep'>,</span>&nbsp;";
-    var ret="";
-    var first=true;
-    if( typeof val !== 'undefined' ) {
-      jQuery.each(val,function(k,v){
-        if(!first){
-          ret+=sep;
+  convert2html: function (val) {
+    var self = this;
+    var sep = "<span class='dbmng_select_nm_sep'>,</span>&nbsp;";
+    var ret = "";
+    var first = true;
+    if (typeof val !== 'undefined') {
+      jQuery.each(val, function (k, v) {
+        if (!first) {
+          ret += sep;
         }
-        else{
-          first=false;
+        else {
+          first = false;
         }
-        if( typeof self.aField.voc_val[0] == 'object' ) {
-          jQuery.each(self.aField.voc_val, function(j, obj){
-            if( typeof obj == 'object' ) {
-              jQuery.each(obj, function(key, value){
-                if( key == v ) {
-                  ret+="<span class='dbmng_select_nm_item'>"+value+"</span>";
+        if (typeof self.aField.voc_val[0] == 'object') {
+          jQuery.each(self.aField.voc_val, function (j, obj) {
+            if (typeof obj == 'object') {
+              jQuery.each(obj, function (key, value) {
+                if (key == v) {
+                  ret += "<span class='dbmng_select_nm_item'>" + value + "</span>";
                 }
               });
             }
           });
         }
         else {
-          ret+="<span class='dbmng_select_nm_item'>"+self.aField.voc_val[v]+"</span>";
+          ret += "<span class='dbmng_select_nm_item'>" + self.aField.voc_val[v] + "</span>";
         }
       });
-      return jQuery("<div>"+ret+"</div>")[0];
+      return jQuery("<div>" + ret + "</div>")[0];
     }
   },
-  getValue: function(){
+  getValue: function () {
     var aVal, aRet;
-    var self=this;
+    var self = this;
 
 
     var out_type = "select";
-    if( this.aField.out_type == 'checkbox' ) {
+    if (this.aField.out_type == 'checkbox') {
       out_type = "checkbox";
     }
 
-    if( out_type == "select" ) {
-      if( this.aField.type == 'int' ) {
+    if (out_type == "select") {
+      if (this.aField.type == 'int') {
         aVal = [].concat(jQuery(this.widget).val());
 
         aRet = [];
-        aVal.forEach(function(entry) {
+        aVal.forEach(function (entry) {
           aRet.push(parseInt(entry));
         });
       }
@@ -4764,16 +4830,16 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
         aRet = jQuery(this.widget).val();
       }
     }
-    else if( out_type == "checkbox" ) {
+    else if (out_type == "checkbox") {
       var cb = jQuery(this.widget).find('input[type=checkbox]');
       aVal = [];
-      cb.each(function(k,v){
-        if( v.checked ) {
+      cb.each(function (k, v) {
+        if (v.checked) {
           
-          if(self.aField.type == 'int'){
+          if (self.aField.type == 'int') {
             aVal.push(parseInt(v.value));
           }
-          else{
+          else {
             aVal.push((v.value));
           }
         }

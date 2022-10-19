@@ -9,59 +9,59 @@
 /////////////////////////////////////////////////////////////////////
 
 Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
-  createWidget: function(){
-    var self=this;
+  createWidget: function () {
+    var self = this;
 
     this.aField.value = this.getFieldValue();
     this.aField.field = this.field;
     var el, fk;
 
     var out_type = "select";
-    if( self.aField.out_type == 'checkbox' ) {
+    if (self.aField.out_type == 'checkbox') {
       out_type = "checkbox";
     }
 
-    if( out_type == 'select' ) {
+    if (out_type == 'select') {
 
       el = document.createElement('select');
       el.multiple = true;
 
       self.theme.assignAttributes(el, self.aField);
 
-      if(self.aField.voc_val) {
+      if (self.aField.voc_val) {
         var o = document.createElement('option');
 
-        if( self.aField.placeholder ) {
+        if (self.aField.placeholder) {
           o.text = self.aField.label;
           o.disabled = 'disabled';
         }
 
         el.options.add(o);
-        for ( fk in self.aField.voc_val) {
+        for (fk in self.aField.voc_val) {
           o = document.createElement('option');
 
-          var text_label="";
-          var foreign_key="";
-          if( typeof self.aField.voc_val[0] == 'object' ) {
-            var object=self.aField.voc_val[fk];
+          var text_label = "";
+          var foreign_key = "";
+          if (typeof self.aField.voc_val[0] == 'object') {
+            var object = self.aField.voc_val[fk];
             for (var k in object) {
-              foreign_key=k;
-              text_label=object[k];
+              foreign_key = k;
+              text_label = object[k];
               break;
             }
           }
-          else{
-              foreign_key=fk;
-              text_label=self.aField.voc_val[fk];
+          else {
+            foreign_key = fk;
+            text_label = self.aField.voc_val[fk];
           }
 
           o.value = foreign_key;
           o.text = text_label;
-          if( self.aField.value ) {
-            if( typeof self.aField.value[0] == 'number') {
+          if (self.aField.value) {
+            if (typeof self.aField.value[0] == 'number') {
               foreign_key = parseInt(foreign_key);
             }
-            if( self.aField.value.indexOf(foreign_key) > -1 ) {
+            if (self.aField.value.indexOf(foreign_key) > -1) {
               o.selected = true;
             }
           }
@@ -69,15 +69,15 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
         }
       }
     }
-    else if( out_type == 'checkbox' ) {
+    else if (out_type == 'checkbox') {
       el = document.createElement('div');
       var ul = document.createElement('ul');
-      ul.id = "ul_"+self.aField.field;
+      ul.id = "ul_" + self.aField.field;
 
       var search_nm = false;
-      if( typeof self.aField.search_nm !== 'undefined' ) {
+      if (typeof self.aField.search_nm !== 'undefined') {
         var placeholder = "";
-        if( typeof self.aField.search_nm_placeholder !== 'undefined' ) {
+        if (typeof self.aField.search_nm_placeholder !== 'undefined') {
           placeholder = self.aField.search_nm_placeholder;
         }
         var s = document.createElement('input');
@@ -85,13 +85,13 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
         self.theme.assignAttributes(s, self.aField);
         s.placeholder = placeholder;
 
-        s.onkeyup = function(txt_search){
-          var aRow = jQuery('#ul_'+self.aField.field+' li');
+        s.onkeyup = function (txt_search) {
+          var aRow = jQuery('#ul_' + self.aField.field + ' li');
           var txt = txt_search.target.value.toLowerCase();
-          if( txt.length > 1){
-            jQuery.each(aRow, function(k,row){
+          if (txt.length > 1) {
+            jQuery.each(aRow, function (k, row) {
               var rowText = jQuery(row).text().toLowerCase();
-              if( rowText.search(txt) > -1 ) {
+              if (rowText.search(txt) > -1) {
                 jQuery(row).show();
               }
               else {
@@ -109,23 +109,23 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
 
       self.theme.addClass(ul, 'dbmng_checkbox_ul');
       //self.theme.assignAttributes(el, self.aField);
-      if( typeof self.aField.voc_val[0] == 'object' ) {
-        jQuery.each(self.aField.voc_val, function(k,v){
-          jQuery.each(v, function(index, el) {
+      if (typeof self.aField.voc_val[0] == 'object') {
+        jQuery.each(self.aField.voc_val, function (k, v) {
+          jQuery.each(v, function (index, el) {
             fk = index;
             var li = document.createElement('li');
 
-            var checked=false;
-            if( self.aField.value ) {
-              if( typeof self.aField.value[0] == 'number') {
+            var checked = false;
+            if (self.aField.value) {
+              if (typeof self.aField.value[0] == 'number') {
                 fk = parseInt(index);
               }
-              if( self.aField.value.indexOf(fk) > -1 ) {
-                checked=true;
+              if (self.aField.value.indexOf(fk) > -1) {
+                checked = true;
               }
             }
-            var fvalue=el;
-            var opt_checkbox={'checked':checked, 'value':fk, 'label':fvalue, 'exclude_attribute':true};
+            var fvalue = el;
+            var opt_checkbox = { 'checked': checked, 'value': fk, 'label': fvalue, 'exclude_attribute': true };
             li.appendChild(self.theme.getCheckbox(opt_checkbox));
 
             var txt = document.createTextNode(fvalue);
@@ -135,21 +135,21 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
         });
       }
       else {
-        for ( fk in self.aField.voc_val) {
+        for (fk in self.aField.voc_val) {
           var li = document.createElement('li');
 
-          var checked=false;
-          if( self.aField.value ) {
-            if( typeof self.aField.value[0] == 'number') {
+          var checked = false;
+          if (self.aField.value) {
+            if (typeof self.aField.value[0] == 'number') {
               fk = parseInt(fk);
             }
-            if( self.aField.value.indexOf(fk) > -1 ) {
-              checked=true;
+            if (self.aField.value.indexOf(fk) > -1) {
+              checked = true;
             }
           }
-          var fvalue=self.aField.voc_val[fk];
+          var fvalue = self.aField.voc_val[fk];
 
-          var opt_checkbox={'checked':checked, 'value':fk, 'label':fvalue, 'exclude_attribute':true};
+          var opt_checkbox = { 'checked': checked, 'value': fk, 'label': fvalue, 'exclude_attribute': true };
 
           li.appendChild(this.theme.getCheckbox(opt_checkbox));
 
@@ -164,56 +164,55 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
 
 
 
-    // return this.theme.getSelectNM(this.aField);
     return el;
   },
-  convert2html: function(val) {
-    var self=this;
-    var sep="<span class='dbmng_select_nm_sep'>,</span>&nbsp;";
-    var ret="";
-    var first=true;
-    if( typeof val !== 'undefined' ) {
-      jQuery.each(val,function(k,v){
-        if(!first){
-          ret+=sep;
+  convert2html: function (val) {
+    var self = this;
+    var sep = "<span class='dbmng_select_nm_sep'>,</span>&nbsp;";
+    var ret = "";
+    var first = true;
+    if (typeof val !== 'undefined') {
+      jQuery.each(val, function (k, v) {
+        if (!first) {
+          ret += sep;
         }
-        else{
-          first=false;
+        else {
+          first = false;
         }
-        if( typeof self.aField.voc_val[0] == 'object' ) {
-          jQuery.each(self.aField.voc_val, function(j, obj){
-            if( typeof obj == 'object' ) {
-              jQuery.each(obj, function(key, value){
-                if( key == v ) {
-                  ret+="<span class='dbmng_select_nm_item'>"+value+"</span>";
+        if (typeof self.aField.voc_val[0] == 'object') {
+          jQuery.each(self.aField.voc_val, function (j, obj) {
+            if (typeof obj == 'object') {
+              jQuery.each(obj, function (key, value) {
+                if (key == v) {
+                  ret += "<span class='dbmng_select_nm_item'>" + value + "</span>";
                 }
               });
             }
           });
         }
         else {
-          ret+="<span class='dbmng_select_nm_item'>"+self.aField.voc_val[v]+"</span>";
+          ret += "<span class='dbmng_select_nm_item'>" + self.aField.voc_val[v] + "</span>";
         }
       });
-      return jQuery("<div>"+ret+"</div>")[0];
+      return jQuery("<div>" + ret + "</div>")[0];
     }
   },
-  getValue: function(){
+  getValue: function () {
     var aVal, aRet;
-    var self=this;
+    var self = this;
 
 
     var out_type = "select";
-    if( this.aField.out_type == 'checkbox' ) {
+    if (this.aField.out_type == 'checkbox') {
       out_type = "checkbox";
     }
 
-    if( out_type == "select" ) {
-      if( this.aField.type == 'int' ) {
+    if (out_type == "select") {
+      if (this.aField.type == 'int') {
         aVal = [].concat(jQuery(this.widget).val());
 
         aRet = [];
-        aVal.forEach(function(entry) {
+        aVal.forEach(function (entry) {
           aRet.push(parseInt(entry));
         });
       }
@@ -221,16 +220,16 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
         aRet = jQuery(this.widget).val();
       }
     }
-    else if( out_type == "checkbox" ) {
+    else if (out_type == "checkbox") {
       var cb = jQuery(this.widget).find('input[type=checkbox]');
       aVal = [];
-      cb.each(function(k,v){
-        if( v.checked ) {
+      cb.each(function (k, v) {
+        if (v.checked) {
           console.log(v.value);
-          if(self.aField.type == 'int'){
+          if (self.aField.type == 'int') {
             aVal.push(parseInt(v.value));
           }
-          else{
+          else {
             aVal.push((v.value));
           }
         }
