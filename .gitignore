@@ -10,3 +10,4 @@ js/node_modules/
 files/
 dest/
 .kateproject.d/
+package-lock.json
