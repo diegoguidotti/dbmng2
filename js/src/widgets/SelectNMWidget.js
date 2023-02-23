@@ -149,7 +149,7 @@ Dbmng.SelectNMWidget = Dbmng.AbstractWidget.extend({
           }
           var fvalue = self.aField.voc_val[fk];
 
-          var opt_checkbox = { 'checked': checked, 'value': fk, 'label': fvalue, 'exclude_attribute': true };
+          var opt_checkbox = { 'checked': checked, 'value': fk, 'field': fk, 'label': fvalue, 'exclude_attribute': true };
 
           li.appendChild(this.theme.getCheckbox(opt_checkbox));
 
