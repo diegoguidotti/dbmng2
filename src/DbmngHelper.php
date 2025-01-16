@@ -204,7 +204,7 @@ class DbmngHelper {
 						// $sql = Dbmng\Util::template_var($sql, $_REQUEST);
 						foreach($_REQUEST as $k=>$v)
 							{
-				        $sql=str_replace("{{".$k."}}",$v,$sql);
+				        $sql=str_replace("{{".$k."}}",strval($v),$sql);
 					    }
 						//TODO: review the safety of this query
 						// echo $sql;
