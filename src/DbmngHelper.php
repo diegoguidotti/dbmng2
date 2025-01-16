@@ -204,7 +204,14 @@ class DbmngHelper {
 					    }
 						//TODO: review the safety of this query
 						// echo $sql;
-            $rVoc  = $this->db->select($sql, array(), \PDO::FETCH_NUM);
+
+            if (!empty($sql)) {
+              $rVoc = $this->db->select($sql, array(), \PDO::FETCH_NUM);
+            }
+            else {
+                $rVoc = ['ok' => false, 'rowCount' => 0, 'data' => []]; // Valore di default per evitare errori successivi
+            }
+          
             $aFVoc = array();
 
             $v       = 0;
