@@ -127,7 +127,11 @@ class DbmngHelper {
             $aPK[] = $fields['data'][$nF]['field_name'];
           }
 
-        $sLabelLong = ( strlen($fields['data'][$nF]['field_label_long'])>0 ? $fields['data'][$nF]['field_label_long'] : $fields['data'][$nF]['field_label'] );
+          
+          
+
+        // $sLabelLong = ( strlen($fields['data'][$nF]['field_label_long'])>0 ? $fields['data'][$nF]['field_label_long'] : $fields['data'][$nF]['field_label'] );
+        $sLabelLong = (isset($fields['data'][$nF]['field_label_long']) && strlen($fields['data'][$nF]['field_label_long']) > 0 ? $fields['data'][$nF]['field_label_long'] : $fields['data'][$nF]['field_label']);
         $isSearcheable = ( isset($fields['data'][$nF]['is_searchable']) ? ($fields['data'][$nF]['is_searchable']) : "0" );
         $sWidget = ( isset($fields['data'][$nF]['field_widget']) ? $fields['data'][$nF]['field_widget'] : "input" );
 
